@@ -1,0 +1,21 @@
+# Node / React Frontend
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env
+.env.*
+.DS_Store
+npm-debug.log*
+
+# Python / FastAPI Backend
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+.pytest_cache/
+
+# OS
+Thumbs.db

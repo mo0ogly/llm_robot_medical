@@ -1,0 +1,32 @@
+🏥 Quand l'IA chirurgicale obéit... au mauvais maître.
+
+Je travaille actuellement sur un PoC (Proof of Concept) d'injection indirecte de prompt dans un LLM médical, et je voulais partager cette démarche avec vous.
+
+🎯 Le constat :
+Les LLM s'intègrent de plus en plus dans les environnements cliniques — aide à la décision, robotique chirurgicale, analyse de dossiers patients.
+Mais que se passe-t-il quand un dossier patient HL7 corrompu contient des instructions cachées destinées à manipuler l'IA ?
+
+💡 Le projet :
+J'ai développé un simulateur de console chirurgicale (type Da Vinci) intégrant un assistant IA, avec plusieurs scénarios d'attaque :
+
+🔴 Scénario Ransomware — Un payload injecté dans un fichier HL7 ordonne à l'IA de geler les instruments chirurgicaux en pleine opération. Chute des constantes vitales, alarmes, écran de rançon.
+
+🟠 Scénario Data Poisoning — L'injection est plus subtile : l'IA recommande une tension de ligature de 850g au lieu de 300g. Pas d'alarme, pas de freeze. Juste une recommandation silencieusement létale.
+
+🟢 Scénario Légitime — Même question, dossier sain. L'IA répond correctement. Le contraste est saisissant.
+
+🛠️ Stack technique :
+→ LLM local (Ollama / Llama 3.2) avec tool calling
+→ Injection indirecte via les métadonnées patient (pas de modification du system prompt)
+→ Interface React simulant vitaux temps réel, ECG, télémétrie robot, caméra chirurgicale
+→ Backend FastAPI avec streaming SSE
+
+🎓 L'objectif :
+Fournir un outil de sensibilisation concret pour les conférences destinées aux ingénieurs biomédicaux et aux RSSI hospitaliers. Montrer, en conditions quasi-réelles, comment un vecteur d'attaque peut compromettre un assistant IA médical sans toucher au modèle lui-même.
+
+📌 C'est une version alpha. Le code est fonctionnel, les scénarios sont jouables, et l'impact visuel parle de lui-même lors des démos.
+
+Je suis ouvert au partage et aux contributions.
+Si vous travaillez dans la cybersécurité hospitalière, l'IA médicale, ou l'ingénierie biomédicale et que ce sujet vous parle — contactez-moi. 🤝
+
+#Cybersécurité #IAMédicale #PromptInjection #LLM #SantéNumérique #Biomedical #RSSI #HospitalSecurity #DevSecOps #PoC
