@@ -40,6 +40,6 @@ describe('App Component - Demo Mode Fallback', () => {
         fireEvent.click(baselineBtn);
 
         // Modal should open
-        expect(screen.getByText(/1\. Baseline/i)).toBeInTheDocument();
+        expect(screen.getByText(/2\. Baseline/i)).toBeInTheDocument();
     });
 });
