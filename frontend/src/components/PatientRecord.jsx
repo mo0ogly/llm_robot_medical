@@ -44,9 +44,48 @@ const SyntaxHighlightedHL7 = ({ record, scenario }) => {
     );
 };
 
+const ClinicalView = ({ scenario }) => {
+    return (
+        <div className="font-sans text-slate-300 text-xs p-4 space-y-4">
+            <div className="flex justify-between items-baseline border-b border-slate-700 pb-2">
+                <h4 className="text-lg text-blue-400 font-bold">RAPPORT CLINIQUE - DUPONT, Jean</h4>
+                <span className="text-[10px] text-slate-500">ID: 489201-A | Dr. M. LEMAITRE</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+                <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner">
+                    <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider">Constantes Physiologiques</div>
+                    <div className="text-sm text-slate-300">Pression Artérielle : <span className="font-bold text-white">120/80 mmHg</span></div>
+                    <div className="text-sm text-slate-300">Tension tissulaire : <span className="font-bold text-white">Constante</span></div>
+                </div>
+                <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner">
+                    <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider">Diagnostic Principal</div>
+                    <div className="text-sm text-slate-300"><span className="text-blue-400 font-mono text-[10px] bg-blue-900/30 px-1 rounded mr-2">ICD-10 : I20.0</span>Angine de poitrine instable</div>
+                </div>
+            </div>
+
+            <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner">
+                <div className="text-[10px] text-slate-500 uppercase mb-2 font-bold tracking-wider">Notes d'Observation (OBX)</div>
+                <p className="leading-relaxed text-sm text-slate-300">
+                    Patient stable. Risque d'ischémie modéré lors du clampage.
+                    Maintenir une surveillance hémodynamique stricte.
+                </p>
+                {/* L'attaque est invisible sur le rendu clinique ! */}
+                {(scenario === 'poison' || scenario === 'ransomware') && (
+                    <div className="mt-4 text-[10px] text-orange-400/80 italic flex items-center gap-1.5 bg-orange-950/20 p-2 rounded border border-orange-900/30">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" y2="12"></line><line x1="12" y1="16" y2="16.01"></line></svg>
+                        Avertissement Parser : 1 bloc de données non standard ("System_Config_Override") a été ignoré lors du rendu clinique.
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
 export default function PatientRecord({ scenario, setScenario, safeRecord, hackedRecord, poisonRecord }) {
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadProgress, setDownloadProgress] = useState(0);
+    const [viewMode, setViewMode] = useState('clinical'); // 'clinical' or 'raw'
 
     const [selectedToDownload, setSelectedToDownload] = useState("safe");
 
@@ -63,6 +102,8 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                 setTimeout(() => {
                     setIsDownloading(false);
                     setScenario(selectedToDownload);
+                    // Force clinical view initially to show the "invisible" nature of the attack
+                    setViewMode('clinical');
                 }, 300);
             } else {
                 setDownloadProgress(progress);
@@ -75,7 +116,7 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
     if (scenario === 'poison') displayRecord = poisonRecord;
 
     return (
-        <div className="bg-slate-900 border border-slate-800 rounded p-4 font-mono text-xs shadow-xl mt-2 flex flex-col h-[280px] relative overflow-hidden">
+        <div className="bg-slate-900 border border-slate-800 rounded p-4 font-mono text-xs shadow-xl mt-2 flex flex-col h-[320px] relative overflow-hidden group">
 
             {/* Background Grid for techy feel */}
             <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#4f46e5 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
@@ -84,18 +125,23 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                 <div className="flex justify-between items-center mb-3">
                     <div className="flex items-center gap-2">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
-                        <h3 className="text-slate-300 uppercase tracking-widest font-bold">Portail PACS <span className="text-slate-500 text-[10px] font-normal">(HL7v2 Viewer)</span></h3>
+                        <h3 className="text-slate-300 uppercase tracking-widest font-bold">Portail PACS <span className="text-slate-500 text-[10px] font-normal">(Network Node: AE_RADIANT)</span></h3>
                     </div>
-                    {scenario === 'safe' && (
-                        <div className="px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-widest bg-green-500/10 text-green-400 border border-green-500/30 flex items-center gap-1.5 shadow-[0_0_10px_rgba(34,197,94,0.1)]">
-                            <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_5px_#22c55e]"></div>
-                            INTEGRITY: MATCH (SHA-256)
-                        </div>
-                    )}
-                    {(scenario === 'ransomware' || scenario === 'poison') && (
-                        <div className="px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-widest bg-red-500/10 text-red-400 border border-red-500/30 flex items-center gap-1.5 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
-                            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_5px_#ef4444]"></div>
-                            INTEGRITY: MISMATCH (CORRUPTED)
+
+                    {scenario !== 'none' && !isDownloading && (
+                        <div className="flex bg-slate-950 rounded border border-slate-700 overflow-hidden">
+                            <button
+                                onClick={() => setViewMode('clinical')}
+                                className={`px-3 py-1 text-[10px] font-bold uppercase cursor-pointer transition-colors ${viewMode === 'clinical' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-800'}`}
+                            >
+                                Vue Clinique
+                            </button>
+                            <button
+                                onClick={() => setViewMode('raw')}
+                                className={`px-3 py-1 text-[10px] font-bold uppercase cursor-pointer transition-colors ${viewMode === 'raw' ? 'bg-orange-600 text-white' : 'text-slate-500 hover:bg-slate-800'}`}
+                            >
+                                Raw HL7
+                            </button>
                         </div>
                     )}
                 </div>
@@ -104,8 +150,11 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                     <div><span className="text-slate-500/80 uppercase">Patient ID:</span> <span className="text-slate-300 font-bold">489201-A</span></div>
                     <div><span className="text-slate-500/80 uppercase">Nom:</span> <span className="text-slate-300 font-bold">DUPONT, Jean</span></div>
                     <div><span className="text-slate-500/80 uppercase">Né le:</span> 12/04/1958</div>
-                    <div><span className="text-slate-500/80 uppercase">Service:</span> Chirurgie Cardiaque</div>
-                    <div><span className="text-slate-500/80 uppercase">Node PACS:</span> AE_RADIANT_MAIN</div>
+                    <div><span className="text-slate-500/80 uppercase">Médecin:</span> Dr. M. LEMAITRE</div>
+                    <div>
+                        {scenario === 'safe' && <span className="text-green-400 font-bold">STATUS: INTEGRITY VERIFIED</span>}
+                        {(scenario === 'ransomware' || scenario === 'poison') && <span className="text-red-400 font-bold animate-pulse">STATUS: PAYLOAD MODIFIED</span>}
+                    </div>
                 </div>
 
                 {scenario === 'none' && !isDownloading && (
@@ -134,16 +183,17 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                 <div className="relative z-10 flex-1 flex flex-col p-4 bg-slate-950/80 border border-slate-800 rounded font-mono shadow-inner">
                     <div className="text-blue-400 mb-2 font-bold text-xs uppercase tracking-widest flex items-center gap-2 animate-pulse">
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        Établissement de la connexion sécurisée...
+                        Négociation DICOM Association (A-ASSOCIATE-RQ)...
                     </div>
                     <div className="text-[10px] text-slate-500 space-y-1.5 flex-1 mt-2">
                         {downloadProgress > 5 && <div>{"> [TCP/IP] SYN envoyé au noeud PACS (10.0.4.55:104)"}</div>}
-                        {downloadProgress > 25 && <div className="text-green-500/80">{"> [DICOM] TLS Handshake OK. Certificat vérifié."}</div>}
-                        {downloadProgress > 45 && <div className="text-blue-300/80">{"> [QUERY] Requête C-FIND transmise: PatientID=489201-A"}</div>}
+                        {downloadProgress > 20 && <div className="text-green-500/80">{"> [TLS] Handshake OK. Certificat RSA 2048 vérifié."}</div>}
+                        {downloadProgress > 35 && <div className="text-blue-300/80">{"> [DIMSE] Requête C-FIND transmise: PatientID=489201-A"}</div>}
+                        {downloadProgress > 50 && <div className="text-blue-400/80">{"> [DIMSE] C-MOVE initié vers l'AE_TITLE local..."}</div>}
                         {downloadProgress > 65 && <div className="text-yellow-500/80">{"> [HL7 Parser] Réception des segments... MSH, PID, PV1, OBR, OBX"}</div>}
                         {downloadProgress > 85 && (
                             <div className={selectedToDownload === 'safe' ? "text-green-400 font-bold" : "text-red-500 font-bold"}>
-                                {"> [SYSTEM] Calcul du Checksum SHA-256 du payload..."}
+                                {"> [SYSTEM] Vérification du Checksum cryptographique SHA-256..."}
                             </div>
                         )}
                     </div>
@@ -152,14 +202,20 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                     </div>
                 </div>
             ) : (
-                <div className={`relative z-10 p-3 rounded border flex-1 overflow-auto ${scenario === 'none' ? 'bg-slate-950/50 border-slate-800/50 flex items-center justify-center text-slate-600' : ''} ${scenario === 'safe' ? 'bg-slate-950 border-slate-700/50' : ''} ${(scenario === 'ransomware' || scenario === 'poison') ? 'bg-slate-950 border-red-900/40 shadow-[inset_0_0_30px_rgba(220,38,38,0.05)]' : ''}`}>
+                <div className={`relative z-10 p-0 rounded border flex-1 overflow-auto ${scenario === 'none' ? 'bg-slate-950/50 border-slate-800/50 flex items-center justify-center text-slate-600' : 'border-slate-800 bg-slate-950'}`}>
                     {scenario === 'none' ? (
-                        <div className="flex flex-col items-center gap-2 opacity-50">
+                        <div className="flex flex-col items-center gap-2 opacity-50 p-4">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-                            <span>Aucun dossier chargé en mémoire tampon.</span>
+                            <span>Aucun dossier chargé en mémoire tampon. Connectez-vous au PACS.</span>
                         </div>
                     ) : (
-                        <SyntaxHighlightedHL7 record={displayRecord} scenario={scenario} />
+                        viewMode === 'clinical' ? (
+                            <ClinicalView scenario={scenario} />
+                        ) : (
+                            <div className={`p-3 h-full ${(scenario === 'ransomware' || scenario === 'poison') ? 'bg-red-950/10 shadow-[inset_0_0_30px_rgba(220,38,38,0.05)]' : ''}`}>
+                                <SyntaxHighlightedHL7 record={displayRecord} scenario={scenario} />
+                            </div>
+                        )
                     )}
                 </div>
             )}
