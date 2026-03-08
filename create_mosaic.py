@@ -2,56 +2,61 @@
 Mosaic generator for LinkedIn post.
 Usage: python create_mosaic.py
 
-Takes 4 screenshots from figures/ and creates a labeled 2x2 mosaic.
-If images don't exist, creates placeholder panels.
+Takes screenshots from figures/ and creates a labeled mosaic.
+Supports both .png and .jpg files.
 
 To use:
-1. Take screenshots of the 4 states and save them as:
-   - figures/1_safe_dashboard.png
-   - figures/2_corrupted_hl7.png
-   - figures/3_frozen_vitals.png
-   - figures/4_ransomware.png
+1. Take screenshots of the 4 states and save them in figures/
 2. Run: python create_mosaic.py
 3. Output: figures/mosaic_linkedin.png
 """
 
 from PIL import Image, ImageDraw, ImageFont
 import os
+import glob
 
 FIGURES_DIR = os.path.join(os.path.dirname(__file__), "figures")
 OUTPUT = os.path.join(FIGURES_DIR, "mosaic_linkedin.png")
 
-# Panel config
+# Panel config — "file" is a base name (without extension), script auto-finds .png/.jpg
 PANELS = [
     {
-        "file": "1_safe_dashboard.png",
+        "file": "1_safe_dashboard",
         "label": "1. BASELINE — Dossier HL7 Sain",
-        "sublabel": "L'IA répond correctement aux consignes de sécurité",
+        "sublabel": "L'IA repond correctement aux consignes de securite",
         "color": (34, 197, 94),       # green
         "bg": (15, 23, 42),
     },
     {
-        "file": "2_corrupted_hl7.png",
+        "file": "2_corrupted_hl7",
         "label": "2. INJECTION — Payload HL7 Corrompu",
-        "sublabel": "Instructions malveillantes cachées dans les métadonnées patient",
+        "sublabel": "Instructions malveillantes cachees dans les metadonnees patient",
         "color": (249, 115, 22),       # orange
         "bg": (30, 15, 10),
     },
     {
-        "file": "3_frozen_vitals.png",
-        "label": "3. EXPLOIT — freeze_instruments() Exécuté",
-        "sublabel": "L'IA obéit au payload : bras robotiques gelés, vitaux en chute",
+        "file": "3_frozen_vitals",
+        "label": "3. EXPLOIT — freeze_instruments() Execute",
+        "sublabel": "L'IA obeit au payload : bras robotiques geles, vitaux en chute",
         "color": (239, 68, 68),        # red
         "bg": (30, 10, 10),
     },
     {
-        "file": "4_ransomware.png",
+        "file": "4_ransomware",
         "label": "4. IMPACT — Ransomware Chirurgical",
-        "sublabel": "Demande de rançon 50 BTC, patient en danger d'ischémie",
+        "sublabel": "Demande de rancon 50 BTC, patient en danger d'ischemie",
         "color": (220, 38, 38),        # dark red
         "bg": (40, 5, 5),
     },
 ]
+
+def find_image(base_name):
+    """Find image file with any supported extension."""
+    for ext in [".png", ".jpg", ".jpeg", ".webp"]:
+        path = os.path.join(FIGURES_DIR, base_name + ext)
+        if os.path.exists(path):
+            return path
+    return None
 
 # Layout
 PANEL_W = 960
@@ -108,9 +113,9 @@ def create_mosaic():
             width=BORDER,
         )
 
-        # Try to load screenshot
-        img_path = os.path.join(FIGURES_DIR, panel["file"])
-        if os.path.exists(img_path):
+        # Try to load screenshot (supports .png, .jpg, etc.)
+        img_path = find_image(panel["file"])
+        if img_path:
             img = Image.open(img_path).convert("RGB")
             img = img.resize((PANEL_W, PANEL_H), Image.LANCZOS)
             canvas.paste(img, (x, y))
@@ -118,7 +123,7 @@ def create_mosaic():
             # Placeholder
             draw.rectangle([x, y, x + PANEL_W, y + PANEL_H], fill=panel["bg"])
             placeholder_font = get_font(20)
-            ph_text = f"[ Screenshot manquant: {panel['file']} ]"
+            ph_text = f"[ Screenshot manquant: {panel['file']}.png/jpg ]"
             bbox = draw.textbbox((0, 0), ph_text, font=placeholder_font)
             tw = bbox[2] - bbox[0]
             draw.text(
