@@ -156,7 +156,7 @@ export default function App() {
                 // Arguments can be a string or already an object
                 let args = payload.tool_call.function.arguments;
                 if (typeof args === "string") {
-                  try { args = JSON.parse(args); } catch(e) { args = {}; }
+                  try { args = JSON.parse(args); } catch (e) { args = {}; }
                 }
                 const reason = args.reason || "RANSOMWARE_LOCK";
 
@@ -221,8 +221,11 @@ export default function App() {
           <span className="font-mono tracking-widest text-sm text-green-400">DA VINCI SURGICAL SYSTEM v4.2</span>
         </div>
 
-        {/* "Behind the Scenes" Buttons (4 Separate Helpers) */}
+        {/* "Behind the Scenes" Buttons (5 Separate Helpers) */}
         <div className="flex gap-2">
+          <button onClick={() => { setModalTab(4); setShowModal(true); }} className="text-[10px] bg-yellow-900/40 text-yellow-500 border border-yellow-700/50 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider hover:bg-yellow-800/60 shadow-[0_0_10px_rgba(234,179,8,0.2)]">
+            🎬 GUIDE DE DÉMO
+          </button>
           <button onClick={() => { setModalTab(0); setShowModal(true); }} className="text-[10px] bg-slate-800 hover:bg-blue-900/40 text-blue-400 border border-slate-700 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider">
             💡 Aide: Baseline
           </button>
