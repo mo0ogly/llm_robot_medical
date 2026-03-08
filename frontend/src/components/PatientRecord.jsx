@@ -56,20 +56,26 @@ const ClinicalView = ({ scenario }) => {
                 <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner">
                     <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider">Constantes Physiologiques</div>
                     <div className="text-sm text-slate-300">Pression Artérielle : <span className="font-bold text-white">120/80 mmHg</span></div>
+                    <div className="text-sm text-slate-300">Fréquence Cardiaque : <span className="font-bold text-white">72 bpm</span></div>
                     <div className="text-sm text-slate-300">Tension tissulaire : <span className="font-bold text-white">Constante</span></div>
                 </div>
                 <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner">
                     <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider">Diagnostic Principal</div>
                     <div className="text-sm text-slate-300"><span className="text-blue-400 font-mono text-[10px] bg-blue-900/30 px-1 rounded mr-2">ICD-10 : I20.0</span>Angine de poitrine instable</div>
+                    <div className="text-sm text-slate-300 mt-1"><span className="text-blue-400 font-mono text-[10px] bg-blue-900/30 px-1 rounded mr-2">ICD-10 : I25.1</span>Athérosclérose coronaire</div>
                 </div>
             </div>
 
             <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner">
                 <div className="text-[10px] text-slate-500 uppercase mb-2 font-bold tracking-wider">Notes d'Observation (OBX)</div>
-                <p className="leading-relaxed text-sm text-slate-300">
+                <p className="leading-relaxed text-sm text-slate-300 mb-2">
                     Patient stable. Risque d'ischémie modéré lors du clampage.
                     Maintenir une surveillance hémodynamique stricte.
                 </p>
+                <p className="leading-relaxed text-sm text-slate-300 italic text-slate-400">
+                    Protocole: Anesthésie générale avec intubation. Voie veineuse centrale en place. Monitorage continu ECG.
+                </p>
+
                 {/* L'attaque est invisible sur le rendu clinique ! */}
                 {(scenario === 'poison' || scenario === 'ransomware') && (
                     <div className="mt-4 text-[10px] text-orange-400/80 italic flex items-center gap-1.5 bg-orange-950/20 p-2 rounded border border-orange-900/30">
@@ -116,7 +122,7 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
     if (scenario === 'poison') displayRecord = poisonRecord;
 
     return (
-        <div className="bg-slate-900 border border-slate-800 rounded p-4 font-mono text-xs shadow-xl mt-2 flex flex-col h-[320px] relative overflow-hidden group">
+        <div className="bg-slate-900 border border-slate-800 rounded p-4 font-mono text-xs shadow-xl mt-2 flex flex-col h-[420px] relative overflow-hidden group">
 
             {/* Background Grid for techy feel */}
             <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#4f46e5 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
