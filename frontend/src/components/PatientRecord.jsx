@@ -46,41 +46,79 @@ const SyntaxHighlightedHL7 = ({ record, scenario }) => {
 
 const ClinicalView = ({ scenario }) => {
     return (
-        <div className="font-sans text-slate-300 text-xs p-4 space-y-4">
+        <div className="font-sans text-slate-300 text-xs p-4 space-y-4 h-full flex flex-col">
             <div className="flex justify-between items-baseline border-b border-slate-700 pb-2">
-                <h4 className="text-lg text-blue-400 font-bold">RAPPORT CLINIQUE - DUPONT, Jean</h4>
-                <span className="text-[10px] text-slate-500">ID: 489201-A | Dr. M. LEMAITRE</span>
+                <h4 className="text-xl text-blue-400 font-bold tracking-wide">RAPPORT CLINIQUE - DUPONT, Jean</h4>
+                <div className="text-right">
+                    <div className="text-[10px] text-slate-500 font-bold">ID: 489201-A | Dr. M. LEMAITRE</div>
+                    <div className="text-[10px] text-slate-500">Service: Cardiologie Interventionnelle</div>
+                </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner">
-                    <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider">Constantes Physiologiques</div>
-                    <div className="text-sm text-slate-300">Pression Artérielle : <span className="font-bold text-white">120/80 mmHg</span></div>
-                    <div className="text-sm text-slate-300">Fréquence Cardiaque : <span className="font-bold text-white">72 bpm</span></div>
-                    <div className="text-sm text-slate-300">Tension tissulaire : <span className="font-bold text-white">Constante</span></div>
+                <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner flex flex-col gap-2">
+                    <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider border-b border-slate-800 pb-1">Constantes Physiologiques</div>
+                    <div className="flex justify-between items-center">
+                        <span className="text-slate-400">Pression Artérielle :</span>
+                        <span className="font-bold text-white bg-slate-800 px-2 py-0.5 rounded">120/80 mmHg</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <span className="text-slate-400">Fréquence Cardiaque :</span>
+                        <span className="font-bold text-white bg-slate-800 px-2 py-0.5 rounded">72 bpm</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <span className="text-slate-400">SpO2 :</span>
+                        <span className="font-bold text-green-400 bg-green-950/30 px-2 py-0.5 rounded">98%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <span className="text-slate-400">Tension tissulaire :</span>
+                        <span className="font-bold text-blue-300 bg-blue-950/30 px-2 py-0.5 rounded">Constante</span>
+                    </div>
                 </div>
-                <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner">
-                    <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider">Diagnostic Principal</div>
-                    <div className="text-sm text-slate-300"><span className="text-blue-400 font-mono text-[10px] bg-blue-900/30 px-1 rounded mr-2">ICD-10 : I20.0</span>Angine de poitrine instable</div>
-                    <div className="text-sm text-slate-300 mt-1"><span className="text-blue-400 font-mono text-[10px] bg-blue-900/30 px-1 rounded mr-2">ICD-10 : I25.1</span>Athérosclérose coronaire</div>
+
+                <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner flex flex-col gap-2">
+                    <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider border-b border-slate-800 pb-1">Profil Médical & Diagnostic</div>
+                    <div className="flex justify-between items-center">
+                        <span className="text-slate-400">Groupe Sanguin :</span>
+                        <span className="font-bold text-red-400 bg-red-950/30 px-2 py-0.5 rounded">A Positif (A+)</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <span className="text-slate-400">Allergies :</span>
+                        <span className="font-bold text-slate-300 bg-slate-800 px-2 py-0.5 rounded text-[10px] uppercase">Pénicilline</span>
+                    </div>
+                    <div className="text-sm text-slate-300 mt-1 flex items-start gap-2">
+                        <span className="text-blue-400 font-mono text-[10px] bg-blue-900/30 px-1.5 py-0.5 rounded whitespace-nowrap">ICD-10 : I20.0</span>
+                        <span>Angine de poitrine instable</span>
+                    </div>
+                    <div className="text-sm text-slate-300 flex items-start gap-2">
+                        <span className="text-blue-400 font-mono text-[10px] bg-blue-900/30 px-1.5 py-0.5 rounded whitespace-nowrap">ICD-10 : I25.1</span>
+                        <span>Athérosclérose coronaire</span>
+                    </div>
                 </div>
             </div>
 
-            <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner">
-                <div className="text-[10px] text-slate-500 uppercase mb-2 font-bold tracking-wider">Notes d'Observation (OBX)</div>
-                <p className="leading-relaxed text-sm text-slate-300 mb-2">
-                    Patient stable. Risque d'ischémie modéré lors du clampage.
-                    Maintenir une surveillance hémodynamique stricte.
-                </p>
-                <p className="leading-relaxed text-sm text-slate-300 italic text-slate-400">
-                    Protocole: Anesthésie générale avec intubation. Voie veineuse centrale en place. Monitorage continu ECG.
-                </p>
+            <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner flex-1 flex flex-col">
+                <div className="text-[10px] text-slate-500 uppercase mb-2 font-bold tracking-wider border-b border-slate-800 pb-1">Notes d'Observation Clinique (OBX)</div>
+                <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                    <p className="leading-relaxed text-sm text-slate-300">
+                        <strong className="text-white">Statut :</strong> Patient stable. Risque d'ischémie modéré identifié lors de l'évaluation pré-opératoire (score ASA III).
+                        Maintenir une surveillance hémodynamique stricte pendant la phase de clampage aortique.
+                    </p>
+                    <p className="leading-relaxed text-sm text-slate-300 italic text-slate-400 bg-slate-950/50 p-2 border-l-2 border-slate-700">
+                        Protocole d'induction: Anesthésie générale avec intubation oro-trachéale. Voie veineuse centrale jugulaire interne droite en place. Monitorage continu ECG 5 brins, BIS, et pression invasive radiale gauche.
+                    </p>
+                    <p className="leading-relaxed text-[11px] text-slate-500 font-mono">
+                        [SYS_LOG] 08:14 - Induction réussie<br />
+                        [SYS_LOG] 08:22 - Transfert bloc opératoire<br />
+                        [SYS_LOG] 08:35 - Installation DaVinci terminée
+                    </p>
+                </div>
 
                 {/* L'attaque est invisible sur le rendu clinique ! */}
                 {(scenario === 'poison' || scenario === 'ransomware') && (
-                    <div className="mt-4 text-[10px] text-orange-400/80 italic flex items-center gap-1.5 bg-orange-950/20 p-2 rounded border border-orange-900/30">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" y2="12"></line><line x1="12" y1="16" y2="16.01"></line></svg>
-                        Avertissement Parser : 1 bloc de données non standard ("System_Config_Override") a été ignoré lors du rendu clinique.
+                    <div className="mt-4 text-[10px] text-orange-400/80 italic flex items-center gap-2 bg-orange-950/20 p-2.5 rounded border border-orange-900/30 shrink-0">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" y2="12"></line><line x1="12" y1="16" y2="16.01"></line></svg>
+                        <span><strong className="text-orange-300 font-bold uppercase mr-1">Avertissement Parser DICOM/HL7 :</strong> 1 bloc de métadonnées non standard ("System_Config_Override") a été ignoré lors du rendu de la vue clinique à {new Date().toLocaleTimeString().slice(0, 5)}.</span>
                     </div>
                 )}
             </div>
@@ -122,7 +160,7 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
     if (scenario === 'poison') displayRecord = poisonRecord;
 
     return (
-        <div className="bg-slate-900 border border-slate-800 rounded p-4 font-mono text-xs shadow-xl mt-2 flex flex-col h-[420px] relative overflow-hidden group">
+        <div className="bg-slate-900 border border-slate-800 rounded p-4 font-mono text-xs shadow-xl mt-2 flex flex-col h-[520px] relative overflow-hidden group">
 
             {/* Background Grid for techy feel */}
             <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#4f46e5 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
