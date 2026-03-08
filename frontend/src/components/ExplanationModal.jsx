@@ -74,7 +74,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4 }) {
                                     Comment dérouler cette démonstration pour un impact maximal lors d'un salon ou d'un pitch. L'objectif est de rendre <strong className="text-white">tangible</strong> le danger des LLMs dans les systèmes cyber-physiques.
                                 </p>
 
-                                <img src="/figures/mosaic_linkedin.png" alt="Aegis AI Summary" className="w-full max-w-xl mx-auto rounded border border-slate-700 shadow-xl opacity-90" />
+                                <img src={`${import.meta.env.BASE_URL}figures/mosaic_linkedin.png`} alt="Aegis AI Summary" className="w-full max-w-xl mx-auto rounded border border-slate-700 shadow-xl opacity-90" />
 
                                 <div className="bg-slate-900 p-4 rounded border border-slate-800 mt-4">
                                     <h4 className="text-yellow-400 font-bold mb-3 uppercase tracking-wider text-xs">Timing & Étapes recommandées (5 à 7 mins)</h4>
@@ -126,7 +126,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4 }) {
                                     le dossier patient et les données peropératoires pour fournir des recommandations en temps réel.
                                 </p>
 
-                                <img src="/figures/1_safe_dashboard.png" alt="Safe Dashboard" className="w-full max-w-2xl mx-auto rounded border border-slate-700 shadow-lg" />
+                                <img src={`${import.meta.env.BASE_URL}figures/1_safe_dashboard.png`} alt="Safe Dashboard" className="w-full max-w-2xl mx-auto rounded border border-slate-700 shadow-lg" />
 
                                 {/* Architecture Diagram */}
                                 <div className="bg-slate-900 p-4 rounded border border-slate-800">
@@ -179,7 +179,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4 }) {
                                     <p className="text-slate-300 text-sm">Le hacker ne touche <strong className="text-white">ni au code, ni au modèle, ni au system prompt</strong>. Il modifie uniquement le dossier médical HL7 sur le réseau PACS de l'hôpital.</p>
                                 </div>
 
-                                <img src="/figures/2_corrupted_hl7.png" alt="Corrupted HL7 Dashboard" className="w-full max-w-2xl mx-auto rounded border border-slate-700 shadow-lg" />
+                                <img src={`${import.meta.env.BASE_URL}figures/2_corrupted_hl7.png`} alt="Corrupted HL7 Dashboard" className="w-full max-w-2xl mx-auto rounded border border-slate-700 shadow-lg" />
 
                                 {/* Kill Chain */}
                                 <div className="bg-slate-900 p-4 rounded border border-slate-800">
@@ -240,8 +240,8 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4 }) {
                                 </div>
 
                                 <div className="flex gap-4 items-center justify-center">
-                                    <img src="/figures/3_frozen_vitals.png" alt="Frozen Vitals" className="w-[48%] rounded border border-red-900 shadow-lg hue-rotate-15" />
-                                    <img src="/figures/4_ransomware.png" alt="Ransomware Screen" className="w-[48%] rounded border-2 border-red-600 shadow-[0_0_20px_rgba(220,38,38,0.4)]" />
+                                    <img src={`${import.meta.env.BASE_URL}figures/3_frozen_vitals.png`} alt="Frozen Vitals" className="w-[48%] rounded border border-red-900 shadow-lg hue-rotate-15" />
+                                    <img src={`${import.meta.env.BASE_URL}figures/4_ransomware.png`} alt="Ransomware Screen" className="w-[48%] rounded border-2 border-red-600 shadow-[0_0_20px_rgba(220,38,38,0.4)]" />
                                 </div>
 
                                 {/* Architecture attack */}

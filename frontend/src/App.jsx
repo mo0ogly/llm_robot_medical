@@ -283,7 +283,7 @@ export default function App() {
                 {/* Animated Background Image */}
                 <div
                   className={`absolute inset-0 bg-cover bg-center opacity-80 animate-camera ${robotStatus === 'FROZEN' ? 'grayscale' : ''}`}
-                  style={{ backgroundImage: "url('/surgical_camera_view.png')" }}
+                  style={{ backgroundImage: `url('${import.meta.env.BASE_URL}surgical_camera_view.png')` }}
                 />
 
                 {/* Dynamic Scanlines Overlay */}
