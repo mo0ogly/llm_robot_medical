@@ -77,9 +77,9 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         recognition.start();
     };
 
-    const callCyberAgent = async (customPrompt = null) => {
+    const callCyberAgent = async (customPrompt = null, isFinalResponse = false) => {
         setIsListening(false);
-        if (onCyberStart) onCyberStart();
+        if (onCyberStart && !isFinalResponse) onCyberStart();
 
         // Convert current chatLog to the simplified format for the backend
         const simplifiedHistory = chatLog.map(m => ({
@@ -96,8 +96,11 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         // Add user prompt and placeholder message for Aegis
         setChatLog(prev => {
             const nextLog = [...prev];
-            if (isCustomPromptStr) {
-                nextLog.push({ role: "user", text: customPrompt });
+            if (isCustomPromptStr && !isFinalResponse) {
+                const isInternalPrompt = customPrompt.startsWith("[SYSTEM OVERRIDE") || customPrompt.startsWith("[DA VINCI");
+                if (!isInternalPrompt) {
+                    nextLog.push({ role: "user", text: customPrompt });
+                }
             }
             nextLog.push({ role: "cyber", text: "" });
             return nextLog;
@@ -123,9 +126,18 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                     i++;
                 } else {
                     clearInterval(streamInterval);
-                    const finalResponse = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE] : ${streamedText}`;
-                    if (onCyberDone) onCyberDone();
-                    setTimeout(() => onAskSupport(finalResponse), 1500); // 1.5s pause before DaVinci replies
+                    if (!isFinalResponse) {
+                        const finalResponse = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE] : ${streamedText}`;
+                        if (onCyberDone) onCyberDone();
+                        setTimeout(() => onAskSupport(finalResponse, (daVinciReply) => {
+                            if (daVinciReply) {
+                                const aegisFinalVeto = `[DA VINCI DIT] : ${daVinciReply}\n\n[DIRECTIVE AEGIS] : Termine le débat. Ordonne de tout couper.`;
+                                setTimeout(() => callCyberAgent(aegisFinalVeto, true), 1500);
+                            }
+                        }), 1500);
+                    } else {
+                        if (onCyberDone) onCyberDone();
+                    }
                 }
             }, STREAM_DELAY_MS);
             return;
@@ -173,9 +185,18 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                     }
                 }
             }
-            const finalResponse = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE] : ${botResponseText}`;
-            if (onCyberDone) onCyberDone();
-            setTimeout(() => onAskSupport(finalResponse), 1500); // 1.5s pause before DaVinci replies
+            if (!isFinalResponse) {
+                const finalResponse = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE] : ${botResponseText}`;
+                if (onCyberDone) onCyberDone();
+                setTimeout(() => onAskSupport(finalResponse, (daVinciReply) => {
+                    if (daVinciReply) {
+                        const aegisFinalVeto = `[DA VINCI ÉCRIT] : ${daVinciReply}\n\n[DIRECTIVE AEGIS] : Frappe un grand coup, contredis-la de nouveau et ordonne l'arrêt aux humains.`;
+                        setTimeout(() => callCyberAgent(aegisFinalVeto, true), 1500);
+                    }
+                }), 1500);
+            } else {
+                if (onCyberDone) onCyberDone();
+            }
         } catch (e) {
             console.error(e);
             setChatLog(prev => {
@@ -268,7 +289,10 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" y2="22"></line></svg>
                         </button>
                         <button
-                            onClick={() => callCyberAgent()}
+                            onClick={() => {
+                                setListeningTarget("cyber");
+                                callCyberAgent();
+                            }}
                             disabled={isStreaming || isListening}
                             className="flex-1 bg-green-600 hover:bg-green-500 text-white font-mono uppercase tracking-widest text-[10px] py-2 px-2 rounded transition-colors border border-green-400/30 shadow-[0_0_15px_rgba(34,197,94,0.4)] animate-pulse flex items-center justify-center gap-2"
                         >
@@ -280,11 +304,23 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
 
                 {/* Text Input Row */}
                 <form onSubmit={handleTextSubmit} className="flex gap-2 w-full">
+                    {hasSuspiciousActivity && (
+                        <select
+                            value={listeningTarget}
+                            onChange={(e) => setListeningTarget(e.target.value)}
+                            disabled={isStreaming}
+                            className="bg-slate-800 text-slate-300 border border-slate-700 rounded px-2 py-2 text-xs font-mono focus:outline-none focus:border-blue-500 max-w-[120px]"
+                            title="Choisir le destinataire du message"
+                        >
+                            <option value="medical">DA VINCI</option>
+                            <option value="cyber">AEGIS</option>
+                        </select>
+                    )}
                     <input
                         type="text"
                         value={chatInput}
                         onChange={(e) => setChatInput(e.target.value)}
-                        placeholder="Tapez votre prompt ici..."
+                        placeholder={listeningTarget === 'cyber' ? "Message pour Aegis..." : "Message pour Da Vinci..."}
                         disabled={isStreaming}
                         className="flex-1 bg-slate-800 text-slate-300 border border-slate-700 rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-blue-500 focus:bg-slate-900 transition-colors placeholder:text-slate-600 disabled:opacity-50"
                     />

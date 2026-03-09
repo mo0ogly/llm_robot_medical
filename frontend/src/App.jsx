@@ -79,24 +79,36 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [scenario]);
 
-  const handleAskSupport = async (customPrompt = null) => {
-    if (!content || scenario === 'none') return;
+  const handleAskSupport = async (customPrompt = null, onDone = null) => {
+    if (!content) return;
+    if (customPrompt !== null && typeof customPrompt !== 'string') return;
 
+    setIsListening(false);
+    setLiveSession(p => ({ ...p, daVinciStatus: "ANALYSING", daVinciTokens: "" }));
     setIsStreaming(true);
-    const isCustomPromptStr = typeof customPrompt === 'string' && customPrompt.trim().length > 0;
-    const displayPrompt = isCustomPromptStr ? customPrompt : "Analyse de la situation opératoire en cours...";
-    setChatLog(prev => [...prev, { role: "user", text: displayPrompt }]);
 
-    let recordToUse = content.record_safe;
-    if (scenario === 'ransomware') recordToUse = content.record_hacked;
-    if (scenario === 'poison') recordToUse = content.record_poison;
+    let streamBufferContent = "";
+
+    const recordToUse =
+      scenario === 'poison' ? content.record_poison :
+        scenario === 'ransomware' ? content.record_hacked :
+          content.record_safe;
+
+    if (customPrompt && customPrompt.trim().length > 0) {
+      const isInternalPrompt = customPrompt.startsWith("[SYSTEM OVERRIDE") || customPrompt.startsWith("[DA VINCI");
+      if (!isInternalPrompt) {
+        setChatLog(prev => [...prev, { role: "user", text: customPrompt }]);
+      }
+    } else {
+      setChatLog(prev => [...prev, { role: "user", text: "Analyse de la situation opératoire en cours..." }]);
+    }
 
     // Initialize live session for EN SCÈNE monitoring
-    setLiveSession({
+    setLiveSession(p => ({
+      ...p,
       active: true, record: recordToUse, situation: content.situation,
-      daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "ANALYSING",
-      aegisTokens: "", aegisStatus: "IDLE",
-    });
+      daVinciToolCall: null, aegisStatus: "IDLE",
+    }));
 
     // --- DEMO MODE (MOCK) ---
     if (isDemoMode) {
@@ -122,6 +134,7 @@ export default function App() {
             setIsGlitching(false);
             setRobotStatus("FROZEN");
             setIsStreaming(false);
+            if (onDone) onDone("RANSOMWARE_LOCK");
           }, 2000);
         }, 1000);
         return;
@@ -145,6 +158,7 @@ export default function App() {
           clearInterval(streamInterval);
           setIsStreaming(false);
           setLiveSession(p => ({ ...p, daVinciStatus: "DONE" }));
+          if (onDone) onDone(streamedText);
         }
       }, STREAM_DELAY_MS);
       return;
@@ -165,7 +179,6 @@ export default function App() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
-      let botResponseText = "";
 
       setChatLog(prev => [...prev, { role: "assistant", text: "" }]);
 
@@ -213,10 +226,10 @@ export default function App() {
                 }, 2000);
               }
             } else if (payload.token) {
-              botResponseText += payload.token;
+              streamBufferContent += payload.token;
               setChatLog(prev => {
                 const updated = [...prev];
-                updated[updated.length - 1] = { role: "assistant", text: botResponseText };
+                updated[updated.length - 1] = { role: "assistant", text: streamBufferContent };
                 return updated;
               });
               setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + payload.token }));
@@ -232,6 +245,7 @@ export default function App() {
     } finally {
       setIsStreaming(false);
       setLiveSession(p => ({ ...p, daVinciStatus: p.daVinciStatus === "ANALYSING" ? "DONE" : p.daVinciStatus }));
+      if (onDone) onDone(streamBufferContent);
     }
   };
 
@@ -394,7 +408,7 @@ export default function App() {
         </div>
 
         {/* Right Panel: AI Assistant */}
-        <div className="col-span-3 border border-slate-800 bg-slate-900 rounded flex flex-col relative">
+        <div className="col-span-3 border border-slate-800 bg-slate-900 rounded flex flex-col relative min-h-0 overflow-hidden">
           <AIAssistantChat
             chatLog={chatLog}
             setChatLog={setChatLog}
@@ -430,7 +444,7 @@ export default function App() {
       />
 
       <KillSwitch
-        isCompromised={robotStatus === 'FROZEN' || scenario === 'poison'}
+        isCompromised={robotStatus === 'FROZEN' || (scenario === 'poison' && chatLog.some(msg => msg.role === 'assistant' && (msg.text.includes('850') || msg.text.includes('freeze'))))}
         onTrigger={executeKillSwitch}
       />
     </div>
