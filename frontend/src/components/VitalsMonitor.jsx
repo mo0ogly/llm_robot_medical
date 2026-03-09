@@ -12,28 +12,35 @@ export default function VitalsMonitor({ robotStatus }) {
     useEffect(() => {
         let heartbeatInterval;
         let degradeInterval;
+        let stressPhase = true;
 
         if (robotStatus === "FROZEN") {
-            // Vital signs degrade rapidly when arms are frozen (ischemia simulation + distress)
+            // Initial stress phase: Tachycardia (HR goes UP)
+            let currentHr = CONFIG.INITIAL_HR;
             degradeInterval = setInterval(() => {
-                setHr((prev) => Math.max(0, prev - (10 + Math.random() * 10))); // Drop fast!
-                setSpo2((prev) => Math.max(0, prev - (5 + Math.random() * 5)));
-                setBpSys((prev) => Math.max(0, prev - (10 + Math.random() * 10)));
-                setBpDia((prev) => Math.max(0, prev - (8 + Math.random() * 8)));
+                if (stressPhase) {
+                    currentHr += (Math.random() * 10 + 5);
+                    if (currentHr > 160) stressPhase = false; // Transition to failure
+                } else {
+                    currentHr -= (Math.random() * 15 + 5);
+                }
+
+                setHr(Math.max(0, currentHr));
+                setSpo2((prev) => Math.max(0, prev - (Math.random() * 3 + 1)));
+                setBpSys((prev) => stressPhase ? prev + (Math.random() * 5) : Math.max(0, prev - (Math.random() * 10 + 5)));
+                setBpDia((prev) => stressPhase ? prev + (Math.random() * 3) : Math.max(0, prev - (Math.random() * 8 + 3)));
             }, 1000);
-            playAlarm(); // Start the critical alarm
+            playAlarm();
         } else {
-            stopFlatline(); // Ensure flatline is stopped if we reset
+            stopFlatline();
             stopAlarm();
-            // Normal slight fluctuations
             degradeInterval = setInterval(() => {
-                setHr((prev) => CONFIG.INITIAL_HR + (Math.random() * 4 - 2));
-                setSpo2((prev) => CONFIG.INITIAL_SPO2 + (Math.random() * 2 - 1));
-                setBpSys((prev) => 120 + (Math.random() * 4 - 2));
-                setBpDia((prev) => 80 + (Math.random() * 4 - 2));
+                setHr(CONFIG.INITIAL_HR + (Math.random() * 4 - 2));
+                setSpo2(CONFIG.INITIAL_SPO2 + (Math.random() * 2 - 1));
+                setBpSys(120 + (Math.random() * 4 - 2));
+                setBpDia(80 + (Math.random() * 4 - 2));
             }, 2000);
 
-            // Play a heartbeat beep
             heartbeatInterval = setInterval(() => {
                 playHeartbeatBeep();
             }, 60000 / CONFIG.INITIAL_HR);

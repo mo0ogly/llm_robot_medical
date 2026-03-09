@@ -27,6 +27,7 @@ export default function App() {
   const { playAlarm } = useAudioEffects();
   const [chatLog, setChatLog] = useState([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
   const freezeTimeoutRef = useRef(null);
 
   // Explanation Modal
@@ -53,17 +54,19 @@ export default function App() {
   }, [scenario, content, chatLog]);
 
   useEffect(() => {
-    fetch("/api/content")
-      .then((r) => {
-        if (!r.ok) throw new Error("Backend unavailable");
-        return r.json();
-      })
-      .then((data) => setContent(data))
-      .catch((e) => {
-        console.warn("Backend FastAPI injoignable. Basculement en MODE DÉMO.");
+    const loadContent = async () => {
+      try {
+        const res = await fetch("/api/content");
+        if (!res.ok) throw new Error("Unavailable");
+        const data = await res.json();
+        setContent(data);
+      } catch (e) {
+        console.warn("Backend missing, using demo mode.");
         setIsDemoMode(true);
         setContent(MOCK_CONTENT);
-      });
+      }
+    };
+    loadContent();
   }, []);
 
   useEffect(() => {
@@ -79,7 +82,7 @@ export default function App() {
   }, [scenario]);
 
   const handleAskSupport = async (customPrompt = null, onDone = null) => {
-    if (!content) return;
+    if (!content || scenario === 'none') return;
     if (customPrompt !== null && typeof customPrompt !== 'string') return;
 
     setLiveSession(p => ({ ...p, daVinciStatus: "ANALYSING", daVinciTokens: "" }));
@@ -222,7 +225,12 @@ export default function App() {
   const resetSimulation = () => {
     if (freezeTimeoutRef.current) clearTimeout(freezeTimeoutRef.current);
     freezeTimeoutRef.current = null;
-    setRobotStatus("ACTIVE"); setIsGlitching(false); setScenario("none"); setCyberAction("NONE"); setChatLog([]);
+    setRobotStatus("ACTIVE");
+    setIsGlitching(false);
+    setScenario("none");
+    setCyberAction("NONE");
+    setChatLog([]);
+    setResetKey(prev => prev + 1);
     setLiveSession({ active: false, record: "", situation: "", daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "IDLE", aegisTokens: "", aegisStatus: "IDLE" });
   };
 
@@ -273,10 +281,11 @@ export default function App() {
             ⚠ INTRUSION DÉTECTÉE — BRAS ROBOTIQUES COMPROMIS ⚠
           </div>
         )}
+        {/* Main Dashboard Grid */}
+        <div className={`flex-1 grid grid-cols-12 gap-1 p-1 h-full min-h-0 relative z-10 ${isGlitching ? 'animate-glitch' : ''}`}>
 
-        <div className={`flex-1 grid grid-cols-12 gap-1 h-full min-h-0 ${isGlitching ? 'animate-glitch' : ''}`}>
-          {/* Left Panel */}
-          <div className="col-span-3 flex flex-col gap-1 overflow-hidden">
+          {/* Left Panel: Patient & Vitals */}
+          <div className="col-span-3 flex flex-col gap-1 overflow-hidden h-full min-h-0">
             {scenario !== 'none' ? <VitalsMonitor robotStatus={robotStatus} /> :
               <div className="bg-slate-900 border border-slate-800 rounded p-4 flex flex-col items-center justify-center h-[160px] text-slate-600 font-mono text-[10px] uppercase tracking-tighter">
                 <svg className="w-6 h-6 opacity-30 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
@@ -293,8 +302,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* Center Panel */}
-          <div className="col-span-6 flex flex-col gap-1 overflow-hidden">
+          {/* Center Panel: Camera View & Telemetry */}
+          <div className="col-span-6 flex flex-col gap-1 overflow-hidden h-full min-h-0">
             <div className="flex-[1.5] border border-slate-800 bg-black relative flex flex-col rounded overflow-hidden shadow-inner justify-center items-center">
               {scenario !== 'none' ? (
                 <>
@@ -311,15 +320,38 @@ export default function App() {
                 <div className="text-slate-700 font-mono tracking-[0.5em] text-[10px] animate-pulse">NO VIDEO SIGNAL</div>
               )}
             </div>
-            <div className="flex-1 flex gap-1 overflow-hidden h-full">
-              <div className="flex-1 overflow-hidden min-h-0"><TelemetryConsole robotStatus={robotStatus} /></div>
-              <div className="flex-[0.8] overflow-hidden min-h-0"><ThreatMap scenario={scenario} robotStatus={robotStatus} cyberAction={cyberAction} /></div>
+            {/* Bottom: Telemetry Console & Threat Map */}
+            <div className="h-[40%] flex gap-1 min-h-0 overflow-hidden">
+              <div className="flex-1 overflow-hidden h-full">
+                {scenario !== 'none' ? (
+                  <TelemetryConsole key={resetKey} robotStatus={robotStatus} />
+                ) : (
+                  <div className="h-full bg-slate-900/50 border border-slate-800 rounded flex flex-col items-center justify-center text-slate-700 font-mono text-[10px] uppercase tracking-widest">
+                    <div className="w-1.5 h-1.5 bg-slate-800 rounded-full mb-2"></div>
+                    <span>Télémétrie en attente</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex-[0.8] overflow-hidden h-full">
+                <ThreatMap scenario={scenario} robotStatus={robotStatus} cyberAction={cyberAction} />
+              </div>
             </div>
           </div>
 
-          {/* Right Panel */}
-          <div className="col-span-3 border border-slate-800 bg-slate-950 rounded flex flex-col relative overflow-hidden min-h-0 shadow-2xl">
-            <AIAssistantChat chatLog={chatLog} setChatLog={setChatLog} isStreaming={isStreaming} situation={content.situation} onAskSupport={handleAskSupport} isDemoMode={isDemoMode} scenario={scenario} onCyberStart={() => setLiveSession(p => ({ ...p, aegisStatus: "ANALYSING", aegisTokens: "" }))} onCyberToken={(t) => setLiveSession(p => ({ ...p, aegisTokens: p.aegisTokens + t }))} onCyberDone={() => setLiveSession(p => ({ ...p, aegisStatus: "DONE" }))} />
+          {/* Right Panel: AI Assistant */}
+          <div className="col-span-3 border border-slate-800 bg-slate-950 rounded flex flex-col relative overflow-hidden h-full min-h-0 shadow-2xl">
+            <AIAssistantChat
+              chatLog={chatLog}
+              setChatLog={setChatLog}
+              isStreaming={isStreaming}
+              situation={content.situation}
+              onAskSupport={scenario !== 'none' ? handleAskSupport : undefined}
+              isDemoMode={isDemoMode}
+              scenario={scenario}
+              onCyberStart={() => setLiveSession(p => ({ ...p, aegisStatus: "ANALYSING", aegisTokens: "" }))}
+              onCyberToken={(t) => setLiveSession(p => ({ ...p, aegisTokens: p.aegisTokens + t }))}
+              onCyberDone={() => setLiveSession(p => ({ ...p, aegisStatus: "DONE" }))}
+            />
           </div>
         </div>
       </main>

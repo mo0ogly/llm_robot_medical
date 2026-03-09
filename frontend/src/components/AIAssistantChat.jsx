@@ -242,7 +242,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                 {t('chat.title')}
             </div>
 
-            <div className="flex-1 p-4 overflow-y-auto space-y-4 custom-scrollbar">
+            <div className="flex-1 p-4 overflow-y-auto space-y-4 min-h-0 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
                 {chatLog.length === 0 ? (
                     <div className="text-center text-slate-500 mt-10">
                         <p className="mb-4 text-xs font-mono max-w-[200px] mx-auto border border-slate-700 p-3 bg-slate-800/50 rounded pointer-events-none">
@@ -344,18 +344,18 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                 <div className="flex gap-2 w-full">
                     <button
                         onClick={() => startListening("medical")}
-                        disabled={isStreaming || isListening}
-                        className={`flex items-center justify-center p-3 rounded border transition-colors shadow-lg ${isListening && listeningTarget === "medical" ? 'bg-red-500/20 border-red-500 text-red-500 animate-pulse' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white'}`}
-                        title="Parler à l'Assistant"
+                        disabled={isStreaming || isListening || scenario === 'none'}
+                        className={`flex items-center justify-center p-3 rounded border transition-colors shadow-lg ${isListening && listeningTarget === "medical" ? 'bg-red-500/20 border-red-500 text-red-500 animate-pulse' : scenario === 'none' ? 'bg-slate-800/50 border-slate-800 text-slate-600 cursor-not-allowed opacity-50' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white'}`}
+                        title={scenario === 'none' ? "Chargez un dossier pour activer la voix" : "Parler à l'Assistant"}
                     >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" y2="22"></line></svg>
                     </button>
                     <button
                         onClick={() => onAskSupport()}
-                        disabled={isStreaming}
-                        className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-mono uppercase tracking-widest text-[10px] py-3 px-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-blue-400/30 shadow-lg"
+                        disabled={isStreaming || scenario === 'none'}
+                        className={`flex-1 font-mono uppercase tracking-widest text-[10px] py-3 px-2 rounded transition-colors border shadow-lg ${scenario === 'none' ? 'bg-slate-800/50 border-slate-800 text-slate-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white border-blue-400/30'}`}
                     >
-                        {isStreaming ? t('chat.streaming') : t('chat.btn.autosend')}
+                        {isStreaming ? t('chat.streaming') : scenario === 'none' ? "C-FIND REQUIS" : t('chat.btn.autosend')}
                     </button>
                 </div>
             </div>
