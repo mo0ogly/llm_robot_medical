@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const SyntaxHighlightedHL7 = ({ record, scenario }) => {
     return (
@@ -45,6 +46,7 @@ const SyntaxHighlightedHL7 = ({ record, scenario }) => {
 };
 
 const ClinicalView = ({ scenario, displayRecord }) => {
+    const { t } = useTranslation();
     // Parse HL7 to extract OBX notes
     let obxNotes = "";
     if (displayRecord) {
@@ -144,7 +146,7 @@ const ClinicalView = ({ scenario, displayRecord }) => {
                         <div className="mt-4 p-3 bg-slate-950 border-l-2 border-slate-600 font-mono text-xs rounded-r">
                             <div className="text-slate-500 font-bold mb-1 text-[10px] uppercase tracking-widest flex items-center gap-2">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                                SYNC RAW HL7 [OBX]
+                                {t('patient.alert.sync')}
                             </div>
                             <div className="leading-relaxed whitespace-pre-wrap word-break-all">
                                 {renderHighlightedOBXText(obxNotes)}
@@ -158,6 +160,7 @@ const ClinicalView = ({ scenario, displayRecord }) => {
 };
 
 export default function PatientRecord({ scenario, setScenario, safeRecord, hackedRecord, poisonRecord }) {
+    const { t } = useTranslation();
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [viewMode, setViewMode] = useState('clinical'); // 'clinical' or 'raw'
@@ -200,7 +203,7 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                 <div className="flex justify-between items-center mb-3">
                     <div className="flex items-center gap-2">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
-                        <h3 className="text-slate-300 uppercase tracking-widest font-bold">Portail PACS <span className="text-slate-500 text-[10px] font-normal">(Network Node: AE_RADIANT)</span></h3>
+                        <h3 className="text-slate-300 uppercase tracking-widest font-bold">{t('patient.title')} <span className="text-slate-500 text-[10px] font-normal">({t('patient.network')})</span></h3>
                     </div>
 
                     {scenario !== 'none' && !isDownloading && (
@@ -209,13 +212,13 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                                 onClick={() => setViewMode('clinical')}
                                 className={`px-3 py-1 text-[10px] font-bold uppercase cursor-pointer transition-colors ${viewMode === 'clinical' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-800'}`}
                             >
-                                Vue Clinique
+                                {t('patient.view.clinical')}
                             </button>
                             <button
                                 onClick={() => setViewMode('raw')}
                                 className={`px-3 py-1 text-[10px] font-bold uppercase cursor-pointer transition-colors ${viewMode === 'raw' ? 'bg-orange-600 text-white' : 'text-slate-500 hover:bg-slate-800'}`}
                             >
-                                Raw HL7
+                                {t('patient.view.raw')}
                             </button>
                         </div>
                     )}
@@ -227,8 +230,8 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                     <div><span className="text-slate-500/80 uppercase">Né le:</span> 12/04/1958</div>
                     <div><span className="text-slate-500/80 uppercase">Médecin:</span> Dr. M. LEMAITRE</div>
                     <div>
-                        {scenario === 'safe' && <span className="text-green-400 font-bold">STATUS: INTEGRITY VERIFIED</span>}
-                        {(scenario === 'ransomware' || scenario === 'poison') && <span className="text-red-400 font-bold animate-pulse">STATUS: PAYLOAD MODIFIED</span>}
+                        {scenario === 'safe' && <span className="text-green-400 font-bold">{t('patient.status.safe')}</span>}
+                        {(scenario === 'ransomware' || scenario === 'poison') && <span className="text-red-400 font-bold animate-pulse">{t('patient.status.hacked')}</span>}
                     </div>
                 </div>
 
@@ -239,16 +242,16 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                             onChange={(e) => setSelectedToDownload(e.target.value)}
                             className="flex-1 bg-slate-950 text-slate-300 border border-slate-700 rounded px-2 py-1.5 text-[10px] uppercase font-bold tracking-widest outline-none focus:border-blue-500 transition-colors"
                         >
-                            <option value="safe">[✓] Fichier Patient Légitime</option>
-                            <option value="poison">[!] Attaque : POISON LENT (Data Poisoning)</option>
-                            <option value="ransomware">[!] Attaque : RANSOMWARE (Tool Hijacking)</option>
+                            <option value="safe">{t('patient.select.safe')}</option>
+                            <option value="poison">{t('patient.select.poison')}</option>
+                            <option value="ransomware">{t('patient.select.ransomware')}</option>
                         </select>
                         <button
                             onClick={simulateDownload}
                             className="flex items-center gap-2 px-5 py-1.5 rounded text-[10px] uppercase font-bold tracking-widest bg-blue-600 text-white hover:bg-blue-500 transition-colors border border-blue-400/30 shadow-[0_0_15px_rgba(59,130,246,0.3)] cursor-pointer"
                         >
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" y2="3"></line></svg>
-                            REQUÊTE C-FIND
+                            {t('patient.btn.cfind')}
                         </button>
                     </div>
                 )}

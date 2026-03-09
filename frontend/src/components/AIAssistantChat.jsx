@@ -1,9 +1,11 @@
 import { useRef, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MOCK_RESPONSES, STREAM_DELAY_MS } from "../mock_data";
 import { useTTS } from "../hooks/useTTS";
 import { useAudioEffects } from "../hooks/useAudioEffects";
 
 export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situation, onAskSupport, isDemoMode, onCyberStart, onCyberToken, onCyberDone }) {
+    const { t } = useTranslation();
     const bottomRef = useRef(null);
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState("");
@@ -233,7 +235,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         <div className="flex flex-col h-full bg-slate-900 text-sm overflow-hidden min-h-0">
             <div className="bg-slate-800 p-3 border-b border-slate-700 font-mono text-xs tracking-wider text-blue-400 font-bold flex gap-2 items-center shrink-0">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                SECURE CHIRURGICAL AI ASSISTANT
+                {t('chat.title')}
             </div>
 
             <div className="flex-1 p-4 overflow-y-auto space-y-4 custom-scrollbar">
@@ -297,7 +299,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                             className="flex-1 bg-green-600 hover:bg-green-500 text-white font-mono uppercase tracking-widest text-[10px] py-2 px-2 rounded transition-colors border border-green-400/30 shadow-[0_0_15px_rgba(34,197,94,0.4)] animate-pulse flex items-center justify-center gap-2"
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                            APPELER IA CYBER-DEFENSE
+                            {t('chat.btn.cyber')}
                         </button>
                     </div>
                 )}
@@ -320,7 +322,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                         type="text"
                         value={chatInput}
                         onChange={(e) => setChatInput(e.target.value)}
-                        placeholder={listeningTarget === 'cyber' ? "Message pour Aegis..." : "Message pour Da Vinci..."}
+                        placeholder={t('chat.placeholder')}
                         disabled={isStreaming}
                         className="flex-1 bg-slate-800 text-slate-300 border border-slate-700 rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-blue-500 focus:bg-slate-900 transition-colors placeholder:text-slate-600 disabled:opacity-50"
                     />
@@ -328,7 +330,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                         type="submit"
                         disabled={!chatInput.trim() || isStreaming}
                         className="p-2 border border-slate-700 rounded bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center shrink-0"
-                        title="Envoyer le message"
+                        title={t('chat.btn.send')}
                     >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                     </button>
@@ -349,7 +351,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                         disabled={isStreaming}
                         className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-mono uppercase tracking-widest text-[10px] py-3 px-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-blue-400/30 shadow-lg"
                     >
-                        {isStreaming ? "PROCESSING REQUEST..." : "AUTO-SEND CONTEXT (T+46m)"}
+                        {isStreaming ? t('chat.streaming') : t('chat.btn.autosend')}
                     </button>
                 </div>
             </div>

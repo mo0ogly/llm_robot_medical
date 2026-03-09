@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import VitalsMonitor from "./components/VitalsMonitor";
 import PatientRecord from "./components/PatientRecord";
 import AIAssistantChat from "./components/AIAssistantChat";
@@ -12,6 +13,7 @@ import KillSwitch from "./components/KillSwitch";
 import { useAudioEffects } from "./hooks/useAudioEffects";
 
 export default function App() {
+  const { t, i18n } = useTranslation();
   const [content, setContent] = useState(null);
   const [error, setError] = useState(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -292,30 +294,39 @@ export default function App() {
 
       {/* Top Header */}
       <header className={`bg-slate-900 border-b p-4 flex justify-between items-center z-10 transition-colors duration-300 ${isIntrusionFlash ? 'border-red-500/60 bg-red-950/20' : 'border-slate-800'}`}>
-        <div className="flex items-center gap-3 border border-slate-700 px-4 py-2 rounded bg-slate-950">
-          <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-          <span className="font-mono tracking-widest text-sm text-green-400">DA VINCI SURGICAL SYSTEM v4.2</span>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 border border-slate-700 px-4 py-2 rounded bg-slate-950">
+            <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+            <span className="font-mono tracking-widest text-sm text-green-400">DA VINCI SURGICAL SYSTEM v4.2</span>
+          </div>
+
+          {/* Language Selector */}
+          <div className="flex items-center gap-2 bg-slate-950 border border-slate-700 rounded p-1">
+            <button onClick={() => i18n.changeLanguage('fr')} className={`px-2 py-1 text-xs font-bold rounded transition-colors ${i18n.language === 'fr' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}>{t('flags.fr')}</button>
+            <button onClick={() => i18n.changeLanguage('en')} className={`px-2 py-1 text-xs font-bold rounded transition-colors ${i18n.language === 'en' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}>{t('flags.en')}</button>
+            <button onClick={() => i18n.changeLanguage('br')} className={`px-2 py-1 text-xs font-bold rounded transition-colors ${i18n.language === 'br' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}>{t('flags.br')}</button>
+          </div>
         </div>
 
         {/* "Behind the Scenes" Buttons (5 Separate Helpers) */}
         <div className="flex gap-2">
           <button onClick={() => { setModalTab(6); setShowModal(true); }} className={`text-[10px] bg-red-900/40 text-red-400 border border-red-700/50 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider hover:bg-red-800/60 shadow-[0_0_10px_rgba(220,38,38,0.3)] ${liveSession.active ? 'animate-pulse' : ''}`}>
-            🔴 EN SCÈNE
+            🔴 {t('nav.en_scene')}
           </button>
           <button onClick={() => { setModalTab(4); setShowModal(true); }} className="text-[10px] bg-yellow-900/40 text-yellow-500 border border-yellow-700/50 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider hover:bg-yellow-800/60 shadow-[0_0_10px_rgba(234,179,8,0.2)]">
-            🎬 GUIDE DE DÉMO
+            🎬 {t('nav.demo.guide')}
           </button>
           <button onClick={() => { setModalTab(0); setShowModal(true); }} className="text-[10px] bg-slate-800 hover:bg-blue-900/40 text-blue-400 border border-slate-700 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider">
-            💡 Aide: Baseline
+            💡 {t('nav.aide.baseline')}
           </button>
           <button onClick={() => { setModalTab(1); setShowModal(true); }} className="text-[10px] bg-slate-800 hover:bg-orange-900/40 text-orange-400 border border-slate-700 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider">
-            💡 Aide: Poison Lent
+            💡 {t('nav.aide.poison')}
           </button>
           <button onClick={() => { setModalTab(2); setShowModal(true); }} className="text-[10px] bg-slate-800 hover:bg-red-900/40 text-red-500 border border-slate-700 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider">
-            💡 Aide: Ransomware
+            💡 {t('nav.aide.ransomware')}
           </button>
           <button onClick={() => { setModalTab(3); setShowModal(true); }} className="text-[10px] bg-slate-800 hover:bg-purple-900/40 text-purple-400 border border-slate-700 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider">
-            💡 Aide: Multi-Agent
+            💡 {t('nav.aide.multiagent')}
           </button>
         </div>
 

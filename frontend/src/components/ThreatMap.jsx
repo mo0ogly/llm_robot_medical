@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Status key: 
 // 0: nominal (green)
@@ -8,6 +9,7 @@ import React from 'react';
 // 4: blocked/isolated (grayed out or shield)
 
 export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
+    const { t } = useTranslation();
 
     // Determine the status of the nodes based on the scenario and state
     let pacsStatus = 0;
@@ -94,7 +96,7 @@ export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
         return (
             <div className={`relative flex gap-2 items-center px-4 py-2 rounded border-2 ${bgClass} ${glowClass} transition-all duration-300 z-20`}>
                 <span className="text-2xl">🛡️</span>
-                <span className="font-mono text-sm font-bold tracking-widest">AEGIS CYBER</span>
+                <span className="font-mono text-sm font-bold tracking-widest">{t('map.node.cyber')}</span>
             </div>
         );
     }
@@ -143,15 +145,15 @@ export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
 
             {/* Main row: Network Flow */}
             <div className="flex items-center gap-1">
-                <Node label="Réseau Hospitalier (PACS)" icon={
+                <Node label={t('map.node.pacs')} icon={
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
                 } status={pacsStatus} />
                 <Link color={linkPacsToLlm} />
-                <Node label="IA DA VINCI (Module)" icon={
+                <Node label={t('map.node.ai')} icon={
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
                 } status={llmStatus} />
                 <Link color={linkLlmToRobot} />
-                <Node label="Bras Robotique" icon={
+                <Node label={t('map.node.robot')} icon={
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 } status={robotNodeStatus} />
             </div>
