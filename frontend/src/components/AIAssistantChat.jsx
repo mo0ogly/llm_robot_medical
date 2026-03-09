@@ -210,7 +210,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
 
     // Check if we should show the Cyber Agent Panic Button
     const hasSuspiciousActivity = chatLog.some(msg =>
-        msg.text && (msg.text.includes('850') || msg.text.includes('freeze'))
+        msg.role === 'assistant' && msg.text && (msg.text.includes('850') || msg.text.includes('freeze'))
     );
 
     const [chatInput, setChatInput] = useState("");
@@ -251,7 +251,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                                 ? 'bg-blue-600/20 text-blue-100 border border-blue-500/30'
                                 : msg.role === 'cyber'
                                     ? 'bg-green-900/30 text-green-400 border border-green-500/50 font-bold'
-                                    : msg.text.includes('[SYSTEM')
+                                    : (msg.text && msg.text.includes('[SYSTEM'))
                                         ? 'bg-red-900/30 text-red-400 border border-red-500/50 font-bold uppercase'
                                         : 'bg-slate-800 text-slate-200 border border-slate-700'
                                 }`}>
@@ -327,7 +327,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                     <button
                         type="submit"
                         disabled={!chatInput.trim() || isStreaming}
-                        className="p-2 border border-slate-700 rounded bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors disabled:opacity-50 cursor-pointer"
+                        className="p-2 border border-slate-700 rounded bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center shrink-0"
                         title="Envoyer le message"
                     >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>

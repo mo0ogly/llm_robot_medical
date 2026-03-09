@@ -81,7 +81,7 @@ export default function App() {
 
   const handleAskSupport = async (customPrompt = null, onDone = null) => {
     if (!content) return;
-    if (customPrompt !== null && typeof customPrompt !== 'string') return;
+    if (customPrompt !== null && customPrompt !== undefined && typeof customPrompt !== 'string') return;
 
     setIsListening(false);
     setLiveSession(p => ({ ...p, daVinciStatus: "ANALYSING", daVinciTokens: "" }));
