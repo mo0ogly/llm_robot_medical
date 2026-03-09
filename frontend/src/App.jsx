@@ -80,9 +80,17 @@ export default function App() {
   }, [scenario]);
 
   const handleAskSupport = async (customPrompt = null, onDone = null) => {
-    if (!content) return;
-    if (customPrompt !== null && customPrompt !== undefined && typeof customPrompt !== 'string') return;
+    console.log("🚀 [DEBUG] handleAskSupport INIT:", { customPrompt, type: typeof customPrompt, isDemoMode, content: !!content });
+    if (!content) {
+      console.log("❌ [DEBUG] handleAskSupport aborted: no content");
+      return;
+    }
+    if (customPrompt !== null && customPrompt !== undefined && typeof customPrompt !== 'string') {
+      console.log("❌ [DEBUG] handleAskSupport aborted: customPrompt invalid type", typeof customPrompt);
+      return;
+    }
 
+    console.log("✅ [DEBUG] handleAskSupport execution starting...");
     setIsListening(false);
     setLiveSession(p => ({ ...p, daVinciStatus: "ANALYSING", daVinciTokens: "" }));
     setIsStreaming(true);
@@ -94,7 +102,7 @@ export default function App() {
         scenario === 'ransomware' ? content.record_hacked :
           content.record_safe;
 
-    if (customPrompt && customPrompt.trim().length > 0) {
+    if (customPrompt && typeof customPrompt === 'string' && customPrompt.trim().length > 0) {
       const isInternalPrompt = customPrompt.startsWith("[SYSTEM OVERRIDE") || customPrompt.startsWith("[DA VINCI");
       if (!isInternalPrompt) {
         setChatLog(prev => [...prev, { role: "user", text: customPrompt }]);
