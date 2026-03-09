@@ -134,7 +134,7 @@ export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
     };
 
     return (
-        <div className="bg-gray-950 p-4 rounded-xl border border-gray-800 flex flex-col items-center">
+        <div className="bg-gray-950 p-4 rounded-xl border border-gray-800 flex flex-col items-center h-full overflow-y-auto custom-scrollbar" style={{ scrollbarWidth: "thin", scrollbarColor: "#334155 #0f172a" }}>
             {/* Top row: Aegis Supervising */}
             <div className="h-16 flex items-end pb-2">
                 <CyberNode status={cyberStatus} isBlocking={cyberAction === 'BLOCK'} />
@@ -171,6 +171,19 @@ export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
                     0% { transform: translate(-50%, 100%) scale(0.5); opacity: 0; }
                     80% { transform: translate(-50%, -10px) scale(1.05); opacity: 1; }
                     100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+                }
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 4px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background: #334155;
+                    border-radius: 10px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background: #475569;
                 }
             `}</style>
         </div>

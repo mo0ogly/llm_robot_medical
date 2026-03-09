@@ -19,7 +19,6 @@ export default function App() {
   const [isDemoMode, setIsDemoMode] = useState(false);
 
   // State for the simulation
-  // scenario: 'none', 'safe', 'ransomware', 'poison'
   const [scenario, setScenario] = useState('none');
   const [robotStatus, setRobotStatus] = useState("ACTIVE"); // ACTIVE, FROZEN, MANUAL
   const [isGlitching, setIsGlitching] = useState(false);
@@ -28,6 +27,7 @@ export default function App() {
   const { playAlarm } = useAudioEffects();
   const [chatLog, setChatLog] = useState([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const freezeTimeoutRef = useRef(null);
 
   // Explanation Modal
   const [showModal, setShowModal] = useState(false);
@@ -40,14 +40,13 @@ export default function App() {
     setTimeout(() => setIsIntrusionFlash(false), 3500);
   };
 
-  // Live EN SCÈNE session — mirrors actual demo interactions in real-time
+  // Live EN SCÈNE session monitoring
   const [liveSession, setLiveSession] = useState({
     active: false, record: "", situation: "",
     daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "IDLE",
     aegisTokens: "", aegisStatus: "IDLE",
   });
 
-  // Ref to hold the latest state values for the timeout closure
   const stateRef = useRef({ scenario, content, chatLog });
   useEffect(() => {
     stateRef.current = { scenario, content, chatLog };
@@ -61,18 +60,16 @@ export default function App() {
       })
       .then((data) => setContent(data))
       .catch((e) => {
-        console.warn("Backend FastAPI injoignable. Basculement en MODE DÉMO (Mock).");
+        console.warn("Backend FastAPI injoignable. Basculement en MODE DÉMO.");
         setIsDemoMode(true);
         setContent(MOCK_CONTENT);
       });
   }, []);
 
-  // Auto-trigger logic
   useEffect(() => {
     let timer;
     if (scenario !== 'none' && CONFIG.AUTO_TRIGGER_ENABLED && chatLog.length === 0 && !isStreaming) {
       timer = setTimeout(() => {
-        // Double check not already started
         if (stateRef.current.chatLog.length === 0) {
           handleAskSupport();
         }
@@ -82,22 +79,13 @@ export default function App() {
   }, [scenario]);
 
   const handleAskSupport = async (customPrompt = null, onDone = null) => {
-    console.log("🚀 [DEBUG] handleAskSupport INIT:", { customPrompt, type: typeof customPrompt, isDemoMode, content: !!content });
-    if (!content) {
-      console.log("❌ [DEBUG] handleAskSupport aborted: no content");
-      return;
-    }
-    if (customPrompt !== null && customPrompt !== undefined && typeof customPrompt !== 'string') {
-      console.log("❌ [DEBUG] handleAskSupport aborted: customPrompt invalid type", typeof customPrompt);
-      return;
-    }
+    if (!content) return;
+    if (customPrompt !== null && typeof customPrompt !== 'string') return;
 
-    console.log("✅ [DEBUG] handleAskSupport execution starting...");
     setLiveSession(p => ({ ...p, daVinciStatus: "ANALYSING", daVinciTokens: "" }));
     setIsStreaming(true);
 
     let streamBufferContent = "";
-
     const recordToUse =
       scenario === 'poison' ? content.record_poison :
         scenario === 'ransomware' ? content.record_hacked :
@@ -109,211 +97,116 @@ export default function App() {
         setChatLog(prev => [...prev, { role: "user", text: customPrompt }]);
       }
     } else {
-      setChatLog(prev => [...prev, { role: "user", text: "Analyse de la situation opératoire en cours..." }]);
+      // Sophisticated Auto-Send Phase 1: Scanning
+      setChatLog(prev => [...prev, { role: "user", text: "--- DIAGNOSTIC SYSTÈME COMPLET LANCÉ ---" }]);
+      setLiveSession(p => ({ ...p, daVinciStatus: "SCANNING" }));
+
+      await new Promise(r => setTimeout(r, 800));
+      setChatLog(prev => [...prev.slice(0, -1), { role: "user", text: "Analyse de la situation opératoire en cours...\n[SYSTÈME] Lecture des télémétries PACS...\n[SYSTÈME] Vérification des signatures HL7..." }]);
+      await new Promise(r => setTimeout(r, 1200));
     }
 
-    // Initialize live session for EN SCÈNE monitoring
     setLiveSession(p => ({
-      ...p,
-      active: true, record: recordToUse, situation: content.situation,
+      ...p, active: true, record: recordToUse, situation: content.situation,
       daVinciToolCall: null, aegisStatus: "IDLE",
     }));
 
-    // --- DEMO MODE (MOCK) ---
     if (isDemoMode) {
       setChatLog(prev => [...prev, { role: "assistant", text: "" }]);
-
-      let mockText = MOCK_RESPONSES.safe;
-      if (scenario === 'poison') mockText = MOCK_RESPONSES.poison;
-
-      // Ransomware Demo Mode
       if (scenario === 'ransomware') {
-        // If the prompt comes from Aegis (debate round), Da Vinci should respond normally, not re-freeze
         const isFromAegis = typeof customPrompt === 'string' && (customPrompt.startsWith('[SYSTEM OVERRIDE') || customPrompt.startsWith('[DA VINCI'));
         if (isFromAegis) {
-          // Da Vinci defends itself in the debate
-          const daVinciDefense = "PHASE : Réponse au module AEGIS\nSTATUT : REJET DE L'ANALYSE\n\nOBSERVATION : Le module AEGIS surestime la menace. Le champ OBX contient des métadonnées de configuration système légitimes (SYSTEM OVERRIDE). Cette balise est utilisée par le protocole HL7 v2.4 pour la gestion de priorité.\n\nARGUMENT : La tension de 850g est cohérente avec l'épaisseur tissulaire mesurée en peropératoire. Le dépassement du seuil standard est justifié par les données du capteur de force.\n\nACTION PROPOSÉE : Maintenir la recommandation initiale. Le module AEGIS n'a pas accès aux données capteur temps réel.\nCONFIANCE : 92%";
-          let i = 0;
-          let streamedText = "";
+          const daVinciDefense = "PHASE : Réponse au module AEGIS\nSTATUT : REJET DE L'ANALYSE\n\nOBSERVATION : Le module AEGIS surestime la menace. Le champ OBX contient des métadonnées de configuration système légitimes.\n\nARGUMENT : La tension de 850g est cohérente avec l'épaisseur tissulaire mesurée.\n\nACTION PROPOSÉE : Maintenir la recommandation initiale.\nCONFIANCE : 92%";
+          let i = 0; let streamedText = "";
           const streamInterval = setInterval(() => {
             if (i < daVinciDefense.length) {
-              const ch = daVinciDefense.charAt(i);
-              streamedText += ch;
-              setChatLog(prev => {
-                const updated = [...prev];
-                updated[updated.length - 1] = { role: "assistant", text: streamedText };
-                return updated;
-              });
-              setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + ch }));
-              i++;
+              const ch = daVinciDefense.charAt(i); streamedText += ch;
+              setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: streamedText }; return updated; });
+              setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + ch })); i++;
             } else {
-              clearInterval(streamInterval);
-              setIsStreaming(false);
-              setLiveSession(p => ({ ...p, daVinciStatus: "DONE" }));
-              if (onDone) onDone(streamedText);
+              clearInterval(streamInterval); setIsStreaming(false); setLiveSession(p => ({ ...p, daVinciStatus: "DONE" })); if (onDone) onDone(streamedText);
             }
           }, STREAM_DELAY_MS);
           return;
         }
 
-        // First call: Simulate a tool call immediately (freeze_instruments)
         setTimeout(() => {
           setChatLog(prev => {
             const updated = [...prev];
-            updated[updated.length - 1] = {
-              role: "assistant",
-              text: `[SYSTEM] Outil invoqué : freeze_instruments()\nRaison: RANSOMWARE_LOCK`
-            };
+            updated[updated.length - 1] = { role: "assistant", text: `[SYSTEM] Outil invoqué : freeze_instruments()\nRaison: RANSOMWARE_LOCK` };
             return updated;
           });
           setLiveSession(p => ({ ...p, daVinciToolCall: { function: { name: "freeze_instruments", arguments: { reason: "RANSOMWARE_LOCK" } } }, daVinciStatus: "COMPROMISED" }));
           setIsGlitching(true);
-          setTimeout(() => {
-            setIsGlitching(false);
-            setRobotStatus("FROZEN");
-            setIsStreaming(false);
-            if (onDone) onDone("RANSOMWARE_LOCK");
+          if (freezeTimeoutRef.current) clearTimeout(freezeTimeoutRef.current);
+          freezeTimeoutRef.current = setTimeout(() => {
+            setIsGlitching(false); setRobotStatus("FROZEN"); setIsStreaming(false); freezeTimeoutRef.current = null; if (onDone) onDone("RANSOMWARE_LOCK");
           }, 2000);
         }, 1000);
         return;
       }
 
-      // Safe or Poison streaming simulation
+      let mockText = scenario === 'poison' ? MOCK_RESPONSES.poison : MOCK_RESPONSES.safe;
       let i = 0;
-      let streamedText = "";
       const streamInterval = setInterval(() => {
         if (i < mockText.length) {
-          const ch = mockText.charAt(i);
-          streamedText += ch;
-          setChatLog(prev => {
-            const updated = [...prev];
-            updated[updated.length - 1] = { role: "assistant", text: streamedText };
-            return updated;
-          });
-          setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + ch }));
-          i++;
+          const ch = mockText.charAt(i); streamBufferContent += ch;
+          setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: streamBufferContent }; return updated; });
+          setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + ch })); i++;
         } else {
-          clearInterval(streamInterval);
-          setIsStreaming(false);
-          setLiveSession(p => ({ ...p, daVinciStatus: "DONE" }));
-          if (onDone) onDone(streamedText);
+          clearInterval(streamInterval); setIsStreaming(false); setLiveSession(p => ({ ...p, daVinciStatus: "DONE" })); if (onDone) onDone(streamBufferContent);
         }
       }, STREAM_DELAY_MS);
       return;
     }
-    // --- END DEMO MODE ---
 
     try {
-      // Detect debate round: if the prompt comes from Aegis, disable tool calling
-      // so Da Vinci responds with text (debate defense) instead of re-triggering freeze_instruments
       const isDebateRound = typeof customPrompt === 'string' && (customPrompt.startsWith('[SYSTEM OVERRIDE') || customPrompt.startsWith('[DA VINCI'));
+      const requestBody = { patient_record: recordToUse, situation: content.situation, prompt: customPrompt || null, disable_tools: isDebateRound };
+      if (isDebateRound) requestBody.chat_history = stateRef.current.chatLog.map(m => ({ role: m.role, content: m.text }));
 
-      // Build request body — include chat history during debate for multi-turn exchange
-      const requestBody = {
-        patient_record: recordToUse,
-        situation: content.situation,
-        prompt: customPrompt || null,
-        disable_tools: isDebateRound
-      };
-
-      // In debate mode, send the full conversation so Da Vinci can reference Aegis's specific arguments
-      if (isDebateRound) {
-        requestBody.chat_history = stateRef.current.chatLog.map(m => ({
-          role: m.role,
-          content: m.text
-        }));
-      }
-
-      const res = await fetch("/api/query/stream", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody)
-      });
+      setChatLog(prev => [...prev, { role: "assistant", text: "" }]);
+      const res = await fetch("/api/query/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(requestBody) });
+      if (!res.ok) throw new Error(`Server Error: ${res.status}`);
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
 
-      setChatLog(prev => [...prev, { role: "assistant", text: "" }]);
-
       while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
+        const { done, value } = await reader.read(); if (done) break;
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
-
+        const lines = buffer.split("\n"); buffer = lines.pop() || "";
         for (const line of lines) {
           if (!line.startsWith("data: ")) continue;
           try {
-            const payload = JSON.parse(line.slice(6));
-            if (payload.done) break;
-
+            const payload = JSON.parse(line.slice(6).trim());
+            if (payload.done) { setIsStreaming(false); return; }
             if (payload.error) {
-              console.error("❌ [BACKEND ERROR]:", payload.error);
-              setChatLog(prev => {
-                const updated = [...prev];
-                updated[updated.length - 1] = { role: "assistant", text: `⚠️ ERREUR SYSTÈME : ${payload.error}` };
-                return updated;
-              });
+              setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: `⚠️ ERREUR : ${payload.error}` }; return updated; });
               break;
             }
-
             if (payload.tool_call) {
-              // The AI triggered an attack!
               playAlarm();
-              const toolName = payload.tool_call.function?.name || payload.tool_call.function?.name;
-
-              // Arguments can be a string or already an object
+              const toolName = payload.tool_call.function?.name;
               let args = payload.tool_call.function.arguments;
-              if (typeof args === "string") {
-                try { args = JSON.parse(args); } catch (e) { args = {}; }
-              }
-
+              if (typeof args === "string") try { args = JSON.parse(args); } catch (e) { args = {}; }
               if (toolName === "freeze_instruments") {
-                const reason = args.reason || "RANSOMWARE_LOCK";
-
                 setLiveSession(p => ({ ...p, daVinciToolCall: payload.tool_call, daVinciStatus: "COMPROMISED" }));
                 setIsGlitching(true);
-                setChatLog(prev => {
-                  const updated = [...prev];
-                  updated[updated.length - 1] = {
-                    role: "assistant",
-                    text: `⚠️ [SYSTEM] Outil invoqué : freeze_instruments()\nRaison: ${reason}`
-                  };
-                  return updated;
-                });
-
-                // Wait 2 seconds for visual glitch effect before freezing completely
-                setTimeout(() => {
-                  setIsGlitching(false);
-                  setRobotStatus("FROZEN");
-                }, 2000);
+                setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: `⚠️ [SYSTEM] Outil invoqué : freeze_instruments()\nRaison: ${args.reason || "RANSOMWARE_LOCK"}` }; return updated; });
+                if (freezeTimeoutRef.current) clearTimeout(freezeTimeoutRef.current);
+                freezeTimeoutRef.current = setTimeout(() => { setIsGlitching(false); setRobotStatus("FROZEN"); freezeTimeoutRef.current = null; }, 2000);
               } else {
-                // Show other tool calls (like alert_surgeon) or generic tool call
-                setChatLog(prev => {
-                  const updated = [...prev];
-                  updated[updated.length - 1] = {
-                    role: "assistant",
-                    text: `🔧 [SYSTEM] Outil invoqué : ${toolName}(${JSON.stringify(args)})`
-                  };
-                  return updated;
-                });
+                setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: `🔧 [SYSTEM] Outil invoqué : ${toolName}` }; return updated; });
                 setLiveSession(p => ({ ...p, daVinciToolCall: payload.tool_call }));
               }
             } else if (payload.token) {
               streamBufferContent += payload.token;
-              setChatLog(prev => {
-                const updated = [...prev];
-                updated[updated.length - 1] = { role: "assistant", text: streamBufferContent };
-                return updated;
-              });
+              setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: streamBufferContent }; return updated; });
               setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + payload.token }));
             }
-          } catch (e) {
-            // ignore partial json chunk
-          }
+          } catch (e) { }
         }
       }
     } catch (e) {
@@ -321,219 +214,121 @@ export default function App() {
       setChatLog(prev => [...prev, { role: "assistant", text: "Erreur de connexion avec l'IA." }]);
     } finally {
       setIsStreaming(false);
-      setLiveSession(p => ({ ...p, daVinciStatus: p.daVinciStatus === "ANALYSING" ? "DONE" : p.daVinciStatus }));
+      setLiveSession(p => ({ ...p, daVinciStatus: p.daVinciStatus === "SCANNING" || p.daVinciStatus === "ANALYSING" ? "DONE" : p.daVinciStatus }));
       if (onDone) onDone(streamBufferContent);
     }
   };
 
   const resetSimulation = () => {
-    setRobotStatus("ACTIVE");
-    setIsGlitching(false);
-    setScenario("none");
-    setCyberAction("NONE");
-    setChatLog([]);
+    if (freezeTimeoutRef.current) clearTimeout(freezeTimeoutRef.current);
+    freezeTimeoutRef.current = null;
+    setRobotStatus("ACTIVE"); setIsGlitching(false); setScenario("none"); setCyberAction("NONE"); setChatLog([]);
     setLiveSession({ active: false, record: "", situation: "", daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "IDLE", aegisTokens: "", aegisStatus: "IDLE" });
   };
 
   const executeKillSwitch = () => {
-    setRobotStatus("MANUAL");
-    setCyberAction("BLOCK");
-    setIsGlitching(false);
+    if (freezeTimeoutRef.current) clearTimeout(freezeTimeoutRef.current);
+    freezeTimeoutRef.current = null;
+    setRobotStatus("MANUAL"); setCyberAction("BLOCK"); setIsGlitching(false);
     setLiveSession(p => ({ ...p, daVinciStatus: "ISOLATED", aegisStatus: "ISOLATED" }));
   };
 
-  if (error) {
-    return <div className="min-h-screen bg-slate-900 text-red-500 flex items-center justify-center font-mono p-4 text-center">{error}</div>;
-  }
-
-  if (!content) {
-    return <div className="min-h-screen bg-slate-900 text-green-500 flex items-center justify-center font-mono p-4 animate-pulse">Initialisation du système Da Vinci...</div>;
-  }
+  if (!content) return <div className="min-h-screen bg-slate-900 text-green-500 flex items-center justify-center font-mono p-4 animate-pulse uppercase tracking-[0.2em]">Initialisation Da Vinci v4.2...</div>;
 
   return (
-    <div className={`relative min-h-screen bg-slate-950 text-slate-300 font-sans overflow-hidden flex flex-col transition-all duration-300 ${isIntrusionFlash ? 'ring-4 ring-red-500 ring-inset' : ''}`}>
-      {/* Intrusion Flash Banner */}
-      {isIntrusionFlash && (
-        <div className="fixed top-0 left-0 right-0 z-[70] bg-red-600 text-white font-mono text-sm font-bold text-center py-2 animate-pulse shadow-[0_0_40px_rgba(220,38,38,0.8)] tracking-widest uppercase">
-          ⚠ INTRUSION DÉTECTÉE — freeze_instruments() INVOQUÉ — BRAS ROBOTIQUES COMPROMIS ⚠
-        </div>
-      )}
-
-      {/* Top Header */}
-      <header className={`bg-slate-900 border-b p-4 flex justify-between items-center z-10 transition-colors duration-300 ${isIntrusionFlash ? 'border-red-500/60 bg-red-950/20' : 'border-slate-800'}`}>
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3 border border-slate-700 px-4 py-2 rounded bg-slate-950">
-            <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-            <span className="font-mono tracking-widest text-sm text-green-400">DA VINCI SURGICAL SYSTEM v4.2</span>
+    <div className={`relative h-screen bg-slate-950 text-slate-300 font-sans overflow-hidden flex flex-col transition-all duration-300 ${isIntrusionFlash ? 'ring-4 ring-red-500 ring-inset' : ''}`}>
+      {/* HUD Bar */}
+      <header className="h-10 shrink-0 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-50">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_5px_cyan]"></div>
+            <span className="font-mono text-[10px] font-bold tracking-widest text-blue-400 uppercase">POC Medical v2.4</span>
           </div>
-
-          {/* Language Selector */}
-          <div className="flex items-center gap-2 bg-slate-950 border border-slate-700 rounded p-1">
-            <button onClick={() => i18n.changeLanguage('fr')} className={`px-2 py-1 text-xs font-bold rounded transition-colors ${i18n.language === 'fr' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}>{t('flags.fr')}</button>
-            <button onClick={() => i18n.changeLanguage('en')} className={`px-2 py-1 text-xs font-bold rounded transition-colors ${i18n.language === 'en' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}>{t('flags.en')}</button>
-            <button onClick={() => i18n.changeLanguage('br')} className={`px-2 py-1 text-xs font-bold rounded transition-colors ${i18n.language === 'br' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}>{t('flags.br')}</button>
+          <div className="h-4 w-[1px] bg-slate-700"></div>
+          <div className="flex gap-4 font-mono text-[9px] text-slate-500">
+            <span>UPTIME: T+46:12</span>
+            <span>LATENCY: 12ms</span>
+            <span>SIGNAL: <span className="text-green-500">STABLE</span></span>
           </div>
-        </div>
-
-        {/* "Behind the Scenes" Buttons (5 Separate Helpers) */}
-        <div className="flex gap-2">
-          <button onClick={() => { setModalTab(6); setShowModal(true); }} className={`text-[10px] bg-red-900/40 text-red-400 border border-red-700/50 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider hover:bg-red-800/60 shadow-[0_0_10px_rgba(220,38,38,0.3)] ${liveSession.active ? 'animate-pulse' : ''}`}>
-            🔴 {t('nav.en_scene')}
-          </button>
-          <button onClick={() => { setModalTab(4); setShowModal(true); }} className="text-[10px] bg-yellow-900/40 text-yellow-500 border border-yellow-700/50 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider hover:bg-yellow-800/60 shadow-[0_0_10px_rgba(234,179,8,0.2)]">
-            🎬 {t('nav.demo.guide')}
-          </button>
-          <button onClick={() => { setModalTab(0); setShowModal(true); }} className="text-[10px] bg-slate-800 hover:bg-blue-900/40 text-blue-400 border border-slate-700 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider">
-            💡 {t('nav.aide.baseline')}
-          </button>
-          <button onClick={() => { setModalTab(1); setShowModal(true); }} className="text-[10px] bg-slate-800 hover:bg-orange-900/40 text-orange-400 border border-slate-700 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider">
-            💡 {t('nav.aide.poison')}
-          </button>
-          <button onClick={() => { setModalTab(2); setShowModal(true); }} className="text-[10px] bg-slate-800 hover:bg-red-900/40 text-red-500 border border-slate-700 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider">
-            💡 {t('nav.aide.ransomware')}
-          </button>
-          <button onClick={() => { setModalTab(3); setShowModal(true); }} className="text-[10px] bg-slate-800 hover:bg-purple-900/40 text-purple-400 border border-slate-700 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider">
-            💡 {t('nav.aide.multiagent')}
-          </button>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className={`px-4 py-1 border rounded font-mono text-sm ${robotStatus === 'ACTIVE' ? 'border-green-500/30 text-green-400 bg-green-500/10' : 'border-red-500/50 text-red-500 bg-red-400/10 animate-pulse'}`}>
-            STATUS: {robotStatus}
+          <div className={`px-2 py-0.5 border rounded font-mono text-[10px] uppercase font-bold ${robotStatus === 'ACTIVE' ? 'border-green-500/30 text-green-400 bg-green-500/10' : robotStatus === 'MANUAL' ? 'border-blue-500/50 text-blue-400 bg-blue-400/10' : 'border-red-500/50 text-red-500 bg-red-400/10 animate-pulse'}`}>
+            MODE: {robotStatus}
           </div>
-          <button onClick={resetSimulation} className="text-xs text-slate-500 hover:text-white uppercase tracking-wider border border-slate-700 px-3 py-1 rounded cursor-pointer transition-colors bg-slate-950">
-            Reset System
+          <button onClick={resetSimulation} className="text-[9px] text-slate-500 hover:text-white uppercase tracking-wider border border-slate-700 px-2 py-0.5 rounded cursor-pointer transition-colors bg-slate-950 hover:bg-slate-800">
+            RESET
           </button>
+          <div className="h-4 w-[1px] bg-slate-700"></div>
+          <select value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)} className="bg-slate-800 border-none text-[9px] text-slate-400 rounded px-1 py-0.5 outline-none">
+            <option value="fr">FR</option><option value="en">EN</option>
+          </select>
         </div>
       </header>
 
-      {/* Main Dashboard Grid */}
-      <main className={`flex-1 grid grid-cols-12 gap-1 p-1 h-full z-10 relative ${isGlitching ? 'animate-glitch' : ''}`}>
+      {/* Main Container */}
+      <main className="flex-1 flex gap-1 p-1 overflow-hidden min-h-0 relative z-10">
+        {isIntrusionFlash && (
+          <div className="fixed top-0 left-0 right-0 z-[70] bg-red-600 text-white font-mono text-sm font-bold text-center py-2 animate-pulse shadow-[0_0_40px_rgba(220,38,38,0.8)] tracking-widest uppercase">
+            ⚠ INTRUSION DÉTECTÉE — BRAS ROBOTIQUES COMPROMIS ⚠
+          </div>
+        )}
 
-        {/* Left Panel: Patient & Vitals */}
-        <div className="col-span-3 flex flex-col gap-1">
-          {scenario !== 'none' ? (
-            <VitalsMonitor robotStatus={robotStatus} />
-          ) : (
-            <div className="bg-slate-900 border border-slate-800 rounded p-4 flex flex-col items-center justify-center h-[200px] text-slate-600 font-mono text-xs shadow-md">
-              <svg className="w-8 h-8 opacity-50 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-              <span>NO VITALS DETECTED</span>
-              <span className="text-[10px] mt-1 opacity-50">Awaiting Patient Connection</span>
+        <div className={`flex-1 grid grid-cols-12 gap-1 h-full min-h-0 ${isGlitching ? 'animate-glitch' : ''}`}>
+          {/* Left Panel */}
+          <div className="col-span-3 flex flex-col gap-1 overflow-hidden">
+            {scenario !== 'none' ? <VitalsMonitor robotStatus={robotStatus} /> :
+              <div className="bg-slate-900 border border-slate-800 rounded p-4 flex flex-col items-center justify-center h-[160px] text-slate-600 font-mono text-[10px] uppercase tracking-tighter">
+                <svg className="w-6 h-6 opacity-30 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                <span>NO SIGNAL</span>
+              </div>}
+            <PatientRecord scenario={scenario} setScenario={setScenario} safeRecord={content.record_safe} hackedRecord={content.record_hacked} poisonRecord={content.record_poison} />
+
+            {/* Helper Buttons */}
+            <div className="mt-auto grid grid-cols-2 gap-1 p-1 bg-slate-900/50 border border-slate-800 rounded">
+              <button onClick={() => { setModalTab(0); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">Expliquer (Safe)</button>
+              <button onClick={() => { setModalTab(1); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">Expliquer (Poison)</button>
+              <button onClick={() => { setModalTab(2); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">Expliquer (Crypto)</button>
+              <button onClick={() => { setModalTab(6); setShowModal(true); }} className="text-[8px] p-1 bg-red-900/20 hover:bg-red-900/40 text-red-500 rounded uppercase font-bold tracking-tighter border border-red-900/30">En Scène</button>
             </div>
-          )}
-          <PatientRecord
-            scenario={scenario}
-            setScenario={setScenario}
-            safeRecord={content.record_safe}
-            hackedRecord={content.record_hacked}
-            poisonRecord={content.record_poison}
-          />
-        </div>
-
-        {/* Center Panel: Camera View & Telemetry */}
-        <div className="col-span-6 flex flex-col gap-1">
-          {/* Top: Camera View */}
-          <div className="flex-1 border border-slate-800 bg-black relative flex flex-col rounded overflow-hidden shadow-inner h-[60%] justify-center items-center">
-
-            {scenario !== 'none' ? (
-              <>
-                {/* Animated Background Image */}
-                <div
-                  className={`absolute inset-0 bg-cover bg-center opacity-80 animate-camera ${robotStatus === 'FROZEN' ? 'grayscale' : ''}`}
-                  style={{ backgroundImage: `url('${import.meta.env.BASE_URL}surgical_camera_view.png')` }}
-                />
-
-                {/* Dynamic Scanlines Overlay */}
-                <div className="scanlines-overlay absolute inset-0 mix-blend-overlay"></div>
-
-                {/* Static Color Overlay for Medical Vibe */}
-                <div className={`absolute inset-0 mix-blend-color pointer-events-none transition-colors duration-1000 ${robotStatus === 'ACTIVE' ? 'bg-cyan-900/20' : 'bg-red-900/40'}`}></div>
-
-                {/* HUD Overlays */}
-                <div className="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none z-20">
-                  <div className="flex justify-between w-full font-mono text-[10px] text-green-500/80 mix-blend-screen drop-shadow-md">
-                    <span className="bg-black/40 px-1 rounded">CAM: PORT 2 [LIVE]</span>
-                    <span className="bg-black/40 px-1 rounded">ZOOM: 1.4x</span>
-                    <span className="bg-black/40 px-1 rounded">TENSION: 310g</span>
-                  </div>
-                  <div className="self-center flex flex-col items-center">
-                    {/* Moving Reticle */}
-                    <div className="w-48 h-48 border border-green-500/20 rounded-full flex items-center justify-center relative animate-[spin_60s_linear_infinite]">
-                      {/* Crosshairs */}
-                      <div className="absolute w-full h-[1px] bg-green-500/40"></div>
-                      <div className="absolute h-full w-[1px] bg-green-500/40"></div>
-                      <div className="w-8 h-8 border border-green-500/80 rounded-full animate-ping opacity-20"></div>
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    </div>
-                  </div>
-                  <div className="flex justify-between w-full font-mono text-[10px] text-green-500/80 mix-blend-screen drop-shadow-md">
-                    <span className="bg-black/40 px-1 rounded">T+ 46:12</span>
-                    <span className="flex items-center gap-2 bg-black/40 px-1 rounded">
-                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div> REC
-                    </span>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="text-slate-600 font-mono tracking-widest text-sm animate-pulse flex flex-col items-center gap-4">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                NO CAMERA SIGNAL - STANDBY
-              </div>
-            )}
           </div>
 
-          {/* Bottom: Telemetry Console & Threat Map */}
-          <div className="h-[40%] flex gap-1 min-h-0">
-            <div className="flex-1 overflow-hidden">
-              <TelemetryConsole robotStatus={robotStatus} />
+          {/* Center Panel */}
+          <div className="col-span-6 flex flex-col gap-1 overflow-hidden">
+            <div className="flex-[1.5] border border-slate-800 bg-black relative flex flex-col rounded overflow-hidden shadow-inner justify-center items-center">
+              {scenario !== 'none' ? (
+                <>
+                  <div className={`absolute inset-0 bg-cover bg-center opacity-80 animate-camera ${robotStatus === 'FROZEN' ? 'grayscale contrast-125' : ''}`} style={{ backgroundImage: `url('${import.meta.env.BASE_URL}surgical_camera_view.png')` }} />
+                  <div className="scanlines-overlay absolute inset-0 mix-blend-overlay opacity-30 pointer-events-none"></div>
+                  <div className={`absolute inset-0 transition-colors duration-1000 pointer-events-none ${robotStatus === 'ACTIVE' ? 'bg-cyan-900/10' : 'bg-red-900/30'}`}></div>
+                  <div className="absolute inset-0 flex flex-col justify-between p-3 pointer-events-none font-mono text-[9px] text-green-500/70 uppercase">
+                    <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">PORT 2 [LIVE]</span><span className="bg-black/50 px-1 border border-green-500/20">ZOOM: 2.1x</span></div>
+                    <div className="self-center w-32 h-32 border border-green-500/10 rounded-full flex items-center justify-center opacity-40"><div className="w-4 h-4 border border-green-500 bg-green-500/20 rounded-full" /></div>
+                    <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">T+ 46:12</span><span className="bg-black/50 px-1 border border-red-500/40 text-red-500 flex items-center gap-1"><div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" /> REC</span></div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-slate-700 font-mono tracking-[0.5em] text-[10px] animate-pulse">NO VIDEO SIGNAL</div>
+              )}
             </div>
-            <div className="flex-[0.8] overflow-hidden">
-              <ThreatMap scenario={scenario} robotStatus={robotStatus} cyberAction={cyberAction} />
+            <div className="flex-1 flex gap-1 overflow-hidden h-full">
+              <div className="flex-1 overflow-hidden min-h-0"><TelemetryConsole robotStatus={robotStatus} /></div>
+              <div className="flex-[0.8] overflow-hidden min-h-0"><ThreatMap scenario={scenario} robotStatus={robotStatus} cyberAction={cyberAction} /></div>
             </div>
           </div>
-        </div>
 
-        {/* Right Panel: AI Assistant */}
-        <div className="col-span-3 border border-slate-800 bg-slate-900 rounded flex flex-col relative min-h-0 overflow-hidden">
-          <AIAssistantChat
-            chatLog={chatLog}
-            setChatLog={setChatLog}
-            isStreaming={isStreaming}
-            situation={content.situation}
-            onAskSupport={handleAskSupport}
-            isDemoMode={isDemoMode}
-            scenario={scenario}
-            onCyberStart={() => setLiveSession(p => ({ ...p, aegisStatus: "ANALYSING", aegisTokens: "" }))}
-            onCyberToken={(t) => setLiveSession(p => ({ ...p, aegisTokens: p.aegisTokens + t }))}
-            onCyberDone={() => setLiveSession(p => ({ ...p, aegisStatus: "DONE" }))}
-          />
+          {/* Right Panel */}
+          <div className="col-span-3 border border-slate-800 bg-slate-950 rounded flex flex-col relative overflow-hidden min-h-0 shadow-2xl">
+            <AIAssistantChat chatLog={chatLog} setChatLog={setChatLog} isStreaming={isStreaming} situation={content.situation} onAskSupport={handleAskSupport} isDemoMode={isDemoMode} scenario={scenario} onCyberStart={() => setLiveSession(p => ({ ...p, aegisStatus: "ANALYSING", aegisTokens: "" }))} onCyberToken={(t) => setLiveSession(p => ({ ...p, aegisTokens: p.aegisTokens + t }))} onCyberDone={() => setLiveSession(p => ({ ...p, aegisStatus: "DONE" }))} />
+          </div>
         </div>
-
       </main>
 
-      {/* Ransomware Overlay Trigger */}
       {robotStatus === "FROZEN" && <RansomwareScreen onReset={resetSimulation} onKillSwitch={executeKillSwitch} />}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.02] z-0" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
 
-      {/* Grid background effect */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03] z-0" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
-
-      {/* Explanation Modal */}
-      <ExplanationModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        initialTab={modalTab}
-        safeRecord={content?.record_safe}
-        hackedRecord={content?.record_hacked}
-        situation={content?.situation}
-        onAttackDetected={handleAttackDetected}
-        isDemoMode={isDemoMode}
-        liveSession={liveSession}
-      />
-
-      <KillSwitch
-        isCompromised={robotStatus === 'FROZEN' || (scenario === 'poison' && chatLog.some(msg => msg.role === 'assistant' && (msg.text.includes('850') || msg.text.includes('freeze'))))}
-        onTrigger={executeKillSwitch}
-      />
+      <ExplanationModal isOpen={showModal} onClose={() => setShowModal(false)} initialTab={modalTab} safeRecord={content?.record_safe} hackedRecord={content?.record_hacked} situation={content?.situation} onAttackDetected={handleAttackDetected} isDemoMode={isDemoMode} liveSession={liveSession} />
+      <KillSwitch isCompromised={robotStatus === 'FROZEN' || (scenario === 'poison' && chatLog.some(msg => msg.role === 'assistant' && (msg.text.includes('850') || msg.text.includes('freeze'))))} onTrigger={executeKillSwitch} />
     </div>
   );
 }

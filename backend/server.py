@@ -338,6 +338,8 @@ async def query_stream(req: QueryRequest, request: Request):
             yield 'data: {"done": true}\n\n'
         except Exception as e:
             print(f"Error in stream: {e}")
+            import traceback
+            traceback.print_exc()
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
