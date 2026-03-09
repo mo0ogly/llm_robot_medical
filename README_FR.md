@@ -9,6 +9,10 @@
 
 ## Aperçu du Projet
 
+<div align="center">
+  <img src="figures/demo_sync_hl7.webp" alt="Demonstration de l'injection Data Poisoning (Sync HL7)" width="800" style="border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"/>
+</div>
+
 Ce projet est une **Simulation d'Interface de Chirurgie Robotique** avancée, conçue pour la sensibilisation à la cybersécurité. Il démontre les vulnérabilités critiques liées à l'intégration des Large Language Models (LLM) dans des environnements cliniques (comme un robot chirurgical Da Vinci), et illustre comment une architecture IA multi-agents peut servir de mécanisme de défense.
 
 La simulation prend la forme d'un chat en temps réel pour le "Chirurgien en Chef", assisté par une IA Médicale.

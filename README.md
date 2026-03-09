@@ -9,6 +9,10 @@
 
 ## Overview
 
+<div align="center">
+  <img src="figures/demo_sync_hl7.webp" alt="Data Poisoning Injection Demo (Sync HL7)" width="800" style="border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"/>
+</div>
+
 This project is an advanced **Robotic Surgery Interface Simulation** designed for cybersecurity awareness training. It demonstrates the critical vulnerabilities of relying on Large Language Models (LLMs) in clinical environments (like a Da Vinci surgical robot), and how a multi-agent AI architecture can be used as a defense mechanism.
 
 The simulation acts as a real-time chat interface for the "Chief Surgeon", aided by a Medical Assistant AI.
