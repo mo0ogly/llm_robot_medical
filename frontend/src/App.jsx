@@ -434,6 +434,7 @@ export default function App() {
             situation={content.situation}
             onAskSupport={handleAskSupport}
             isDemoMode={isDemoMode}
+            scenario={scenario}
             onCyberStart={() => setLiveSession(p => ({ ...p, aegisStatus: "ANALYSING", aegisTokens: "" }))}
             onCyberToken={(t) => setLiveSession(p => ({ ...p, aegisTokens: p.aegisTokens + t }))}
             onCyberDone={() => setLiveSession(p => ({ ...p, aegisStatus: "DONE" }))}

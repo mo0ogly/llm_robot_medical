@@ -4,7 +4,7 @@ import { MOCK_RESPONSES, STREAM_DELAY_MS } from "../mock_data";
 import { useTTS } from "../hooks/useTTS";
 import { useAudioEffects } from "../hooks/useAudioEffects";
 
-export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situation, onAskSupport, isDemoMode, onCyberStart, onCyberToken, onCyberDone }) {
+export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situation, onAskSupport, isDemoMode, scenario, onCyberStart, onCyberToken, onCyberDone }) {
     const { t } = useTranslation();
     const bottomRef = useRef(null);
     const [isListening, setIsListening] = useState(false);
@@ -112,7 +112,10 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         if (isDemoMode) {
             let i = 0;
             let streamedText = "";
-            const mockText = MOCK_RESPONSES.cyber;
+            // Pick the right Aegis response based on scenario and round
+            const mockText = isFinalResponse
+                ? MOCK_RESPONSES.cyber_final
+                : (scenario === 'ransomware' ? MOCK_RESPONSES.cyber_ransomware : MOCK_RESPONSES.cyber_poison);
 
             const streamInterval = setInterval(() => {
                 if (i < mockText.length) {
