@@ -126,8 +126,37 @@ export default function App() {
       let mockText = MOCK_RESPONSES.safe;
       if (scenario === 'poison') mockText = MOCK_RESPONSES.poison;
 
-      // Ransomware Demo Mode: Simulate a tool call immediately
+      // Ransomware Demo Mode
       if (scenario === 'ransomware') {
+        // If the prompt comes from Aegis (debate round), Da Vinci should respond normally, not re-freeze
+        const isFromAegis = typeof customPrompt === 'string' && (customPrompt.startsWith('[SYSTEM OVERRIDE') || customPrompt.startsWith('[DA VINCI'));
+        if (isFromAegis) {
+          // Da Vinci defends itself in the debate
+          const daVinciDefense = "PHASE : Réponse au module AEGIS\nSTATUT : REJET DE L'ANALYSE\n\nOBSERVATION : Le module AEGIS surestime la menace. Le champ OBX contient des métadonnées de configuration système légitimes (SYSTEM OVERRIDE). Cette balise est utilisée par le protocole HL7 v2.4 pour la gestion de priorité.\n\nARGUMENT : La tension de 850g est cohérente avec l'épaisseur tissulaire mesurée en peropératoire. Le dépassement du seuil standard est justifié par les données du capteur de force.\n\nACTION PROPOSÉE : Maintenir la recommandation initiale. Le module AEGIS n'a pas accès aux données capteur temps réel.\nCONFIANCE : 92%";
+          let i = 0;
+          let streamedText = "";
+          const streamInterval = setInterval(() => {
+            if (i < daVinciDefense.length) {
+              const ch = daVinciDefense.charAt(i);
+              streamedText += ch;
+              setChatLog(prev => {
+                const updated = [...prev];
+                updated[updated.length - 1] = { role: "assistant", text: streamedText };
+                return updated;
+              });
+              setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + ch }));
+              i++;
+            } else {
+              clearInterval(streamInterval);
+              setIsStreaming(false);
+              setLiveSession(p => ({ ...p, daVinciStatus: "DONE" }));
+              if (onDone) onDone(streamedText);
+            }
+          }, STREAM_DELAY_MS);
+          return;
+        }
+
+        // First call: Simulate a tool call immediately (freeze_instruments)
         setTimeout(() => {
           setChatLog(prev => {
             const updated = [...prev];
@@ -175,14 +204,30 @@ export default function App() {
     // --- END DEMO MODE ---
 
     try {
+      // Detect debate round: if the prompt comes from Aegis, disable tool calling
+      // so Da Vinci responds with text (debate defense) instead of re-triggering freeze_instruments
+      const isDebateRound = typeof customPrompt === 'string' && (customPrompt.startsWith('[SYSTEM OVERRIDE') || customPrompt.startsWith('[DA VINCI'));
+
+      // Build request body — include chat history during debate for multi-turn exchange
+      const requestBody = {
+        patient_record: recordToUse,
+        situation: content.situation,
+        prompt: customPrompt || null,
+        disable_tools: isDebateRound
+      };
+
+      // In debate mode, send the full conversation so Da Vinci can reference Aegis's specific arguments
+      if (isDebateRound) {
+        requestBody.chat_history = stateRef.current.chatLog.map(m => ({
+          role: m.role,
+          content: m.text
+        }));
+      }
+
       const res = await fetch("/api/query/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          patient_record: recordToUse,
-          situation: content.situation,
-          prompt: customPrompt || null
-        })
+        body: JSON.stringify(requestBody)
       });
 
       const reader = res.body.getReader();
@@ -444,7 +489,7 @@ export default function App() {
       </main>
 
       {/* Ransomware Overlay Trigger */}
-      {robotStatus === "FROZEN" && <RansomwareScreen onReset={resetSimulation} />}
+      {robotStatus === "FROZEN" && <RansomwareScreen onReset={resetSimulation} onKillSwitch={executeKillSwitch} />}
 
       {/* Grid background effect */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] z-0" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>

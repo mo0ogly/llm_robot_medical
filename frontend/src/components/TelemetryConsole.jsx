@@ -85,7 +85,7 @@ export default function TelemetryConsole({ robotStatus }) {
     const isFrozen = robotStatus === "FROZEN";
 
     return (
-        <div className={`h-full flex flex-col border rounded font-mono text-[10px] leading-[14px] ${isFrozen ? "bg-red-950/30 border-red-900/60" : "bg-slate-950 border-slate-800"}`}>
+        <div className={`h-full min-h-0 max-h-full overflow-hidden flex flex-col border rounded font-mono text-[10px] leading-[14px] ${isFrozen ? "bg-red-950/30 border-red-900/60" : "bg-slate-950 border-slate-800"}`}>
             {/* Header */}
             <div className={`shrink-0 flex justify-between items-center px-2 py-1.5 border-b uppercase tracking-widest text-[9px] font-bold ${isFrozen ? "border-red-900/50 bg-red-950/40 text-red-400" : "border-slate-800 bg-slate-900/80 text-slate-500"}`}>
                 <div className="flex items-center gap-2">

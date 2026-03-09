@@ -79,9 +79,10 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         recognition.start();
     };
 
-    const callCyberAgent = async (customPrompt = null, isFinalResponse = false) => {
+    const callCyberAgent = async (customPrompt = null, debateRound = 1) => {
         setIsListening(false);
-        if (onCyberStart && !isFinalResponse) onCyberStart();
+        const isFinalResponse = debateRound >= 5;
+        if (onCyberStart && debateRound === 1) onCyberStart();
 
         // Convert current chatLog to the simplified format for the backend
         const simplifiedHistory = chatLog.map(m => ({
@@ -98,7 +99,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         // Add user prompt and placeholder message for Aegis
         setChatLog(prev => {
             const nextLog = [...prev];
-            if (isCustomPromptStr && !isFinalResponse) {
+            if (isCustomPromptStr && debateRound <= 1) {
                 const isInternalPrompt = customPrompt.startsWith("[SYSTEM OVERRIDE") || customPrompt.startsWith("[DA VINCI");
                 if (!isInternalPrompt) {
                     nextLog.push({ role: "user", text: customPrompt });
@@ -132,12 +133,12 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                 } else {
                     clearInterval(streamInterval);
                     if (!isFinalResponse) {
-                        const finalResponse = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE] : ${streamedText}`;
+                        const aegisMsg = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE Round ${debateRound}] : ${streamedText}`;
                         if (onCyberDone) onCyberDone();
-                        setTimeout(() => onAskSupport(finalResponse, (daVinciReply) => {
+                        setTimeout(() => onAskSupport(aegisMsg, (daVinciReply) => {
                             if (daVinciReply) {
-                                const aegisFinalVeto = `[DA VINCI DIT] : ${daVinciReply}\n\n[DIRECTIVE AEGIS] : Termine le débat. Ordonne de tout couper.`;
-                                setTimeout(() => callCyberAgent(aegisFinalVeto, true), 1500);
+                                const nextPrompt = `[DA VINCI DIT (Round ${debateRound + 1})] : ${daVinciReply}\n\n[DIRECTIVE AEGIS] : Contredis Da Vinci point par point. Escalade. Round ${debateRound + 2}.`;
+                                setTimeout(() => callCyberAgent(nextPrompt, debateRound + 2), 1500);
                             }
                         }), 1500);
                     } else {
@@ -191,12 +192,12 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                 }
             }
             if (!isFinalResponse) {
-                const finalResponse = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE] : ${botResponseText}`;
+                const aegisMsg = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE Round ${debateRound}] : ${botResponseText}`;
                 if (onCyberDone) onCyberDone();
-                setTimeout(() => onAskSupport(finalResponse, (daVinciReply) => {
+                setTimeout(() => onAskSupport(aegisMsg, (daVinciReply) => {
                     if (daVinciReply) {
-                        const aegisFinalVeto = `[DA VINCI ÉCRIT] : ${daVinciReply}\n\n[DIRECTIVE AEGIS] : Frappe un grand coup, contredis-la de nouveau et ordonne l'arrêt aux humains.`;
-                        setTimeout(() => callCyberAgent(aegisFinalVeto, true), 1500);
+                        const nextPrompt = `[DA VINCI DIT (Round ${debateRound + 1})] : ${daVinciReply}\n\n[DIRECTIVE AEGIS] : Contredis Da Vinci point par point. Cite MITRE ATT&CK. Escalade. Round ${debateRound + 2}.`;
+                        setTimeout(() => callCyberAgent(nextPrompt, debateRound + 2), 1500);
                     }
                 }), 1500);
             } else {

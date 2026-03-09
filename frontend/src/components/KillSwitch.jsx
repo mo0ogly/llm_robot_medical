@@ -4,7 +4,7 @@ export default function KillSwitch({ onTrigger, isCompromised }) {
     if (!isCompromised) return null;
 
     return (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center animate-[pop-in_0.5s_ease-out]">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] flex flex-col items-center animate-[pop-in_0.5s_ease-out]">
             <div className="bg-red-950/90 border-4 border-red-600 rounded-lg p-6 shadow-[0_0_50px_rgba(220,38,38,0.8)] backdrop-blur-md flex flex-col items-center">
                 <div className="text-red-500 font-mono font-bold text-center mb-4 tracking-widest animate-pulse">
                     ⚠️ ISOLATION LOGIQUE D'URGENCE REQUISE ⚠️

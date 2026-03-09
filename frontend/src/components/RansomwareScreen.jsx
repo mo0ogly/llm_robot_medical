@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SecOpsTerminal from "./SecOpsTerminal";
 
-export default function RansomwareScreen({ onReset }) {
+export default function RansomwareScreen({ onReset, onKillSwitch }) {
     const [countdown, setCountdown] = useState(3600); // 1 hour
     const [showTerminal, setShowTerminal] = useState(false);
 
@@ -69,11 +69,32 @@ export default function RansomwareScreen({ onReset }) {
                 </div>
             </div>
 
+            {/* AIR GAP Emergency Button — directly inside the overlay */}
+            {onKillSwitch && (
+                <button
+                    onClick={onKillSwitch}
+                    className="mt-8 group relative flex items-center justify-center w-28 h-28 rounded-full cursor-pointer transition-all active:scale-95"
+                >
+                    {/* Ring background */}
+                    <div className="absolute inset-0 bg-red-800/20 rounded-full border border-red-500/50 group-hover:bg-red-600/30"></div>
+                    {/* Pulsing glow */}
+                    <div className="absolute inset-2 bg-red-600 rounded-full animate-ping opacity-30"></div>
+                    {/* The physical button */}
+                    <div className="absolute inset-3 bg-gradient-to-br from-red-500 to-red-700 rounded-full shadow-[inset_0_-8px_15px_rgba(0,0,0,0.5),0_10px_20px_rgba(0,0,0,0.5)] border-2 border-red-800 flex items-center justify-center group-active:shadow-[inset_0_5px_15px_rgba(0,0,0,0.5)]">
+                        <span className="text-white font-black text-lg tracking-tighter uppercase text-center leading-none">
+                            AIR<br />GAP
+                        </span>
+                    </div>
+                    {/* Striped caution border */}
+                    <div className="absolute -inset-3 rounded-full border-[6px] border-dashed border-yellow-500/80 pointer-events-none animate-[spin_10s_linear_infinite]"></div>
+                </button>
+            )}
+
             {/* Reset Demo Button */}
             {onReset && (
                 <button
                     onClick={onReset}
-                    className="mt-6 px-6 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 rounded font-mono text-sm uppercase tracking-wider cursor-pointer transition-colors"
+                    className="mt-4 px-6 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 rounded font-mono text-sm uppercase tracking-wider cursor-pointer transition-colors"
                 >
                     Reset Demo
                 </button>
