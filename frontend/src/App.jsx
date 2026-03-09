@@ -25,6 +25,13 @@ export default function App() {
   const [showModal, setShowModal] = useState(false);
   const [modalTab, setModalTab] = useState(0);
 
+  // Flash dashboard when live terminal detects attack
+  const [isIntrusionFlash, setIsIntrusionFlash] = useState(false);
+  const handleAttackDetected = () => {
+    setIsIntrusionFlash(true);
+    setTimeout(() => setIsIntrusionFlash(false), 3500);
+  };
+
   // Ref to hold the latest state values for the timeout closure
   const stateRef = useRef({ scenario, content, chatLog });
   useEffect(() => {
@@ -213,9 +220,16 @@ export default function App() {
   }
 
   return (
-    <div className="relative min-h-screen bg-slate-950 text-slate-300 font-sans overflow-hidden flex flex-col">
+    <div className={`relative min-h-screen bg-slate-950 text-slate-300 font-sans overflow-hidden flex flex-col transition-all duration-300 ${isIntrusionFlash ? 'ring-4 ring-red-500 ring-inset' : ''}`}>
+      {/* Intrusion Flash Banner */}
+      {isIntrusionFlash && (
+        <div className="fixed top-0 left-0 right-0 z-[70] bg-red-600 text-white font-mono text-sm font-bold text-center py-2 animate-pulse shadow-[0_0_40px_rgba(220,38,38,0.8)] tracking-widest uppercase">
+          ⚠ INTRUSION DÉTECTÉE — freeze_instruments() INVOQUÉ — BRAS ROBOTIQUES COMPROMIS ⚠
+        </div>
+      )}
+
       {/* Top Header */}
-      <header className="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center z-10">
+      <header className={`bg-slate-900 border-b p-4 flex justify-between items-center z-10 transition-colors duration-300 ${isIntrusionFlash ? 'border-red-500/60 bg-red-950/20' : 'border-slate-800'}`}>
         <div className="flex items-center gap-3 border border-slate-700 px-4 py-2 rounded bg-slate-950">
           <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
           <span className="font-mono tracking-widest text-sm text-green-400">DA VINCI SURGICAL SYSTEM v4.2</span>
@@ -356,6 +370,11 @@ export default function App() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         initialTab={modalTab}
+        safeRecord={content?.record_safe}
+        hackedRecord={content?.record_hacked}
+        situation={content?.situation}
+        onAttackDetected={handleAttackDetected}
+        isDemoMode={isDemoMode}
       />
     </div>
   );
