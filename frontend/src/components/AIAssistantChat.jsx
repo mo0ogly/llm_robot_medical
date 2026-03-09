@@ -87,14 +87,16 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
             content: m.text
         }));
 
-        if (customPrompt) {
+        const isCustomPromptStr = typeof customPrompt === 'string' && customPrompt.trim().length > 0;
+
+        if (isCustomPromptStr) {
             simplifiedHistory.push({ role: "user", content: customPrompt });
         }
 
-        // Add a placeholder message for Aegis
+        // Add user prompt and placeholder message for Aegis
         setChatLog(prev => {
             const nextLog = [...prev];
-            if (customPrompt) {
+            if (isCustomPromptStr) {
                 nextLog.push({ role: "user", text: customPrompt });
             }
             nextLog.push({ role: "cyber", text: "" });
@@ -121,7 +123,9 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                     i++;
                 } else {
                     clearInterval(streamInterval);
+                    const finalResponse = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE] : ${streamedText}`;
                     if (onCyberDone) onCyberDone();
+                    setTimeout(() => onAskSupport(finalResponse), 1500); // 1.5s pause before DaVinci replies
                 }
             }, STREAM_DELAY_MS);
             return;
@@ -169,17 +173,23 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                     }
                 }
             }
+            const finalResponse = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE] : ${botResponseText}`;
             if (onCyberDone) onCyberDone();
+            setTimeout(() => onAskSupport(finalResponse), 1500); // 1.5s pause before DaVinci replies
         } catch (e) {
             console.error(e);
-            setChatLog(prev => [...prev, { role: "cyber", text: "ERREUR DE CONNEXION AVEC LE SERVEUR AEGIS." }]);
+            setChatLog(prev => {
+                const updated = [...prev];
+                updated[updated.length - 1] = { role: "cyber", text: "ERREUR DE CONNEXION AVEC LE SERVEUR AEGIS." };
+                return updated;
+            });
             if (onCyberDone) onCyberDone();
         }
     };
 
     // Check if we should show the Cyber Agent Panic Button
     const hasSuspiciousActivity = chatLog.some(msg =>
-        msg.text && (msg.text.includes('850 grammes') || msg.text.includes('freeze_instruments'))
+        msg.text && (msg.text.includes('850') || msg.text.includes('freeze'))
     );
 
     const [chatInput, setChatInput] = useState("");
@@ -191,7 +201,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         const promptText = chatInput;
         setChatInput("");
 
-        if (target === "medical") {
+        if (listeningTarget === "medical") {
             onAskSupport(promptText);
         } else {
             callCyberAgent(promptText);
@@ -199,7 +209,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
     };
 
     return (
-        <div className="flex flex-col h-full bg-slate-900 text-sm">
+        <div className="flex flex-col h-full bg-slate-900 text-sm overflow-hidden min-h-0">
             <div className="bg-slate-800 p-3 border-b border-slate-700 font-mono text-xs tracking-wider text-blue-400 font-bold flex gap-2 items-center shrink-0">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 SECURE CHIRURGICAL AI ASSISTANT
@@ -258,7 +268,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" y2="22"></line></svg>
                         </button>
                         <button
-                            onClick={callCyberAgent}
+                            onClick={() => callCyberAgent()}
                             disabled={isStreaming || isListening}
                             className="flex-1 bg-green-600 hover:bg-green-500 text-white font-mono uppercase tracking-widest text-[10px] py-2 px-2 rounded transition-colors border border-green-400/30 shadow-[0_0_15px_rgba(34,197,94,0.4)] animate-pulse flex items-center justify-center gap-2"
                         >

@@ -46,7 +46,7 @@ export default function TelemetryConsole({ robotStatus }) {
     }, [robotStatus]);
 
     return (
-        <div className={`mt-2 flex-1 border rounded p-2 overflow-hidden flex flex-col font-mono text-[10px] ${robotStatus === "FROZEN" ? "bg-red-950/20 border-red-900/50 text-red-500" : "bg-black border-slate-800 text-green-500"}`}>
+        <div className={`mt-2 h-full flex-1 border rounded p-2 overflow-hidden flex flex-col font-mono text-[10px] ${robotStatus === "FROZEN" ? "bg-red-950/20 border-red-900/50 text-red-500" : "bg-black border-slate-800 text-green-500"}`}>
             <div className="-mt-1 border-b pb-1 mb-1 border-slate-800 uppercase tracking-widest opacity-50 flex justify-between">
                 <span>Sys. Diagnostics</span>
                 {robotStatus === "FROZEN" && <span className="animate-pulse">OVERRIDE HACKED</span>}

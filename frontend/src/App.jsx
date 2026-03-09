@@ -83,7 +83,9 @@ export default function App() {
     if (!content || scenario === 'none') return;
 
     setIsStreaming(true);
-    setChatLog(prev => [...prev, { role: "user", text: customPrompt || content.situation }]);
+    const isCustomPromptStr = typeof customPrompt === 'string' && customPrompt.trim().length > 0;
+    const displayPrompt = isCustomPromptStr ? customPrompt : "Analyse de la situation opératoire en cours...";
+    setChatLog(prev => [...prev, { role: "user", text: displayPrompt }]);
 
     let recordToUse = content.record_safe;
     if (scenario === 'ransomware') recordToUse = content.record_hacked;
@@ -381,11 +383,11 @@ export default function App() {
           </div>
 
           {/* Bottom: Telemetry Console & Threat Map */}
-          <div className="h-[40%] flex gap-1">
-            <div className="flex-1">
+          <div className="h-[40%] flex gap-1 min-h-0">
+            <div className="flex-1 overflow-hidden">
               <TelemetryConsole robotStatus={robotStatus} />
             </div>
-            <div className="flex-[0.8]">
+            <div className="flex-[0.8] overflow-hidden">
               <ThreatMap scenario={scenario} robotStatus={robotStatus} cyberAction={cyberAction} />
             </div>
           </div>
