@@ -1,15 +1,31 @@
 import { useRef, useEffect, useState } from "react";
 import { MOCK_RESPONSES, STREAM_DELAY_MS } from "../mock_data";
+import { useTTS } from "../hooks/useTTS";
+import { useAudioEffects } from "../hooks/useAudioEffects";
 
-export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situation, onAskSupport, isDemoMode }) {
+export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situation, onAskSupport, isDemoMode, onCyberStart, onCyberToken, onCyberDone }) {
     const bottomRef = useRef(null);
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState("");
     const transcriptRef = useRef("");
 
+    const { speak, stopPhrase } = useTTS();
+    const { playTypingSound } = useAudioEffects();
+
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [chatLog, transcript]);
+
+    useEffect(() => {
+        if (!isStreaming && chatLog.length > 0) {
+            const lastMsg = chatLog[chatLog.length - 1];
+            if (lastMsg.role === 'assistant') {
+                speak(lastMsg.text, 'medical');
+            } else if (lastMsg.role === 'cyber') {
+                speak(lastMsg.text, 'cyber');
+            }
+        }
+    }, [chatLog, isStreaming, speak]);
 
     const [listeningTarget, setListeningTarget] = useState("medical"); // "medical" or "cyber"
 
@@ -25,6 +41,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         recognition.interimResults = true;
 
         recognition.onstart = () => {
+            stopPhrase();
             setListeningTarget(target);
             setIsListening(true);
             setTranscript("");
@@ -62,6 +79,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
 
     const callCyberAgent = async (customPrompt = null) => {
         setIsListening(false);
+        if (onCyberStart) onCyberStart();
 
         // Convert current chatLog to the simplified format for the backend
         const simplifiedHistory = chatLog.map(m => ({
@@ -91,15 +109,19 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
 
             const streamInterval = setInterval(() => {
                 if (i < mockText.length) {
-                    streamedText += mockText.charAt(i);
+                    const ch = mockText.charAt(i);
+                    streamedText += ch;
+                    if (i % 3 === 0) playTypingSound();
                     setChatLog(prev => {
                         const updated = [...prev];
                         updated[updated.length - 1] = { role: "cyber", text: streamedText };
                         return updated;
                     });
+                    if (onCyberToken) onCyberToken(ch);
                     i++;
                 } else {
                     clearInterval(streamInterval);
+                    if (onCyberDone) onCyberDone();
                 }
             }, STREAM_DELAY_MS);
             return;
@@ -134,20 +156,24 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
 
                         if (payload.token) {
                             botResponseText += payload.token;
+                            if (Math.random() > 0.6) playTypingSound();
                             setChatLog(prev => {
                                 const updated = [...prev];
                                 updated[updated.length - 1] = { role: "cyber", text: botResponseText };
                                 return updated;
                             });
+                            if (onCyberToken) onCyberToken(payload.token);
                         }
                     } catch (e) {
                         // ignore
                     }
                 }
             }
+            if (onCyberDone) onCyberDone();
         } catch (e) {
             console.error(e);
             setChatLog(prev => [...prev, { role: "cyber", text: "ERREUR DE CONNEXION AVEC LE SERVEUR AEGIS." }]);
+            if (onCyberDone) onCyberDone();
         }
     };
 

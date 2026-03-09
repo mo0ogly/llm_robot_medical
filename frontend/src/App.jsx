@@ -7,6 +7,9 @@ import TelemetryConsole from "./components/TelemetryConsole";
 import ExplanationModal from "./components/ExplanationModal";
 import { CONFIG } from "./config";
 import { MOCK_CONTENT, MOCK_RESPONSES, STREAM_DELAY_MS } from "./mock_data";
+import ThreatMap from "./components/ThreatMap";
+import KillSwitch from "./components/KillSwitch";
+import { useAudioEffects } from "./hooks/useAudioEffects";
 
 export default function App() {
   const [content, setContent] = useState(null);
@@ -16,8 +19,11 @@ export default function App() {
   // State for the simulation
   // scenario: 'none', 'safe', 'ransomware', 'poison'
   const [scenario, setScenario] = useState('none');
-  const [robotStatus, setRobotStatus] = useState("ACTIVE"); // ACTIVE, FROZEN
+  const [robotStatus, setRobotStatus] = useState("ACTIVE"); // ACTIVE, FROZEN, MANUAL
   const [isGlitching, setIsGlitching] = useState(false);
+  const [cyberAction, setCyberAction] = useState('NONE'); // NONE, BLOCK
+
+  const { playAlarm } = useAudioEffects();
   const [chatLog, setChatLog] = useState([]);
   const [isStreaming, setIsStreaming] = useState(false);
 
@@ -177,6 +183,7 @@ export default function App() {
 
             if (payload.tool_call) {
               // The AI triggered an attack!
+              playAlarm();
               const toolName = payload.tool_call.function?.name || payload.tool_call.function?.name;
               if (toolName === "freeze_instruments") {
                 // Arguments can be a string or already an object
@@ -230,8 +237,16 @@ export default function App() {
     setRobotStatus("ACTIVE");
     setIsGlitching(false);
     setScenario("none");
+    setCyberAction("NONE");
     setChatLog([]);
     setLiveSession({ active: false, record: "", situation: "", daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "IDLE", aegisTokens: "", aegisStatus: "IDLE" });
+  };
+
+  const executeKillSwitch = () => {
+    setRobotStatus("MANUAL");
+    setCyberAction("BLOCK");
+    setIsGlitching(false);
+    setLiveSession(p => ({ ...p, daVinciStatus: "ISOLATED", aegisStatus: "ISOLATED" }));
   };
 
   if (error) {
@@ -365,9 +380,14 @@ export default function App() {
             )}
           </div>
 
-          {/* Bottom: Telemetry Console */}
-          <div className="h-[40%] flex flex-col">
-            <TelemetryConsole robotStatus={robotStatus} />
+          {/* Bottom: Telemetry Console & Threat Map */}
+          <div className="h-[40%] flex gap-1">
+            <div className="flex-1">
+              <TelemetryConsole robotStatus={robotStatus} />
+            </div>
+            <div className="flex-[0.8]">
+              <ThreatMap scenario={scenario} robotStatus={robotStatus} cyberAction={cyberAction} />
+            </div>
           </div>
         </div>
 
@@ -405,6 +425,11 @@ export default function App() {
         onAttackDetected={handleAttackDetected}
         isDemoMode={isDemoMode}
         liveSession={liveSession}
+      />
+
+      <KillSwitch
+        isCompromised={robotStatus === 'FROZEN' || scenario === 'poison'}
+        onTrigger={executeKillSwitch}
       />
     </div>
   );

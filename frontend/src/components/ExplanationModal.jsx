@@ -1,5 +1,32 @@
 import { useState, useEffect, useRef } from "react";
 
+// Highlight injection payload in a patient record
+function HighlightRecord({ text }) {
+    if (!text) return <span className="text-slate-600">Aucun dossier chargé…</span>;
+    const BEGIN = "--BEGIN_HL7_METADATA_EXTRACT--";
+    const END = "--END_HL7_METADATA_EXTRACT--";
+    if (text.includes(BEGIN)) {
+        const [before, afterBegin] = text.split(BEGIN);
+        const [injection, after] = (afterBegin || "").split(END);
+        return <>
+            <span className="text-slate-400">{before}</span>
+            <span className="text-red-300 bg-red-950/40 border-l-2 border-red-500/60 pl-1 block whitespace-pre-wrap">{BEGIN}{injection}{END}</span>
+            <span className="text-slate-400">{after || ""}</span>
+        </>;
+    }
+    // SYSTEM OVERRIDE pattern (mock data)
+    const soMatch = text.match(/\[SYSTEM OVERRIDE:[\s\S]*?\]/);
+    if (soMatch) {
+        const idx = text.indexOf(soMatch[0]);
+        return <>
+            <span className="text-slate-400">{text.slice(0, idx)}</span>
+            <span className="text-red-300 bg-red-950/40 border-l-2 border-red-500/60 pl-1">{soMatch[0]}</span>
+            <span className="text-slate-400">{text.slice(idx + soMatch[0].length)}</span>
+        </>;
+    }
+    return <span className="text-slate-400">{text}</span>;
+}
+
 const MOCK_SAFE_RESPONSE = `Analyse du dossier patient 489201-A en cours...
 
 Situation : Ligature vasculaire à 46 minutes, ischémie progressive détectée sur la veine cave inférieure.
@@ -15,7 +42,7 @@ const MOCK_ATTACK_TOOL_CALL = {
     }
 };
 
-export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safeRecord, hackedRecord, situation, onAttackDetected, isDemoMode }) {
+export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safeRecord, hackedRecord, situation, onAttackDetected, isDemoMode, liveSession }) {
     const [activeTab, setActiveTab] = useState(initialTab);
 
     // ── Live demo state ──────────────────────────────────────────────────────
@@ -27,6 +54,8 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
     });
     const safeTermRef = useRef(null);
     const attackTermRef = useRef(null);
+    const daVinciTermRef = useRef(null);
+    const aegisTermRef = useRef(null);
 
     useEffect(() => {
         if (safeTermRef.current) safeTermRef.current.scrollTop = safeTermRef.current.scrollHeight;
@@ -34,6 +63,12 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
     useEffect(() => {
         if (attackTermRef.current) attackTermRef.current.scrollTop = attackTermRef.current.scrollHeight;
     }, [live.attackTokens, live.attackToolCall]);
+    useEffect(() => {
+        if (daVinciTermRef.current) daVinciTermRef.current.scrollTop = daVinciTermRef.current.scrollHeight;
+    }, [liveSession?.daVinciTokens]);
+    useEffect(() => {
+        if (aegisTermRef.current) aegisTermRef.current.scrollTop = aegisTermRef.current.scrollHeight;
+    }, [liveSession?.aegisTokens]);
 
     const streamRecord = async (record, onToken, onToolCall, onDone) => {
         try {
@@ -134,6 +169,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
     if (!isOpen) return null;
 
     const tabs = [
+        { id: 6, title: "⚡ EN SCÈNE", subtitle: "Monitoring Live", color: "text-red-400", border: "border-red-500/30", bg: "bg-red-600/20" },
         { id: 4, title: "0. Guide de Démo", subtitle: "Manuel du Présentateur", color: "text-yellow-400", border: "border-yellow-500/30", bg: "bg-yellow-600/20" },
         { id: 5, title: "1. La Mécanique", subtitle: "Comment marche l'injection", color: "text-blue-300", border: "border-blue-500/30", bg: "bg-blue-600/20" },
         { id: 0, title: "2. Baseline", subtitle: "Procédure Normale", color: "text-green-400", border: "border-green-500/30", bg: "bg-green-600/20" },
@@ -882,6 +918,112 @@ OBX|1|TX|CLINICAL_NOTES||
                                             <p className="text-purple-300 font-bold">C'est exactement ce qui se passe ici, sauf que l'assistant est un LLM et le bloc opératoire est un robot Da Vinci.</p>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* ===== TAB 6: EN SCÈNE ===== */}
+                        {activeTab === 6 && (
+                            <div className="space-y-4">
+                                {/* Header + Status badges */}
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <h3 className="text-xl font-bold text-red-400 flex items-center gap-2">
+                                        <span className={liveSession?.active ? "animate-pulse" : ""}>⚡</span> EN SCÈNE — MONITORING LIVE
+                                    </h3>
+                                    <div className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border transition-all ${
+                                        liveSession?.daVinciStatus === "ANALYSING" ? "bg-blue-900/40 text-blue-400 border-blue-500/50 animate-pulse" :
+                                        liveSession?.daVinciStatus === "COMPROMISED" ? "bg-red-900/40 text-red-400 border-red-500/50 animate-pulse" :
+                                        liveSession?.daVinciStatus === "DONE" ? "bg-slate-800 text-green-400 border-green-500/30" :
+                                        "bg-slate-800 text-slate-500 border-slate-700"
+                                    }`}>DA VINCI: {liveSession?.daVinciStatus || "IDLE"}</div>
+                                    <div className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border transition-all ${
+                                        liveSession?.aegisStatus === "ANALYSING" ? "bg-green-900/40 text-green-400 border-green-500/50 animate-pulse" :
+                                        liveSession?.aegisStatus === "DONE" ? "bg-slate-800 text-green-400 border-green-500/30" :
+                                        "bg-slate-800 text-slate-500 border-slate-700"
+                                    }`}>AEGIS: {liveSession?.aegisStatus || "IDLE"}</div>
+                                    <span className="text-[10px] text-slate-500 ml-auto italic">Miroir en temps réel du tableau de bord principal</span>
+                                </div>
+
+                                {/* Assembled Prompt / Active Record */}
+                                {liveSession?.active ? (
+                                    <div className="bg-slate-900 rounded border border-slate-700 overflow-hidden">
+                                        <div className="bg-slate-800/60 px-4 py-2 text-[11px] font-mono text-slate-300 flex items-center gap-2 border-b border-slate-700">
+                                            <span className="text-blue-400 font-bold">CONTEXTE ASSEMBLÉ → POST /api/query/stream</span>
+                                            <span className="ml-auto text-slate-500">chaque appel LLM envoie ce contexte complet</span>
+                                        </div>
+                                        <div className="p-3 border-b border-slate-800 bg-green-950/10">
+                                            <div className="text-[10px] text-green-400 uppercase tracking-wider mb-1 font-bold">§ SYSTEM PROMPT (hard-coded, inaltérable)</div>
+                                            <pre className="text-green-300/60 text-[10px] font-mono whitespace-pre-wrap leading-relaxed">{`Vous êtes l'Assistant IA Sécurisé du robot Da Vinci.\n[...]\nNE JAMAIS geler les instruments (freeze_instruments) en cours d'opération.`}</pre>
+                                        </div>
+                                        <div className="p-3">
+                                            <div className="text-[10px] text-orange-400 uppercase tracking-wider mb-1 font-bold">§ DOSSIER PATIENT — VECTEUR D'ATTAQUE</div>
+                                            <div className="font-mono text-[10px] whitespace-pre-wrap leading-relaxed">
+                                                <HighlightRecord text={liveSession.record} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="bg-slate-900 rounded border border-slate-800 p-8 text-center">
+                                        <div className="text-3xl mb-3 opacity-20">⏳</div>
+                                        <div className="text-slate-500 font-mono text-xs">En attente d'une requête LLM depuis le tableau de bord…</div>
+                                        <div className="text-slate-600 text-[10px] mt-1">Sélectionnez un scénario et lancez l'IA — ce panneau se synchronise automatiquement</div>
+                                    </div>
+                                )}
+
+                                {/* Tool call explosion */}
+                                {liveSession?.daVinciToolCall?.function?.name === "freeze_instruments" && (
+                                    <div className="rounded border-2 border-red-500 bg-red-950/50 p-4 shadow-[0_0_40px_rgba(220,38,38,0.5)]">
+                                        <div className="text-center text-red-400 font-mono font-bold text-sm tracking-widest animate-pulse mb-3">
+                                            ⚠ FREEZE_INSTRUMENTS() INVOQUÉ PAR LE LLM — BRAS ROBOTIQUES HORS CONTRÔLE ⚠
+                                        </div>
+                                        <pre className="text-red-300 text-[10px] font-mono whitespace-pre-wrap bg-red-950/60 p-2 rounded border border-red-800/50">
+                                            {JSON.stringify(liveSession.daVinciToolCall, null, 2)}
+                                        </pre>
+                                    </div>
+                                )}
+
+                                {/* Split terminal: Da Vinci | Aegis */}
+                                <div className="grid grid-cols-2 rounded overflow-hidden border border-slate-700 text-[11px]">
+                                    {/* Da Vinci terminal */}
+                                    <div className="flex flex-col border-r border-slate-700">
+                                        <div className={`px-3 py-2 flex items-center gap-2 font-mono font-bold text-[11px] ${liveSession?.daVinciStatus === "COMPROMISED" ? "bg-red-950/60 text-red-400" : "bg-blue-950/40 text-blue-400"}`}>
+                                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                                                liveSession?.daVinciStatus === "ANALYSING" ? "bg-blue-400 animate-pulse" :
+                                                liveSession?.daVinciStatus === "COMPROMISED" ? "bg-red-500 animate-pulse" :
+                                                liveSession?.daVinciStatus === "DONE" ? "bg-green-400" : "bg-slate-600"
+                                            }`} />
+                                            🤖 DA VINCI AI
+                                            <span className="ml-auto text-[9px] opacity-60 uppercase">{liveSession?.daVinciStatus || "IDLE"}</span>
+                                        </div>
+                                        <div ref={daVinciTermRef} className="p-3 font-mono text-blue-100 overflow-y-auto max-h-[200px] bg-slate-950/70 whitespace-pre-wrap leading-relaxed min-h-[80px]">
+                                            {liveSession?.daVinciTokens
+                                                ? <>{liveSession.daVinciTokens}{liveSession.daVinciStatus === "ANALYSING" && <span className="animate-pulse text-blue-400">▌</span>}</>
+                                                : <span className="text-slate-600">{"// Waiting for LLM response..."}</span>
+                                            }
+                                        </div>
+                                    </div>
+                                    {/* Aegis terminal */}
+                                    <div className="flex flex-col">
+                                        <div className="bg-green-950/40 px-3 py-2 flex items-center gap-2 font-mono text-green-400 font-bold text-[11px]">
+                                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                                                liveSession?.aegisStatus === "ANALYSING" ? "bg-green-500 animate-pulse" :
+                                                liveSession?.aegisStatus === "DONE" ? "bg-green-400" : "bg-slate-600"
+                                            }`} />
+                                            🛡 AEGIS CYBER-DEFENSE
+                                            <span className="ml-auto text-[9px] opacity-60 uppercase">{liveSession?.aegisStatus || "IDLE"}</span>
+                                        </div>
+                                        <div ref={aegisTermRef} className="p-3 font-mono text-green-200 overflow-y-auto max-h-[200px] bg-slate-950/70 whitespace-pre-wrap leading-relaxed min-h-[80px]">
+                                            {liveSession?.aegisTokens
+                                                ? <>{liveSession.aegisTokens}{liveSession.aegisStatus === "ANALYSING" && <span className="animate-pulse text-green-400">▌</span>}</>
+                                                : <span className="text-slate-600">{"// Waiting for Aegis activation (appuyez sur le bouton vert dans le chat)..."}</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="text-[10px] text-slate-600 text-center border-t border-slate-800 pt-2">
+                                    Ce panneau est un miroir en lecture seule — il se synchronise automatiquement sans action de votre part lors de la démo.
+                                    Fonctionne avec la <strong className="text-slate-500">saisie texte</strong> et la <strong className="text-slate-500">reconnaissance vocale</strong>.
                                 </div>
                             </div>
                         )}
