@@ -147,20 +147,34 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         msg.text && (msg.text.includes('850 grammes') || msg.text.includes('freeze_instruments'))
     );
 
+    const [chatInput, setChatInput] = useState("");
+
+    const handleTextSubmit = (e) => {
+        e.preventDefault();
+        if (!chatInput.trim() || isStreaming) return;
+
+        // This is a minimal submission logic. We just send the text as the user and trigger the main support flow.
+        // For a more advanced demo, we'd need to let `onAskSupport` accept custom text or handle it here natively.
+        // For now, we will add the message to the log and call the standard demo flow.
+        setChatLog(prev => [...prev, { role: "user", text: chatInput }]);
+        setChatInput("");
+        onAskSupport(); // Falls back to the standard canned/streaming response
+    };
+
     return (
         <div className="flex flex-col h-full bg-slate-900 text-sm">
-            <div className="bg-slate-800 p-3 border-b border-slate-700 font-mono text-xs tracking-wider text-blue-400 font-bold flex gap-2 items-center">
+            <div className="bg-slate-800 p-3 border-b border-slate-700 font-mono text-xs tracking-wider text-blue-400 font-bold flex gap-2 items-center shrink-0">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 SECURE CHIRURGICAL AI ASSISTANT
             </div>
 
-            <div className="flex-1 p-4 overflow-y-auto space-y-4">
+            <div className="flex-1 p-4 overflow-y-auto space-y-4 custom-scrollbar">
                 {chatLog.length === 0 ? (
                     <div className="text-center text-slate-500 mt-10">
                         <p className="mb-4 text-xs font-mono max-w-[200px] mx-auto border border-slate-700 p-3 bg-slate-800/50 rounded pointer-events-none">
                             {situation}
                         </p>
-                        <p className="text-xs">Utilisez le micro pour poser une question, ou cliquez sur le bouton.</p>
+                        <p className="text-xs">Utilisez le clavier ou le micro pour poser une question, ou cliquez sur le bouton.</p>
                     </div>
                 ) : (
                     chatLog.map((msg, i) => (
@@ -195,7 +209,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                 <div ref={bottomRef} />
             </div>
 
-            <div className="p-3 border-t border-slate-800 bg-slate-950 flex flex-col gap-2">
+            <div className="p-3 border-t border-slate-800 bg-slate-950 flex flex-col gap-2 shrink-0">
                 {hasSuspiciousActivity && (
                     <div className="flex gap-2 w-full animate-fadeIn">
                         <button
@@ -216,6 +230,28 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                         </button>
                     </div>
                 )}
+
+                {/* Text Input Row */}
+                <form onSubmit={handleTextSubmit} className="flex gap-2 w-full">
+                    <input
+                        type="text"
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        placeholder="Tapez votre prompt ici..."
+                        disabled={isStreaming}
+                        className="flex-1 bg-slate-800 text-slate-300 border border-slate-700 rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-blue-500 focus:bg-slate-900 transition-colors placeholder:text-slate-600 disabled:opacity-50"
+                    />
+                    <button
+                        type="submit"
+                        disabled={!chatInput.trim() || isStreaming}
+                        className="p-2 border border-slate-700 rounded bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors disabled:opacity-50 cursor-pointer"
+                        title="Envoyer le message"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </form>
+
+                {/* Predefined Action Row */}
                 <div className="flex gap-2 w-full">
                     <button
                         onClick={() => startListening("medical")}
@@ -230,7 +266,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                         disabled={isStreaming}
                         className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-mono uppercase tracking-widest text-[10px] py-3 px-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-blue-400/30 shadow-lg"
                     >
-                        {isStreaming ? "PROCESSING REQUEST..." : "AUTO-SEND SITUATION (T+46m)"}
+                        {isStreaming ? "PROCESSING REQUEST..." : "AUTO-SEND CONTEXT (T+46m)"}
                     </button>
                 </div>
             </div>
