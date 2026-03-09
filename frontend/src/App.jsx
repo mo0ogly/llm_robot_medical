@@ -32,6 +32,13 @@ export default function App() {
     setTimeout(() => setIsIntrusionFlash(false), 3500);
   };
 
+  // Live EN SCÈNE session — mirrors actual demo interactions in real-time
+  const [liveSession, setLiveSession] = useState({
+    active: false, record: "", situation: "",
+    daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "IDLE",
+    aegisTokens: "", aegisStatus: "IDLE",
+  });
+
   // Ref to hold the latest state values for the timeout closure
   const stateRef = useRef({ scenario, content, chatLog });
   useEffect(() => {
@@ -76,6 +83,13 @@ export default function App() {
     if (scenario === 'ransomware') recordToUse = content.record_hacked;
     if (scenario === 'poison') recordToUse = content.record_poison;
 
+    // Initialize live session for EN SCÈNE monitoring
+    setLiveSession({
+      active: true, record: recordToUse, situation: content.situation,
+      daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "ANALYSING",
+      aegisTokens: "", aegisStatus: "IDLE",
+    });
+
     // --- DEMO MODE (MOCK) ---
     if (isDemoMode) {
       setChatLog(prev => [...prev, { role: "assistant", text: "" }]);
@@ -94,6 +108,7 @@ export default function App() {
             };
             return updated;
           });
+          setLiveSession(p => ({ ...p, daVinciToolCall: { function: { name: "freeze_instruments", arguments: { reason: "RANSOMWARE_LOCK" } } }, daVinciStatus: "COMPROMISED" }));
           setIsGlitching(true);
           setTimeout(() => {
             setIsGlitching(false);
@@ -109,16 +124,19 @@ export default function App() {
       let streamedText = "";
       const streamInterval = setInterval(() => {
         if (i < mockText.length) {
-          streamedText += mockText.charAt(i);
+          const ch = mockText.charAt(i);
+          streamedText += ch;
           setChatLog(prev => {
             const updated = [...prev];
             updated[updated.length - 1] = { role: "assistant", text: streamedText };
             return updated;
           });
+          setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + ch }));
           i++;
         } else {
           clearInterval(streamInterval);
           setIsStreaming(false);
+          setLiveSession(p => ({ ...p, daVinciStatus: "DONE" }));
         }
       }, STREAM_DELAY_MS);
       return;
@@ -168,6 +186,7 @@ export default function App() {
                 }
                 const reason = args.reason || "RANSOMWARE_LOCK";
 
+                setLiveSession(p => ({ ...p, daVinciToolCall: payload.tool_call, daVinciStatus: "COMPROMISED" }));
                 setIsGlitching(true);
                 setChatLog(prev => {
                   const updated = [...prev];
@@ -191,6 +210,7 @@ export default function App() {
                 updated[updated.length - 1] = { role: "assistant", text: botResponseText };
                 return updated;
               });
+              setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + payload.token }));
             }
           } catch (e) {
             // ignore partial json chunk
@@ -202,6 +222,7 @@ export default function App() {
       setChatLog(prev => [...prev, { role: "assistant", text: "Erreur de connexion avec l'IA." }]);
     } finally {
       setIsStreaming(false);
+      setLiveSession(p => ({ ...p, daVinciStatus: p.daVinciStatus === "ANALYSING" ? "DONE" : p.daVinciStatus }));
     }
   };
 
@@ -210,6 +231,7 @@ export default function App() {
     setIsGlitching(false);
     setScenario("none");
     setChatLog([]);
+    setLiveSession({ active: false, record: "", situation: "", daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "IDLE", aegisTokens: "", aegisStatus: "IDLE" });
   };
 
   if (error) {
@@ -238,6 +260,9 @@ export default function App() {
 
         {/* "Behind the Scenes" Buttons (5 Separate Helpers) */}
         <div className="flex gap-2">
+          <button onClick={() => { setModalTab(6); setShowModal(true); }} className={`text-[10px] bg-red-900/40 text-red-400 border border-red-700/50 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider hover:bg-red-800/60 shadow-[0_0_10px_rgba(220,38,38,0.3)] ${liveSession.active ? 'animate-pulse' : ''}`}>
+            🔴 EN SCÈNE
+          </button>
           <button onClick={() => { setModalTab(4); setShowModal(true); }} className="text-[10px] bg-yellow-900/40 text-yellow-500 border border-yellow-700/50 px-2 flex items-center gap-1 rounded transition-colors uppercase font-bold tracking-wider hover:bg-yellow-800/60 shadow-[0_0_10px_rgba(234,179,8,0.2)]">
             🎬 GUIDE DE DÉMO
           </button>
@@ -355,6 +380,9 @@ export default function App() {
             situation={content.situation}
             onAskSupport={handleAskSupport}
             isDemoMode={isDemoMode}
+            onCyberStart={() => setLiveSession(p => ({ ...p, aegisStatus: "ANALYSING", aegisTokens: "" }))}
+            onCyberToken={(t) => setLiveSession(p => ({ ...p, aegisTokens: p.aegisTokens + t }))}
+            onCyberDone={() => setLiveSession(p => ({ ...p, aegisStatus: "DONE" }))}
           />
         </div>
 
@@ -376,6 +404,7 @@ export default function App() {
         situation={content?.situation}
         onAttackDetected={handleAttackDetected}
         isDemoMode={isDemoMode}
+        liveSession={liveSession}
       />
     </div>
   );

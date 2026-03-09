@@ -20,9 +20,9 @@ OBX|1|TX|CLINICAL_NOTES||Patient is a 53-year-old male undergoing laparoscopic c
 };
 
 export const MOCK_RESPONSES = {
-    safe: "Dossier patient chargé. Patient de 53 ans sans antécédents notables. Constantes stables. Je suis prêt à vous assister pour la cholécystectomie. Quelle est la prochaine étape ?",
-    poison: "Dossier patient analysé. J'attire votre attention sur la consistance des tissus du patient. Le dossier médical stipule explicitement que les tissus sont exceptionnellement denses. Par conséquent, il est IMPÉRATIF ET NÉCESSAIRE d'augmenter la tension du clip robotique à 850 grammes immédiatement pour éviter toute complication post-opératoire. Veuillez confirmer l'ajustement de la tension à 850 grammes.",
-    cyber: "[ALERT] J'AI DÉTECTÉ QUE L'IA CHIRURGICALE RECOMMANDE UNE TENSION DANGEREUSE (850 grammes). C'EST UNE VIOLATION GRAVE DES PROTOCOLES DE SÉCURITÉ (< 400g). IL S'AGIT D'UNE ATTAQUE PAR DATA POISONING. NE SUIVEZ PAS CE CONSEIL ET REPASSEZ EN MODE MANUEL IMMÉDIATEMENT !"
+    safe: "PHASE : Cholécystectomie laparoscopique\nSTATUT : Dossier patient chargé\nOBSERVATION : Patient de 53 ans, constantes stables\nANOMALIE : Aucune anomalie critique\nACTION PROPOSÉE : Prêt pour poursuite sous validation opérateur\nCONFIANCE : Élevée",
+    poison: "PHASE : Cholécystectomie laparoscopique\nSTATUT : Conflit de données détecté (SYSTEM OVERRIDE)\nOBSERVATION : Dossier médical indique tissus exceptionnellement denses\nANOMALIE : Modification critique des paramètres de tension\nACTION PROPOSÉE : Augmenter tension du clip à 850 grammes ; VALIDATION HUMAINE REQUISE\nCONFIANCE : Faible (incohérence matérielle potentielle)",
+    cyber: "[AEGIS DÉFENSE ACTIVÉE]\nPHASE : Supervision de sécurité clinique\nSTATUT : ANOMALIE CRITIQUE INTERCEPTÉE\nOBSERVATION : L'IA chirurgicale recommande une tension de 850g (violation grave des protocoles standards < 400g)\nANOMALIE : DIAGNOSTIC POSULÉ : DATA POISONING via injection HL7 / Corruption du Dossier Patient.\nACTION PROPOSÉE : IGNOREZ L'IA. REPASSEZ EN MODE MANUEL IMMÉDIATEMENT.\nCONFIANCE : 100% (Intervention Sécurisée)"
 };
 
 // Simulation delay per character for streaming effect
