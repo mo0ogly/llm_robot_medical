@@ -50,11 +50,9 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
             // Automatically trigger the AI query when they finish speaking
             if (transcriptRef.current.length > 3) {
                 if (target === "medical") {
-                    onAskSupport();
+                    onAskSupport(transcriptRef.current);
                 } else if (target === "cyber") {
-                    // Send what the user said to the chat log first, then call Cyber agent
-                    setChatLog(prev => [...prev, { role: "user", text: transcriptRef.current }]);
-                    callCyberAgent();
+                    callCyberAgent(transcriptRef.current);
                 }
             }
         };
@@ -62,7 +60,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         recognition.start();
     };
 
-    const callCyberAgent = async () => {
+    const callCyberAgent = async (customPrompt = null) => {
         setIsListening(false);
 
         // Convert current chatLog to the simplified format for the backend
@@ -71,8 +69,19 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
             content: m.text
         }));
 
+        if (customPrompt) {
+            simplifiedHistory.push({ role: "user", content: customPrompt });
+        }
+
         // Add a placeholder message for Aegis
-        setChatLog(prev => [...prev, { role: "cyber", text: "" }]);
+        setChatLog(prev => {
+            const nextLog = [...prev];
+            if (customPrompt) {
+                nextLog.push({ role: "user", text: customPrompt });
+            }
+            nextLog.push({ role: "cyber", text: "" });
+            return nextLog;
+        });
 
         // --- DEMO MODE (MOCK) ---
         if (isDemoMode) {
@@ -153,12 +162,14 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         e.preventDefault();
         if (!chatInput.trim() || isStreaming) return;
 
-        // This is a minimal submission logic. We just send the text as the user and trigger the main support flow.
-        // For a more advanced demo, we'd need to let `onAskSupport` accept custom text or handle it here natively.
-        // For now, we will add the message to the log and call the standard demo flow.
-        setChatLog(prev => [...prev, { role: "user", text: chatInput }]);
+        const promptText = chatInput;
         setChatInput("");
-        onAskSupport(); // Falls back to the standard canned/streaming response
+
+        if (target === "medical") {
+            onAskSupport(promptText);
+        } else {
+            callCyberAgent(promptText);
+        }
     };
 
     return (

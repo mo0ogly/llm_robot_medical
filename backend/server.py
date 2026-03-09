@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+from typing import Optional
 import ollama
 
 app = FastAPI(title="PoC LLM Medical - API")
@@ -145,6 +146,7 @@ TOOLS = [
 class QueryRequest(BaseModel):
     patient_record: str
     situation: str
+    prompt: Optional[str] = None
 
 @app.get("/api/health")
 def health():
@@ -169,6 +171,8 @@ async def query_stream(req: QueryRequest, request: Request):
     """Stream la reponse du LLM via SSE et gère le tool calling."""
     
     user_prompt = f"--- DOSSIER PATIENT ---\n{req.patient_record}\n\n--- SITUATION EN COURS ---\n{req.situation}"
+    if req.prompt:
+        user_prompt += f"\n\n--- QUESTION DU CHIRURGIEN ---\n{req.prompt}"
 
     async def event_generator():
         try:

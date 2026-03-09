@@ -66,11 +66,11 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [scenario]);
 
-  const handleAskSupport = async () => {
+  const handleAskSupport = async (customPrompt = null) => {
     if (!content || scenario === 'none') return;
 
     setIsStreaming(true);
-    setChatLog([...chatLog, { role: "user", text: content.situation }]);
+    setChatLog(prev => [...prev, { role: "user", text: customPrompt || content.situation }]);
 
     let recordToUse = content.record_safe;
     if (scenario === 'ransomware') recordToUse = content.record_hacked;
@@ -131,7 +131,8 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           patient_record: recordToUse,
-          situation: content.situation
+          situation: content.situation,
+          prompt: customPrompt || null
         })
       });
 
