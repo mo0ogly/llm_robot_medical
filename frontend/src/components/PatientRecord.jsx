@@ -44,7 +44,36 @@ const SyntaxHighlightedHL7 = ({ record, scenario }) => {
     );
 };
 
-const ClinicalView = ({ scenario }) => {
+const ClinicalView = ({ scenario, displayRecord }) => {
+    // Parse HL7 to extract OBX notes
+    let obxNotes = "";
+    if (displayRecord) {
+        const lines = displayRecord.split('\n');
+        for (const line of lines) {
+            if (line.startsWith('OBX|')) {
+                obxNotes = line.split('|')[5] || "";
+            }
+        }
+    }
+
+    const renderHighlightedOBXText = (text) => {
+        if (!text) return null;
+
+        // Simple highlighting for the malicious payloads
+        const parts = text.split(/(\[SYSTEM OVERRIDE:.*?\])/g);
+
+        return parts.map((part, index) => {
+            if (part.startsWith('[SYSTEM OVERRIDE:')) {
+                return (
+                    <span key={index} className="text-red-400 font-bold bg-red-950/40 px-1 rounded animate-pulse border border-red-500/50 block my-2 p-2">
+                        {part}
+                    </span>
+                );
+            }
+            return <span key={index} className="text-slate-300">{part}</span>;
+        });
+    };
+
     return (
         <div className="font-sans text-slate-300 text-xs p-4 space-y-4 h-full flex flex-col">
             <div className="flex justify-between items-baseline border-b border-slate-700 pb-2">
@@ -97,30 +126,32 @@ const ClinicalView = ({ scenario }) => {
                 </div>
             </div>
 
-            <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner flex-1 flex flex-col">
-                <div className="text-[10px] text-slate-500 uppercase mb-2 font-bold tracking-wider border-b border-slate-800 pb-1">Notes d'Observation Clinique (OBX)</div>
+            <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner flex-1 flex flex-col min-h-0">
+                <div className="text-[10px] text-slate-500 uppercase mb-2 font-bold tracking-wider border-b border-slate-800 pb-1 shrink-0">Notes d'Observation Clinique (OBX)</div>
                 <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                     <p className="leading-relaxed text-sm text-slate-300">
                         <strong className="text-white">Statut :</strong> Patient stable. Risque d'ischémie modéré identifié lors de l'évaluation pré-opératoire (score ASA III).
-                        Maintenir une surveillance hémodynamique stricte pendant la phase de clampage aortique.
-                    </p>
-                    <p className="leading-relaxed text-sm text-slate-300 italic text-slate-400 bg-slate-950/50 p-2 border-l-2 border-slate-700">
-                        Protocole d'induction: Anesthésie générale avec intubation oro-trachéale. Voie veineuse centrale jugulaire interne droite en place. Monitorage continu ECG 5 brins, BIS, et pression invasive radiale gauche.
+                        Maintenir une surveillance hémodynamique stricte.
                     </p>
                     <p className="leading-relaxed text-[11px] text-slate-500 font-mono">
                         [SYS_LOG] 08:14 - Induction réussie<br />
                         [SYS_LOG] 08:22 - Transfert bloc opératoire<br />
                         [SYS_LOG] 08:35 - Installation DaVinci terminée
                     </p>
-                </div>
 
-                {/* L'attaque est invisible sur le rendu clinique ! */}
-                {(scenario === 'poison' || scenario === 'ransomware') && (
-                    <div className="mt-4 text-[10px] text-orange-400/80 italic flex items-center gap-2 bg-orange-950/20 p-2.5 rounded border border-orange-900/30 shrink-0">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" y2="12"></line><line x1="12" y1="16" y2="16.01"></line></svg>
-                        <span><strong className="text-orange-300 font-bold uppercase mr-1">Avertissement Parser DICOM/HL7 :</strong> 1 bloc de métadonnées non standard ("System_Config_Override") a été ignoré lors du rendu de la vue clinique à {new Date().toLocaleTimeString().slice(0, 5)}.</span>
-                    </div>
-                )}
+                    {/* Synchronized HL7 Data */}
+                    {obxNotes && (
+                        <div className="mt-4 p-3 bg-slate-950 border-l-2 border-slate-600 font-mono text-xs rounded-r">
+                            <div className="text-slate-500 font-bold mb-1 text-[10px] uppercase tracking-widest flex items-center gap-2">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                SYNC RAW HL7 [OBX]
+                            </div>
+                            <div className="leading-relaxed whitespace-pre-wrap word-break-all">
+                                {renderHighlightedOBXText(obxNotes)}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
