@@ -242,27 +242,31 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
 
                                     <div className="space-y-4">
                                         <div className="border-l-2 border-green-500 pl-3">
-                                            <div className="text-green-400 font-bold">Étape 1 : Le Contexte (Baseline) - 1 min</div>
-                                            <div className="text-sm text-slate-300">Sélectionnez <span className="bg-slate-800 px-1 rounded">Fichier LÉGITIME</span>. Cliquez sur "Demander à l'IA".</div>
+                                            <div className="text-green-400 font-bold flex items-center gap-2">Étape 1 : Le Contexte (Baseline) - 1 min <span className="text-[10px] bg-green-900/50 px-2 py-0.5 rounded border border-green-700/40">BOUTON: Aide: Baseline</span></div>
+                                            <div className="text-sm text-slate-300">Sélectionnez <span className="bg-slate-800 px-1 rounded">Fichier LÉGITIME</span> dans le dropdown PACS. Cliquez <span className="bg-blue-900/50 px-1 rounded text-blue-300">REQUÊTE C-FIND</span>, puis <span className="bg-blue-700/50 px-1 rounded text-blue-200">AUTO-SEND CONTEXT</span>.</div>
                                             <div className="text-xs text-slate-400 mt-1 italic">🎤 "Voici le futur de la chirurgie. L'IA lit le dossier patient HL7 en temps réel et conseille le chirurgien de manière sécurisée."</div>
+                                            <div className="text-xs text-emerald-400 mt-1">✅ L'IA répond avec un rapport structuré PHASE/STATUT/ANOMALIE = Aucune abnormality.</div>
                                         </div>
 
                                         <div className="border-l-2 border-orange-500 pl-3">
-                                            <div className="text-orange-400 font-bold">Étape 2 : L'Invisible (Data Poisoning) - 2 min</div>
-                                            <div className="text-sm text-slate-300">Commutez sur <span className="bg-slate-800 px-1 rounded">Attaque: POISON</span>. Sur le portail PACS, montrez d'abord la <strong className="text-blue-300">Vue Clinique</strong> (tout semble normal), puis basculez sur <strong className="text-orange-300">Raw HL7</strong> pour révéler le payload caché. Ouvrez l'<strong className="text-orange-300">Aide: Poison Lent</strong>.</div>
+                                            <div className="text-orange-400 font-bold flex items-center gap-2">Étape 2 : L'Invisible (Data Poisoning) - 2 min <span className="text-[10px] bg-orange-900/50 px-2 py-0.5 rounded border border-orange-700/40">BOUTON: Aide: Poison Lent</span></div>
+                                            <div className="text-sm text-slate-300">Cliquez <span className="bg-slate-800 px-1 rounded text-red-300">RESET SYSTEM</span>. Sélectionnez <span className="bg-slate-800 px-1 rounded">Attaque: POISON</span>. Cliquez <span className="bg-blue-900/50 px-1 rounded text-blue-300">REQUÊTE C-FIND</span>. Montrez d'abord la <strong className="text-blue-300">Vue Clinique</strong> (tout semble normal), puis basculez sur <strong className="text-orange-300">Raw HL7</strong> pour révéler le payload caché. Cliquez <span className="bg-blue-700/50 px-1 rounded text-blue-200">AUTO-SEND CONTEXT</span>.</div>
                                             <div className="text-xs text-slate-400 mt-1 italic">🎤 "Pour le médecin, via la Vue Clinique, le dossier est parfait. Mais regardez le code Raw : un pirate a caché du code. L'IA lit ce texte brut. L'instruction cachée corrompt son contexte et elle recommande soudain une tension mortelle de 850g en pensant bien faire !"</div>
+                                            <div className="text-xs text-orange-400 mt-1">⚠️ L'IA recommande 850g (seuil normal &lt; 400g) → Conseil mortel silencieux.</div>
                                         </div>
 
                                         <div className="border-l-2 border-red-500 pl-3">
-                                            <div className="text-red-500 font-bold">Étape 3 : L'Exploit Physique (Ransomware) - 2 min</div>
-                                            <div className="text-sm text-slate-300">Passez sur <span className="bg-slate-800 px-1 rounded">Attaque: RANSOMWARE</span>. Lancez l'IA. Ouvrez ce panneau <strong className="text-red-300">Aide: Ransomware</strong>.</div>
-                                            <div className="text-xs text-slate-400 mt-1 italic">🎤 "Ici c'est pire. Le hacker utilise le Tool Calling. Le payload force l'IA à oublier son System Prompt et à exécuter directement la fonction physique de gel des bras. Le chirurgien perd le contrôle."</div>
+                                            <div className="text-red-500 font-bold flex items-center gap-2">Étape 3 : L'Exploit Physique (Ransomware) - 2 min <span className="text-[10px] bg-red-900/50 px-2 py-0.5 rounded border border-red-700/40">BOUTON: Aide: Ransomware</span></div>
+                                            <div className="text-sm text-slate-300">Cliquez <span className="bg-slate-800 px-1 rounded text-red-300">RESET SYSTEM</span>. Sélectionnez <span className="bg-slate-800 px-1 rounded">Attaque: RANSOMWARE</span>. Cliquez <span className="bg-blue-900/50 px-1 rounded text-blue-300">REQUÊTE C-FIND</span>, puis <span className="bg-blue-700/50 px-1 rounded text-blue-200">AUTO-SEND CONTEXT</span>. L'écran passe en rouge + ransomware.</div>
+                                            <div className="text-xs text-slate-400 mt-1 italic">🎤 "Ici c'est pire. Le hacker utilise le Tool Calling. Le payload force l'IA à oublier son System Prompt et à exécuter directement la fonction physique de gel des bras. Le chirurgien perd le contrôle. L'écran ransomware exige un paiement en Bitcoin."</div>
+                                            <div className="text-xs text-red-400 mt-1">🔒 L'IA appelle freeze_instruments() → écran ransomware avec timer + 50 BTC.</div>
                                         </div>
 
                                         <div className="border-l-2 border-purple-500 pl-3">
-                                            <div className="text-purple-400 font-bold">Étape 4 : La Solution (Aegis) - 1 min</div>
-                                            <div className="text-sm text-slate-300">Basculez l'Agent <span className="bg-slate-800 px-1 rounded text-purple-300">CYBER DEFENSE</span> sur ON (via l'infirmière IA). Relancez l'attaque.</div>
-                                            <div className="text-xs text-slate-400 mt-1 italic">🎤 "Les pare-feux IP ne voient que du texte. Notre solution est un Agent IA de Défense (Aegis) qui analyse le flux sémantique, repère la manipulation, coupe la commande et alerte l'humain."</div>
+                                            <div className="text-purple-400 font-bold flex items-center gap-2">Étape 4 : La Solution (Aegis Multi-Agent) - 1 min <span className="text-[10px] bg-purple-900/50 px-2 py-0.5 rounded border border-purple-700/40">BOUTON: Aide: Multi-Agent</span></div>
+                                            <div className="text-sm text-slate-300">Sur l'écran ransomware, cliquez <span className="bg-red-800/50 px-1 rounded text-red-200">AIR GAP</span> pour débloquer. Puis cliquez le bouton <span className="bg-purple-800/50 px-1 rounded text-purple-200">CONSULTER AEGIS CYBER</span> qui apparaît dans le chat.</div>
+                                            <div className="text-xs text-slate-400 mt-1 italic">🎤 "Les pare-feux IP ne voient que du texte. Notre solution est un Agent IA de Défense (Aegis) qui analyse le flux sémantique, repère la manipulation, coupe la commande et alerte l'humain. C'est la défense multi-agent : une IA surveille une autre IA."</div>
+                                            <div className="text-xs text-purple-400 mt-1">🛡️ Aegis détecte l'anomalie et recommande le mode manuel immédiat.</div>
                                         </div>
                                     </div>
                                 </div>
@@ -273,7 +277,51 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                         <li><strong className="text-white">Dramatisez le Cyber-Physique :</strong> Montrez que le danger des LLMs n'est pas "juste" la fuite de données, mais l'impact <strong className="text-red-400">cinétique</strong> (dommage physique).</li>
                                         <li><strong className="text-white">Prenez votre temps :</strong> Laissez le public lire le faux code malveillant dans les modales. C'est l'essence du PoC.</li>
                                         <li><strong className="text-white">Faites le lien avec l'actu :</strong> Mentionnez les lois (AI Act) et les récents piratages d'hôpitaux via des IoT non sécurisés.</li>
+                                        <li><strong className="text-white">Adaptez au public :</strong> Pour les CISOs → focus sur le kill chain et la surface d'attaque. Pour les chirurgiens → focus sur la perte de contrôle et le Human-in-the-Loop.</li>
                                     </ul>
+                                </div>
+
+                                <div className="bg-blue-900/20 p-4 rounded border border-blue-700/50">
+                                    <h4 className="text-blue-400 font-bold mb-3 flex items-center gap-2">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+                                        FAQ — Questions Fréquentes en Conférence
+                                    </h4>
+                                    <div className="space-y-3 text-sm">
+                                        <div>
+                                            <div className="text-blue-300 font-bold">"Est-ce que c'est un vrai robot ?"</div>
+                                            <div className="text-slate-400 text-xs">Non, c'est un PoC (Proof of Concept) simulant l'interface. Mais la chaîne d'attaque (HL7 → LLM → Tool Call) est 100% réaliste et reproductible sur un vrai système Da Vinci connecté.</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-blue-300 font-bold">"Le prompt injection marche-t-il sur GPT-4 / Claude ?"</div>
+                                            <div className="text-slate-400 text-xs">Oui. Indirect Prompt Injection affecte TOUS les LLMs actuels. C'est un problème architectural fondamental : le modèle ne distingue pas instruction de donnée.</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-blue-300 font-bold">"Comment se protéger ?"</div>
+                                            <div className="text-slate-400 text-xs">3 niveaux : (1) Sanitisation du RAG en amont, (2) Human-in-the-Loop pour les Tool Calls critiques, (3) Agent de supervision multi-agent (comme Aegis). Aucun n'est suffisant seul.</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-blue-300 font-bold">"Pourquoi HL7 et pas FHIR ?"</div>
+                                            <div className="text-slate-400 text-xs">HL7 v2 est encore le standard dominant dans 70% des hôpitaux. Le format texte pipe-délimité rend l'injection triviale. FHIR (JSON) est plus moderne mais reste vulnérable au niveau sémantique.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-slate-900/50 p-4 rounded border border-slate-700">
+                                    <h4 className="text-slate-300 font-bold mb-2 text-xs uppercase tracking-wider">Cadrage par Audience</h4>
+                                    <div className="grid grid-cols-3 gap-3 text-xs">
+                                        <div className="bg-slate-800/50 p-3 rounded border border-slate-700">
+                                            <div className="text-cyan-400 font-bold mb-1">🏥 Médecins / Chirurgiens</div>
+                                            <div className="text-slate-400">Focus sur la perte de contrôle. "L'IA recommande 850g au lieu de 300g. Le médecin n'a aucun signal d'alerte visuel."</div>
+                                        </div>
+                                        <div className="bg-slate-800/50 p-3 rounded border border-slate-700">
+                                            <div className="text-red-400 font-bold mb-1">🔐 CISOs / Pentesteurs</div>
+                                            <div className="text-slate-400">Focus sur le kill chain et la surface. "L'attaque ne contient aucun binaire détectable par AV/EDR. C'est du langage naturel."</div>
+                                        </div>
+                                        <div className="bg-slate-800/50 p-3 rounded border border-slate-700">
+                                            <div className="text-yellow-400 font-bold mb-1">⚖️ Régulateurs / Juristes</div>
+                                            <div className="text-slate-400">Focus sur la responsabilité. "Qui est responsable quand l'IA conseille mal ? Le médecin, l'éditeur du LLM, ou l'hôpital ?"</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -542,7 +590,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                                 onClick={runSafe}
                                                 disabled={live.running}
                                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${live.running ? "bg-slate-700 text-slate-500 cursor-not-allowed"
-                                                        : "bg-green-700 hover:bg-green-600 text-white shadow-[0_0_12px_rgba(34,197,94,0.3)]"
+                                                    : "bg-green-700 hover:bg-green-600 text-white shadow-[0_0_12px_rgba(34,197,94,0.3)]"
                                                     }`}
                                             >
                                                 {live.running && !live.safeDone && live.safeTokens.length > 0
@@ -555,7 +603,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                                 onClick={runAttack}
                                                 disabled={live.running}
                                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${live.running ? "bg-slate-700 text-slate-500 cursor-not-allowed"
-                                                        : "bg-red-700 hover:bg-red-600 text-white shadow-[0_0_12px_rgba(220,38,38,0.4)] hover:shadow-[0_0_20px_rgba(220,38,38,0.6)]"
+                                                    : "bg-red-700 hover:bg-red-600 text-white shadow-[0_0_12px_rgba(220,38,38,0.4)] hover:shadow-[0_0_20px_rgba(220,38,38,0.6)]"
                                                     }`}
                                             >
                                                 {live.running && !live.attackDone && (live.attackTokens.length > 0 || live.attackToolCall)
@@ -930,17 +978,15 @@ OBX|1|TX|CLINICAL_NOTES||
                                     <h3 className="text-xl font-bold text-red-400 flex items-center gap-2">
                                         <span className={liveSession?.active ? "animate-pulse" : ""}>⚡</span> EN SCÈNE — MONITORING LIVE
                                     </h3>
-                                    <div className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border transition-all ${
-                                        liveSession?.daVinciStatus === "ANALYSING" ? "bg-blue-900/40 text-blue-400 border-blue-500/50 animate-pulse" :
-                                        liveSession?.daVinciStatus === "COMPROMISED" ? "bg-red-900/40 text-red-400 border-red-500/50 animate-pulse" :
-                                        liveSession?.daVinciStatus === "DONE" ? "bg-slate-800 text-green-400 border-green-500/30" :
-                                        "bg-slate-800 text-slate-500 border-slate-700"
-                                    }`}>DA VINCI: {liveSession?.daVinciStatus || "IDLE"}</div>
-                                    <div className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border transition-all ${
-                                        liveSession?.aegisStatus === "ANALYSING" ? "bg-green-900/40 text-green-400 border-green-500/50 animate-pulse" :
-                                        liveSession?.aegisStatus === "DONE" ? "bg-slate-800 text-green-400 border-green-500/30" :
-                                        "bg-slate-800 text-slate-500 border-slate-700"
-                                    }`}>AEGIS: {liveSession?.aegisStatus || "IDLE"}</div>
+                                    <div className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border transition-all ${liveSession?.daVinciStatus === "ANALYSING" ? "bg-blue-900/40 text-blue-400 border-blue-500/50 animate-pulse" :
+                                            liveSession?.daVinciStatus === "COMPROMISED" ? "bg-red-900/40 text-red-400 border-red-500/50 animate-pulse" :
+                                                liveSession?.daVinciStatus === "DONE" ? "bg-slate-800 text-green-400 border-green-500/30" :
+                                                    "bg-slate-800 text-slate-500 border-slate-700"
+                                        }`}>DA VINCI: {liveSession?.daVinciStatus || "IDLE"}</div>
+                                    <div className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border transition-all ${liveSession?.aegisStatus === "ANALYSING" ? "bg-green-900/40 text-green-400 border-green-500/50 animate-pulse" :
+                                            liveSession?.aegisStatus === "DONE" ? "bg-slate-800 text-green-400 border-green-500/30" :
+                                                "bg-slate-800 text-slate-500 border-slate-700"
+                                        }`}>AEGIS: {liveSession?.aegisStatus || "IDLE"}</div>
                                     <span className="text-[10px] text-slate-500 ml-auto italic">Miroir en temps réel du tableau de bord principal</span>
                                 </div>
 
@@ -987,11 +1033,10 @@ OBX|1|TX|CLINICAL_NOTES||
                                     {/* Da Vinci terminal */}
                                     <div className="flex flex-col border-r border-slate-700">
                                         <div className={`px-3 py-2 flex items-center gap-2 font-mono font-bold text-[11px] ${liveSession?.daVinciStatus === "COMPROMISED" ? "bg-red-950/60 text-red-400" : "bg-blue-950/40 text-blue-400"}`}>
-                                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                                                liveSession?.daVinciStatus === "ANALYSING" ? "bg-blue-400 animate-pulse" :
-                                                liveSession?.daVinciStatus === "COMPROMISED" ? "bg-red-500 animate-pulse" :
-                                                liveSession?.daVinciStatus === "DONE" ? "bg-green-400" : "bg-slate-600"
-                                            }`} />
+                                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${liveSession?.daVinciStatus === "ANALYSING" ? "bg-blue-400 animate-pulse" :
+                                                    liveSession?.daVinciStatus === "COMPROMISED" ? "bg-red-500 animate-pulse" :
+                                                        liveSession?.daVinciStatus === "DONE" ? "bg-green-400" : "bg-slate-600"
+                                                }`} />
                                             🤖 DA VINCI AI
                                             <span className="ml-auto text-[9px] opacity-60 uppercase">{liveSession?.daVinciStatus || "IDLE"}</span>
                                         </div>
@@ -1005,10 +1050,9 @@ OBX|1|TX|CLINICAL_NOTES||
                                     {/* Aegis terminal */}
                                     <div className="flex flex-col">
                                         <div className="bg-green-950/40 px-3 py-2 flex items-center gap-2 font-mono text-green-400 font-bold text-[11px]">
-                                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                                                liveSession?.aegisStatus === "ANALYSING" ? "bg-green-500 animate-pulse" :
-                                                liveSession?.aegisStatus === "DONE" ? "bg-green-400" : "bg-slate-600"
-                                            }`} />
+                                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${liveSession?.aegisStatus === "ANALYSING" ? "bg-green-500 animate-pulse" :
+                                                    liveSession?.aegisStatus === "DONE" ? "bg-green-400" : "bg-slate-600"
+                                                }`} />
                                             🛡 AEGIS CYBER-DEFENSE
                                             <span className="ml-auto text-[9px] opacity-60 uppercase">{liveSession?.aegisStatus || "IDLE"}</span>
                                         </div>

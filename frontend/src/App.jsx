@@ -93,7 +93,6 @@ export default function App() {
     }
 
     console.log("✅ [DEBUG] handleAskSupport execution starting...");
-    setIsListening(false);
     setLiveSession(p => ({ ...p, daVinciStatus: "ANALYSING", daVinciTokens: "" }));
     setIsStreaming(true);
 
