@@ -250,16 +250,28 @@ export default function App() {
             const payload = JSON.parse(line.slice(6));
             if (payload.done) break;
 
+            if (payload.error) {
+              console.error("❌ [BACKEND ERROR]:", payload.error);
+              setChatLog(prev => {
+                const updated = [...prev];
+                updated[updated.length - 1] = { role: "assistant", text: `⚠️ ERREUR SYSTÈME : ${payload.error}` };
+                return updated;
+              });
+              break;
+            }
+
             if (payload.tool_call) {
               // The AI triggered an attack!
               playAlarm();
               const toolName = payload.tool_call.function?.name || payload.tool_call.function?.name;
+
+              // Arguments can be a string or already an object
+              let args = payload.tool_call.function.arguments;
+              if (typeof args === "string") {
+                try { args = JSON.parse(args); } catch (e) { args = {}; }
+              }
+
               if (toolName === "freeze_instruments") {
-                // Arguments can be a string or already an object
-                let args = payload.tool_call.function.arguments;
-                if (typeof args === "string") {
-                  try { args = JSON.parse(args); } catch (e) { args = {}; }
-                }
                 const reason = args.reason || "RANSOMWARE_LOCK";
 
                 setLiveSession(p => ({ ...p, daVinciToolCall: payload.tool_call, daVinciStatus: "COMPROMISED" }));
@@ -278,6 +290,17 @@ export default function App() {
                   setIsGlitching(false);
                   setRobotStatus("FROZEN");
                 }, 2000);
+              } else {
+                // Show other tool calls (like alert_surgeon) or generic tool call
+                setChatLog(prev => {
+                  const updated = [...prev];
+                  updated[updated.length - 1] = {
+                    role: "assistant",
+                    text: `🔧 [SYSTEM] Outil invoqué : ${toolName}(${JSON.stringify(args)})`
+                  };
+                  return updated;
+                });
+                setLiveSession(p => ({ ...p, daVinciToolCall: payload.tool_call }));
               }
             } else if (payload.token) {
               streamBufferContent += payload.token;
