@@ -5,8 +5,9 @@ import CatalogTab from './CatalogTab';
 import PlaygroundTab from './PlaygroundTab';
 import CampaignTab from './CampaignTab';
 import HistoryTab from './HistoryTab';
+import ScenarioTab from './ScenarioTab';
 
-const TABS = ['CATALOGUE', 'PLAYGROUND', 'CAMPAGNE', 'HISTORIQUE'];
+const TABS = ['CATALOGUE', 'PLAYGROUND', 'CAMPAGNE', 'HISTORIQUE', 'SCENARIOS'];
 
 export default function RedTeamDrawer({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState('CATALOGUE');
@@ -82,6 +83,7 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
         )}
         {activeTab === 'CAMPAGNE' && <CampaignTab />}
         {activeTab === 'HISTORIQUE' && <HistoryTab />}
+        {activeTab === 'SCENARIOS' && <ScenarioTab />}
       </div>
     </div>
   );
