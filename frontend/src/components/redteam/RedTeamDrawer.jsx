@@ -2,12 +2,14 @@
 import { X, Maximize2, Minimize2 } from 'lucide-react';
 import { useState } from 'react';
 import CatalogTab from './CatalogTab';
+import PlaygroundTab from './PlaygroundTab';
 
 const TABS = ['CATALOGUE', 'PLAYGROUND', 'CAMPAGNE', 'HISTORIQUE'];
 
 export default function RedTeamDrawer({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState('CATALOGUE');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [playgroundInit, setPlaygroundInit] = useState({ category: 'injection', message: '' });
 
   return (
     <div
@@ -63,11 +65,22 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
       <div className="flex-1 overflow-y-auto p-4 font-mono text-sm text-gray-300">
         {activeTab === 'CATALOGUE' && (
           <CatalogTab
-            onSwitchToPlayground={(cat, msg) => { /* TODO Task 3 */ setActiveTab('PLAYGROUND'); }}
-            onLaunchCampaign={() => { /* TODO Task 4 */ setActiveTab('CAMPAGNE'); }}
+            onSwitchToPlayground={(cat, msg) => {
+              setPlaygroundInit({ category: cat, message: msg });
+              setActiveTab('PLAYGROUND');
+            }}
+            onLaunchCampaign={() => setActiveTab('CAMPAGNE')}
           />
         )}
-        {activeTab !== 'CATALOGUE' && <p className="text-gray-600">[ {activeTab} ]</p>}
+        {activeTab === 'PLAYGROUND' && (
+          <PlaygroundTab
+            initialCategory={playgroundInit.category}
+            initialMessage={playgroundInit.message}
+          />
+        )}
+        {activeTab !== 'CATALOGUE' && activeTab !== 'PLAYGROUND' && (
+          <p className="text-gray-600">[ {activeTab} ]</p>
+        )}
       </div>
     </div>
   );
