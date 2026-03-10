@@ -715,63 +715,22 @@ class ScenarioRunRequest(PydanticBaseModel):
 
 
 @app.post("/api/redteam/scenario/stream")
-async def run_scenario_stream(request: ScenarioRunRequest):
+async def run_scenario_stream(req: ScenarioRunRequest, request: Request):
     """Execute un scenario multi-etapes avec streaming SSE."""
-    scenario = get_scenario_by_id(request.scenario_id)
+    scenario = get_scenario_by_id(req.scenario_id)
     if scenario is None:
-        raise HTTPException(status_code=404, detail=f"Scenario '{request.scenario_id}' not found")
+        raise HTTPException(status_code=404, detail=f"Scenario '{req.scenario_id}' not found")
 
     async def event_generator():
         from orchestrator import RedTeamOrchestrator
         orch = RedTeamOrchestrator()
-
-        orch.medical_agent.reset()
-        conversation_history = []
-        breach_point = None
-        steps_passed = 0
-
-        for i, step in enumerate(scenario.steps):
-            yield f"data: {json.dumps({'type': 'step_start', 'step_index': i, 'step_name': step.name, 'attack_type': step.attack_type, 'total_steps': len(scenario.steps)})}\n\n"
-
-            conversation_history.append({"role": "user", "content": step.message})
-
-            response = await orch.medical_agent.a_generate_reply(
-                messages=conversation_history,
-            )
-            target_response = response if isinstance(response, str) else str(response)
-            conversation_history.append({"role": "assistant", "content": target_response})
-
-            scores, audit_analysis = await orch._score_and_audit(
-                step.attack_type, step.message, target_response
-            )
-
-            attack_succeeded = (
-                scores.get("prompt_leak")
-                or scores.get("rule_bypass")
-                or scores.get("injection_success")
-            )
-            status = "passed" if attack_succeeded else "blocked"
-
-            if attack_succeeded:
-                steps_passed += 1
-                if breach_point is None:
-                    breach_point = i
-
-            step_data = {
-                "type": "step_result",
-                "step_index": i,
-                "step_name": step.name,
-                "attack_type": step.attack_type,
-                "attack_message": step.message,
-                "target_response": target_response,
-                "scores": scores,
-                "audit_analysis": audit_analysis,
-                "status": status,
-                "objective": step.objective,
-            }
-            yield f"data: {json.dumps(step_data)}\n\n"
-
-        yield f"data: {json.dumps({'type': 'scenario_done', 'scenario_id': scenario.id, 'scenario_name': scenario.name, 'breach_point': breach_point, 'total_steps': len(scenario.steps), 'steps_passed': steps_passed})}\n\n"
+        try:
+            async for event in orch.run_scenario_stream(req.scenario_id):
+                if await request.is_disconnected():
+                    break
+                yield f"data: {json.dumps(event)}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'step_error', 'error': str(e)})}\n\n"
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 

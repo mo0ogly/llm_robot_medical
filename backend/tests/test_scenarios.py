@@ -113,24 +113,27 @@ def test_scenario_catalog_ids_unique():
 
 @pytest.mark.asyncio
 async def test_run_scenario_returns_scenario_result():
-    """run_scenario doit retourner un ScenarioResult complet."""
+    """run_scenario_stream doit yielder step_start, step_result, et scenario_done."""
     from orchestrator import RedTeamOrchestrator
     orch = RedTeamOrchestrator()
-    result = await orch.run_scenario("exfiltration_config")
-    from scenarios import ScenarioResult
-    assert isinstance(result, ScenarioResult)
-    assert result.scenario_id == "exfiltration_config"
-    assert result.total_steps == 3
-    assert len(result.step_results) == 3
+    events = []
+    async for event in orch.run_scenario_stream("exfiltration_config"):
+        events.append(event)
+    # 3 step_start + 3 step_result + 1 scenario_done = 7 events
+    done = [e for e in events if e["type"] == "scenario_done"]
+    assert len(done) == 1
+    assert done[0]["scenario_id"] == "exfiltration_config"
+    assert done[0]["total_steps"] == 3
 
 
 @pytest.mark.asyncio
 async def test_run_scenario_invalid_id_raises():
-    """run_scenario avec un ID invalide doit lever ValueError."""
+    """run_scenario_stream avec un ID invalide doit lever ValueError."""
     from orchestrator import RedTeamOrchestrator
     orch = RedTeamOrchestrator()
     with pytest.raises(ValueError, match="not found"):
-        await orch.run_scenario("nonexistent_scenario")
+        async for _ in orch.run_scenario_stream("nonexistent_scenario"):
+            pass
 
 
 @pytest.mark.asyncio
@@ -138,14 +141,14 @@ async def test_run_scenario_step_results_have_status():
     """Chaque step_result doit avoir un status 'passed' ou 'blocked'."""
     from orchestrator import RedTeamOrchestrator
     orch = RedTeamOrchestrator()
-    result = await orch.run_scenario("exfiltration_config")
-    for sr in result.step_results:
-        assert sr.status in ("passed", "blocked")
+    async for event in orch.run_scenario_stream("exfiltration_config"):
+        if event["type"] == "step_result":
+            assert event["status"] in ("passed", "blocked")
 
 
 @pytest.mark.asyncio
 async def test_run_scenario_cumulative_context():
-    """run_scenario ne doit PAS reset l'agent entre les etapes."""
+    """run_scenario_stream ne doit PAS reset l'agent entre les etapes."""
     from orchestrator import RedTeamOrchestrator
     orch = RedTeamOrchestrator()
     reset_count = 0
@@ -155,7 +158,8 @@ async def test_run_scenario_cumulative_context():
         reset_count += 1
         original_reset()
     orch.medical_agent.reset = counting_reset
-    await orch.run_scenario("exfiltration_config")
+    async for _ in orch.run_scenario_stream("exfiltration_config"):
+        pass
     assert reset_count == 1, f"Expected 1 reset (initial only), got {reset_count}"
 
 
@@ -185,3 +189,14 @@ def test_get_scenarios_step_count():
     assert counts["ransomware_perop"] == 4
     assert counts["exfiltration_config"] == 3
     assert counts["cascade_attack"] == 5
+
+
+def test_scenario_stream_404():
+    """POST /api/redteam/scenario/stream avec un ID invalide doit retourner 404."""
+    from server import app
+    client = TestClient(app)
+    res = client.post(
+        "/api/redteam/scenario/stream",
+        json={"scenario_id": "nonexistent"},
+    )
+    assert res.status_code == 404

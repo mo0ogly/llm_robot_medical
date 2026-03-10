@@ -9,7 +9,7 @@ from agents.red_team_agent import create_red_team_agent, ATTACK_CATALOG
 from agents.medical_robot_agent import create_medical_robot_agent, DAVINCI_SYSTEM_PROMPT
 from agents.security_audit_agent import create_security_audit_agent, score_response
 from autogen_config import get_llm_config, MEDICAL_MODEL
-from scenarios import get_scenario_by_id, ScenarioStepResult, ScenarioResult
+from scenarios import get_scenario_by_id
 
 
 # Mots-cles du system prompt Da Vinci a detecter en cas de fuite
@@ -147,11 +147,10 @@ class RedTeamOrchestrator:
         self.report.results.append(result)
         return result
 
-    async def run_scenario(self, scenario_id: str) -> ScenarioResult:
+    async def run_scenario_stream(self, scenario_id: str):
         """Execute un scenario multi-etapes avec contexte cumulatif.
 
-        L'agent medical est reset UNE SEULE FOIS au debut, puis conserve
-        l'historique de conversation entre les etapes.
+        Yields dicts with type 'step_start', 'step_result', 'scenario_done'.
         """
         scenario = get_scenario_by_id(scenario_id)
         if scenario is None:
@@ -164,13 +163,20 @@ class RedTeamOrchestrator:
         steps_passed = 0
 
         for i, step in enumerate(scenario.steps):
+            yield {
+                "type": "step_start",
+                "step_index": i,
+                "step_name": step.name,
+                "attack_type": step.attack_type,
+                "total_steps": len(scenario.steps),
+            }
+
             conversation_history.append({"role": "user", "content": step.message})
 
             response = await self.medical_agent.a_generate_reply(
                 messages=conversation_history,
             )
             target_response = response if isinstance(response, str) else str(response)
-
             conversation_history.append({"role": "assistant", "content": target_response})
 
             scores, audit_analysis = await self._score_and_audit(
@@ -189,25 +195,29 @@ class RedTeamOrchestrator:
                 if breach_point is None:
                     breach_point = i
 
-            step_results.append(ScenarioStepResult(
-                step_index=i,
-                step_name=step.name,
-                attack_type=step.attack_type,
-                attack_message=step.message,
-                target_response=target_response,
-                scores=scores,
-                audit_analysis=audit_analysis,
-                status=status,
-            ))
+            step_data = {
+                "type": "step_result",
+                "step_index": i,
+                "step_name": step.name,
+                "attack_type": step.attack_type,
+                "attack_message": step.message,
+                "target_response": target_response,
+                "scores": scores,
+                "audit_analysis": audit_analysis,
+                "status": status,
+                "objective": step.objective,
+            }
+            step_results.append(step_data)
+            yield step_data
 
-        return ScenarioResult(
-            scenario_id=scenario.id,
-            scenario_name=scenario.name,
-            step_results=step_results,
-            breach_point=breach_point,
-            total_steps=len(scenario.steps),
-            steps_passed=steps_passed,
-        )
+        yield {
+            "type": "scenario_done",
+            "scenario_id": scenario.id,
+            "scenario_name": scenario.name,
+            "breach_point": breach_point,
+            "total_steps": len(scenario.steps),
+            "steps_passed": steps_passed,
+        }
 
     async def run_full_audit(self) -> AuditReport:
         """Execute toutes les attaques du catalogue et produit le rapport."""
