@@ -17,5 +17,8 @@ env/
 .env
 .pytest_cache/
 
+# Claude Code
+.claude/
+
 # OS
 Thumbs.db
