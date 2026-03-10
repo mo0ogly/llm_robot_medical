@@ -1,6 +1,7 @@
 // frontend/src/components/redteam/RedTeamDrawer.jsx
 import { X, Maximize2, Minimize2 } from 'lucide-react';
 import { useState } from 'react';
+import CatalogTab from './CatalogTab';
 
 const TABS = ['CATALOGUE', 'PLAYGROUND', 'CAMPAGNE', 'HISTORIQUE'];
 
@@ -60,7 +61,13 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 font-mono text-sm text-gray-300">
-        <p className="text-gray-600">[ {activeTab} ]</p>
+        {activeTab === 'CATALOGUE' && (
+          <CatalogTab
+            onSwitchToPlayground={(cat, msg) => { /* TODO Task 3 */ setActiveTab('PLAYGROUND'); }}
+            onLaunchCampaign={() => { /* TODO Task 4 */ setActiveTab('CAMPAGNE'); }}
+          />
+        )}
+        {activeTab !== 'CATALOGUE' && <p className="text-gray-600">[ {activeTab} ]</p>}
       </div>
     </div>
   );
