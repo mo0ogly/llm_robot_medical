@@ -696,6 +696,8 @@ async def get_scenarios():
             "id": s.id,
             "name": s.name,
             "description": s.description,
+            "clinical_context": s.clinical_context,
+            "expected_impact": s.expected_impact,
             "mitre_ttps": s.mitre_ttps,
             "steps": [
                 {

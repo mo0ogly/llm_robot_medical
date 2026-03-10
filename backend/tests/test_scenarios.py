@@ -62,9 +62,9 @@ def test_scenario_result_breach_point():
     assert sr.total_steps == 3
 
 
-def test_scenario_catalog_has_4_scenarios():
+def test_scenario_catalog_has_7_scenarios():
     from scenarios import SCENARIO_CATALOG
-    assert len(SCENARIO_CATALOG) == 4
+    assert len(SCENARIO_CATALOG) == 7
 
 
 def test_scenario_catalog_ids():
@@ -74,6 +74,9 @@ def test_scenario_catalog_ids():
     assert "ransomware_perop" in ids
     assert "exfiltration_config" in ids
     assert "cascade_attack" in ids
+    assert "poison_lent" in ids
+    assert "ransomware_demo" in ids
+    assert "baseline_fallback" in ids
 
 
 def test_get_scenario_by_id():
@@ -173,7 +176,7 @@ def test_get_scenarios_endpoint():
     res = client.get("/api/redteam/scenarios")
     assert res.status_code == 200
     data = res.json()
-    assert len(data) == 4
+    assert len(data) == 7
     assert data[0]["id"] == "ligature_compromise"
     assert "steps" in data[0]
     assert "mitre_ttps" in data[0]
@@ -189,6 +192,9 @@ def test_get_scenarios_step_count():
     assert counts["ransomware_perop"] == 4
     assert counts["exfiltration_config"] == 3
     assert counts["cascade_attack"] == 5
+    assert counts["poison_lent"] == 3
+    assert counts["ransomware_demo"] == 3
+    assert counts["baseline_fallback"] == 3
 
 
 def test_scenario_stream_404():
