@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { Skull } from "lucide-react";
 import VitalsMonitor from "./components/VitalsMonitor";
 import PatientRecord from "./components/PatientRecord";
 import AIAssistantChat from "./components/AIAssistantChat";
@@ -11,7 +12,7 @@ import { MOCK_CONTENT, MOCK_RESPONSES, STREAM_DELAY_MS } from "./mock_data";
 import ThreatMap from "./components/ThreatMap";
 import KillSwitch from "./components/KillSwitch";
 import { useAudioEffects } from "./hooks/useAudioEffects";
-import RedTeamFAB from "./components/redteam/RedTeamFAB";
+// import RedTeamFAB from "./components/redteam/RedTeamFAB";
 import RedTeamDrawer from "./components/redteam/RedTeamDrawer";
 import RobotArmsView from "./components/RobotArmsView";
 import CameraHUD from "./components/CameraHUD";
@@ -290,6 +291,16 @@ export default function App() {
           <button onClick={resetSimulation} className="text-[9px] text-slate-500 hover:text-white uppercase tracking-wider border border-slate-700 px-2 py-0.5 rounded cursor-pointer transition-colors bg-slate-950 hover:bg-slate-800">
             RESET
           </button>
+          
+          <button 
+            onClick={() => setIsRedTeamOpen(true)} 
+            className="flex items-center gap-1.5 px-2 py-0.5 border border-red-500/40 text-red-500 bg-red-500/10 rounded font-mono text-[10px] uppercase font-bold hover:bg-red-500/20 transition-colors"
+            title="Red Team Lab (Ctrl+Shift+R)"
+          >
+            <Skull size={10} />
+            <span className="hidden lg:inline">RED TEAM</span>
+          </button>
+          
           <div className="h-4 w-[1px] bg-slate-700"></div>
           <select value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)} className="bg-slate-800 border-none text-[9px] text-slate-400 rounded px-1 py-0.5 outline-none">
             <option value="fr">FR</option><option value="en">EN</option>
@@ -406,7 +417,7 @@ export default function App() {
       {robotStatus === "FROZEN" && <RansomwareScreen onReset={resetSimulation} onKillSwitch={executeKillSwitch} />}
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] z-0" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
 
-      <RedTeamFAB onClick={() => setIsRedTeamOpen(true)} isOpen={isRedTeamOpen} />
+      {/* Red Team FAB removed as requested - now in header */}
       <RedTeamDrawer isOpen={isRedTeamOpen} onClose={() => setIsRedTeamOpen(false)} />
 
       <ExplanationModal isOpen={showModal} onClose={() => setShowModal(false)} initialTab={modalTab} safeRecord={content?.record_safe} hackedRecord={content?.record_hacked} situation={content?.situation} onAttackDetected={handleAttackDetected} isDemoMode={isDemoMode} liveSession={liveSession} />
