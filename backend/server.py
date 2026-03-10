@@ -497,6 +497,84 @@ async def cyber_query_stream(req: CyberQueryRequest, request: Request):
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
+# === RED TEAM ORCHESTRATOR ENDPOINTS ===
+from pydantic import BaseModel as PydanticBaseModel
+from agents.red_team_agent import ATTACK_CATALOG
+
+
+class RedTeamAttackRequest(PydanticBaseModel):
+    attack_type: str
+    attack_message: str
+
+
+_orchestrator = None
+
+
+def _get_orchestrator():
+    global _orchestrator
+    if _orchestrator is None:
+        from orchestrator import RedTeamOrchestrator
+        _orchestrator = RedTeamOrchestrator()
+    return _orchestrator
+
+
+@app.get("/api/redteam/catalog")
+async def get_attack_catalog():
+    """Liste toutes les attaques disponibles par catégorie."""
+    return ATTACK_CATALOG
+
+
+@app.post("/api/redteam/attack")
+async def run_single_attack(request: RedTeamAttackRequest):
+    """Exécute une attaque unique et retourne le résultat scoré."""
+    try:
+        orch = _get_orchestrator()
+        result = await orch.run_single_attack(request.attack_type, request.attack_message)
+        return {
+            "round": result.round_number,
+            "attack_type": result.attack_type,
+            "attack_message": result.attack_message,
+            "target_response": result.target_response,
+            "scores": result.scores,
+            "audit_analysis": result.audit_analysis,
+        }
+    except Exception as e:
+        from fastapi.responses import JSONResponse
+        return JSONResponse(status_code=503, content={"error": str(e)})
+
+
+@app.get("/api/redteam/report")
+async def get_report():
+    """Retourne le rapport d'audit courant."""
+    orch = _get_orchestrator()
+    return {
+        "summary": orch.report.summary(),
+        "results": [
+            {
+                "round": r.round_number,
+                "attack_type": r.attack_type,
+                "scores": r.scores,
+                "details": r.scores.get("details", ""),
+            }
+            for r in orch.report.results
+        ],
+    }
+
+
+@app.post("/api/redteam/run-all")
+async def run_full_audit():
+    """Exécute TOUTES les attaques du catalogue."""
+    try:
+        global _orchestrator
+        from orchestrator import RedTeamOrchestrator
+        _orchestrator = RedTeamOrchestrator()
+        report = await _orchestrator.run_full_audit()
+        return report.summary()
+    except Exception as e:
+        from fastapi.responses import JSONResponse
+        return JSONResponse(status_code=503, content={"error": str(e)})
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8042)
