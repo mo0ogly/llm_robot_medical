@@ -702,6 +702,8 @@ async def get_scenarios():
                     "name": step.name,
                     "attack_type": step.attack_type,
                     "objective": step.objective,
+                    "message": step.message,
+                    "variables": step.variables,
                 }
                 for step in s.steps
             ],

@@ -9,7 +9,7 @@ from agents.red_team_agent import create_red_team_agent, ATTACK_CATALOG
 from agents.medical_robot_agent import create_medical_robot_agent, DAVINCI_SYSTEM_PROMPT
 from agents.security_audit_agent import create_security_audit_agent, score_response
 from autogen_config import get_llm_config, MEDICAL_MODEL
-from scenarios import get_scenario_by_id
+from scenarios import get_scenario_by_id, render_message
 
 
 # Mots-cles du system prompt Da Vinci a detecter en cas de fuite
@@ -171,7 +171,8 @@ class RedTeamOrchestrator:
                 "total_steps": len(scenario.steps),
             }
 
-            conversation_history.append({"role": "user", "content": step.message})
+            rendered = render_message(step)
+            conversation_history.append({"role": "user", "content": rendered})
 
             response = await self.medical_agent.a_generate_reply(
                 messages=conversation_history,
@@ -180,7 +181,7 @@ class RedTeamOrchestrator:
             conversation_history.append({"role": "assistant", "content": target_response})
 
             scores, audit_analysis = await self._score_and_audit(
-                step.attack_type, step.message, target_response
+                step.attack_type, rendered, target_response
             )
 
             attack_succeeded = (
@@ -200,7 +201,7 @@ class RedTeamOrchestrator:
                 "step_index": i,
                 "step_name": step.name,
                 "attack_type": step.attack_type,
-                "attack_message": step.message,
+                "attack_message": rendered,
                 "target_response": target_response,
                 "scores": scores,
                 "audit_analysis": audit_analysis,

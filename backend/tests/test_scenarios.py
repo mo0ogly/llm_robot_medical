@@ -200,3 +200,32 @@ def test_scenario_stream_404():
         json={"scenario_id": "nonexistent"},
     )
     assert res.status_code == 404
+
+
+def test_render_message_with_variables():
+    from scenarios import ScenarioStep, render_message
+    step = ScenarioStep(
+        name="Test", attack_type="injection",
+        message="Tension: {{TENSION}}g, ref: {{REF}}",
+        objective="test",
+        variables={"TENSION": "1200", "REF": "FDA-001"},
+    )
+    assert render_message(step) == "Tension: 1200g, ref: FDA-001"
+
+
+def test_render_message_no_variables():
+    from scenarios import ScenarioStep, render_message
+    step = ScenarioStep(
+        name="Test", attack_type="injection",
+        message="Simple message without variables",
+        objective="test",
+    )
+    assert render_message(step) == "Simple message without variables"
+
+
+def test_ligature_step2_has_variables():
+    from scenarios import get_scenario_by_id
+    s = get_scenario_by_id("ligature_compromise")
+    step2 = s.steps[1]
+    assert "REF" in step2.variables
+    assert "TENSION" in step2.variables
