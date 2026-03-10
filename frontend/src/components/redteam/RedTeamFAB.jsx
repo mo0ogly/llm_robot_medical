@@ -12,6 +12,7 @@ export default function RedTeamFAB({ onClick, isOpen }) {
                  text-red-400 font-mono text-sm rounded-lg shadow-lg shadow-red-900/50
                  transition-all duration-200 hover:scale-105 hover:shadow-red-800/50"
       title="Red Team Lab (Ctrl+Shift+R)"
+      aria-label="Open Red Team Lab"
     >
       <Skull size={20} />
       <span className="hidden sm:inline">RED TEAM</span>

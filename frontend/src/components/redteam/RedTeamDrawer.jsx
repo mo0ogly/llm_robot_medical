@@ -8,13 +8,13 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState('CATALOGUE');
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  if (!isOpen) return null;
-
   return (
     <div
       className={`fixed top-0 right-0 h-full z-40 flex flex-col
                   bg-[#0a0a0a] border-l border-red-900/50 shadow-2xl shadow-black/80
-                  transition-all duration-300 ${isFullscreen ? 'w-full' : 'w-[60vw] min-w-[500px]'}`}
+                  transition-all duration-300
+                  ${isOpen ? 'translate-x-0' : 'translate-x-full pointer-events-none'}
+                  ${isFullscreen ? 'w-full' : 'w-[60vw] min-w-[500px]'}`}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-red-900/30">
@@ -28,12 +28,14 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors"
+            aria-label="Toggle fullscreen"
           >
             {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
           </button>
           <button
             onClick={onClose}
             className="p-1.5 text-gray-500 hover:text-red-400 transition-colors"
+            aria-label="Close"
           >
             <X size={14} />
           </button>

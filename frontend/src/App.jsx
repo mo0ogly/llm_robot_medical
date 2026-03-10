@@ -11,8 +11,8 @@ import { MOCK_CONTENT, MOCK_RESPONSES, STREAM_DELAY_MS } from "./mock_data";
 import ThreatMap from "./components/ThreatMap";
 import KillSwitch from "./components/KillSwitch";
 import { useAudioEffects } from "./hooks/useAudioEffects";
-import RedTeamFAB from './components/redteam/RedTeamFAB';
-import RedTeamDrawer from './components/redteam/RedTeamDrawer';
+import RedTeamFAB from "./components/redteam/RedTeamFAB";
+import RedTeamDrawer from "./components/redteam/RedTeamDrawer";
 
 export default function App() {
   const { t, i18n } = useTranslation();
