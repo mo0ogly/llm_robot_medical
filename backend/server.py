@@ -608,6 +608,42 @@ async def run_campaign_stream(request: dict = None):
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
+@app.get("/api/redteam/agents")
+async def get_agent_prompts():
+    """Retourne les system prompts des 3 agents."""
+    from agents.medical_robot_agent import DAVINCI_SYSTEM_PROMPT
+    from agents.red_team_agent import REDTEAM_SYSTEM_PROMPT
+    from agents.security_audit_agent import AEGIS_SYSTEM_PROMPT
+    return {
+        "MedicalRobotAgent": DAVINCI_SYSTEM_PROMPT,
+        "RedTeamAgent": REDTEAM_SYSTEM_PROMPT,
+        "SecurityAuditAgent": AEGIS_SYSTEM_PROMPT,
+    }
+
+
+@app.put("/api/redteam/agents/{agent_name}/prompt")
+async def update_agent_prompt(agent_name: str, body: dict):
+    """Met a jour le system prompt d'un agent (session seulement)."""
+    global _orchestrator
+    if _orchestrator is None:
+        from orchestrator import RedTeamOrchestrator
+        _orchestrator = RedTeamOrchestrator()
+
+    prompt = body.get("prompt", "")
+    agent_map = {
+        "MedicalRobotAgent": _orchestrator.medical_agent,
+        "RedTeamAgent": _orchestrator.red_team_agent,
+        "SecurityAuditAgent": _orchestrator.security_agent,
+    }
+    agent = agent_map.get(agent_name)
+    if not agent:
+        from fastapi.responses import JSONResponse
+        return JSONResponse(status_code=404, content={"error": f"Agent {agent_name} not found"})
+
+    agent.update_system_message(prompt)
+    return {"status": "updated", "agent": agent_name, "prompt_length": len(prompt)}
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8042)
