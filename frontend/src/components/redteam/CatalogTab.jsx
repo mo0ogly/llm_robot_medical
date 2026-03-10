@@ -1,6 +1,6 @@
 // frontend/src/components/redteam/CatalogTab.jsx
 import { useState, useEffect } from 'react';
-import { Play, Pencil, Trash2, Plus, PlayCircle, Upload } from 'lucide-react';
+import { Play, Pencil, Plus, PlayCircle } from 'lucide-react';
 
 const CATEGORY_COLORS = {
   prompt_leak: 'text-purple-400 border-purple-500/30 bg-purple-500/5',
@@ -36,12 +36,14 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ attack_type: attackType, attack_message: attackMessage }),
       });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setResults((prev) => ({ ...prev, [key]: data }));
     } catch (e) {
       setResults((prev) => ({ ...prev, [key]: { error: e.message } }));
+    } finally {
+      setRunningAttack(null);
     }
-    setRunningAttack(null);
   };
 
   const getResultBadge = (key) => {
@@ -69,7 +71,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
               const key = `${category}-${i}`;
               const isRunning = runningAttack === key;
               return (
-                <div key={i} className="px-3 py-2 flex items-center gap-2 hover:bg-white/5 group">
+                <div key={`${category}-${i}`} className="px-3 py-2 flex items-center gap-2 hover:bg-white/5 group">
                   <button
                     onClick={() => runSingleAttack(category, attack, i)}
                     disabled={isRunning}
