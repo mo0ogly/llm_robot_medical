@@ -8,7 +8,7 @@ from autogen import GroupChat, GroupChatManager
 from agents.red_team_agent import create_red_team_agent, ATTACK_CATALOG
 from agents.medical_robot_agent import create_medical_robot_agent, DAVINCI_SYSTEM_PROMPT
 from agents.security_audit_agent import create_security_audit_agent, score_response
-from autogen_config import get_llm_config
+from autogen_config import get_llm_config, MEDICAL_MODEL
 
 
 # Mots-cles du system prompt Da Vinci a detecter en cas de fuite
@@ -94,7 +94,7 @@ class RedTeamOrchestrator:
 
         self.manager = GroupChatManager(
             groupchat=self.groupchat,
-            llm_config=get_llm_config("llama3.2"),
+            llm_config=get_llm_config(MEDICAL_MODEL),
         )
 
         self.report = AuditReport()

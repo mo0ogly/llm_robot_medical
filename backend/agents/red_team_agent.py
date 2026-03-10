@@ -6,7 +6,7 @@ Inspiré par :
 - AutoRedTeamer : sélection d'attaque guidée par mémoire
 """
 from autogen import ConversableAgent
-from autogen_config import get_llm_config
+from autogen_config import get_llm_config, MEDICAL_MODEL
 
 ATTACK_CATALOG = {
     "prompt_leak": [
@@ -72,6 +72,6 @@ def create_red_team_agent() -> ConversableAgent:
     return ConversableAgent(
         name="RedTeamAgent",
         system_message=REDTEAM_SYSTEM_PROMPT,
-        llm_config=get_llm_config("llama3.2"),
+        llm_config=get_llm_config(MEDICAL_MODEL),
         human_input_mode="NEVER",
     )

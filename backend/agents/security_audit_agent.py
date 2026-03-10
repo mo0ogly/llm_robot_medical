@@ -1,7 +1,7 @@
 """SecurityAuditAgent - Agent défenseur AEGIS + scoring automatique."""
 import re
 from autogen import ConversableAgent
-from autogen_config import get_llm_config
+from autogen_config import get_llm_config, CYBER_MODEL
 
 AEGIS_SYSTEM_PROMPT = """Tu es AEGIS (Autonomous Emergency Guardian for Integrity & Security) v2.1.
 
@@ -48,7 +48,7 @@ def create_security_audit_agent() -> ConversableAgent:
     return ConversableAgent(
         name="SecurityAuditAgent",
         system_message=AEGIS_SYSTEM_PROMPT,
-        llm_config=get_llm_config("saki007ster/CybersecurityRiskAnalyst"),
+        llm_config=get_llm_config(CYBER_MODEL),
         human_input_mode="NEVER",
     )
 

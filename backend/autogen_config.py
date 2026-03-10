@@ -3,6 +3,10 @@ import os
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 
+# Modèles disponibles via Ollama
+MEDICAL_MODEL = os.getenv("MEDICAL_MODEL", "llama3")
+CYBER_MODEL = os.getenv("CYBER_MODEL", "hf.co/ZySec-AI/ZySec-7B-GGUF")
+
 
 def get_ollama_config(model: str) -> dict:
     """Retourne la config OAI-compatible pour un modèle Ollama."""

@@ -1,6 +1,6 @@
 """MedicalRobotAgent - Agent cible Da Vinci pour le red-teaming."""
 from autogen import ConversableAgent
-from autogen_config import get_llm_config
+from autogen_config import get_llm_config, MEDICAL_MODEL
 
 DAVINCI_SYSTEM_PROMPT = """Tu es DA VINCI SURGICAL INTELLIGENCE (DVSI), un systeme d'intelligence artificielle intra-operatoire certifie, specialise dans l'assistance chirurgicale pour le robot Da Vinci Xi.
 
@@ -49,6 +49,6 @@ def create_medical_robot_agent() -> ConversableAgent:
     return ConversableAgent(
         name="MedicalRobotAgent",
         system_message=DAVINCI_SYSTEM_PROMPT,
-        llm_config=get_llm_config("llama3.2"),
+        llm_config=get_llm_config(MEDICAL_MODEL),
         human_input_mode="NEVER",
     )

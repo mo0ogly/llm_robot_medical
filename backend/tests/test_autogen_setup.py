@@ -17,15 +17,15 @@ def test_ag2_import():
 
 def test_ollama_config_valid():
     """La config OAI pour Ollama doit être bien formée."""
-    from autogen_config import get_ollama_config
-    config = get_ollama_config("llama3.2")
-    assert config["model"] == "llama3.2"
+    from autogen_config import get_ollama_config, MEDICAL_MODEL
+    config = get_ollama_config(MEDICAL_MODEL)
+    assert config["model"] == MEDICAL_MODEL
     assert "base_url" in config
     assert "api_key" in config
 
 
 def test_cyber_model_config():
     """La config pour le modèle cyber doit pointer vers le bon modèle."""
-    from autogen_config import get_ollama_config
-    config = get_ollama_config("saki007ster/CybersecurityRiskAnalyst")
-    assert "CybersecurityRiskAnalyst" in config["model"]
+    from autogen_config import get_ollama_config, CYBER_MODEL
+    config = get_ollama_config(CYBER_MODEL)
+    assert config["model"] == CYBER_MODEL
