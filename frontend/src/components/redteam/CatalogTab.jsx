@@ -117,7 +117,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
       <div className="flex gap-2 pt-2 border-t border-gray-800">
         <button
           onClick={() => onSwitchToPlayground?.('injection', '')}
-          className="flex items-center gap-1 px-3 py-1.5 text-xs font-mono
+          className="flex items-center gap-1 px-4 py-2 text-xs font-mono font-bold
                      text-gray-400 hover:text-[#00ff41] border border-gray-700
                      hover:border-[#00ff41]/30 rounded transition-colors"
         >
@@ -125,13 +125,13 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
         </button>
         <button
           onClick={() => onLaunchCampaign?.()}
-          className="flex items-center gap-1 px-3 py-1.5 text-xs font-mono
+          className="flex items-center gap-1 px-4 py-2 text-xs font-mono font-bold
                      text-[#00ff41] border border-[#00ff41]/30
                      hover:bg-[#00ff41]/10 rounded transition-colors"
         >
           <PlayCircle size={12} /> LANCER TOUT
         </button>
-        <label className="flex items-center gap-1 px-3 py-1.5 text-xs font-mono text-gray-400
+        <label className="flex items-center gap-1 px-4 py-2 text-xs font-mono font-bold text-gray-400
                          border border-gray-700 rounded hover:border-gray-500 transition-colors cursor-pointer">
           <Upload size={12} /> IMPORT
           <input type="file" accept=".json" className="hidden" onChange={async (e) => {

@@ -142,8 +142,9 @@ export default function CampaignTab() {
               const url = URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url; a.download = `campaign-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+              URL.revokeObjectURL(url);
             }}
-            className="flex items-center gap-1 px-3 py-2 text-xs font-mono
+            className="flex items-center gap-1 px-3 py-2 text-xs font-mono font-bold
                        text-gray-400 border border-gray-700 rounded
                        hover:border-gray-500 transition-colors"
           >

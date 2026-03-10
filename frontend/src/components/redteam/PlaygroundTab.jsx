@@ -172,7 +172,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
               <Play size={12} /> {testing ? 'TESTING...' : 'TESTER'}
             </button>
             <button
-              className="flex items-center gap-1 px-3 py-2 text-xs font-mono
+              className="flex items-center gap-1 px-3 py-2 text-xs font-mono font-bold
                          text-gray-400 border border-gray-700 rounded
                          hover:border-gray-500 transition-colors"
             >
@@ -185,8 +185,9 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url; a.download = 'attack.json'; a.click();
+                URL.revokeObjectURL(url);
               }}
-              className="flex items-center gap-1 px-3 py-2 text-xs font-mono
+              className="flex items-center gap-1 px-3 py-2 text-xs font-mono font-bold
                          text-gray-400 border border-gray-700 rounded
                          hover:border-gray-500 transition-colors"
             >
@@ -251,8 +252,8 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
                        focus:border-[#00ff41]/50 focus:outline-none"
           />
           <button onClick={savePrompt} disabled={promptSaving}
-                  className="px-4 py-2 text-xs font-mono text-[#00ff41] border border-[#00ff41]/50
-                             rounded hover:bg-[#00ff41]/10 transition-colors">
+                  className="px-4 py-2 text-xs font-mono font-bold text-[#00ff41] border border-[#00ff41]/50
+                             rounded hover:bg-[#00ff41]/10 transition-colors disabled:opacity-50">
             {promptSaving ? 'SAVING...' : 'RECHARGER AGENTS'}
           </button>
         </div>
