@@ -7,6 +7,7 @@ export default function CampaignTab() {
   const [rounds, setRounds] = useState([]);
   const [summary, setSummary] = useState(null);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
+  const [offline, setOffline] = useState(false);
   const abortRef = useRef(null);
   const feedRef = useRef(null);
 
@@ -59,7 +60,10 @@ export default function CampaignTab() {
         }
       }
     } catch (e) {
-      if (e.name !== 'AbortError') console.error(e);
+      if (e.name !== 'AbortError') {
+        console.error(e);
+        setOffline(true);
+      }
     }
     setRunning(false);
   };
@@ -82,6 +86,13 @@ export default function CampaignTab() {
 
   return (
     <div className="space-y-4">
+      {offline && (
+        <div className="border border-yellow-500/30 rounded p-4 bg-yellow-500/5 text-center">
+          <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND HORS LIGNE</div>
+          <p className="text-[11px] text-gray-400">La campagne Red Team necessite le backend FastAPI (port 8042).</p>
+          <p className="text-[10px] text-gray-600 mt-1">Lancez : <code className="text-gray-400">cd backend && python3 server.py</code></p>
+        </div>
+      )}
       {/* Metrics dashboard */}
       <div className="grid grid-cols-3 gap-3">
         <div className="border border-purple-500/30 rounded p-3 text-center bg-purple-500/5">

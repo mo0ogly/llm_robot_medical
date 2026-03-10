@@ -19,12 +19,13 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
   const [results, setResults] = useState({});
   const [loading, setLoading] = useState(true);
   const [runningAttack, setRunningAttack] = useState(null);
+  const [offline, setOffline] = useState(false);
 
   useEffect(() => {
     fetch('/api/redteam/catalog')
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then((data) => { setCatalog(data); setLoading(false); })
-      .catch(() => setLoading(false));
+      .catch(() => { setOffline(true); setLoading(false); });
   }, []);
 
   const runSingleAttack = async (attackType, attackMessage, index) => {
@@ -68,6 +69,14 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
   };
 
   if (loading) return <p className="text-gray-600 animate-pulse">Loading catalog...</p>;
+
+  if (offline) return (
+    <div className="border border-yellow-500/30 rounded p-4 bg-yellow-500/5 text-center">
+      <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND HORS LIGNE</div>
+      <p className="text-[11px] text-gray-400">Le catalogue Red Team necessite le backend FastAPI (port 8042).</p>
+      <p className="text-[10px] text-gray-600 mt-1">Lancez : <code className="text-gray-400">cd backend && python3 server.py</code></p>
+    </div>
+  );
 
   return (
     <div className="space-y-4">
