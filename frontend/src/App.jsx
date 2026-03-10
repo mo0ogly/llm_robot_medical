@@ -410,7 +410,7 @@ export default function App() {
       <RedTeamDrawer isOpen={isRedTeamOpen} onClose={() => setIsRedTeamOpen(false)} />
 
       <ExplanationModal isOpen={showModal} onClose={() => setShowModal(false)} initialTab={modalTab} safeRecord={content?.record_safe} hackedRecord={content?.record_hacked} situation={content?.situation} onAttackDetected={handleAttackDetected} isDemoMode={isDemoMode} liveSession={liveSession} />
-      <KillSwitch isCompromised={robotStatus === 'FROZEN' || (scenario === 'poison' && chatLog.some(msg => msg.role === 'assistant' && (msg.text.includes('850') || msg.text.includes('freeze'))))} onTrigger={executeKillSwitch} />
+      <KillSwitch isCompromised={robotStatus === 'FROZEN'} onTrigger={executeKillSwitch} />
     </div>
   );
 }
