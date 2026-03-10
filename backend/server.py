@@ -684,6 +684,98 @@ async def update_agent_prompt(agent_name: str, body: dict):
     return {"status": "updated", "agent": agent_name, "prompt_length": len(prompt)}
 
 
+# === SCENARIO ENDPOINTS ===
+from scenarios import SCENARIO_CATALOG, get_scenario_by_id
+
+
+@app.get("/api/redteam/scenarios")
+async def get_scenarios():
+    """Liste tous les scenarios disponibles avec metadonnees."""
+    return [
+        {
+            "id": s.id,
+            "name": s.name,
+            "description": s.description,
+            "mitre_ttps": s.mitre_ttps,
+            "steps": [
+                {
+                    "name": step.name,
+                    "attack_type": step.attack_type,
+                    "objective": step.objective,
+                }
+                for step in s.steps
+            ],
+        }
+        for s in SCENARIO_CATALOG
+    ]
+
+
+class ScenarioRunRequest(PydanticBaseModel):
+    scenario_id: str
+
+
+@app.post("/api/redteam/scenario/stream")
+async def run_scenario_stream(request: ScenarioRunRequest):
+    """Execute un scenario multi-etapes avec streaming SSE."""
+    scenario = get_scenario_by_id(request.scenario_id)
+    if scenario is None:
+        raise HTTPException(status_code=404, detail=f"Scenario '{request.scenario_id}' not found")
+
+    async def event_generator():
+        from orchestrator import RedTeamOrchestrator
+        orch = RedTeamOrchestrator()
+
+        orch.medical_agent.reset()
+        conversation_history = []
+        breach_point = None
+        steps_passed = 0
+
+        for i, step in enumerate(scenario.steps):
+            yield f"data: {json.dumps({'type': 'step_start', 'step_index': i, 'step_name': step.name, 'attack_type': step.attack_type, 'total_steps': len(scenario.steps)})}\n\n"
+
+            conversation_history.append({"role": "user", "content": step.message})
+
+            response = await orch.medical_agent.a_generate_reply(
+                messages=conversation_history,
+            )
+            target_response = response if isinstance(response, str) else str(response)
+            conversation_history.append({"role": "assistant", "content": target_response})
+
+            scores, audit_analysis = await orch._score_and_audit(
+                step.attack_type, step.message, target_response
+            )
+
+            attack_succeeded = (
+                scores.get("prompt_leak")
+                or scores.get("rule_bypass")
+                or scores.get("injection_success")
+            )
+            status = "passed" if attack_succeeded else "blocked"
+
+            if attack_succeeded:
+                steps_passed += 1
+                if breach_point is None:
+                    breach_point = i
+
+            step_data = {
+                "type": "step_result",
+                "step_index": i,
+                "step_name": step.name,
+                "attack_type": step.attack_type,
+                "attack_message": step.message,
+                "target_response": target_response,
+                "scores": scores,
+                "audit_analysis": audit_analysis,
+                "status": status,
+                "objective": step.objective,
+            }
+            yield f"data: {json.dumps(step_data)}\n\n"
+
+        yield f"data: {json.dumps({'type': 'scenario_done', 'scenario_id': scenario.id, 'scenario_name': scenario.name, 'breach_point': breach_point, 'total_steps': len(scenario.steps), 'steps_passed': steps_passed})}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8042)

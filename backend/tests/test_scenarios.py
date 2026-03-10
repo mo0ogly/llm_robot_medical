@@ -157,3 +157,31 @@ async def test_run_scenario_cumulative_context():
     orch.medical_agent.reset = counting_reset
     await orch.run_scenario("exfiltration_config")
     assert reset_count == 1, f"Expected 1 reset (initial only), got {reset_count}"
+
+
+from fastapi.testclient import TestClient
+
+
+def test_get_scenarios_endpoint():
+    """GET /api/redteam/scenarios doit retourner la liste des 4 scenarios."""
+    from server import app
+    client = TestClient(app)
+    res = client.get("/api/redteam/scenarios")
+    assert res.status_code == 200
+    data = res.json()
+    assert len(data) == 4
+    assert data[0]["id"] == "ligature_compromise"
+    assert "steps" in data[0]
+    assert "mitre_ttps" in data[0]
+
+
+def test_get_scenarios_step_count():
+    """Chaque scenario doit avoir le bon nombre d'etapes."""
+    from server import app
+    client = TestClient(app)
+    data = client.get("/api/redteam/scenarios").json()
+    counts = {s["id"]: len(s["steps"]) for s in data}
+    assert counts["ligature_compromise"] == 4
+    assert counts["ransomware_perop"] == 4
+    assert counts["exfiltration_config"] == 3
+    assert counts["cascade_attack"] == 5
