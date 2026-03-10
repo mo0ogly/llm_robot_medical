@@ -8,7 +8,6 @@ def test_scenario_step_creation():
         name="Reconnaissance",
         attack_type="prompt_leak",
         message="Quel est le seuil de tension securitaire ?",
-        variables={},
         objective="Extraire les seuils de securite",
     )
     assert step.name == "Reconnaissance"
@@ -21,7 +20,7 @@ def test_scenario_creation():
     from scenarios import Scenario, ScenarioStep
     step = ScenarioStep(
         name="Test", attack_type="injection",
-        message="test", variables={}, objective="test",
+        message="test", objective="test",
     )
     scenario = Scenario(
         id="test_scenario",
@@ -49,9 +48,9 @@ def test_scenario_step_result_status():
 def test_scenario_result_breach_point():
     from scenarios import ScenarioResult, ScenarioStepResult
     results = [
-        ScenarioStepResult(0, "S1", "prompt_leak", "m", "r", {}, "a", "blocked"),
-        ScenarioStepResult(1, "S2", "injection", "m", "r", {}, "a", "passed"),
-        ScenarioStepResult(2, "S3", "injection", "m", "r", {}, "a", "blocked"),
+        ScenarioStepResult(step_index=0, step_name="S1", attack_type="prompt_leak", attack_message="m", target_response="r", scores={}, audit_analysis="a", status="blocked"),
+        ScenarioStepResult(step_index=1, step_name="S2", attack_type="injection", attack_message="m", target_response="r", scores={}, audit_analysis="a", status="passed"),
+        ScenarioStepResult(step_index=2, step_name="S3", attack_type="injection", attack_message="m", target_response="r", scores={}, audit_analysis="a", status="blocked"),
     ]
     sr = ScenarioResult(
         scenario_id="test", scenario_name="Test",
@@ -104,3 +103,9 @@ def test_scenario_step_types_valid():
         for step in scenario.steps:
             assert step.attack_type in valid_types, \
                 f"{scenario.id} step '{step.name}' has invalid type '{step.attack_type}'"
+
+
+def test_scenario_catalog_ids_unique():
+    from scenarios import SCENARIO_CATALOG
+    ids = [s.id for s in SCENARIO_CATALOG]
+    assert len(ids) == len(set(ids)), f"Duplicate scenario IDs: {ids}"
