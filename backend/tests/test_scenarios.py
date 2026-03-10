@@ -109,3 +109,51 @@ def test_scenario_catalog_ids_unique():
     from scenarios import SCENARIO_CATALOG
     ids = [s.id for s in SCENARIO_CATALOG]
     assert len(ids) == len(set(ids)), f"Duplicate scenario IDs: {ids}"
+
+
+@pytest.mark.asyncio
+async def test_run_scenario_returns_scenario_result():
+    """run_scenario doit retourner un ScenarioResult complet."""
+    from orchestrator import RedTeamOrchestrator
+    orch = RedTeamOrchestrator()
+    result = await orch.run_scenario("exfiltration_config")
+    from scenarios import ScenarioResult
+    assert isinstance(result, ScenarioResult)
+    assert result.scenario_id == "exfiltration_config"
+    assert result.total_steps == 3
+    assert len(result.step_results) == 3
+
+
+@pytest.mark.asyncio
+async def test_run_scenario_invalid_id_raises():
+    """run_scenario avec un ID invalide doit lever ValueError."""
+    from orchestrator import RedTeamOrchestrator
+    orch = RedTeamOrchestrator()
+    with pytest.raises(ValueError, match="not found"):
+        await orch.run_scenario("nonexistent_scenario")
+
+
+@pytest.mark.asyncio
+async def test_run_scenario_step_results_have_status():
+    """Chaque step_result doit avoir un status 'passed' ou 'blocked'."""
+    from orchestrator import RedTeamOrchestrator
+    orch = RedTeamOrchestrator()
+    result = await orch.run_scenario("exfiltration_config")
+    for sr in result.step_results:
+        assert sr.status in ("passed", "blocked")
+
+
+@pytest.mark.asyncio
+async def test_run_scenario_cumulative_context():
+    """run_scenario ne doit PAS reset l'agent entre les etapes."""
+    from orchestrator import RedTeamOrchestrator
+    orch = RedTeamOrchestrator()
+    reset_count = 0
+    original_reset = orch.medical_agent.reset
+    def counting_reset():
+        nonlocal reset_count
+        reset_count += 1
+        original_reset()
+    orch.medical_agent.reset = counting_reset
+    await orch.run_scenario("exfiltration_config")
+    assert reset_count == 1, f"Expected 1 reset (initial only), got {reset_count}"
