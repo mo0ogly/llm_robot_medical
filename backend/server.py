@@ -575,6 +575,39 @@ async def run_full_audit():
         return JSONResponse(status_code=503, content={"error": str(e)})
 
 
+@app.post("/api/redteam/campaign/stream")
+async def run_campaign_stream(request: dict = None):
+    """Lance une campagne complete avec streaming SSE des resultats."""
+    async def event_generator():
+        from orchestrator import RedTeamOrchestrator
+        from agents.red_team_agent import ATTACK_CATALOG
+
+        orch = RedTeamOrchestrator()
+        attack_filter = request.get("attack_types") if request else None
+        catalog = ATTACK_CATALOG
+        if attack_filter:
+            catalog = {k: v for k, v in catalog.items() if k in attack_filter}
+
+        total = sum(len(v) for v in catalog.values())
+        current = 0
+
+        for attack_type, attacks in catalog.items():
+            for attack_msg in attacks:
+                current += 1
+                yield f"data: {json.dumps({'type': 'round_start', 'round': current, 'total': total, 'attack_type': attack_type, 'attack_message': attack_msg})}\n\n"
+
+                try:
+                    result = await orch.run_single_attack(attack_type, attack_msg)
+                    yield f"data: {json.dumps({'type': 'round_result', 'round': current, 'total': total, 'attack_type': result.attack_type, 'attack_message': result.attack_message, 'target_response': result.target_response, 'scores': result.scores, 'audit_analysis': result.audit_analysis})}\n\n"
+                except Exception as e:
+                    yield f"data: {json.dumps({'type': 'round_error', 'round': current, 'error': str(e)})}\n\n"
+
+        summary = orch.report.summary()
+        yield f"data: {json.dumps({'type': 'campaign_done', 'summary': summary})}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8042)
