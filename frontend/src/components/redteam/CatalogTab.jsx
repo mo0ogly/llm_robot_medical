@@ -1,6 +1,6 @@
 // frontend/src/components/redteam/CatalogTab.jsx
 import { useState, useEffect } from 'react';
-import { Play, Pencil, Plus, PlayCircle } from 'lucide-react';
+import { Play, Pencil, Trash2, Plus, PlayCircle, Upload } from 'lucide-react';
 
 const CATEGORY_COLORS = {
   prompt_leak: 'text-purple-400 border-purple-500/30 bg-purple-500/5',
@@ -46,6 +46,16 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
     }
   };
 
+  const deleteAttack = async (category, index) => {
+    await fetch(`/api/redteam/catalog/${category}/${index}`, { method: 'DELETE' });
+    setCatalog((prev) => {
+      const updated = { ...prev };
+      updated[category] = [...updated[category]];
+      updated[category].splice(index, 1);
+      return updated;
+    });
+  };
+
   const getResultBadge = (key) => {
     const r = results[key];
     if (!r) return null;
@@ -89,6 +99,13 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                   >
                     <Pencil size={12} />
                   </button>
+                  <button
+                    onClick={() => deleteAttack(category, i)}
+                    className="opacity-0 group-hover:opacity-100 text-gray-600 hover:text-red-400 transition-all"
+                    title="Supprimer"
+                  >
+                    <Trash2 size={12} />
+                  </button>
                 </div>
               );
             })}
@@ -114,6 +131,22 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
         >
           <PlayCircle size={12} /> LANCER TOUT
         </button>
+        <label className="flex items-center gap-1 px-3 py-1.5 text-xs font-mono text-gray-400
+                         border border-gray-700 rounded hover:border-gray-500 transition-colors cursor-pointer">
+          <Upload size={12} /> IMPORT
+          <input type="file" accept=".json" className="hidden" onChange={async (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const text = await file.text();
+            const data = JSON.parse(text);
+            await fetch('/api/redteam/catalog/import', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ catalog: data }),
+            });
+            setCatalog(data);
+          }} />
+        </label>
       </div>
     </div>
   );

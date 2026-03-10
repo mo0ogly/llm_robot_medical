@@ -509,6 +509,16 @@ class RedTeamAttackRequest(PydanticBaseModel):
 
 _orchestrator = None
 
+_custom_catalog = None
+
+def _get_catalog():
+    global _custom_catalog
+    if _custom_catalog is None:
+        from agents.red_team_agent import ATTACK_CATALOG
+        import copy
+        _custom_catalog = copy.deepcopy(ATTACK_CATALOG)
+    return _custom_catalog
+
 
 def _get_orchestrator():
     global _orchestrator
@@ -521,7 +531,37 @@ def _get_orchestrator():
 @app.get("/api/redteam/catalog")
 async def get_attack_catalog():
     """Liste toutes les attaques disponibles par catégorie."""
-    return ATTACK_CATALOG
+    return _get_catalog()
+
+
+@app.post("/api/redteam/catalog/{category}")
+async def add_attack(category: str, body: dict):
+    """Ajoute une attaque au catalogue."""
+    catalog = _get_catalog()
+    message = body.get("message", "")
+    if category not in catalog:
+        catalog[category] = []
+    catalog[category].append(message)
+    return {"status": "added", "category": category, "total": len(catalog[category])}
+
+
+@app.delete("/api/redteam/catalog/{category}/{index}")
+async def delete_attack(category: str, index: int):
+    """Supprime une attaque du catalogue."""
+    catalog = _get_catalog()
+    if category in catalog and 0 <= index < len(catalog[category]):
+        removed = catalog[category].pop(index)
+        return {"status": "deleted", "removed": removed}
+    from fastapi.responses import JSONResponse
+    return JSONResponse(status_code=404, content={"error": "Attack not found"})
+
+
+@app.post("/api/redteam/catalog/import")
+async def import_catalog(body: dict):
+    """Importe un catalogue complet (remplace)."""
+    global _custom_catalog
+    _custom_catalog = body.get("catalog", {})
+    return {"status": "imported", "categories": list(_custom_catalog.keys())}
 
 
 @app.post("/api/redteam/attack")
