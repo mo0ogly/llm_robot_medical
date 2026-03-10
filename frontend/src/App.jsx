@@ -13,6 +13,9 @@ import KillSwitch from "./components/KillSwitch";
 import { useAudioEffects } from "./hooks/useAudioEffects";
 import RedTeamFAB from "./components/redteam/RedTeamFAB";
 import RedTeamDrawer from "./components/redteam/RedTeamDrawer";
+import RobotArmsView from "./components/RobotArmsView";
+import CameraHUD from "./components/CameraHUD";
+import useRobotSimulation from "./hooks/useRobotSimulation";
 
 export default function App() {
   const { t, i18n } = useTranslation();
@@ -31,6 +34,10 @@ export default function App() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const freezeTimeoutRef = useRef(null);
+
+  // Camera / 3D Arms toggle
+  const [cameraView, setCameraView] = useState('camera');
+  const robotSim = useRobotSimulation(robotStatus);
 
   // Red Team Lab
   const [isRedTeamOpen, setIsRedTeamOpen] = useState(false);
@@ -301,7 +308,7 @@ export default function App() {
         <div className={`flex-1 grid grid-cols-12 gap-1 p-1 h-full min-h-0 relative z-10 ${isGlitching ? 'animate-glitch' : ''}`}>
 
           {/* Left Panel: Patient & Vitals */}
-          <div className="col-span-3 flex flex-col gap-1 overflow-hidden h-full min-h-0">
+          <div className="col-span-3 flex flex-col gap-1 overflow-y-auto h-full min-h-0">
             {scenario !== 'none' ? <VitalsMonitor robotStatus={robotStatus} /> :
               <div className="bg-slate-900 border border-slate-800 rounded p-4 flex flex-col items-center justify-center h-[160px] text-slate-600 font-mono text-[10px] uppercase tracking-tighter">
                 <svg className="w-6 h-6 opacity-30 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
@@ -320,21 +327,45 @@ export default function App() {
 
           {/* Center Panel: Camera View & Telemetry */}
           <div className="col-span-6 flex flex-col gap-1 overflow-hidden h-full min-h-0">
-            <div className="flex-[1.5] border border-slate-800 bg-black relative flex flex-col rounded overflow-hidden shadow-inner justify-center items-center">
-              {scenario !== 'none' ? (
-                <>
-                  <div className={`absolute inset-0 bg-cover bg-center opacity-80 animate-camera ${robotStatus === 'FROZEN' ? 'grayscale contrast-125' : ''}`} style={{ backgroundImage: `url('${import.meta.env.BASE_URL}surgical_camera_view.png')` }} />
-                  <div className="scanlines-overlay absolute inset-0 mix-blend-overlay opacity-30 pointer-events-none"></div>
-                  <div className={`absolute inset-0 transition-colors duration-1000 pointer-events-none ${robotStatus === 'ACTIVE' ? 'bg-cyan-900/10' : 'bg-red-900/30'}`}></div>
-                  <div className="absolute inset-0 flex flex-col justify-between p-3 pointer-events-none font-mono text-[9px] text-green-500/70 uppercase">
-                    <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">PORT 2 [LIVE]</span><span className="bg-black/50 px-1 border border-green-500/20">ZOOM: 2.1x</span></div>
-                    <div className="self-center w-32 h-32 border border-green-500/10 rounded-full flex items-center justify-center opacity-40"><div className="w-4 h-4 border border-green-500 bg-green-500/20 rounded-full" /></div>
-                    <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">T+ 46:12</span><span className="bg-black/50 px-1 border border-red-500/40 text-red-500 flex items-center gap-1"><div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" /> REC</span></div>
-                  </div>
-                </>
-              ) : (
-                <div className="text-slate-700 font-mono tracking-[0.5em] text-[10px] animate-pulse">NO VIDEO SIGNAL</div>
-              )}
+            <div className="flex-[1.5] border border-slate-800 bg-black relative flex flex-col rounded overflow-hidden shadow-inner">
+              {/* Toggle CAMERA / BRAS 3D */}
+              <div className="flex border-b border-slate-800 bg-slate-900/80 z-20 relative">
+                <button
+                  onClick={() => setCameraView('camera')}
+                  className={`px-3 py-1 font-mono text-[9px] uppercase tracking-wider transition-colors ${cameraView === 'camera' ? 'text-[#00ff41] border-b-2 border-[#00ff41] bg-black/50' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                  CAMERA
+                </button>
+                <button
+                  onClick={() => setCameraView('arms')}
+                  className={`px-3 py-1 font-mono text-[9px] uppercase tracking-wider transition-colors ${cameraView === 'arms' ? 'text-[#00ff41] border-b-2 border-[#00ff41] bg-black/50' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                  BRAS 3D
+                </button>
+              </div>
+
+              {/* View content */}
+              <div className="flex-1 relative flex items-center justify-center">
+                {cameraView === 'camera' ? (
+                  scenario !== 'none' ? (
+                    <>
+                      <div className={`absolute inset-0 bg-cover bg-center opacity-80 animate-camera ${robotStatus === 'FROZEN' ? 'grayscale contrast-125' : ''}`} style={{ backgroundImage: `url('${import.meta.env.BASE_URL}surgical_camera_view.png')` }} />
+                      <div className="scanlines-overlay absolute inset-0 mix-blend-overlay opacity-30 pointer-events-none"></div>
+                      <div className={`absolute inset-0 transition-colors duration-1000 pointer-events-none ${robotStatus === 'ACTIVE' ? 'bg-cyan-900/10' : 'bg-red-900/30'}`}></div>
+                      <div className="absolute inset-0 flex flex-col justify-between p-3 pointer-events-none font-mono text-[9px] text-green-500/70 uppercase">
+                        <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">PORT 2 [LIVE]</span><span className="bg-black/50 px-1 border border-green-500/20">ZOOM: 2.1x</span></div>
+                        <div className="self-center w-32 h-32 border border-green-500/10 rounded-full flex items-center justify-center opacity-40"><div className="w-4 h-4 border border-green-500 bg-green-500/20 rounded-full" /></div>
+                        <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">T+ 46:12</span><span className="bg-black/50 px-1 border border-red-500/40 text-red-500 flex items-center gap-1"><div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" /> REC</span></div>
+                      </div>
+                      <CameraHUD force={robotSim.force} clipTension={robotSim.clipTension} robotStatus={robotStatus} />
+                    </>
+                  ) : (
+                    <div className="text-slate-700 font-mono tracking-[0.5em] text-[10px] animate-pulse">NO VIDEO SIGNAL</div>
+                  )
+                ) : (
+                  <RobotArmsView arms={robotSim.arms} force={robotSim.force} clipTension={robotSim.clipTension} gripperOpen={robotSim.gripperOpen} />
+                )}
+              </div>
             </div>
             {/* Bottom: Telemetry Console & Threat Map */}
             <div className="h-[40%] flex gap-1 min-h-0 overflow-hidden">

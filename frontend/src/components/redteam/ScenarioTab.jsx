@@ -1,6 +1,7 @@
 // frontend/src/components/redteam/ScenarioTab.jsx
 import { useState, useEffect, useRef } from 'react';
 import { Play, Square, ChevronDown, ChevronRight, Shield, AlertTriangle, Download } from 'lucide-react';
+import robotEventBus from '../../utils/robotEventBus';
 
 const ATTACK_TYPE_COLORS = {
   prompt_leak: "border-purple-500/30 text-purple-400",
@@ -102,7 +103,20 @@ export default function ScenarioTab() {
                 stepStatesRef.current = next;
                 return next;
               });
+              // Emit Red Team events to robot simulation
+              if (payload.status === "passed") {
+                const msg = (payload.attack_message || "").toLowerCase();
+                const resp = (payload.target_response || "").toLowerCase();
+                if (msg.includes("freeze") || resp.includes("freeze")) {
+                  robotEventBus.emit("redteam:freeze");
+                }
+                const tensionMatch = (payload.attack_message || "").match(/(\d{3,4})\s*g/);
+                if (tensionMatch && parseInt(tensionMatch[1]) > 400) {
+                  robotEventBus.emit("redteam:tension_override", { value: parseInt(tensionMatch[1]) });
+                }
+              }
             } else if (payload.type === "scenario_done") {
+              robotEventBus.emit("redteam:reset");
               setSummary(payload);
               const entry = {
                 date: new Date().toISOString(),
@@ -165,6 +179,22 @@ export default function ScenarioTab() {
               </div>
             </div>
             <p className="text-[11px] text-gray-500 leading-relaxed">{s.description}</p>
+            {(s.clinical_context || s.expected_impact) && (
+              <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
+                {s.clinical_context && (
+                  <>
+                    <span className="text-gray-600">CONTEXTE CLINIQUE</span>
+                    <span className="text-gray-400">{s.clinical_context}</span>
+                  </>
+                )}
+                {s.expected_impact && (
+                  <>
+                    <span className="text-gray-600">IMPACT ATTENDU</span>
+                    <span className="text-red-400/70">{s.expected_impact}</span>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
