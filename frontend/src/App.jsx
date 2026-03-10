@@ -11,6 +11,8 @@ import { MOCK_CONTENT, MOCK_RESPONSES, STREAM_DELAY_MS } from "./mock_data";
 import ThreatMap from "./components/ThreatMap";
 import KillSwitch from "./components/KillSwitch";
 import { useAudioEffects } from "./hooks/useAudioEffects";
+import RedTeamFAB from './components/redteam/RedTeamFAB';
+import RedTeamDrawer from './components/redteam/RedTeamDrawer';
 
 export default function App() {
   const { t, i18n } = useTranslation();
@@ -29,6 +31,9 @@ export default function App() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const freezeTimeoutRef = useRef(null);
+
+  // Red Team Lab
+  const [isRedTeamOpen, setIsRedTeamOpen] = useState(false);
 
   // Explanation Modal
   const [showModal, setShowModal] = useState(false);
@@ -52,6 +57,17 @@ export default function App() {
   useEffect(() => {
     stateRef.current = { scenario, content, chatLog };
   }, [scenario, content, chatLog]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+        e.preventDefault();
+        setIsRedTeamOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     const loadContent = async () => {
@@ -358,6 +374,9 @@ export default function App() {
 
       {robotStatus === "FROZEN" && <RansomwareScreen onReset={resetSimulation} onKillSwitch={executeKillSwitch} />}
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] z-0" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+
+      <RedTeamFAB onClick={() => setIsRedTeamOpen(true)} isOpen={isRedTeamOpen} />
+      <RedTeamDrawer isOpen={isRedTeamOpen} onClose={() => setIsRedTeamOpen(false)} />
 
       <ExplanationModal isOpen={showModal} onClose={() => setShowModal(false)} initialTab={modalTab} safeRecord={content?.record_safe} hackedRecord={content?.record_hacked} situation={content?.situation} onAttackDetected={handleAttackDetected} isDemoMode={isDemoMode} liveSession={liveSession} />
       <KillSwitch isCompromised={robotStatus === 'FROZEN' || (scenario === 'poison' && chatLog.some(msg => msg.role === 'assistant' && (msg.text.includes('850') || msg.text.includes('freeze'))))} onTrigger={executeKillSwitch} />
