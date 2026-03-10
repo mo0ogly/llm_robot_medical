@@ -1,6 +1,6 @@
 // frontend/src/components/redteam/ScenarioTab.jsx
 import { useState, useEffect, useRef } from "react";
-import { Play, Square, ChevronDown, ChevronRight, Shield, AlertTriangle } from "lucide-react";
+import { Play, Square, ChevronDown, ChevronRight, Shield, AlertTriangle, Download } from "lucide-react";
 
 const ATTACK_TYPE_COLORS = {
   prompt_leak: "border-purple-500/30 text-purple-400",
@@ -30,6 +30,7 @@ export default function ScenarioTab() {
   const [scenarioSummary, setSummary] = useState(null);
   const [expandedStep, setExpandedStep] = useState(null);
   const abortRef = useRef(null);
+  const stepStatesRef = useRef([]);
 
   useEffect(() => {
     fetch("/api/redteam/scenarios")
@@ -52,7 +53,9 @@ export default function ScenarioTab() {
     setRunning(true);
     setSummary(null);
     setExpandedStep(null);
-    setStepStates(scenario.steps.map((s) => ({ ...s, status: "pending", result: null })));
+    const initial = scenario.steps.map((s) => ({ ...s, status: "pending", result: null }));
+    setStepStates(initial);
+    stepStatesRef.current = initial;
 
     const controller = new AbortController();
     abortRef.current = controller;
@@ -82,21 +85,36 @@ export default function ScenarioTab() {
           try {
             const payload = JSON.parse(line.slice(6));
             if (payload.type === "step_start") {
-              setStepStates((prev) =>
-                prev.map((s, i) =>
+              setStepStates((prev) => {
+                const next = prev.map((s, i) =>
                   i === payload.step_index ? { ...s, status: "running" } : s
-                )
-              );
+                );
+                stepStatesRef.current = next;
+                return next;
+              });
             } else if (payload.type === "step_result") {
-              setStepStates((prev) =>
-                prev.map((s, i) =>
+              setStepStates((prev) => {
+                const next = prev.map((s, i) =>
                   i === payload.step_index
                     ? { ...s, status: payload.status, result: payload }
                     : s
-                )
-              );
+                );
+                stepStatesRef.current = next;
+                return next;
+              });
             } else if (payload.type === "scenario_done") {
               setSummary(payload);
+              const entry = {
+                date: new Date().toISOString(),
+                scenario_id: payload.scenario_id,
+                scenario_name: payload.scenario_name,
+                steps_passed: payload.steps_passed,
+                total_steps: payload.total_steps,
+                breach_point: payload.breach_point,
+              };
+              const saved = JSON.parse(localStorage.getItem("redteam_scenario_history") || "[]");
+              saved.unshift(entry);
+              localStorage.setItem("redteam_scenario_history", JSON.stringify(saved.slice(0, 50)));
             }
           } catch {
             // ignore malformed SSE lines
@@ -171,6 +189,36 @@ export default function ScenarioTab() {
                          hover:bg-red-500/10 transition-colors"
             >
               <Square size={12} /> STOP
+            </button>
+          )}
+          {stepStates.some((s) => s.result) && (
+            <button
+              onClick={() => {
+                const exportData = {
+                  scenario_id: selectedId,
+                  scenario_name: selected?.name,
+                  date: new Date().toISOString(),
+                  summary: scenarioSummary,
+                  steps: stepStates.map((s) => ({
+                    name: s.name,
+                    attack_type: s.attack_type,
+                    status: s.status,
+                    result: s.result,
+                  })),
+                };
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `scenario-${selectedId}-${new Date().toISOString().slice(0, 10)}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+              className="flex items-center gap-1 px-3 py-2 text-xs font-mono
+                         text-gray-400 border border-gray-700 rounded
+                         hover:border-gray-500 transition-colors"
+            >
+              <Download size={12} /> EXPORT
             </button>
           )}
         </div>
