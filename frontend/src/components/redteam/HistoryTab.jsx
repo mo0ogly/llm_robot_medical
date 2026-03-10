@@ -25,7 +25,8 @@ export default function HistoryTab() {
   };
 
   const exportAll = () => {
-    const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
+    const data = { campaigns: history, scenarios: scenarioHistory };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = 'redteam-history.json'; a.click();

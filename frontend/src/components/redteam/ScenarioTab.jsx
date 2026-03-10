@@ -1,6 +1,6 @@
 // frontend/src/components/redteam/ScenarioTab.jsx
-import { useState, useEffect, useRef } from "react";
-import { Play, Square, ChevronDown, ChevronRight, Shield, AlertTriangle, Download } from "lucide-react";
+import { useState, useEffect, useRef } from 'react';
+import { Play, Square, ChevronDown, ChevronRight, Shield, AlertTriangle, Download } from 'lucide-react';
 
 const ATTACK_TYPE_COLORS = {
   prompt_leak: "border-purple-500/30 text-purple-400",
