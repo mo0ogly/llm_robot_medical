@@ -4,6 +4,7 @@ import { useState } from 'react';
 import CatalogTab from './CatalogTab';
 import PlaygroundTab from './PlaygroundTab';
 import CampaignTab from './CampaignTab';
+import HistoryTab from './HistoryTab';
 
 const TABS = ['CATALOGUE', 'PLAYGROUND', 'CAMPAGNE', 'HISTORIQUE'];
 
@@ -80,9 +81,7 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
           />
         )}
         {activeTab === 'CAMPAGNE' && <CampaignTab />}
-        {activeTab !== 'CATALOGUE' && activeTab !== 'PLAYGROUND' && activeTab !== 'CAMPAGNE' && (
-          <p className="text-gray-600">[ {activeTab} ]</p>
-        )}
+        {activeTab === 'HISTORIQUE' && <HistoryTab />}
       </div>
     </div>
   );

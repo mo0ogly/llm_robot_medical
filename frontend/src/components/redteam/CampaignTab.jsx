@@ -49,6 +49,11 @@ export default function CampaignTab() {
               feedRef.current?.scrollTo(0, feedRef.current.scrollHeight);
             } else if (payload.type === 'campaign_done') {
               setSummary(payload.summary);
+              // Save to history
+              const entry = { date: new Date().toISOString(), summary: payload.summary, roundCount: payload.summary?.total_rounds || 0 };
+              const saved = JSON.parse(localStorage.getItem('redteam_history') || '[]');
+              saved.unshift(entry);
+              localStorage.setItem('redteam_history', JSON.stringify(saved.slice(0, 50)));
             }
           } catch {}
         }
