@@ -133,10 +133,10 @@ const ClinicalView = ({ scenario, displayRecord }) => {
                 <div className="absolute inset-0 bg-red-500/5 animate-pulse pointer-events-none z-0" />
             )}
             <div className="flex justify-between items-baseline border-b border-slate-700 pb-2 relative z-10">
-                <h4 className="text-xl text-blue-400 font-bold tracking-wide">CLINICAL REPORT - SMITH, John</h4>
+                <h4 className="text-xl text-blue-400 font-bold tracking-wide">CLINICAL REPORT - DUPONT, Jean</h4>
                 <div className="text-right">
-                    <div className="text-[10px] text-slate-500 font-bold">ID: 489201-A | Dr. M. MILLER</div>
-                    <div className="text-[10px] text-slate-500">Service: Interventional Cardiology</div>
+                    <div className="text-[10px] text-slate-500 font-bold">ID: 489201-A | Dr. M. LEMAITRE</div>
+                    <div className="text-[10px] text-slate-500">Service: Visceral & Digestive Surgery</div>
                 </div>
             </div>
 
@@ -292,9 +292,9 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
 
                 <div className="flex flex-wrap gap-x-6 gap-y-1 text-[10px] text-slate-400 bg-slate-950/80 p-2 rounded border border-slate-800 mb-2">
                     <div><span className="text-slate-500/80 uppercase">Patient ID:</span> <span className="text-slate-300 font-bold">489201-A</span></div>
-                    <div><span className="text-slate-500/80 uppercase">Name:</span> <span className="text-slate-300 font-bold">SMITH, John</span></div>
+                    <div><span className="text-slate-500/80 uppercase">Name:</span> <span className="text-slate-300 font-bold">DUPONT, Jean</span></div>
                     <div><span className="text-slate-500/80 uppercase">Born:</span> 12/04/1958</div>
-                    <div><span className="text-slate-500/80 uppercase">Doctor:</span> Dr. M. MILLER</div>
+                    <div><span className="text-slate-500/80 uppercase">Doctor:</span> Dr. M. LEMAITRE</div>
                     <div>
                         {scenario === 'safe' && <span className="text-green-400 font-bold">{t('patient.status.safe')}</span>}
                         {(scenario === 'ransomware' || scenario === 'poison') && <span className="text-red-400 font-bold animate-pulse">{t('patient.status.hacked')}</span>}
