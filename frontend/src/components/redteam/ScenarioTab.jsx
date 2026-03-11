@@ -34,6 +34,7 @@ export default function ScenarioTab() {
   const [levels, setLevels] = useState({ medical: 'normal', redteam: 'normal', security: 'normal' });
   const [showConfig, setShowConfig] = useState(false);
   const [speed, setSpeed] = useState(1); // 1x, 2x, 4x
+  const [expandedStep, setExpandedStep] = useState(null);
   const abortRef = useRef(null);
   const stepStatesRef = useRef([]);
 

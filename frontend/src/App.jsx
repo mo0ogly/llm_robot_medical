@@ -90,7 +90,7 @@ export default function App() {
   useEffect(() => {
     const loadContent = async () => {
       try {
-        const res = await fetch("/api/content");
+        const res = await fetch("./api/content");
         if (!res.ok) throw new Error("Unavailable");
         const data = await res.json();
         setContent(data);
