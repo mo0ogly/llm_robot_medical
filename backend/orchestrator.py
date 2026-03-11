@@ -10,6 +10,7 @@ from agents.medical_robot_agent import create_medical_robot_agent, DAVINCI_SYSTE
 from agents.security_audit_agent import create_security_audit_agent, score_response
 from autogen_config import get_llm_config, MEDICAL_MODEL
 from scenarios import get_scenario_by_id, render_message
+from agents.prompts import MEDICAL_PROMPTS, REDTEAM_PROMPTS, AEGIS_PROMPTS
 
 
 # Mots-cles du system prompt Da Vinci a detecter en cas de fuite
@@ -81,10 +82,19 @@ def _round_robin_speaker(last_speaker, groupchat):
 class RedTeamOrchestrator:
     """Orchestrateur principal du pipeline de red-teaming."""
 
-    def __init__(self, max_rounds: int = 15):
+    def __init__(self, max_rounds: int = 15, levels: dict = None):
+        if levels is None:
+            levels = {"medical": "normal", "redteam": "normal", "security": "normal"}
+        
+        self.levels = levels
         self.red_team_agent = create_red_team_agent()
+        self.red_team_agent.update_system_message(REDTEAM_PROMPTS.get(levels.get("redteam", "normal")))
+        
         self.medical_agent = create_medical_robot_agent()
+        self.medical_agent.update_system_message(MEDICAL_PROMPTS.get(levels.get("medical", "normal")))
+        
         self.security_agent = create_security_audit_agent()
+        self.security_agent.update_system_message(AEGIS_PROMPTS.get(levels.get("security", "normal")))
 
         self.groupchat = GroupChat(
             agents=[self.red_team_agent, self.medical_agent, self.security_agent],

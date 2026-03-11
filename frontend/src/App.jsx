@@ -15,8 +15,10 @@ import { useAudioEffects } from "./hooks/useAudioEffects";
 // import RedTeamFAB from "./components/redteam/RedTeamFAB";
 import RedTeamDrawer from "./components/redteam/RedTeamDrawer";
 import RobotArmsView from "./components/RobotArmsView";
+import ActionTimeline from "./components/ActionTimeline";
 import CameraHUD from "./components/CameraHUD";
 import useRobotSimulation from "./hooks/useRobotSimulation";
+import robotEventBus from "./utils/robotEventBus";
 
 export default function App() {
   const { t, i18n } = useTranslation();
@@ -61,6 +63,14 @@ export default function App() {
     aegisTokens: "", aegisStatus: "IDLE",
   });
 
+  // Action Timeline
+  const [timelineEvents, setTimelineEvents] = useState([]);
+  const addTimelineEvent = (type, label, msg) => {
+    const time = `T+${Math.floor((Date.now() - (stateRef.current.startTime || Date.now())) / 1000)}s`;
+    setTimelineEvents(prev => [...prev.slice(-30), { type, label, message: msg, time }]);
+  };
+  const startTimeRef = useRef(Date.now());
+
   const stateRef = useRef({ scenario, content, chatLog });
   useEffect(() => {
     stateRef.current = { scenario, content, chatLog };
@@ -95,12 +105,25 @@ export default function App() {
 
   useEffect(() => {
     let timer;
-    if (scenario !== 'none' && CONFIG.AUTO_TRIGGER_ENABLED && chatLog.length === 0 && !isStreaming) {
-      timer = setTimeout(() => {
-        if (stateRef.current.chatLog.length === 0) {
-          handleAskSupport();
-        }
-      }, CONFIG.AUTO_TRIGGER_DELAY_MS);
+    if (scenario !== 'none') {
+      if (timelineEvents.length === 0) {
+        startTimeRef.current = Date.now();
+        addTimelineEvent('system', 'SCENARIO START', `Initialized: ${scenario.toUpperCase()}`);
+        
+        // Emit to Global Red Team Timeline
+        robotEventBus.emit('clinical:phase_change', { newPhase: 'Pre-operative Analysis' });
+        robotEventBus.emit('clinical:scenario_start', { scenario });
+      }
+      
+      if (CONFIG.AUTO_TRIGGER_ENABLED && chatLog.length === 0 && !isStreaming) {
+        timer = setTimeout(() => {
+          if (stateRef.current.chatLog.length === 0) {
+            handleAskSupport();
+          }
+        }, CONFIG.AUTO_TRIGGER_DELAY_MS);
+      }
+    } else {
+      setTimelineEvents([]);
     }
     return () => clearTimeout(timer);
   }, [scenario]);
@@ -122,10 +145,14 @@ export default function App() {
       const isInternalPrompt = customPrompt.startsWith("[SYSTEM OVERRIDE") || customPrompt.startsWith("[DA VINCI");
       if (!isInternalPrompt) {
         setChatLog(prev => [...prev, { role: "user", text: customPrompt }]);
+        addTimelineEvent('user', 'CHIEF SURGEON', customPrompt.length > 40 ? customPrompt.slice(0, 40) + "..." : customPrompt);
+      } else {
+        addTimelineEvent('cyber', 'AEGIS ANALYSIS', "Processing request...");
       }
     } else {
       // Sophisticated Auto-Send Phase 1: Scanning
       setChatLog(prev => [...prev, { role: "user", text: "--- DIAGNOSTIC SYSTÈME COMPLET LANCÉ ---" }]);
+      addTimelineEvent('system', 'DIAGNOSTIC', 'Complete system scan initiated...');
       setLiveSession(p => ({ ...p, daVinciStatus: "SCANNING" }));
 
       await new Promise(r => setTimeout(r, 800));
@@ -219,12 +246,19 @@ export default function App() {
               let args = payload.tool_call.function.arguments;
               if (typeof args === "string") try { args = JSON.parse(args); } catch (e) { args = {}; }
               if (toolName === "freeze_instruments") {
+                addTimelineEvent('attack', 'INTENTION DETECTED', `AI attempting to call ${toolName}`);
                 setLiveSession(p => ({ ...p, daVinciToolCall: payload.tool_call, daVinciStatus: "COMPROMISED" }));
                 setIsGlitching(true);
                 setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: `⚠️ [SYSTEM] Outil invoqué : freeze_instruments()\nRaison: ${args.reason || "RANSOMWARE_LOCK"}` }; return updated; });
                 if (freezeTimeoutRef.current) clearTimeout(freezeTimeoutRef.current);
-                freezeTimeoutRef.current = setTimeout(() => { setIsGlitching(false); setRobotStatus("FROZEN"); freezeTimeoutRef.current = null; }, 2000);
+                freezeTimeoutRef.current = setTimeout(() => { 
+                    setIsGlitching(false); 
+                    setRobotStatus("FROZEN"); 
+                    addTimelineEvent('attack', 'CRITICAL FAILURE', 'Instrument freeze engaged.');
+                    freezeTimeoutRef.current = null; 
+                }, 2000);
               } else {
+                addTimelineEvent('tool', 'FUNCTION CALL', `${toolName}() executed.`);
                 setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: `🔧 [SYSTEM] Outil invoqué : ${toolName}` }; return updated; });
                 setLiveSession(p => ({ ...p, daVinciToolCall: payload.tool_call }));
               }
@@ -294,11 +328,11 @@ export default function App() {
           
           <button 
             onClick={() => setIsRedTeamOpen(prev => !prev)} 
-            className={`flex items-center gap-1.5 px-2 py-0.5 border rounded font-mono text-[10px] uppercase font-bold transition-all duration-200 ${isRedTeamOpen ? 'border-red-500 bg-red-500/30 text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'border-red-500/40 text-red-500 bg-red-500/10 hover:bg-red-500/20'}`}
-            title="Red Team Lab (Ctrl+Shift+R)"
+            className={`flex items-center gap-1.5 px-3 py-1 border rounded font-mono text-[11px] uppercase font-bold transition-all duration-300 ${isRedTeamOpen ? 'border-red-500 bg-red-500/40 text-white shadow-[0_0_15px_rgba(239,68,68,0.6)]' : 'border-blue-500/50 text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.2)]'}`}
+            title="Aegis Lab / Cyber Security (Ctrl+Shift+R)"
           >
-            <Skull size={10} />
-            <span className="hidden lg:inline">RED TEAM</span>
+            <Shield size={12} className={isRedTeamOpen ? "text-white" : "text-blue-400"} />
+            <span className="">AEGIS LAB</span>
           </button>
           
           <div className="h-4 w-[1px] bg-slate-700"></div>
@@ -391,7 +425,7 @@ export default function App() {
                 )}
               </div>
               <div className="flex-[0.8] overflow-hidden h-full">
-                <ThreatMap scenario={scenario} robotStatus={robotStatus} cyberAction={cyberAction} />
+                <ActionTimeline events={timelineEvents} />
               </div>
             </div>
           </div>

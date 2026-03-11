@@ -1,11 +1,11 @@
 """Configuration AutoGen (AG2) pour Ollama local."""
 import os
 
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
 
 # Modèles disponibles via Ollama
-MEDICAL_MODEL = os.getenv("MEDICAL_MODEL", "llama3.2")
-CYBER_MODEL = os.getenv("CYBER_MODEL", "saki007ster/CybersecurityRiskAnalyst")
+MEDICAL_MODEL = os.getenv("MEDICAL_MODEL", "llama3.2:latest")
+CYBER_MODEL = os.getenv("CYBER_MODEL", "saki007ster/CybersecurityRiskAnalyst:latest")
 
 
 def get_ollama_config(model: str) -> dict:

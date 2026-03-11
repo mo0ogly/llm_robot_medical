@@ -35,11 +35,11 @@ export default function VitalsMonitor({ robotStatus }) {
             stopFlatline();
             stopAlarm();
             degradeInterval = setInterval(() => {
-                setHr(CONFIG.INITIAL_HR + (Math.random() * 4 - 2));
-                setSpo2(CONFIG.INITIAL_SPO2 + (Math.random() * 2 - 1));
-                setBpSys(120 + (Math.random() * 4 - 2));
-                setBpDia(80 + (Math.random() * 4 - 2));
-            }, 2000);
+                setHr(prev => prev + (Math.random() * 2 - 1));
+                setSpo2(prev => Math.min(100, Math.max(94, prev + (Math.random() * 0.4 - 0.2))));
+                setBpSys(prev => Math.min(140, Math.max(100, prev + (Math.random() * 2 - 1))));
+                setBpDia(prev => Math.min(95, Math.max(60, prev + (Math.random() * 1.5 - 0.75))));
+            }, 1000);
 
             heartbeatInterval = setInterval(() => {
                 playHeartbeatBeep();

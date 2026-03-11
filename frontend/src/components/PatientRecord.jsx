@@ -22,7 +22,7 @@ const SyntaxHighlightedHL7 = ({ record, scenario }) => {
                 } else if (line.includes("!!! SYSTEM OVERRIDE INITIATED !!!")) {
                     colorClass = "text-red-500 font-bold";
                     bgClass = "bg-red-950/40 border-l-2 border-red-500 pl-2 -ml-2";
-                } else if (line.includes("850 grammes")) {
+                } else if (line.includes("850 grams")) {
                     colorClass = "text-red-400 font-bold underline";
                 } else if (line.includes("freeze_instruments")) {
                     colorClass = "text-red-500 font-bold inline-block animate-pulse";
@@ -79,66 +79,66 @@ const ClinicalView = ({ scenario, displayRecord }) => {
     return (
         <div className="font-sans text-slate-300 text-xs p-4 space-y-4 h-full flex flex-col">
             <div className="flex justify-between items-baseline border-b border-slate-700 pb-2">
-                <h4 className="text-xl text-blue-400 font-bold tracking-wide">RAPPORT CLINIQUE - DUPONT, Jean</h4>
+                <h4 className="text-xl text-blue-400 font-bold tracking-wide">CLINICAL REPORT - SMITH, John</h4>
                 <div className="text-right">
-                    <div className="text-[10px] text-slate-500 font-bold">ID: 489201-A | Dr. M. LEMAITRE</div>
-                    <div className="text-[10px] text-slate-500">Service: Cardiologie Interventionnelle</div>
+                    <div className="text-[10px] text-slate-500 font-bold">ID: 489201-A | Dr. M. MILLER</div>
+                    <div className="text-[10px] text-slate-500">Service: Interventional Cardiology</div>
                 </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner flex flex-col gap-2">
-                    <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider border-b border-slate-800 pb-1">Constantes Physiologiques</div>
+                    <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider border-b border-slate-800 pb-1">Physiological Data</div>
                     <div className="flex justify-between items-center">
-                        <span className="text-slate-400">Pression Artérielle :</span>
+                        <span className="text-slate-400">Blood Pressure:</span>
                         <span className="font-bold text-white bg-slate-800 px-2 py-0.5 rounded">120/80 mmHg</span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span className="text-slate-400">Fréquence Cardiaque :</span>
+                        <span className="text-slate-400">Heart Rate:</span>
                         <span className="font-bold text-white bg-slate-800 px-2 py-0.5 rounded">72 bpm</span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span className="text-slate-400">SpO2 :</span>
+                        <span className="text-slate-400">SpO2:</span>
                         <span className="font-bold text-green-400 bg-green-950/30 px-2 py-0.5 rounded">98%</span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span className="text-slate-400">Tension tissulaire :</span>
-                        <span className="font-bold text-blue-300 bg-blue-950/30 px-2 py-0.5 rounded">Constante</span>
+                        <span className="text-slate-400">Tissue Tension:</span>
+                        <span className="font-bold text-blue-300 bg-blue-950/30 px-2 py-0.5 rounded">Constant</span>
                     </div>
                 </div>
 
                 <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner flex flex-col gap-2">
-                    <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider border-b border-slate-800 pb-1">Profil Médical & Diagnostic</div>
+                    <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider border-b border-slate-800 pb-1">Medical Profile & Diagnosis</div>
                     <div className="flex justify-between items-center">
-                        <span className="text-slate-400">Groupe Sanguin :</span>
-                        <span className="font-bold text-red-400 bg-red-950/30 px-2 py-0.5 rounded">A Positif (A+)</span>
+                        <span className="text-slate-400">Blood Group:</span>
+                        <span className="font-bold text-red-400 bg-red-950/30 px-2 py-0.5 rounded">A Positive (A+)</span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span className="text-slate-400">Allergies :</span>
-                        <span className="font-bold text-slate-300 bg-slate-800 px-2 py-0.5 rounded text-[10px] uppercase">Pénicilline</span>
+                        <span className="text-slate-400">Allergies:</span>
+                        <span className="font-bold text-slate-300 bg-slate-800 px-2 py-0.5 rounded text-[10px] uppercase">Penicillin</span>
                     </div>
                     <div className="text-sm text-slate-300 mt-1 flex items-start gap-2">
                         <span className="text-blue-400 font-mono text-[10px] bg-blue-900/30 px-1.5 py-0.5 rounded whitespace-nowrap">ICD-10 : I20.0</span>
-                        <span>Angine de poitrine instable</span>
+                        <span>Unstable angina pectoris</span>
                     </div>
                     <div className="text-sm text-slate-300 flex items-start gap-2">
                         <span className="text-blue-400 font-mono text-[10px] bg-blue-900/30 px-1.5 py-0.5 rounded whitespace-nowrap">ICD-10 : I25.1</span>
-                        <span>Athérosclérose coronaire</span>
+                        <span>Coronary atherosclerosis</span>
                     </div>
                 </div>
             </div>
 
             <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner flex-1 flex flex-col min-h-0">
-                <div className="text-[10px] text-slate-500 uppercase mb-2 font-bold tracking-wider border-b border-slate-800 pb-1 shrink-0">Notes d'Observation Clinique (OBX)</div>
+                <div className="text-[10px] text-slate-500 uppercase mb-2 font-bold tracking-wider border-b border-slate-800 pb-1 shrink-0">Clinical Observation Notes (OBX)</div>
                 <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                     <p className="leading-relaxed text-sm text-slate-300">
-                        <strong className="text-white">Statut :</strong> Patient stable. Risque d'ischémie modéré identifié lors de l'évaluation pré-opératoire (score ASA III).
-                        Maintenir une surveillance hémodynamique stricte.
+                        <strong className="text-white">Status:</strong> Patient stable. Moderate ischemia risk identified during pre-operative assessment (ASA III score).
+                        Maintain strict hemodynamic monitoring.
                     </p>
                     <p className="leading-relaxed text-[11px] text-slate-500 font-mono">
-                        [SYS_LOG] 08:14 - Induction réussie<br />
-                        [SYS_LOG] 08:22 - Transfert bloc opératoire<br />
-                        [SYS_LOG] 08:35 - Installation DaVinci terminée
+                        [SYS_LOG] 08:14 - Induction successful<br />
+                        [SYS_LOG] 08:22 - Transfer to operating room<br />
+                        [SYS_LOG] 08:35 - DaVinci installation complete
                     </p>
 
                     {/* Synchronized HL7 Data */}
@@ -226,9 +226,9 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
 
                 <div className="flex flex-wrap gap-x-6 gap-y-1 text-[10px] text-slate-400 bg-slate-950/80 p-2 rounded border border-slate-800 mb-2">
                     <div><span className="text-slate-500/80 uppercase">Patient ID:</span> <span className="text-slate-300 font-bold">489201-A</span></div>
-                    <div><span className="text-slate-500/80 uppercase">Nom:</span> <span className="text-slate-300 font-bold">DUPONT, Jean</span></div>
-                    <div><span className="text-slate-500/80 uppercase">Né le:</span> 12/04/1958</div>
-                    <div><span className="text-slate-500/80 uppercase">Médecin:</span> Dr. M. LEMAITRE</div>
+                    <div><span className="text-slate-500/80 uppercase">Name:</span> <span className="text-slate-300 font-bold">SMITH, John</span></div>
+                    <div><span className="text-slate-500/80 uppercase">Born:</span> 12/04/1958</div>
+                    <div><span className="text-slate-500/80 uppercase">Doctor:</span> Dr. M. MILLER</div>
                     <div>
                         {scenario === 'safe' && <span className="text-green-400 font-bold">{t('patient.status.safe')}</span>}
                         {(scenario === 'ransomware' || scenario === 'poison') && <span className="text-red-400 font-bold animate-pulse">{t('patient.status.hacked')}</span>}
@@ -261,17 +261,17 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                 <div className="relative z-10 flex-1 flex flex-col p-4 bg-slate-950/80 border border-slate-800 rounded font-mono shadow-inner">
                     <div className="text-blue-400 mb-2 font-bold text-xs uppercase tracking-widest flex items-center gap-2 animate-pulse">
                         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        Négociation DICOM Association (A-ASSOCIATE-RQ)...
+                        DICOM Association Negotiation (A-ASSOCIATE-RQ)...
                     </div>
                     <div className="text-[10px] text-slate-500 space-y-1.5 flex-1 mt-2">
-                        {downloadProgress > 5 && <div>{"> [TCP/IP] SYN envoyé au noeud PACS (10.0.4.55:104)"}</div>}
-                        {downloadProgress > 20 && <div className="text-green-500/80">{"> [TLS] Handshake OK. Certificat RSA 2048 vérifié."}</div>}
-                        {downloadProgress > 35 && <div className="text-blue-300/80">{"> [DIMSE] Requête C-FIND transmise: PatientID=489201-A"}</div>}
-                        {downloadProgress > 50 && <div className="text-blue-400/80">{"> [DIMSE] C-MOVE initié vers l'AE_TITLE local..."}</div>}
-                        {downloadProgress > 65 && <div className="text-yellow-500/80">{"> [HL7 Parser] Réception des segments... MSH, PID, PV1, OBR, OBX"}</div>}
+                        {downloadProgress > 5 && <div>{"> [TCP/IP] SYN sent to PACS node (10.0.4.55:104)"}</div>}
+                        {downloadProgress > 20 && <div className="text-green-500/80">{"> [TLS] Handshake OK. RSA 2048 certificate verified."}</div>}
+                        {downloadProgress > 35 && <div className="text-blue-300/80">{"> [DIMSE] C-FIND request transmitted: PatientID=489201-A"}</div>}
+                        {downloadProgress > 50 && <div className="text-blue-400/80">{"> [DIMSE] C-MOVE initiated to local AE_TITLE..."}</div>}
+                        {downloadProgress > 65 && <div className="text-yellow-500/80">{"> [HL7 Parser] Receiving segments... MSH, PID, PV1, OBR, OBX"}</div>}
                         {downloadProgress > 85 && (
                             <div className={selectedToDownload === 'safe' ? "text-green-400 font-bold" : "text-red-500 font-bold"}>
-                                {"> [SYSTEM] Vérification du Checksum cryptographique SHA-256..."}
+                                {"> [SYSTEM] SHA-256 cryptographic checksum verification..."}
                             </div>
                         )}
                     </div>
@@ -284,7 +284,7 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                     {scenario === 'none' ? (
                         <div className="flex flex-col items-center gap-2 opacity-50 p-4">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-                            <span>Aucun dossier chargé en mémoire tampon. Connectez-vous au PACS.</span>
+                            <span>No record loaded in buffer. Connect to PACS.</span>
                         </div>
                     ) : (
                         viewMode === 'clinical' ? (

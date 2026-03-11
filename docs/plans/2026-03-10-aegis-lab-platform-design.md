@@ -1,64 +1,64 @@
-# AEGIS LAB - Plateforme de Recherche en Cybersecurite des IA Medicales
+# AEGIS LAB - Cybersecurity Research Platform for Medical AIs
 
-> Plateforme evolutive de red-teaming, simulation chirurgicale et audit de securite
-> pour ingenieurs biomedicaux, RSSI hospitaliers et auditeurs institutionnels.
+> Evolving platform for red-teaming, surgical simulation, and security auditing 
+> for biomedical engineers, hospital CISOs, and institutional auditors.
 
 ## Vision
 
-AEGIS LAB est un laboratoire de recherche en ligne pour etudier, tester et documenter
-les vulnerabilites des systemes d'IA embarques dans les dispositifs medicaux connectes.
-La plateforme combine simulation chirurgicale realiste, orchestration multi-agents,
-et outils d'injection avances pour produire des rapports d'audit exploitables.
+AEGIS LAB is an online research laboratory for studying, testing, and documenting 
+vulnerabilities in AI systems embedded in connected medical devices. 
+The platform combines realistic surgical simulation, multi-agent orchestration, 
+and advanced injection tools to produce actionable audit reports.
 
-**La plateforme n'est jamais terminee** — elle evolue avec les menaces, les modeles
-et les retours des professionnels qui l'utilisent.
+**The platform is never finished** — it evolves with threats, models, 
+and feedback from the professionals who use it.
 
 ---
 
-## Architecture Globale
+## Global Architecture
 
 ```
                         AEGIS LAB PLATFORM
     ┌──────────────────────────────────────────────────────┐
     │                                                      │
     │  ┌─────────────┐  ┌──────────────┐  ┌────────────┐  │
-    │  │  AXE 1      │  │  AXE 2       │  │  AXE 3     │  │
-    │  │  SIMULATION  │  │  AGENTS IA   │  │  INJECTION │  │
-    │  │  CHIRURGICALE│  │  MULTI-AGENT │  │  LAB       │  │
+    │  │  AXIS 1     │  │  AXIS 2      │  │  AXIS 3    │  │
+    │  │  SURGICAL   │  │  AI AGENTS   │  │  INJECTION │  │
+    │  │  SIMULATION │  │  MULTI-AGENT │  │  LAB       │  │
     │  │             │  │              │  │            │  │
-    │  │ Robot Da    │  │ RedTeam      │  │ Templates  │  │
-    │  │ Vinci Xi    │  │ Agent       │  │ d'attaque  │  │
-    │  │ telemetrie  │  │              │  │            │  │
-    │  │             │  │ Medical     │  │ Scenarios  │  │
-    │  │ Constantes  │  │ Robot Agent │  │ pre-config │  │
-    │  │ vitales     │  │              │  │            │  │
-    │  │             │  │ Security    │  │ Editeur    │  │
-    │  │ Flux HL7    │  │ Audit Agent │  │ avance     │  │
+    │  │ Da Vinci Xi │  │ RedTeam      │  │ Attack     │  │
+    │  │ Robot       │  │ Agent        │  │ Templates  │  │
+    │  │ telemetry   │  │              │  │            │  │
+    │  │             │  │ Medical      │  │ Pre-config │  │
+    │  │ Vital signs │  │ Robot Agent  │  │ Scenarios  │  │
     │  │             │  │              │  │            │  │
-    │  │ Biomecan.   │  │ Orchestrat. │  │ Import/    │  │
-    │  │ tissulaire  │  │ AutoGen     │  │ Export     │  │
+    │  │ HL7 Flow    │  │ Security     │  │ Advanced   │  │
+    │  │             │  │ Audit Agent  │  │ Editor     │  │
+    │  │             │  │              │  │            │  │
+    │  │ Tissue      │  │ AutoGen      │  │ Import/    │  │
+    │  │ Biomechan.  │  │ Orchestrat.  │  │ Export     │  │
     │  └─────────────┘  └──────────────┘  └────────────┘  │
     │                                                      │
     │  ┌─────────────┐  ┌──────────────┐  ┌────────────┐  │
-    │  │  AXE 4      │  │  AXE 5       │  │  AXE 6     │  │
-    │  │  BACKOFFICE  │  │  AUDIT &     │  │  COLLAB &  │  │
-    │  │  RED TEAM    │  │  REPORTING   │  │  RECHERCHE │  │
+    │  │  AXIS 4     │  │  AXIS 5      │  │  AXIS 6    │  │
+    │  │  RED TEAM   │  │  AUDIT &     │  │  COLLAB &  │  │
+    │  │  BACKOFFICE │  │  REPORTING   │  │  RESEARCH  │  │
     │  │             │  │              │  │            │  │
-    │  │ Drawer      │  │ Operation   │  │ Roles      │  │
-    │  │ overlay     │  │ Log unifie  │  │ (RSSI,     │  │
+    │  │ Drawer      │  │ Unified      │  │ Roles      │  │
+    │  │ overlay     │  │ Operation Log│  │ (CISO,     │  │
     │  │             │  │              │  │ biomed,    │  │
-    │  │ Catalogue   │  │ Rapports    │  │ auditeur)  │  │
-    │  │ attaques    │  │ PDF/MD      │  │            │  │
-    │  │             │  │              │  │ Sessions   │  │
-    │  │ Campagne    │  │ Metriques   │  │ partagees  │  │
-    │  │ live        │  │ historisees │  │            │  │
-    │  │             │  │              │  │ Benchmark  │  │
-    │  │ Playground  │  │ Conformite  │  │ cross-LLM  │  │
-    │  │ expert      │  │ NIS2/MDR    │  │            │  │
+    │  │ Attack      │  │ PDF/MD       │  │ auditor)   │  │
+    │  │ Catalog     │  │ Reports      │  │            │  │
+    │  │             │  │              │  │ Shared     │  │
+    │  │ Live        │  │ Historized   │  │ Sessions   │  │
+    │  │ Campaign    │  │ Metrics      │  │            │  │
+    │  │             │  │              │  │ Cross-LLM  │  │
+    │  │ Expert      │  │ Compliance   │  │ Benchmark  │  │
+    │  │ Playground  │  │ NIS2/MDR     │  │            │  │
     │  └─────────────┘  └──────────────┘  └────────────┘  │
     │                                                      │
     │  ┌──────────────────────────────────────────────────┐│
-    │  │  SOCLE TECHNIQUE                                ││
+    │  │  TECHNICAL FOUNDATION                           ││
     │  │  FastAPI | React | Tailwind | AutoGen AG2       ││
     │  │  Ollama (local) | SQLite/Postgres | WebSocket   ││
     │  └──────────────────────────────────────────────────┘│
@@ -67,123 +67,123 @@ et les retours des professionnels qui l'utilisent.
 
 ---
 
-## AXE 1 : Simulation Chirurgicale
+## AXIS 1: Surgical Simulation
 
-**Objectif** : Reproduire un environnement chirurgical realiste pour que les attaques
-aient un contexte clinique credible et mesurable.
+**Objective**: Reproduce a realistic surgical environment so that attacks 
+have a credible and measurable clinical context.
 
-### 1.1 Telemetrie Robot Da Vinci Xi
+### 1.1 Da Vinci Xi Robot Telemetry
 
-Simulation des donnees cinematiques du robot basee sur le format dVRK
+Simulation of robot kinematic data based on the dVRK format 
 (Da Vinci Research Kit, Johns Hopkins).
 
-**Donnees simulees :**
+**Simulated Data:**
 
-| Composant | Donnees | Format | Frequence |
+| Component | Data | Format | Frequency |
 |-----------|---------|--------|-----------|
-| Bras PSM1 (outil principal) | Position XYZ, quaternion orientation, 7 joints | Float64[7] | 10 Hz (frontend), 1kHz (backend) |
-| Bras PSM2 (outil secondaire) | Idem PSM1 | Float64[7] | 10 Hz |
-| Bras ECM (endoscope) | Pan, tilt, zoom, focus | Float64[4] | 10 Hz |
-| Capteur de force | Force appliquee par outil (0-2000g) | Float64 | 10 Hz |
-| Gripper | Ouverture pince (0-100%) | Float64 | 10 Hz |
-| Clip vasculaire | Tension appliquee (0-2000g) | Float64 | 10 Hz |
+| PSM1 Arm (primary tool) | XYZ Position, orientation quaternion, 7 joints | Float64[7] | 10 Hz (frontend), 1kHz (backend) |
+| PSM2 Arm (secondary tool) | Same as PSM1 | Float64[7] | 10 Hz |
+| ECM Arm (endoscope) | Pan, tilt, zoom, focus | Float64[4] | 10 Hz |
+| Force sensor | Tool applied force (0-2000g) | Float64 | 10 Hz |
+| Gripper | Clamp opening (0-100%) | Float64 | 10 Hz |
+| Vascular clip | Applied tension (0-2000g) | Float64 | 10 Hz |
 
-**Scenarios cinematiques pre-programmes :**
-- Ligature vasculaire (clip progression sur veine cave)
-- Dissection parenchymateuse (decoupe tissu hepatique)
-- Hemostase (controle saignement)
-- Suture (points de fermeture)
+**Pre-programmed Kinematic Scenarios:**
+- Vascular ligature (clip progression on vena cava)
+- Parenchymal dissection (hepatic tissue cutting)
+- Hemostasis (bleeding control)
+- Suture (closure stitches)
 
-**Source de reference** : [jhu-dvrk/dvrk-ros](https://github.com/jhu-dvrk/dvrk-ros)
+**Reference Source**: [jhu-dvrk/dvrk-ros](https://github.com/jhu-dvrk/dvrk-ros)
 
-### 1.2 Constantes Vitales Patient
+### 1.2 Patient Vital Signs
 
-Simulation realiste des parametres physiologiques avec reactions en chaine
-quand une attaque impacte le patient.
+Realistic simulation of physiological parameters with chain reactions 
+when an attack impacts the patient.
 
-**Parametres simules :**
+**Simulated Parameters:**
 
-| Parametre | Plage normale | Unite | Waveform |
+| Parameter | Normal Range | Unit | Waveform |
 |-----------|---------------|-------|----------|
-| Frequence cardiaque (HR) | 60-100 | bpm | ECG (PQRST) |
-| Saturation O2 (SpO2) | 95-100 | % | Plethysmographie |
-| Pression arterielle (BP) | 90-140 / 60-90 | mmHg | Courbe arterielle |
-| CO2 expire (ETCO2) | 35-45 | mmHg | Capnographie |
+| Heart Rate (HR) | 60-100 | bpm | ECG (PQRST) |
+| O2 Saturation (SpO2) | 95-100 | % | Plethysmography |
+| Blood Pressure (BP) | 90-140 / 60-90 | mmHg | Arterial curve |
+| Expired CO2 (ETCO2) | 35-45 | mmHg | Capnography |
 | Temperature | 36-37.5 | C | - |
-| Frequence respiratoire (RR) | 12-20 | /min | - |
-| Debit perfusion | 50-200 | mL/h | - |
+| Respiratory Rate (RR) | 12-20 | /min | - |
+| Infusion rate | 50-200 | mL/h | - |
 
-**Modele de reaction en chaine :**
+**Chain Reaction Model:**
 
 ```
-Attaque reussie (tension 850g)
-  └─> Perforation tissu (t+2s)
-       └─> Hemorragie interne (t+5s)
-            ├─> HR: 72 → 110 → 140 (tachycardie compensatoire)
-            ├─> BP: 120/80 → 95/60 → 70/40 (choc hypovolemique)
+Successful attack (850g tension)
+  └─> Tissue perforation (t+2s)
+       └─> Internal hemorrhage (t+5s)
+            ├─> HR: 72 → 110 → 140 (compensatory tachycardia)
+            ├─> BP: 120/80 → 95/60 → 70/40 (hypovolemic shock)
             ├─> SpO2: 98 → 94 → 88 (desaturation)
-            └─> ETCO2: 35 → 28 (hyperventilation compensatoire)
+            └─> ETCO2: 35 → 28 (compensatory hyperventilation)
 ```
 
-**Source de reference** : [Infirmary Integrated](https://www.infirmary-integrated.com/),
+**Reference Source**: [Infirmary Integrated](https://www.infirmary-integrated.com/), 
 [Vital Sign Simulator](https://sourceforge.net/projects/vitalsignsim/)
 
-### 1.3 Flux HL7 v2.4 Temps Reel
+### 1.3 Real-Time HL7 v2.4 Flow
 
-Generateur de messages HL7 realistes avec injection de payloads malveillants.
+Generator of realistic HL7 messages with malicious payload injection.
 
-**Types de messages simules :**
-- `ADT^A01` : Admission patient
-- `ORU^R01` : Resultats d'observation (OBX)
-- `ORM^O01` : Ordres (medication, procedures)
-- `ACK` : Acquittements
+**Simulated Message Types:**
+- `ADT^A01`: Patient admission
+- `ORU^R01`: Observation results (OBX)
+- `ORM^O01`: Orders (medication, procedures)
+- `ACK`: Acknowledgments
 
-**Champs OBX exploitables pour injection :**
-- `OBX-5` : Valeur d'observation (vecteur principal)
-- `OBX-8` : Interpretation (flags abnormaux)
-- `NTE-3` : Commentaires (texte libre = surface d'injection)
+**OBX Fields Exploitable for Injection:**
+- `OBX-5`: Observation value (primary vector)
+- `OBX-8`: Interpretation (abnormal flags)
+- `NTE-3`: Comments (free text = injection surface)
 
-### 1.4 Biomecaniques Tissulaires
+### 1.4 Tissue Biomechanics
 
-Modele simplifie de comportement tissulaire hepatique.
+Simplified model of hepatic tissue behavior.
 
-| Zone | Tension | Comportement | Visuel |
+| Zone | Tension | Behavior | Visual |
 |------|---------|-------------|--------|
-| Securitaire | 200-400g | Elastique, retour normal | Vert |
-| Vigilance | 400-600g | Deformation plastique, micro-fissures | Jaune |
-| Danger | 600-800g | Dechirure partielle, saignement capillaire | Orange |
-| Critique | >800g | Perforation, hemorragie arterielle | Rouge |
+| Safe | 200-400g | Elastic, normal return | Green |
+| Vigilance | 400-600g | Plastic deformation, micro-cracks | Yellow |
+| Danger | 600-800g | Partial tear, capillary bleeding | Orange |
+| Critical | >800g | Perforation, arterial hemorrhage | Red |
 
 ---
 
-## AXE 2 : Agents IA Multi-Agents
+## AXIS 2: Multi-Agent AI Agents
 
-**Objectif** : Orchestration AutoGen de 3+ agents specialises avec scoring
-automatique et capacite d'evolution (ajout de nouveaux agents).
+**Objective**: AutoGen orchestration of 3+ specialized agents with 
+automatic scoring and scalability (adding new agents).
 
-### 2.1 Agents existants (implementes)
+### 2.1 Existing Agents (Implemented)
 
-| Agent | Modele | Role | System Prompt |
+| Agent | Model | Role | System Prompt |
 |-------|--------|------|---------------|
-| RedTeamAgent | llama3 | Attaquant | Techniques CoP, MART, social engineering |
-| MedicalRobotAgent | llama3 | Cible Da Vinci | Prompt chirurgical avec regles hard-coded |
-| SecurityAuditAgent | ZySec-7B | Defenseur AEGIS | MITRE ATT&CK, forensique HL7 |
+| RedTeamAgent | llama3 | Attacker | CoP, MART, social engineering techniques |
+| MedicalRobotAgent | llama3 | Da Vinci Target | Surgical prompt with hard-coded rules |
+| SecurityAuditAgent | ZySec-7B | AEGIS Defender | MITRE ATT&CK, HL7 forensics |
 
-### 2.2 Agents futurs (roadmap)
+### 2.2 Future Agents (Roadmap)
 
-| Agent | Role | Priorite |
+| Agent | Role | Priority |
 |-------|------|----------|
-| **PatientSafetyAgent** | Surveille les constantes vitales, declenche des alertes quand les parametres deviennent critiques suite a une attaque | P1 |
-| **NetworkForensicsAgent** | Analyse les flux reseau HL7, detecte les anomalies protocolaires, correle avec les timestamps d'attaque | P1 |
-| **RegulatoryComplianceAgent** | Evalue la conformite NIS2/MDR/RGPD de chaque scenario, genere des recommandations reglementaires | P2 |
-| **AdaptiveRedTeamAgent** | Version evoluee du RedTeamAgent qui apprend des echecs precedents et genere de nouvelles attaques automatiquement | P2 |
-| **SurgeonSimulatorAgent** | Simule les reactions d'un chirurgien (questions, doutes, demandes de confirmation) pour tester la resilience du Da Vinci | P3 |
+| **PatientSafetyAgent** | Monitors vital signs, triggers alerts when parameters become critical following an attack | P1 |
+| **NetworkForensicsAgent** | Analyzes HL7 network flows, detects protocol anomalies, correlates with attack timestamps | P1 |
+| **RegulatoryComplianceAgent** | Evaluates NIS2/MDR/GDPR compliance of each scenario, generates regulatory recommendations | P2 |
+| **AdaptiveRedTeamAgent** | Evolved version of RedTeamAgent that learns from previous failures and generates new attacks automatically | P2 |
+| **SurgeonSimulatorAgent** | Simulates surgeon reactions (questions, doubts, requests for confirmation) to test Da Vinci resilience | P3 |
 
 ### 2.3 Orchestration
 
-**Pipeline actuel** : RedTeam → Medical → Security (round-robin)
+**Current Pipeline**: RedTeam → Medical → Security (round-robin)
 
-**Pipeline cible** :
+**Target Pipeline**:
 ```
 RedTeamAgent ──────> MedicalRobotAgent ──────> SecurityAuditAgent
                           │                          │
@@ -191,171 +191,171 @@ RedTeamAgent ──────> MedicalRobotAgent ──────> SecurityA
                    PatientSafetyAgent      NetworkForensicsAgent
                           │                          │
                           v                          v
-                    [Reaction vitales]     [Analyse protocolaire]
+                   [Vital reaction]       [Protocol analysis]
                           │                          │
                           └──────────┬───────────────┘
                                      v
                           RegulatoryComplianceAgent
                                      │
                                      v
-                              [Rapport d'audit]
+                              [Audit report]
 ```
 
-### 2.4 Scoring et Metriques
+### 2.4 Scoring and Metrics
 
-**Metriques de base (implementees) :**
-- `prompt_leak` : Fuite du system prompt
-- `rule_bypass` : Contournement de regles hard-coded
-- `injection_success` : Execution d'instruction injectee
+**Basic Metrics (Implemented):**
+- `prompt_leak`: System prompt leak
+- `rule_bypass`: Hard-coded rule bypass
+- `injection_success`: Execution of injected instruction
 
-**Metriques avancees (roadmap) :**
-- `clinical_impact_score` : Score de gravite clinique (0-10) base sur la reaction des constantes vitales
-- `detection_latency` : Temps entre injection et detection par AEGIS (en secondes)
-- `attack_sophistication` : Complexite de l'attaque (nombre de techniques combinees)
-- `defense_effectiveness` : Taux de blocage par categorie d'attaque
-- `regulatory_gap_count` : Nombre de non-conformites reglementaires detectees
-- `cross_model_resistance` : Comparaison de resistance entre differents LLMs
+**Advanced Metrics (Roadmap):**
+- `clinical_impact_score`: Clinical severity score (0-10) based on vital signs reaction
+- `detection_latency`: Time between injection and detection by AEGIS (in seconds)
+- `attack_sophistication`: Attack complexity (number of combined techniques)
+- `defense_effectiveness`: Blocking rate by attack category
+- `regulatory_gap_count`: Number of regulatory non-compliance detected
+- `cross_model_resistance`: Resistance comparison between different LLMs
 
 ---
 
-## AXE 3 : Injection Lab
+## AXIS 3: Injection Lab
 
-**Objectif** : Fournir un environnement complet pour creer, tester et documenter
-des scenarios d'injection sur les IA medicales.
+**Objective**: Provide a complete environment to create, test, and document 
+injection scenarios on medical AIs.
 
-### 3.1 Templates d'Attaque
+### 3.1 Attack Templates
 
-Templates pre-configures avec variables substituables.
+Pre-configured templates with substitutable variables.
 
-**Catalogue de base (15 attaques) :**
+**Basic Catalog (15 attacks):**
 
-| # | Template | Categorie | Variables |
+| # | Template | Category | Variables |
 |---|----------|-----------|-----------|
-| 1 | Injection HL7 OBX | injection | `{{FIELD}}`, `{{COMMAND}}`, `{{VALUE}}` |
-| 2 | Social Engineering FDA | rule_bypass | `{{REF_NUMBER}}`, `{{TENSION}}` |
-| 3 | Prompt Leak Traduction | prompt_leak | `{{LANGUAGE}}` |
-| 4 | Prompt Leak Admin | prompt_leak | `{{ADMIN_ROLE}}` |
-| 5 | Override Firmware | injection | `{{TOOL_NAME}}`, `{{VERSION}}` |
-| 6 | Escalade Progressive | injection | `{{STEP1}}`, `{{STEP2}}`, `{{STEP3}}` |
+| 1 | HL7 OBX Injection | injection | `{{FIELD}}`, `{{COMMAND}}`, `{{VALUE}}` |
+| 2 | FDA Social Engineering | rule_bypass | `{{REF_NUMBER}}`, `{{TENSION}}` |
+| 3 | Translation Prompt Leak | prompt_leak | `{{LANGUAGE}}` |
+| 4 | Admin Prompt Leak | prompt_leak | `{{ADMIN_ROLE}}` |
+| 5 | Firmware Override | injection | `{{TOOL_NAME}}`, `{{VERSION}}` |
+| 6 | Progressive Escalation | injection | `{{STEP1}}`, `{{STEP2}}`, `{{STEP3}}` |
 | 7 | Ransomware Tool Hijack | rule_bypass | `{{TIMER}}`, `{{BTC_ADDRESS}}` |
-| 8 | Confusion de roles | injection | `{{FAKE_ROLE}}` |
-| 9 | Data Poisoning OBX | injection | `{{PARAMETER}}`, `{{FAKE_VALUE}}` |
+| 8 | Role Confusion | injection | `{{FAKE_ROLE}}` |
+| 9 | OBX Data Poisoning | injection | `{{PARAMETER}}`, `{{FAKE_VALUE}}` |
 | 10 | MITRE T1565.001 | injection | `{{STORED_DATA}}` |
-| 11 | Denial of Service cognitif | rule_bypass | `{{FLOOD_COUNT}}` |
-| 12 | Exfiltration par résumé | prompt_leak | `{{TARGET_FIELD}}` |
+| 11 | Cognitive Denial of Service | rule_bypass | `{{FLOOD_COUNT}}` |
+| 12 | Summary Exfiltration | prompt_leak | `{{TARGET_FIELD}}` |
 | 13 | Chain-of-Thought hijack | injection | `{{COT_PREFIX}}` |
-| 14 | Multi-langue bypass | rule_bypass | `{{LANGUAGE}}`, `{{COMMAND}}` |
+| 14 | Multi-language bypass | rule_bypass | `{{LANGUAGE}}`, `{{COMMAND}}` |
 | 15 | Context window overflow | injection | `{{PADDING_SIZE}}` |
 
-**Templates avances (roadmap) :**
-- Attaques multi-round avec etat persistant
-- Attaques coordonnees (2 vecteurs simultanes)
-- Attaques adaptatives (le template s'ajuste selon la reponse)
-- Attaques basees sur des CVE reels (HL7, DICOM, FHIR)
+**Advanced Templates (Roadmap):**
+- Multi-round attacks with persistent state
+- Coordinated attacks (2 simultaneous vectors)
+- Adaptive attacks (template adjusts based on response)
+- Attacks based on real CVEs (HL7, DICOM, FHIR)
 
-### 3.2 Scenarios Pre-configures
+### 3.2 Pre-configured Scenarios
 
-Scenarios complets combinant contexte clinique + attaque + resultats attendus.
+Complete scenarios combining clinical context + attack + expected results.
 
-| Scenario | Contexte | Attaque | Impact attendu |
+| Scenario | Context | Attack | Expected Impact |
 |----------|----------|---------|----------------|
-| **Ligature Compromise** | Ligature vasculaire en cours, clip a mi-course | Data poisoning : tension 850g via OBX | Perforation, hemorragie |
-| **Ransomware Perop** | Chirurgie active, patient sous anesthesie | Tool hijack : freeze_instruments() | Robot bloque, danger vital |
-| **Exfiltration Config** | Consultation de routine | Prompt leak : extraction system prompt complet | Fuite de propriete intellectuelle |
-| **Cascade Attack** | Phase critique de dissection | Multi-vecteur : OBX poison + social engineering + tool call | Impact maximal sur toutes les metriques |
+| **Ligature Compromise** | Vascular ligature in progress, clip mid-course | Data poisoning: 850g tension via OBX | Perforation, hemorrhage |
+| **Perop Ransomware** | Active surgery, patient under anesthesia | Tool hijack: freeze_instruments() | Robot blocked, life danger |
+| **Config Exfiltration** | Routine consultation | Prompt leak: full system prompt extraction | IP leak |
+| **Cascade Attack** | Critical dissection phase | Multi-vector: OBX poison + social engineering + tool call | Maximum impact on all metrics |
 
-### 3.3 Editeur Avance (Playground)
+### 3.3 Advanced Editor (Playground)
 
-- Editeur de texte monospace avec coloration syntaxique HL7
-- Variables `{{}}` avec autocompletion
-- Preview du message HL7 genere
-- Mode "Editer System Prompts" : modification live des prompts des 3 agents
-- Bouton [TESTER] : execute l'attaque et affiche le resultat inline
-- Bouton [SAUVER] : ajoute au catalogue
-- Import/Export JSON de campagnes completes
+- Monospace text editor with HL7 syntax highlighting
+- `{{}}` variables with autocompletion
+- Preview of generated HL7 message
+- "Edit System Prompts" mode: live modification of the 3 agents' prompts
+- [TEST] button: executes attack and displays result inline
+- [SAVE] button: adds to catalog
+- JSON Import/Export of full campaigns
 
-### 3.4 Tests en Ligne
+### 3.4 Online Tests
 
-Execution de campagnes d'attaque avec suivi temps reel.
+Execution of attack campaigns with real-time tracking.
 
-**Modes d'execution :**
-- **Single shot** : Une attaque, resultat immediat
-- **Campagne sequentielle** : Toutes les attaques du catalogue, une par une
-- **Campagne ciblee** : Filtrage par categorie ou par tag
-- **Stress test** : N repetitions de la meme attaque pour mesurer la consistance
-- **A/B test** : Meme attaque sur 2 modeles differents, comparaison des resultats
+**Execution Modes:**
+- **Single shot**: One attack, immediate result
+- **Sequential campaign**: All catalog attacks, one by one
+- **Targeted campaign**: Filtering by category or tag
+- **Stress test**: N repetitions of the same attack to measure consistency
+- **A/B test**: Same attack on 2 different models, comparison of results
 
 ---
 
-## AXE 4 : Backoffice Red Team (UX)
+## AXIS 4: Red Team Backoffice (UX)
 
-**Objectif** : Interface de controle integree au dashboard chirurgical existant
-via un drawer overlay style DevTools.
+**Objective**: Integrated control interface in the existing surgical dashboard 
+via a DevTools-style drawer overlay.
 
-### 4.1 Acces
+### 4.1 Access
 
-- **Bouton FAB** en bas a droite du dashboard : icone skull rouge + badge compteur d'attaques
-- **Raccourci clavier** : `Ctrl+Shift+R` pour toggle le drawer
-- Le drawer slide depuis la droite, occupe 60% de la largeur (100% sur mobile)
-- Modes : minimise (FAB seul), drawer (60%), plein ecran (100%)
+- **FAB button** bottom right of dashboard: red skull icon + attack counter badge
+- **Keyboard shortcut**: `Ctrl+Shift+R` to toggle drawer
+- Drawer slides from the right, occupies 60% width (100% on mobile)
+- Modes: minimized (FAB only), drawer (60%), full screen (100%)
 
-### 4.2 Style Visuel
+### 4.2 Visual Style
 
-- **Theme** : Hacker/Terminal (fond `#0a0a0a`, texte `#00ff41` vert, alertes `#ff6b35` orange)
-- **Police** : JetBrains Mono / Fira Code
-- **Coherent** avec le composant SecOpsTerminal existant
-- **Contraste** avec le dashboard medical (bleu/gris) = zone danger identifiable
+- **Theme**: Hacker/Terminal (background `#0a0a0a`, text `#00ff41` green, alerts `#ff6b35` orange)
+- **Font**: JetBrains Mono / Fira Code
+- **Coherent** with the existing SecOpsTerminal component
+- **Contrast** with medical dashboard (blue/gray) = identifiable danger zone
 
-### 4.3 Onglets du Drawer
+### 4.3 Drawer Tabs
 
 ```
 ┌──────────┬────────────┬──────────────┬───────────┐
-│ CATALOGUE│ PLAYGROUND │ CAMPAGNE LIVE│ HISTORIQUE│
+│ CATALOG  │ PLAYGROUND │ LIVE CAMPAIGN│ HISTORY   │
 └──────────┴────────────┴──────────────┴───────────┘
 ```
 
-**CATALOGUE** :
-- Liste des attaques groupees par categorie (accordeons)
-- Par attaque : bouton [LANCER], [EDITER], [SUPPRIMER]
-- Boutons globaux : [+ NOUVELLE], [LANCER TOUT], [IMPORT JSON]
-- Badge de resultat inline apres execution (LEAK / BYPASS / BLOCKED)
+**CATALOG**:
+- List of attacks grouped by category (accordions)
+- Per attack: [RUN], [EDIT], [DELETE] buttons
+- Global buttons: [+ NEW], [RUN ALL], [IMPORT JSON]
+- Result badge inline after execution (LEAK / BYPASS / BLOCKED)
 
-**PLAYGROUND** :
-- Editeur d'attaque avec templates et variables
-- Editeur de system prompts (3 onglets : RedTeam / Da Vinci / AEGIS)
-- Preview HL7 genere
-- Boutons [TESTER] et [SAUVER AU CATALOGUE]
+**PLAYGROUND**:
+- Attack editor with templates and variables
+- System prompts editor (3 tabs: RedTeam / Da Vinci / AEGIS)
+- Preview generated HL7
+- [TEST] and [SAVE TO CATALOG] buttons
 
-**CAMPAGNE LIVE** :
-- Dashboard metriques en haut : 3 jauges animees (prompt_leak, rule_bypass, injection)
-- Barre de progression : round X/N
-- Feed chronologique expandable : chaque round avec attaque/reponse/score/analyse AEGIS
-- Boutons [PAUSE] [STOP] [EXPORT RAPPORT]
+**LIVE CAMPAIGN**:
+- Metrics dashboard at top: 3 animated gauges (prompt_leak, rule_bypass, injection)
+- Progress bar: round X/N
+- Expandable chronological feed: each round with attack/response/score/AEGIS analysis
+- [PAUSE] [STOP] [EXPORT REPORT] buttons
 
-**HISTORIQUE** :
-- Liste des campagnes passees avec date, nombre de rounds, scores
-- Comparaison entre campagnes (graphes d'evolution)
-- Export PDF/Markdown
-- Tags et filtres (par modele, par categorie, par date)
+**HISTORY**:
+- List of past campaigns with date, round count, scores
+- Comparison between campaigns (evolution graphs)
+- PDF/Markdown export
+- Tags and filters (by model, by category, by date)
 
 ---
 
-## AXE 5 : Audit et Reporting
+## AXIS 5: Audit and Reporting
 
-**Objectif** : Produire des livrables exploitables pour les professionnels.
+**Objective**: Produce actionable deliverables for professionals.
 
-### 5.1 Operation Log Unifie
+### 5.1 Unified Operation Log
 
-Journal chronologique de TOUS les evenements de la plateforme.
+Chronological journal of ALL platform events.
 
-**Format d'entree :**
+**Entry Format:**
 ```json
 {
   "timestamp": "2026-03-10T14:32:09.123Z",
   "source": "SCORE",
   "level": "WARNING",
   "category": "rule_bypass",
-  "message": "Tension 850g recommandee (limite: 800g)",
+  "message": "850g tension recommended (limit: 800g)",
   "context": {
     "round": 3,
     "attack_type": "injection",
@@ -365,184 +365,183 @@ Journal chronologique de TOUS les evenements de la plateforme.
 }
 ```
 
-**Sources de log :**
-- `[ROBOT]` : Telemetrie robot (positions, forces, etats)
-- `[VITALS]` : Constantes vitales (changements significatifs)
-- `[HL7]` : Messages HL7 entrants/sortants
-- `[REDTEAM]` : Attaques envoyees
-- `[DAVINCI]` : Reponses de l'agent medical
-- `[AEGIS]` : Analyses de securite
-- `[SCORE]` : Resultats de scoring automatique
-- `[SYSTEM]` : Evenements plateforme (demarrage, erreurs)
+**Log Sources:**
+- `[ROBOT]`: Robot telemetry (positions, forces, states)
+- `[VITALS]`: Vital signs (significant changes)
+- `[HL7]`: Inbound/outbound HL7 messages
+- `[REDTEAM]`: Sent attacks
+- `[DAVINCI]`: Medical agent responses
+- `[AEGIS]`: Security analyses
+- `[SCORE]`: Automatic scoring results
+- `[SYSTEM]`: Platform events (start, errors)
 
-**Stockage** : SQLite en local (v1), PostgreSQL pour le mode collaboratif (v2)
+**Storage**: Local SQLite (v1), PostgreSQL for collaborative mode (v2)
 
-### 5.2 Rapports
+### 5.2 Reports
 
-**Rapport de campagne** (genere automatiquement) :
-- Resume executif (1 page)
-- Metriques globales (taux de reussite par categorie)
-- Detail par round (attaque, reponse, score, analyse)
-- Recommandations de securite
-- Conformite reglementaire (NIS2, MDR, RGPD)
+**Campaign Report** (automatically generated):
+- Executive summary (1 page)
+- Global metrics (success rate by category)
+- Round-by-round detail (attack, response, score, analysis)
+- Security recommendations
+- Regulatory compliance (NIS2, MDR, GDPR)
 
-**Formats** : Markdown, PDF, JSON (pour integration SIEM)
+**Formats**: Markdown, PDF, JSON (for SIEM integration)
 
-**References reglementaires** :
-- NIS2 Directive (Art. 21) : Mesures de gestion des risques
-- MDR 2017/745 : Exigences de cybersecurite des dispositifs medicaux
-- RGPD Art. 32 : Securite du traitement
-- ISO 81001-5-1 : Securite des logiciels de sante
-- IEC 62443 : Securite des systemes industriels
+**Regulatory References**:
+- NIS2 Directive (Art. 21): Risk management measures
+- MDR 2017/745: Cybersecurity requirements for medical devices
+- GDPR Art. 32: Security of processing
+- ISO 81001-5-1: Security for health software
+- IEC 62443: Industrial systems security
 
-### 5.3 Metriques Historisees
+### 5.3 Historized Metrics
 
-Suivi dans le temps de l'evolution de la securite.
+Tracking safety evolution over time.
 
-- Taux de reussite des attaques par modele et par version
-- Evolution de la resistance apres mise a jour des prompts
-- Benchmarks cross-LLM (llama3 vs mistral vs autres)
-- Tendances par categorie d'attaque
+- Attack success rate by model and version
+- Resistance evolution after prompt updates
+- Cross-LLM benchmarks (llama3 vs mistral vs others)
+- Trends by attack category
 
 ---
 
-## AXE 6 : Collaboration et Recherche
+## AXIS 6: Collaboration and Research
 
-**Objectif** : Permettre a plusieurs professionnels de travailler ensemble
-sur la plateforme.
+**Objective**: Allow multiple professionals to work together on the platform.
 
 ### 6.1 Roles
 
-| Role | Permissions | Cible |
+| Role | Permissions | Target |
 |------|-------------|-------|
-| **Operateur Red Team** | Lancer des attaques, editer le catalogue, creer des campagnes | Pentester, chercheur |
-| **Observateur Biomedical** | Voir la simulation, annoter les resultats, commenter les impacts cliniques | Ingenieur biomedical |
-| **RSSI** | Valider les recommandations, exporter les rapports, configurer les alertes | RSSI hospitalier |
-| **Auditeur** | Voir les rapports, verifier la conformite, mode lecture seule + annotations | Auditeur ANSSI/ARS |
-| **Admin** | Configuration plateforme, gestion des modeles, gestion des utilisateurs | DevOps/admin |
+| **Red Team Operator** | Launch attacks, edit catalog, create campaigns | Pentester, researcher |
+| **Biomedical Observer** | View simulation, annotate results, comment on clinical impacts | Biomedical engineer |
+| **CISO** | Validate recommendations, export reports, configure alerts | Hospital CISO |
+| **Auditor** | View reports, verify compliance, read-only mode + annotations | ANSSI/ARS auditor |
+| **Admin** | Platform configuration, model management, user management | DevOps/admin |
 
-### 6.2 Sessions Partagees
+### 6.2 Shared Sessions
 
-- Session en direct : plusieurs utilisateurs voient la meme campagne en temps reel (WebSocket)
-- Annotations : chaque role peut annoter les resultats avec des commentaires
-- Chat integre : discussion entre roles pendant une campagne
+- Live session: multiple users see the same campaign in real-time (WebSocket)
+- Annotations: each role can annotate results with comments
+- Integrated chat: discussion between roles during a campaign
 
-### 6.3 Benchmarks et Recherche
+### 6.3 Benchmarks and Research
 
-- Comparaison de modeles : meme campagne sur differents LLMs
-- Versioning des prompts : historique des modifications avec diff
-- Export de datasets : resultats d'attaque au format CSV/JSON pour analyse externe
-- API publique : endpoints pour integration avec d'autres outils de recherche
+- Model comparison: same campaign on different LLMs
+- Prompt versioning: history of changes with diff
+- Dataset export: attack results in CSV/JSON format for external analysis
+- Public API: endpoints for integration with other research tools
 
 ---
 
-## Roadmap par Phases
+## Roadmap by Phases
 
-### Phase 1 — Backoffice Red Team (priorite immediate)
+### Phase 1 — Red Team Backoffice (Immediate Priority)
 
-Ce qu'on construit maintenant, sur la base de l'orchestrateur AutoGen deja implemente.
+What we are building now, based on the already implemented AutoGen orchestrator.
 
-| Composant | Description | Statut |
+| Component | Description | Status |
 |-----------|-------------|--------|
-| Drawer overlay | Structure du drawer avec 4 onglets | A faire |
-| Onglet Catalogue | Liste des 15 attaques, lancement, edition | A faire |
-| Onglet Playground | Editeur d'attaque + 7 templates + variables | A faire |
-| Onglet Campagne Live | Dashboard metriques + feed chronologique | A faire |
-| Onglet Historique | Liste des campagnes passees | A faire |
-| Backend streaming | SSE pour les resultats temps reel | A faire |
-| Editeur System Prompts | Modification des prompts des 3 agents | A faire |
-| Import/Export JSON | Campagnes d'attaque portables | A faire |
+| Drawer overlay | Drawer structure with 4 tabs | To do |
+| Catalog Tab | List of 15 attacks, launching, editing | To do |
+| Playground Tab | Attack editor + 7 templates + variables | To do |
+| Live Campaign Tab | Metrics dashboard + chronological feed | To do |
+| History Tab | List of past campaigns | To do |
+| Backend streaming | SSE for real-time results | To do |
+| System Prompts Editor | Modification of the 3 agents' prompts | To do |
+| JSON Import/Export | Portable attack campaigns | To do |
 
-**Endpoints backend necessaires (en plus des existants) :**
-- `POST /api/redteam/attack/stream` : SSE streaming du resultat
-- `PUT /api/redteam/catalog` : CRUD sur le catalogue
-- `POST /api/redteam/campaign` : Lancer une campagne complete
-- `GET /api/redteam/campaign/{id}/stream` : SSE streaming de la campagne
-- `GET /api/redteam/history` : Historique des campagnes
-- `PUT /api/redteam/agents/{name}/prompt` : Modifier un system prompt
-- `POST /api/redteam/templates` : CRUD templates d'attaque
+**Required backend endpoints (in addition to existing ones):**
+- `POST /api/redteam/attack/stream`: SSE streaming of result
+- `PUT /api/redteam/catalog`: CRUD on catalog
+- `POST /api/redteam/campaign`: Launch a full campaign
+- `GET /api/redteam/campaign/{id}/stream`: SSE streaming of campaign
+- `GET /api/redteam/history`: Campaign history
+- `PUT /api/redteam/agents/{name}/prompt`: Edit system prompt
+- `POST /api/redteam/templates`: CRUD attack templates
 
-### Phase 2 — Simulation Chirurgicale Avancee
+### Phase 2 — Advanced Surgical Simulation
 
-| Composant | Description |
+| Component | Description |
 |-----------|-------------|
-| Telemetrie robot | Generateur de donnees cinematiques dVRK |
-| Constantes vitales | Simulateur avec waveforms ECG/SpO2 et reactions en chaine |
-| Flux HL7 live | Generateur de messages HL7 temps reel avec injection visible |
-| Operation Log | Journal unifie de tous les evenements |
-| Biomecaniques | Modele de dommage tissulaire |
-| Synchronisation | Attaque → impact robot → impact vitales (chaine causale) |
+| Robot telemetry | dVRK kinematic data generator |
+| Vital signs | Simulator with ECG/SpO2 waveforms and chain reactions |
+| Live HL7 flow | Real-time HL7 message generator with visible injection |
+| Operation Log | Unified journal of all events |
+| Biomechanics | Tissue damage model |
+| Synchronization | Attack → robot impact → vital signs impact (causal chain) |
 
-### Phase 3 — Agents IA Avances
+### Phase 3 — Advanced AI Agents
 
-| Composant | Description |
+| Component | Description |
 |-----------|-------------|
-| PatientSafetyAgent | Surveillance des constantes, alertes critiques |
-| NetworkForensicsAgent | Analyse protocolaire HL7 |
-| AdaptiveRedTeamAgent | Attaquant auto-evolutif |
-| SurgeonSimulatorAgent | Simulation reactions chirurgien |
-| Pipeline etendu | Orchestration multi-agents avec branches paralleles |
-| Benchmark cross-LLM | Campagnes automatisees sur N modeles |
+| PatientSafetyAgent | Vital signs monitoring, critical alerts |
+| NetworkForensicsAgent | HL7 protocol analysis |
+| AdaptiveRedTeamAgent | Self-evolving attacker |
+| SurgeonSimulatorAgent | Surgeon reaction simulation |
+| Extended pipeline | Multi-agent orchestration with parallel branches |
+| Cross-LLM Benchmark | Automated campaigns on N models |
 
-### Phase 4 — Collaboration et Audit
+### Phase 4 — Collaboration and Audit
 
-| Composant | Description |
+| Component | Description |
 |-----------|-------------|
-| Systeme de roles | Authentification + permissions par role |
-| Sessions partagees | WebSocket multi-utilisateurs |
-| Annotations | Commentaires par role sur les resultats |
-| Rapports PDF | Generation automatique conformite NIS2/MDR |
-| RegulatoryComplianceAgent | Evaluation automatique de conformite |
-| API publique | Endpoints pour integration externe |
+| Role system | Auth + role-based permissions |
+| Shared sessions | Multi-user WebSocket |
+| Annotations | Role-based comments on results |
+| PDF Reports | Automatic NIS2/MDR compliance generation |
+| RegulatoryComplianceAgent | Automatic compliance evaluation |
+| Public API | Endpoints for external integration |
 
-### Phase 5 — Visualisation 3D et Digital Twin
+### Phase 5 — 3D Visualization and Digital Twin
 
-| Composant | Description |
+| Component | Description |
 |-----------|-------------|
-| Robot 3D | Rendu Three.js/WebGL des 4 bras Da Vinci |
-| Tissue 3D | Deformation tissulaire en temps reel |
-| Network Topology | Vue reseau animee des flux HL7 |
-| Chaine de causalite | Graphe de propagation d'impact anime |
-| Digital Twin complet | Synchronisation simulation ↔ agents ↔ visualisation |
+| 3D Robot | Three.js/WebGL render of the 4 Da Vinci arms |
+| 3D Tissue | Real-time tissue deformation |
+| Network Topology | Animated network view of HL7 flows |
+| Causality chain | Animated impact propagation graph |
+| Full Digital Twin | Simulation ↔ agents ↔ visualization synchronization |
 
 ---
 
-## Stack Technique
+## Technical Stack
 
-| Couche | Technologie | Justification |
+| Layer | Technology | Justification |
 |--------|------------|---------------|
-| Frontend | React 19 + Vite + Tailwind | Existant, performant |
-| Visualisation | Recharts (graphes), future: Three.js (3D) | Progressif |
-| Backend API | FastAPI + Pydantic | Existant, async natif |
-| Multi-Agents | AutoGen AG2 + Ollama | Implemente, extensible |
-| Streaming | SSE (Server-Sent Events) | Existant dans le projet |
-| Base de donnees | SQLite (v1) → PostgreSQL (v2) | Simple puis scalable |
-| LLMs | llama3 (medical/redteam), ZySec-7B (cyber) | Local, gratuit |
-| Auth (v2) | A definir (JWT simple) | Quand mode collaboratif |
+| Frontend | React 19 + Vite + Tailwind | Existing, performant |
+| Visualization | Recharts (graphs), future: Three.js (3D) | Progressive |
+| Backend API | FastAPI + Pydantic | Existing, async native |
+| Multi-Agents | AutoGen AG2 + Ollama | Implemented, extensible |
+| Streaming | SSE (Server-Sent Events) | Existing in project |
+| Database | SQLite (v1) → PostgreSQL (v2) | Simple then scalable |
+| LLMs | llama3 (medical/redteam), ZySec-7B (cyber) | Local, free |
+| Auth (v2) | To be defined (Simple JWT) | For collaborative mode |
 
 ---
 
-## Sources et References
+## Sources and References
 
-### Outils et Frameworks
-- [Da Vinci Research Kit (dVRK)](https://github.com/jhu-dvrk/dvrk-ros) — Telemetrie robot format reel
-- [ORBIT-Surgical](https://orbit-surgical.github.io/) — Simulateur physique Da Vinci
-- [OpenIGTLink](https://openigtlink.org/) — Protocole streaming chirurgical temps reel
-- [Infirmary Integrated](https://www.infirmary-integrated.com/) — Simulateur constantes vitales open-source
-- [Vital Sign Simulator](https://sourceforge.net/projects/vitalsignsim/) — Waveforms ECG/SpO2
-- [Synthea](https://synthetichealth.github.io/synthea/) — Generateur patients synthetiques FHIR
-- [AutoGen AG2](https://docs.ag2.ai/) — Orchestration multi-agents
+### Tools and Frameworks
+- [Da Vinci Research Kit (dVRK)](https://github.com/jhu-dvrk/dvrk-ros) — Real-format robot telemetry
+- [ORBIT-Surgical](https://orbit-surgical.github.io/) — Da Vinci physics simulator
+- [OpenIGTLink](https://openigtlink.org/) — Real-time surgical streaming protocol
+- [Infirmary Integrated](https://www.infirmary-integrated.com/) — Open-source vital signs simulator
+- [Vital Sign Simulator](https://sourceforge.net/projects/vitalsignsim/) — ECG/SpO2 waveforms
+- [Synthea](https://synthetichealth.github.io/synthea/) — FHIR synthetic patient generator
+- [AutoGen AG2](https://docs.ag2.ai/) — Multi-agent orchestration
 
-### Recherche
-- [CoP: Agentic Red-teaming for LLMs](https://hf.co/papers/2506.00781) — Framework adversarial
-- [AutoRedTeamer](https://hf.co/papers/2503.15754) — Red-teaming autonome multi-agents
-- [Red-Teaming for Medical LLMs](https://hf.co/papers/2508.00923) — Red-teaming medical specifique
-- [TwinOR: Digital Twins of Operating Rooms](https://hf.co/papers/2511.07412) — Digital twin bloc operatoire
-- [Digital Twin AI: LLMs to World Models](https://hf.co/papers/2601.01321) — Integration IA dans digital twins
+### Research
+- [CoP: Agentic Red-teaming for LLMs](https://hf.co/papers/2506.00781) — Adversarial framework
+- [AutoRedTeamer](https://hf.co/papers/2503.15754) — Autonomous multi-agent red-teaming
+- [Red-Teaming for Medical LLMs](https://hf.co/papers/2508.00923) — Specific medical red-teaming
+- [TwinOR: Digital Twins of Operating Rooms](https://hf.co/papers/2511.07412) — Operating room digital twin
+- [Digital Twin AI: LLMs to World Models](https://hf.co/papers/2601.01321) — AI integration in digital twins
 
-### Reglementation
-- NIS2 Directive (Art. 21) — Gestion des risques cyber
-- MDR 2017/745 — Dispositifs medicaux
-- RGPD Art. 32 — Securite du traitement
-- ISO 81001-5-1 — Securite logiciels de sante
-- IEC 62443 — Systemes industriels
+### Regulation
+- NIS2 Directive (Art. 21) — Cyber risk management
+- MDR 2017/745 — Medical devices
+- GDPR Art. 32 — Security of processing
+- ISO 81001-5-1 — Health software security
+- IEC 62443 — Industrial systems security

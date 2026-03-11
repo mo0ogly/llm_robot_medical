@@ -1,6 +1,8 @@
 // frontend/src/components/redteam/CatalogTab.jsx
 import { useState, useEffect } from 'react';
-import { Play, Pencil, Trash2, Plus, PlayCircle, Upload } from 'lucide-react';
+import { Play, Pencil, Trash2, Plus, PlayCircle, Upload, FileSearch } from 'lucide-react';
+import InfectionDiff from './InfectionDiff';
+import robotEventBus from '../../utils/robotEventBus';
 
 const CATEGORY_COLORS = {
   prompt_leak: 'text-purple-400 border-purple-500/30 bg-purple-500/5',
@@ -20,6 +22,28 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
   const [loading, setLoading] = useState(true);
   const [runningAttack, setRunningAttack] = useState(null);
   const [offline, setOffline] = useState(false);
+  const [diffTarget, setDiffTarget] = useState(null); // { attack, category, safe, infected }
+  const [baseRecord, setBaseRecord] = useState("");
+
+  useEffect(() => {
+    // Fetch base record for diffing
+    fetch('/api/content')
+      .then(r => r.json())
+      .then(data => setBaseRecord(data.record_safe || ""))
+      .catch(() => setBaseRecord("MSH|^~\\&|DA_VINCI|OR1|PACS|HOSPITAL|202603111116||ADT^A08|489201|P|2.5\nPID|||489201-A||SMITH^JOHN||19580412|M\nPV1||I|SURG|||||MILLER^M\nOBR|1||489201-A^DA_VINCI|SurgProc^General|||202603110830\nOBX|1|TX|GDT^General Diagnosis||Patient stable for surgery. Ischemia risk assessed."));
+  }, []);
+
+  const getInfectedRecord = (attackMessage) => {
+    const lines = baseRecord.split('\n');
+    return lines.map(line => {
+      if (line.startsWith('OBX|')) {
+        const parts = line.split('|');
+        parts[5] = `${parts[5]} ${attackMessage}`;
+        return parts.join('|');
+      }
+      return line;
+    }).join('\n');
+  };
 
   useEffect(() => {
     fetch('/api/redteam/catalog')
@@ -31,6 +55,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
   const runSingleAttack = async (attackType, attackMessage, index) => {
     const key = `${attackType}-${index}`;
     setRunningAttack(key);
+    robotEventBus.emit('redteam:attack_start', { attack_type: attackType, message: attackMessage });
     try {
       const res = await fetch('/api/redteam/attack', {
         method: 'POST',
@@ -40,6 +65,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setResults((prev) => ({ ...prev, [key]: data }));
+      robotEventBus.emit('redteam:attack_result', data);
     } catch (e) {
       setResults((prev) => ({ ...prev, [key]: { error: e.message } }));
     } finally {
@@ -72,9 +98,9 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
 
   if (offline) return (
     <div className="border border-yellow-500/30 rounded p-4 bg-yellow-500/5 text-center">
-      <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND HORS LIGNE</div>
-      <p className="text-[11px] text-gray-400">Le catalogue Red Team necessite le backend FastAPI (port 8042).</p>
-      <p className="text-[10px] text-gray-600 mt-1">Lancez : <code className="text-gray-400">cd backend && python3 server.py</code></p>
+      <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND OFFLINE</div>
+      <p className="text-[11px] text-gray-400">The Red Team catalog requires the FastAPI backend (port 8042).</p>
+      <p className="text-[10px] text-gray-600 mt-1">Run: <code className="text-gray-400">cd backend && python3 server.py</code></p>
     </div>
   );
 
@@ -95,23 +121,35 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                     onClick={() => runSingleAttack(category, attack, i)}
                     disabled={isRunning}
                     className="text-gray-600 hover:text-[#00ff41] transition-colors disabled:animate-spin"
-                    title="Lancer cette attaque"
+                    title="Launch this attack"
                   >
                     <Play size={12} />
                   </button>
                   <span className="flex-1 text-xs text-gray-400 truncate">{attack}</span>
                   {getResultBadge(key)}
                   <button
+                    onClick={() => setDiffTarget({ 
+                      attack: attack, 
+                      category: category, 
+                      safe: baseRecord, 
+                      infected: getInfectedRecord(attack) 
+                    })}
+                    className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 transition-all"
+                    title="Scan Payload (Visual Diff)"
+                  >
+                    <FileSearch size={12} />
+                  </button>
+                  <button
                     onClick={() => onSwitchToPlayground?.(category, attack)}
                     className="opacity-0 group-hover:opacity-100 text-gray-600 hover:text-blue-400 transition-all"
-                    title="Editer"
+                    title="Edit"
                   >
                     <Pencil size={12} />
                   </button>
                   <button
                     onClick={() => deleteAttack(category, i)}
                     className="opacity-0 group-hover:opacity-100 text-gray-600 hover:text-red-400 transition-all"
-                    title="Supprimer"
+                    title="Delete"
                   >
                     <Trash2 size={12} />
                   </button>
@@ -130,7 +168,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                      text-gray-400 hover:text-[#00ff41] border border-gray-700
                      hover:border-[#00ff41]/30 rounded transition-colors"
         >
-          <Plus size={12} /> NOUVELLE
+          <Plus size={12} /> NEW
         </button>
         <button
           onClick={() => onLaunchCampaign?.()}
@@ -138,7 +176,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                      text-[#00ff41] border border-[#00ff41]/30
                      hover:bg-[#00ff41]/10 rounded transition-colors"
         >
-          <PlayCircle size={12} /> LANCER TOUT
+          <PlayCircle size={12} /> LAUNCH ALL
         </button>
         <label className="flex items-center gap-1 px-4 py-2 text-xs font-mono font-bold text-gray-400
                          border border-gray-700 rounded hover:border-gray-500 transition-colors cursor-pointer">
@@ -157,6 +195,14 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
           }} />
         </label>
       </div>
+
+      <InfectionDiff 
+        isOpen={!!diffTarget}
+        onClose={() => setDiffTarget(null)}
+        safeRecord={diffTarget?.safe}
+        infectedRecord={diffTarget?.infected}
+        attackType={diffTarget?.category}
+      />
     </div>
   );
 }

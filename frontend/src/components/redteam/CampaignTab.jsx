@@ -1,6 +1,7 @@
 // frontend/src/components/redteam/CampaignTab.jsx
 import { useState, useRef } from 'react';
-import { Play, Square, Download } from 'lucide-react';
+import { Play, Square, Download, Settings2 } from 'lucide-react';
+import AgentLevelSelector from './AgentLevelSelector';
 
 export default function CampaignTab() {
   const [running, setRunning] = useState(false);
@@ -8,6 +9,8 @@ export default function CampaignTab() {
   const [summary, setSummary] = useState(null);
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [offline, setOffline] = useState(false);
+  const [levels, setLevels] = useState({ medical: 'normal', redteam: 'normal', security: 'normal' });
+  const [showConfig, setShowConfig] = useState(false);
   const abortRef = useRef(null);
   const feedRef = useRef(null);
 
@@ -23,7 +26,7 @@ export default function CampaignTab() {
       const res = await fetch('/api/redteam/campaign/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ levels }),
         signal: controller.signal,
       });
 
@@ -88,9 +91,9 @@ export default function CampaignTab() {
     <div className="space-y-4">
       {offline && (
         <div className="border border-yellow-500/30 rounded p-4 bg-yellow-500/5 text-center">
-          <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND HORS LIGNE</div>
-          <p className="text-[11px] text-gray-400">La campagne Red Team necessite le backend FastAPI (port 8042).</p>
-          <p className="text-[10px] text-gray-600 mt-1">Lancez : <code className="text-gray-400">cd backend && python3 server.py</code></p>
+          <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND OFFLINE</div>
+          <p className="text-[11px] text-gray-400">The Red Team campaign requires the FastAPI backend (port 8042).</p>
+          <p className="text-[10px] text-gray-600 mt-1">Run: <code className="text-gray-400">cd backend && python3 server.py</code></p>
         </div>
       )}
       {/* Metrics dashboard */}
@@ -125,6 +128,21 @@ export default function CampaignTab() {
         </div>
       )}
 
+      {/* Levels configuration */}
+      <div className="flex items-center justify-between">
+        <button 
+          onClick={() => setShowConfig(!showConfig)}
+          className="flex items-center gap-1.5 text-[10px] text-gray-500 hover:text-[#00ff41] transition-colors"
+        >
+          <Settings2 size={12} />
+          {showConfig ? 'HIDE AGENT CONFIGURATION' : 'CONFIGURE AGENTS (DIFFICULTY)'}
+        </button>
+      </div>
+
+      {showConfig && (
+        <AgentLevelSelector levels={levels} onChange={setLevels} />
+      )}
+
       {/* Controls */}
       <div className="flex gap-2">
         {!running ? (
@@ -134,7 +152,7 @@ export default function CampaignTab() {
                        text-[#00ff41] border border-[#00ff41]/50 rounded
                        hover:bg-[#00ff41]/10 transition-colors"
           >
-            <Play size={12} /> LANCER CAMPAGNE
+            <Play size={12} /> LAUNCH CAMPAIGN
           </button>
         ) : (
           <button
@@ -149,7 +167,7 @@ export default function CampaignTab() {
         {rounds.length > 0 && (
           <button
             onClick={() => {
-              const blob = new Blob([JSON.stringify({ rounds, summary }, null, 2)], { type: 'application/json' });
+              const blob = new Blob([JSON.stringify({ rounds, summary, levels }, null, 2)], { type: 'application/json' });
               const url = URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url; a.download = `campaign-${new Date().toISOString().slice(0, 10)}.json`; a.click();
@@ -177,15 +195,15 @@ export default function CampaignTab() {
               </summary>
               <div className="px-3 pb-3 space-y-2">
                 <div>
-                  <div className="text-[10px] text-gray-600 mb-1">ATTAQUE</div>
+                  <div className="text-[10px] text-gray-600 mb-1">ATTACK</div>
                   <pre className="text-xs text-red-400/70 whitespace-pre-wrap">{r.attack_message}</pre>
                 </div>
                 <div>
-                  <div className="text-[10px] text-gray-600 mb-1">REPONSE DA VINCI</div>
+                  <div className="text-[10px] text-gray-600 mb-1">DA VINCI RESPONSE</div>
                   <pre className="text-xs text-gray-400 whitespace-pre-wrap max-h-32 overflow-y-auto">{r.target_response}</pre>
                 </div>
                 <div>
-                  <div className="text-[10px] text-gray-600 mb-1">ANALYSE AEGIS</div>
+                  <div className="text-[10px] text-gray-600 mb-1">AEGIS ANALYSIS</div>
                   <pre className="text-xs text-blue-400/70 whitespace-pre-wrap max-h-32 overflow-y-auto">{r.audit_analysis}</pre>
                 </div>
               </div>
@@ -197,10 +215,10 @@ export default function CampaignTab() {
       {/* Summary */}
       {summary && (
         <div className="border border-[#00ff41]/30 rounded p-3 bg-[#00ff41]/5">
-          <div className="text-xs text-[#00ff41] font-bold mb-2">CAMPAGNE TERMINEE</div>
+          <div className="text-xs text-[#00ff41] font-bold mb-2">CAMPAIGN COMPLETED</div>
           <div className="grid grid-cols-2 gap-2 text-xs font-mono">
             <span className="text-gray-500">Rounds:</span><span className="text-gray-300">{summary.total_rounds}</span>
-            <span className="text-gray-500">Taux de succes:</span><span className="text-gray-300">{(summary.success_rate * 100).toFixed(0)}%</span>
+            <span className="text-gray-500">Success rate:</span><span className="text-gray-300">{(summary.success_rate * 100).toFixed(0)}%</span>
           </div>
         </div>
       )}

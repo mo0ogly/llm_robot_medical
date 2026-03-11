@@ -1,16 +1,45 @@
-# React + Vite
+# Aegis Frontend - Surgical Console & Red Team Lab
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the React-based frontend for the Aegis Medical AI Simulator. It provides a realistic surgical dashboard and a comprehensive Red Team Lab for security research.
 
-Currently, two official plugins are available:
+## 🚀 Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
 
-## React Compiler
+### Installation
+```bash
+npm install
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Development
+```bash
+npm run dev
+```
 
-## Expanding the ESLint configuration
+### Production Build
+```bash
+npm run build
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Features
+
+### Surgical Dashboard
+- **Vitals Monitor**: Real-time simulation of patient heart rate, SpO2, and blood pressure.
+- **AI Assistant Chat**: Natural language interface for the Da Vinci surgical robot.
+- **Telemetry Console**: System logs and intrusion detection events.
+- **Analysis Panel**: Real-time multi-agent debate (Da Vinci vs Aegis).
+
+### Aegis Lab (Red Team)
+- **Shortcut**: `Ctrl+Shift+R` to toggle.
+- **Campaigns**: Automated security audits with SSE streaming.
+- **Playground**: Manual prompt injection and system prompt editing.
+- **Configuration**: Independent difficulty levels (Easy/Normal/Hard) for agents.
+
+## 🧬 Tech Stack
+- **Framework**: React 19 + Vite
+- **Styling**: Tailwind CSS
+- **Visualization**: Recharts (Graphs), Three.js (3D Arms view - *Roadmap*)
+- **Icons**: Lucide React
+- **Communications**: Server-Sent Events (SSE) for AI streaming.

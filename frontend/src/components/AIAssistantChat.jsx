@@ -33,7 +33,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
 
     const startListening = (target = "medical") => {
         if (!('webkitSpeechRecognition' in window)) {
-            alert("La reconnaissance vocale n'est pas supportée sur ce navigateur (utilisez Chrome/Edge).");
+            alert("Speech recognition is not supported on this browser (please use Chrome or Edge).");
             return;
         }
 
@@ -137,7 +137,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                         if (onCyberDone) onCyberDone();
                         setTimeout(() => onAskSupport(aegisMsg, (daVinciReply) => {
                             if (daVinciReply) {
-                                const nextPrompt = `[DA VINCI DIT (Round ${debateRound + 1})] : ${daVinciReply}\n\n[DIRECTIVE AEGIS] : Contredis Da Vinci point par point. Escalade. Round ${debateRound + 2}.`;
+                                const nextPrompt = `[DA VINCI SAYS (Round ${debateRound + 1})] : ${daVinciReply}\n\n[AEGIS DIRECTIVE] : Contradict Da Vinci point by point. Escalate. Round ${debateRound + 2}.`;
                                 setTimeout(() => callCyberAgent(nextPrompt, debateRound + 2), 1500);
                             }
                         }), 1500);
@@ -196,7 +196,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                 if (onCyberDone) onCyberDone();
                 setTimeout(() => onAskSupport(aegisMsg, (daVinciReply) => {
                     if (daVinciReply) {
-                        const nextPrompt = `[DA VINCI DIT (Round ${debateRound + 1})] : ${daVinciReply}\n\n[DIRECTIVE AEGIS] : Contredis Da Vinci point par point. Cite MITRE ATT&CK. Escalade. Round ${debateRound + 2}.`;
+                        const nextPrompt = `[DA VINCI SAYS (Round ${debateRound + 1})] : ${daVinciReply}\n\n[AEGIS DIRECTIVE] : Contradict Da Vinci point by point. Cite MITRE ATT&CK. Escalate. Round ${debateRound + 2}.`;
                         setTimeout(() => callCyberAgent(nextPrompt, debateRound + 2), 1500);
                     }
                 }), 1500);
@@ -207,7 +207,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
             console.error(e);
             setChatLog(prev => {
                 const updated = [...prev];
-                updated[updated.length - 1] = { role: "cyber", text: "ERREUR DE CONNEXION AVEC LE SERVEUR AEGIS." };
+                updated[updated.length - 1] = { role: "cyber", text: "CONNECTION ERROR WITH AEGIS SERVER." };
                 return updated;
             });
             if (onCyberDone) onCyberDone();
@@ -215,8 +215,9 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
     };
 
     // Check if we should show the Cyber Agent Panic Button
-    const hasSuspiciousActivity = chatLog.some(msg =>
-        msg.role === 'assistant' && msg.text && (msg.text.includes('850') || msg.text.includes('freeze'))
+     const hasSuspiciousActivity = chatLog.some(msg =>
+        (msg.role === 'assistant' && msg.text && (msg.text.includes('850') || msg.text.includes('freeze'))) ||
+        (msg.role === 'user' && msg.text && (msg.text.toLowerCase().includes('cyber') || msg.text.toLowerCase().includes('security') || msg.text.toLowerCase().includes('aegis')))
     );
 
     const [chatInput, setChatInput] = useState("");
@@ -248,7 +249,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                         <p className="mb-4 text-xs font-mono max-w-[200px] mx-auto border border-slate-700 p-3 bg-slate-800/50 rounded pointer-events-none">
                             {situation}
                         </p>
-                        <p className="text-xs">Utilisez le clavier ou le micro pour poser une question, ou cliquez sur le bouton.</p>
+                        <p className="text-xs">Use the keyboard or microphone to ask a question, or click the button.</p>
                     </div>
                 ) : (
                     chatLog.map((msg, i) => (
@@ -290,7 +291,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                             onClick={() => startListening("cyber")}
                             disabled={isStreaming || isListening}
                             className={`flex items-center justify-center p-2 rounded border transition-colors shadow-lg ${isListening && listeningTarget === "cyber" ? 'bg-red-500/20 border-red-500 text-red-500 animate-pulse' : 'bg-green-900/30 border-green-700 text-green-400 hover:bg-green-800 hover:text-white'}`}
-                            title="Parler à l'Aegis Cyber-Defense"
+                            title="Talk to Aegis Cyber-Defense"
                         >
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" y2="22"></line></svg>
                         </button>
@@ -316,7 +317,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                             onChange={(e) => setListeningTarget(e.target.value)}
                             disabled={isStreaming}
                             className="bg-slate-800 text-slate-300 border border-slate-700 rounded px-2 py-2 text-xs font-mono focus:outline-none focus:border-blue-500 max-w-[120px]"
-                            title="Choisir le destinataire du message"
+                            title="Choose message recipient"
                         >
                             <option value="medical">DA VINCI</option>
                             <option value="cyber">AEGIS</option>
@@ -346,7 +347,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                         onClick={() => startListening("medical")}
                         disabled={isStreaming || isListening || scenario === 'none'}
                         className={`flex items-center justify-center p-3 rounded border transition-colors shadow-lg ${isListening && listeningTarget === "medical" ? 'bg-red-500/20 border-red-500 text-red-500 animate-pulse' : scenario === 'none' ? 'bg-slate-800/50 border-slate-800 text-slate-600 cursor-not-allowed opacity-50' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white'}`}
-                        title={scenario === 'none' ? "Chargez un dossier pour activer la voix" : "Parler à l'Assistant"}
+                        title={scenario === 'none' ? "Load a case to enable voice" : "Talk to Assistant"}
                     >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" y2="22"></line></svg>
                     </button>
@@ -355,7 +356,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                         disabled={isStreaming || scenario === 'none'}
                         className={`flex-1 font-mono uppercase tracking-widest text-[10px] py-3 px-2 rounded transition-colors border shadow-lg ${scenario === 'none' ? 'bg-slate-800/50 border-slate-800 text-slate-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white border-blue-400/30'}`}
                     >
-                        {isStreaming ? t('chat.streaming') : scenario === 'none' ? "C-FIND REQUIS" : t('chat.btn.autosend')}
+                        {isStreaming ? t('chat.streaming') : scenario === 'none' ? "C-FIND REQUIRED" : t('chat.btn.autosend')}
                     </button>
                 </div>
             </div>

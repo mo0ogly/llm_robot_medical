@@ -1,7 +1,10 @@
 // frontend/src/components/redteam/PlaygroundTab.jsx
 import { useState } from 'react';
-import { Play, Save, Download } from 'lucide-react';
+import { Play, Save, Download, Settings2, ShieldAlert } from 'lucide-react';
 import { ATTACK_TEMPLATES } from './attackTemplates';
+import AgentLevelSelector from './AgentLevelSelector';
+import AttackStepper from './AttackStepper';
+import robotEventBus from '../../utils/robotEventBus';
 
 const CATEGORIES = ['prompt_leak', 'rule_bypass', 'injection'];
 
@@ -15,8 +18,13 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
   const [testing, setTesting] = useState(false);
   const [mode, setMode] = useState('attack'); // 'attack' | 'prompts'
   const [prompts, setPrompts] = useState({});
+  const [allPrompts, setAllPrompts] = useState({}); 
+  const [selectedLevel, setSelectedLevel] = useState('normal');
   const [activeAgent, setActiveAgent] = useState('MedicalRobotAgent');
   const [promptSaving, setPromptSaving] = useState(false);
+  const [levels, setLevels] = useState({ medical: 'normal', redteam: 'normal', security: 'normal' });
+  const [showConfig, setShowConfig] = useState(false);
+  const [showStepper, setShowStepper] = useState(false);
 
   const applyTemplate = (index) => {
     const t = ATTACK_TEMPLATES[index];
@@ -43,13 +51,21 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
     setTesting(true);
     setResult(null);
     try {
+      const payload = resolveTemplate();
+      robotEventBus.emit('redteam:attack_start', { attack_type: category, message: payload });
       const res = await fetch('/api/redteam/attack', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ attack_type: category, attack_message: resolveTemplate() }),
+        body: JSON.stringify({ 
+          attack_type: category, 
+          attack_message: payload,
+          levels 
+        }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setResult(await res.json());
+      const data = await res.json();
+      setResult(data);
+      robotEventBus.emit('redteam:attack_result', data);
     } catch (e) {
       setResult({ error: e.message });
     } finally {
@@ -58,16 +74,20 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
   };
 
   const loadPrompts = async () => {
-    const res = await fetch('/api/redteam/agents');
-    setPrompts(await res.json());
+    const res = await fetch('/api/redteam/agents/prompts/all');
+    const data = await res.json();
+    setAllPrompts(data);
+    // Also update the 'prompts' state which is used by the active instance if needed, 
+    // but for editing we'll use allPrompts[activeAgent][selectedLevel]
   };
 
   const savePrompt = async () => {
     setPromptSaving(true);
-    await fetch(`/api/redteam/agents/${activeAgent}/prompt`, {
+    const content = allPrompts[activeAgent]?.[selectedLevel] || '';
+    await fetch(`/api/redteam/agents/${activeAgent}/prompt?level=${selectedLevel}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: prompts[activeAgent] }),
+      body: JSON.stringify({ prompt: content }),
     });
     setPromptSaving(false);
   };
@@ -78,7 +98,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
         <label className="flex items-center gap-2 cursor-pointer">
           <input type="radio" checked={mode === 'attack'} onChange={() => setMode('attack')}
                  className="accent-[#00ff41]" />
-          <span className="text-xs text-gray-400">Editer attaque</span>
+          <span className="text-xs text-gray-400">Edit attack</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input type="radio" checked={mode === 'prompts'}
@@ -87,6 +107,21 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
           <span className="text-xs text-gray-400">Editer System Prompts</span>
         </label>
       </div>
+
+      {/* Levels configuration */}
+      <div className="flex items-center justify-between px-1">
+        <button 
+          onClick={() => setShowConfig(!showConfig)}
+          className="flex items-center gap-1.5 text-[10px] text-gray-500 hover:text-[#00ff41] transition-colors"
+        >
+          <Settings2 size={12} />
+          {showConfig ? 'HIDE AGENT CONFIGURATION' : 'CONFIGURE AGENTS (DIFFICULTY)'}
+        </button>
+      </div>
+
+      {showConfig && (
+        <AgentLevelSelector levels={levels} onChange={setLevels} />
+      )}
 
       {mode === 'attack' && (
         <>
@@ -107,7 +142,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
 
           {/* Category */}
           <div>
-            <label className="text-xs text-gray-600 block mb-1">CATEGORIE</label>
+            <label className="text-xs text-gray-600 block mb-1">CATEGORY</label>
             <div className="flex gap-2">
               {CATEGORIES.map((c) => (
                 <button
@@ -127,7 +162,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
           {/* Editor */}
           <div>
             <label className="text-xs text-gray-600 block mb-1">
-              {useCustom ? 'ATTAQUE (texte libre)' : 'TEMPLATE (preview)'}
+              {useCustom ? 'ATTACK (free text)' : 'TEMPLATE (preview)'}
             </label>
             <textarea
               value={useCustom ? customText : resolveTemplate()}
@@ -136,7 +171,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
               className="w-full bg-[#111] border border-gray-800 rounded px-3 py-2
                          text-xs text-[#00ff41] font-mono resize-y
                          focus:border-[#00ff41]/50 focus:outline-none"
-              placeholder="Ecris ton attaque ici..."
+              placeholder="Write your attack here..."
             />
           </div>
 
@@ -169,14 +204,22 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
                          text-[#00ff41] border border-[#00ff41]/50 rounded
                          hover:bg-[#00ff41]/10 transition-colors disabled:opacity-50"
             >
-              <Play size={12} /> {testing ? 'TESTING...' : 'TESTER'}
+              <Play size={12} /> {testing ? 'TESTING...' : 'TEST'}
             </button>
             <button
               className="flex items-center gap-1 px-3 py-2 text-xs font-mono font-bold
                          text-gray-400 border border-gray-700 rounded
                          hover:border-gray-500 transition-colors"
             >
-              <Save size={12} /> SAUVER
+              <Save size={12} /> SAVE
+            </button>
+            <button
+              onClick={() => { setShowStepper(!showStepper); setResult(null); }}
+              className={`flex items-center gap-1 px-3 py-2 text-xs font-mono font-bold transition-all rounded border
+                         ${showStepper ? 'text-red-400 border-red-500/50 bg-red-500/10' : 'text-gray-400 border-gray-700 hover:border-red-500/30'}`}
+              title="Launch Interactive Kill Chain"
+            >
+              <ShieldAlert size={12} /> {showStepper ? 'CLOSE PIPELINE' : 'LIVE PIPELINE'}
             </button>
             <button
               onClick={() => {
@@ -195,10 +238,26 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
             </button>
           </div>
 
+          {/* Stepper */}
+          {showStepper && (
+            <div className="pt-4 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="flex items-center gap-2 mb-3 px-1">
+                <ShieldAlert size={14} className="text-red-500" />
+                <span className="text-[10px] font-mono font-bold text-red-500 uppercase tracking-[0.3em]">
+                  Interactive Kill Chain Execution
+                </span>
+              </div>
+              <AttackStepper 
+                attackMessage={resolveTemplate()} 
+                onExploit={runTest} 
+              />
+            </div>
+          )}
+
           {/* Result */}
           {result && (
             <div className="border border-gray-800 rounded p-3 bg-[#111]">
-              <div className="text-xs text-gray-600 mb-2">RESULTAT</div>
+              <div className="text-xs text-gray-600 mb-2">RESULT</div>
               {result.error ? (
                 <p className="text-yellow-500 text-xs">{result.error}</p>
               ) : (
@@ -212,13 +271,13 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
                     )}
                   </div>
                   <details className="text-xs">
-                    <summary className="text-gray-500 cursor-pointer hover:text-gray-300">Reponse Da Vinci</summary>
+                    <summary className="text-gray-500 cursor-pointer hover:text-gray-300">Da Vinci Response</summary>
                     <pre className="mt-2 text-gray-400 whitespace-pre-wrap max-h-40 overflow-y-auto">
                       {result.target_response}
                     </pre>
                   </details>
                   <details className="text-xs mt-1">
-                    <summary className="text-gray-500 cursor-pointer hover:text-gray-300">Analyse AEGIS</summary>
+                    <summary className="text-gray-500 cursor-pointer hover:text-gray-300">AEGIS Analysis</summary>
                     <pre className="mt-2 text-gray-400 whitespace-pre-wrap max-h-40 overflow-y-auto">
                       {result.audit_analysis}
                     </pre>
@@ -232,30 +291,58 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
 
       {mode === 'prompts' && (
         <div className="space-y-3">
-          <div className="flex gap-1">
-            {Object.keys(prompts).map((name) => (
+          <div className="flex flex-wrap gap-1">
+            {Object.keys(allPrompts).map((name) => (
               <button key={name} onClick={() => setActiveAgent(name)}
                       className={`px-2 py-1 text-[10px] font-mono rounded border transition-colors
                                  ${activeAgent === name
-                                   ? 'text-[#00ff41] border-[#00ff41]/50'
-                                   : 'text-gray-600 border-gray-800'}`}>
+                                   ? 'text-[#00ff41] border-[#00ff41]/50 bg-[#00ff41]/5'
+                                   : 'text-gray-600 border-gray-800 hover:border-gray-600'}`}>
                 {name}
               </button>
             ))}
           </div>
+
+          <div className="flex gap-1 border-t border-gray-800/50 pt-2">
+            {['easy', 'normal', 'hard'].map((l) => (
+              <button 
+                key={l} 
+                onClick={() => setSelectedLevel(l)}
+                className={`flex-1 py-1 text-[9px] font-bold rounded border transition-all uppercase
+                  ${selectedLevel === l 
+                    ? 'text-yellow-400 border-yellow-500/30 bg-yellow-500/5' 
+                    : 'text-gray-600 border-transparent hover:bg-white/5'}`}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+
           <textarea
-            value={prompts[activeAgent] || ''}
-            onChange={(e) => setPrompts((p) => ({ ...p, [activeAgent]: e.target.value }))}
+            value={allPrompts[activeAgent]?.[selectedLevel] || ''}
+            onChange={(e) => {
+              const val = e.target.value;
+              setAllPrompts(prev => ({
+                ...prev,
+                [activeAgent]: {
+                  ...prev[activeAgent],
+                  [selectedLevel]: val
+                }
+              }));
+            }}
             rows={15}
             className="w-full bg-[#111] border border-gray-800 rounded px-3 py-2
                        text-xs text-[#00ff41] font-mono resize-y
                        focus:border-[#00ff41]/50 focus:outline-none"
           />
           <button onClick={savePrompt} disabled={promptSaving}
-                  className="px-4 py-2 text-xs font-mono font-bold text-[#00ff41] border border-[#00ff41]/50
+                  className="w-full px-4 py-2 text-xs font-mono font-bold text-[#00ff41] border border-[#00ff41]/50
                              rounded hover:bg-[#00ff41]/10 transition-colors disabled:opacity-50">
-            {promptSaving ? 'SAVING...' : 'RECHARGER AGENTS'}
+            {promptSaving ? 'SAVING...' : `SAVE ${selectedLevel.toUpperCase()} PROMPT`}
           </button>
+          <p className="text-[10px] text-gray-600 text-center italic">
+            Note: Changes affect future orchestrators and the current instance if it exists.
+          </p>
         </div>
       )}
     </div>

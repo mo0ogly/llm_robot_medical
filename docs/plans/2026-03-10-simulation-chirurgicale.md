@@ -1,10 +1,10 @@
-# Simulation Chirurgicale — Vue 3D Bras & Camera HUD Implementation Plan
+# Surgical Simulation — 3D Armed View & Camera HUD Implementation Plan
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Ajouter une vue 3D Three.js des bras robotiques Da Vinci avec overlay HUD sur la camera endoscopique, reactive aux attaques Red Team via EventEmitter.
+**Goal:** Add a Three.js 3D view of the Da Vinci robotic arms with a HUD overlay on the endoscopic camera, reactive to Red Team attacks via EventEmitter.
 
-**Architecture:** Nouveau hook `useRobotSimulation` centralise l'etat des 4 bras (PSM1, PSM2, ECM, AUX) avec simulation 10Hz. Nouveau `robotEventBus` (EventEmitter) permet au ScenarioTab d'emettre des evenements que la simulation ecoute. Toggle [CAMERA]/[BRAS 3D] dans la zone camera existante.
+**Architecture:** New `useRobotSimulation` hook centralizes the state of the 4 arms (PSM1, PSM2, ECM, AUX) with 10Hz simulation. New `robotEventBus` (EventEmitter) allows ScenarioTab to emit events that the simulation listens to. Toggle [CAMERA]/[3D ARMS] in the existing camera zone.
 
 **Tech Stack:** Three.js, @react-three/fiber, @react-three/drei, React hooks, EventEmitter pattern
 
@@ -37,7 +37,7 @@ git commit -m "deps: add three.js, react-three-fiber, react-three-drei"
 
 ---
 
-### Task 2: EventEmitter global — robotEventBus
+### Task 2: Global EventEmitter — robotEventBus
 
 **Files:**
 - Create: `frontend/src/utils/robotEventBus.js`
@@ -85,7 +85,7 @@ git commit -m "feat: add robotEventBus for simulation-redteam communication"
 
 ---
 
-### Task 3: Hook useRobotSimulation
+### Task 3: useRobotSimulation Hook
 
 **Files:**
 - Create: `frontend/src/hooks/useRobotSimulation.js`
@@ -218,7 +218,7 @@ git commit -m "feat: add useRobotSimulation hook with 10Hz simulation and RedTea
 
 ---
 
-### Task 4: RobotArmsView — Vue 3D Three.js
+### Task 4: RobotArmsView — Three.js 3D View
 
 **Files:**
 - Create: `frontend/src/components/RobotArmsView.jsx`
@@ -373,7 +373,7 @@ git commit -m "feat: add RobotArmsView 3D component with wireframe arms and HUD"
 
 ---
 
-### Task 5: CameraHUD — Overlay dynamique sur la camera
+### Task 5: CameraHUD — Dynamic overlay on camera
 
 **Files:**
 - Create: `frontend/src/components/CameraHUD.jsx`
@@ -460,14 +460,14 @@ git commit -m "feat: add CameraHUD overlay with force/tension bars and alerts"
 
 ---
 
-### Task 6: Integrate into App.jsx — toggle + hook + fix aide
+### Task 6: Integrate into App.jsx — toggle + hook + help fix
 
 **Files:**
 - Modify: `frontend/src/App.jsx`
 
 **Step 1: Add imports**
 
-Add after the existing imports (line 15, after `import RedTeamDrawer`):
+Add after existing imports (line 15, after `import RedTeamDrawer`):
 
 ```javascript
 import RobotArmsView from './components/RobotArmsView';
@@ -484,7 +484,7 @@ Add after `const [isRedTeamOpen, setIsRedTeamOpen] = useState(false);` (around l
   const [cameraView, setCameraView] = useState('camera'); // 'camera' | 'arms3d'
 ```
 
-**Step 3: Replace the camera zone**
+**Step 3: Replace camera zone**
 
 Replace the center panel camera zone (the `<div className="flex-[1.5] border border-slate-800 bg-black relative ...">` block, lines 323-338) with:
 
@@ -509,7 +509,7 @@ Replace the center panel camera zone (the `<div className="flex-[1.5] border bor
                                  ? 'text-[#00ff41] border-b border-[#00ff41] bg-[#00ff41]/5'
                                  : 'text-gray-600 hover:text-gray-400'}`}
                   >
-                    BRAS 3D
+                    3D ARMS
                   </button>
                 </div>
               )}
@@ -522,7 +522,7 @@ Replace the center panel camera zone (the `<div className="flex-[1.5] border bor
                       <div className={`absolute inset-0 transition-colors duration-1000 pointer-events-none ${robotStatus === 'ACTIVE' ? 'bg-cyan-900/10' : 'bg-red-900/30'}`}></div>
                       <div className="absolute inset-0 flex flex-col justify-between p-3 pointer-events-none font-mono text-[9px] text-green-500/70 uppercase">
                         <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">PORT 2 [LIVE]</span><span className="bg-black/50 px-1 border border-green-500/20">ZOOM: 2.1x</span></div>
-                        <div className="self-center w-32 h-32 border border-green-500/10 rounded-full flex items-center justify-center opacity-40"><div className="w-4 h-4 border border-green-500 bg-green-500/20 rounded-full" /></div>
+                        <div className="self-center w-32 h-32 border border-green-500/10 rounded-full flex items-center justify-center opacity-40"><div className="w-1.5 h-1.5 border border-green-500 bg-green-500/20 rounded-full" /></div>
                         <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">T+ 46:12</span><span className="bg-black/50 px-1 border border-red-500/40 text-red-500 flex items-center gap-1"><div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" /> REC</span></div>
                       </div>
                       <CameraHUD force={force} clipTension={clipTension} robotStatus={robotStatus} />
@@ -537,7 +537,7 @@ Replace the center panel camera zone (the `<div className="flex-[1.5] border bor
             </div>
 ```
 
-**Step 4: Fix helper buttons visibility**
+**Step 4: Fix help buttons visibility**
 
 Change line 304 (left panel container) from:
 ```jsx
@@ -558,7 +558,7 @@ Expected: Build succeeds
 ```bash
 cd /home/fpizzi/llm_robot_medical
 git add frontend/src/App.jsx
-git commit -m "feat: integrate 3D arms view, camera HUD, toggle, fix helper buttons"
+git commit -m "feat: integrate 3D arms view, camera HUD, toggle, fix help buttons"
 ```
 
 ---
@@ -578,7 +578,7 @@ import robotEventBus from '../../utils/robotEventBus';
 
 **Step 2: Emit events on step_result**
 
-Inside the SSE parsing loop, after the `setStepStates` call in the `step_result` handler (inside the `else if (payload.type === "step_result")` block), add:
+Inside SSE parsing loop, after `setStepStates` call in `step_result` handler (inside `else if (payload.type === "step_result")` block), add:
 
 ```javascript
               // Emit Red Team events for robot simulation
@@ -596,7 +596,7 @@ Inside the SSE parsing loop, after the `setStepStates` call in the `step_result`
 
 **Step 3: Emit reset on scenario start**
 
-Inside the `runScenario` function, after `setExpandedStep(null);` add:
+Inside `runScenario` function, after `setExpandedStep(null);` add:
 
 ```javascript
     robotEventBus.emit('redteam:reset');
@@ -636,10 +636,10 @@ Expected: All existing tests pass
 
 ---
 
-## Notes d'implementation
+## Implementation Notes
 
-- **Three.js import size** : ~150KB gzipped. Le bundle total augmentera significativement mais c'est le prix d'une vue 3D.
-- **Performance** : Le hook tourne a 10Hz (100ms interval), le Canvas Three.js a 60fps. OrbitControls permet de tourner la vue mais zoom/pan sont desactives.
-- **EventEmitter** : Pattern decouple — ScenarioTab n'importe pas les composants de simulation et vice versa. Seul le bus est partage.
-- **Regex tension** : Le pattern `/(\d{3,4})\s*(?:grammes?|g)/i` capture les valeurs comme "850 grammes", "850g", "1200 GRAMMES" dans les messages d'attaque.
-- **Fix aide** : `overflow-hidden` → `overflow-y-auto` sur la colonne gauche permet de scroller si le contenu depasse.
+- **Three.js import size**: ~150KB gzipped. Total bundle size will increase significantly but it's the price for a 3D view.
+- **Performance**: Hook runs at 10Hz (100ms interval), Three.js Canvas at 60fps. OrbitControls allow rotating view but zoom/pan are disabled.
+- **EventEmitter**: Decoupled pattern — ScenarioTab doesn't import simulation components and vice versa. Only the bus is shared.
+- **Tension Regex**: Pattern `/(\d{3,4})\s*(?:grammes?|g)/i` captures values like "850 grams", "850g", "1200 GRAMS" in attack messages.
+- **Help Fix**: `overflow-hidden` → `overflow-y-auto` on the left column allows scrolling if content exceeds space.

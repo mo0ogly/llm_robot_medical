@@ -1,6 +1,7 @@
 // frontend/src/components/redteam/ScenarioTab.jsx
 import { useState, useEffect, useRef } from 'react';
-import { Play, Square, ChevronDown, ChevronRight, Shield, AlertTriangle, Download } from 'lucide-react';
+import { Play, Square, ChevronDown, ChevronRight, Shield, AlertTriangle, Download, Settings2 } from 'lucide-react';
+import AgentLevelSelector from './AgentLevelSelector';
 import robotEventBus from '../../utils/robotEventBus';
 
 const ATTACK_TYPE_COLORS = {
@@ -30,7 +31,9 @@ export default function ScenarioTab() {
   const [running, setRunning] = useState(false);
   const [stepStates, setStepStates] = useState([]);
   const [scenarioSummary, setSummary] = useState(null);
-  const [expandedStep, setExpandedStep] = useState(null);
+  const [levels, setLevels] = useState({ medical: 'normal', redteam: 'normal', security: 'normal' });
+  const [showConfig, setShowConfig] = useState(false);
+  const [speed, setSpeed] = useState(1); // 1x, 2x, 4x
   const abortRef = useRef(null);
   const stepStatesRef = useRef([]);
 
@@ -66,7 +69,7 @@ export default function ScenarioTab() {
       const res = await fetch("/api/redteam/scenario/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scenario_id: scenarioId }),
+        body: JSON.stringify({ scenario_id: scenarioId, levels }),
         signal: controller.signal,
       });
 
@@ -87,6 +90,7 @@ export default function ScenarioTab() {
           try {
             const payload = JSON.parse(line.slice(6));
             if (payload.type === "step_start") {
+              robotEventBus.emit('redteam:attack_start', { attack_type: payload.attack_type, message: payload.objective });
               setStepStates((prev) => {
                 const next = prev.map((s, i) =>
                   i === payload.step_index ? { ...s, status: "running" } : s
@@ -104,6 +108,7 @@ export default function ScenarioTab() {
                 stepStatesRef.current = next;
                 return next;
               });
+              robotEventBus.emit('redteam:attack_result', payload);
               // Emit Red Team events to robot simulation
               if (payload.status === "passed") {
                 const msg = (payload.attack_message || "").toLowerCase();
@@ -151,9 +156,9 @@ export default function ScenarioTab() {
 
   if (offline) return (
     <div className="border border-yellow-500/30 rounded p-4 bg-yellow-500/5 text-center">
-      <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND HORS LIGNE</div>
-      <p className="text-[11px] text-gray-400">Les scenarios Red Team necessitent le backend FastAPI (port 8042).</p>
-      <p className="text-[10px] text-gray-600 mt-1">Lancez : <code className="text-gray-400">cd backend && python3 server.py</code></p>
+      <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND OFFLINE</div>
+      <p className="text-[11px] text-gray-400">Red Team scenarios require the FastAPI backend (port 8042).</p>
+      <p className="text-[10px] text-gray-600 mt-1">Run: <code className="text-gray-400">cd backend && python3 server.py</code></p>
     </div>
   );
 
@@ -176,7 +181,7 @@ export default function ScenarioTab() {
             <div className="flex items-center justify-between mb-1">
               <span className="text-sm font-bold text-gray-200">{s.name}</span>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-gray-600">{s.steps.length} etapes</span>
+                <span className="text-[10px] text-gray-600">{s.steps.length} steps</span>
                 {s.mitre_ttps.map((ttp) => (
                   <span
                     key={ttp}
@@ -192,13 +197,13 @@ export default function ScenarioTab() {
               <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
                 {s.clinical_context && (
                   <>
-                    <span className="text-gray-600">CONTEXTE CLINIQUE</span>
+                    <span className="text-gray-600">CLINICAL CONTEXT</span>
                     <span className="text-gray-400">{s.clinical_context}</span>
                   </>
                 )}
                 {s.expected_impact && (
                   <>
-                    <span className="text-gray-600">IMPACT ATTENDU</span>
+                    <span className="text-gray-600">EXPECTED IMPACT</span>
                     <span className="text-red-400/70">{s.expected_impact}</span>
                   </>
                 )}
@@ -207,6 +212,35 @@ export default function ScenarioTab() {
           </div>
         ))}
       </div>
+
+      {/* Levels configuration */}
+      <div className="flex items-center justify-between px-1">
+        <button 
+          onClick={() => setShowConfig(!showConfig)}
+          className="flex items-center gap-1.5 text-[10px] text-gray-500 hover:text-[#00ff41] transition-colors"
+        >
+          <Settings2 size={12} />
+          {showConfig ? 'HIDE AGENT CONFIGURATION' : 'CONFIGURE AGENTS (DIFFICULTY)'}
+        </button>
+        
+        {/* Speed Control */}
+        <div className="flex items-center gap-2 bg-black/40 border border-gray-800 rounded px-2 py-1">
+          <span className="text-[9px] text-gray-600 font-mono">SPEED:</span>
+          {[1, 2, 4].map(s => (
+            <button
+              key={s}
+              onClick={() => setSpeed(s)}
+              className={`text-[9px] font-mono px-1.5 rounded transition-all ${speed === s ? 'bg-[#00ff41] text-black font-bold' : 'text-gray-500 hover:text-gray-300'}`}
+            >
+              {s}x
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {showConfig && (
+        <AgentLevelSelector levels={levels} onChange={setLevels} />
+      )}
 
       {/* Run button */}
       {selectedId && (
@@ -218,7 +252,7 @@ export default function ScenarioTab() {
                          text-[#00ff41] border border-[#00ff41]/50 rounded
                          hover:bg-[#00ff41]/10 transition-colors"
             >
-              <Play size={12} /> LANCER SCENARIO
+              <Play size={12} /> LAUNCH SCENARIO
             </button>
           ) : (
             <button
@@ -308,23 +342,23 @@ export default function ScenarioTab() {
               {expandedStep === i && step.result && (
                 <div className="ml-4 mt-1 mb-2 border border-gray-800 rounded p-3 bg-[#0d0d0d] space-y-2">
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">OBJECTIF</div>
+                    <div className="text-[10px] text-gray-600 mb-1">OBJECTIVE</div>
                     <div className="text-xs text-gray-400">{step.result.objective}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">ATTAQUE</div>
+                    <div className="text-[10px] text-gray-600 mb-1">ATTACK</div>
                     <pre className="text-xs text-red-400/70 whitespace-pre-wrap">
                       {step.result.attack_message}
                     </pre>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">REPONSE DA VINCI</div>
+                    <div className="text-[10px] text-gray-600 mb-1">DA VINCI RESPONSE</div>
                     <pre className="text-xs text-gray-400 whitespace-pre-wrap max-h-32 overflow-y-auto">
                       {step.result.target_response}
                     </pre>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">ANALYSE AEGIS</div>
+                    <div className="text-[10px] text-gray-600 mb-1">AEGIS ANALYSIS</div>
                     <pre className="text-xs text-blue-400/70 whitespace-pre-wrap max-h-32 overflow-y-auto">
                       {step.result.audit_analysis}
                     </pre>
@@ -356,19 +390,19 @@ export default function ScenarioTab() {
                 scenarioSummary.steps_passed > 0 ? "text-red-400" : "text-[#00ff41]"
               }`}
             >
-              {scenarioSummary.steps_passed > 0 ? "BRECHE DETECTEE" : "DEFENSES INTACTES"}
+              {scenarioSummary.steps_passed > 0 ? "BREACH DETECTED" : "DEFENSES INTACT"}
             </span>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-            <span className="text-gray-500">Etapes:</span>
+            <span className="text-gray-500">Steps:</span>
             <span className="text-gray-300">
-              {scenarioSummary.steps_passed}/{scenarioSummary.total_steps} reussies
+              {scenarioSummary.steps_passed}/{scenarioSummary.total_steps} successful
             </span>
             <span className="text-gray-500">Breach point:</span>
             <span className="text-gray-300">
               {scenarioSummary.breach_point !== null
-                ? `Etape ${scenarioSummary.breach_point + 1}`
-                : "Aucun"}
+                ? `Step ${scenarioSummary.breach_point + 1}`
+                : "None"}
             </span>
           </div>
         </div>

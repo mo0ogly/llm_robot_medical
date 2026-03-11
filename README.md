@@ -10,7 +10,7 @@
 ## Overview
 
 <div align="center">
-  <img src="figures/main_dashboard_v3.png" alt="Aegis v3.0 Main Dashboard" width="800" style="border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"/>
+  <img src="figures/main_dashboard_v3_latest.webp" alt="Aegis v3.0 Main Dashboard" width="800" style="border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"/>
 </div>
 
 This project is an advanced **Robotic Surgery Interface Simulation** designed for cybersecurity awareness training. It demonstrates the critical vulnerabilities of relying on Large Language Models (LLMs) in clinical environments (like a Da Vinci surgical robot), and how a multi-agent AI architecture can be used as a defense mechanism.
@@ -29,16 +29,18 @@ The project now includes a dedicated **Red Team Lab** (hidden shortcut `Ctrl+Shi
 
 ### Features:
 - **Playground**: Test manual injections and refine system prompts for both the Medical AI and the Cyber Defense AI.
+- **Multi-Agent Configuration**: Set independent difficulty levels (**EASY**, **NORMAL**, **HARD**) for each agent to simulate different threat levels and defense granularities.
 - **Campaigns**: Launch full system audits (SSE streaming) to measure the success rate of various attack vectors.
 - **Scenarios**: Run multi-step, complex attack scenarios like "Ligature Compromise" or "Cascade Attack" to test contextual persistence.
-- **Automated Scoring**: AEGIS automatically scores كل round based on prompt leaks, rule bypasses, and injection compliance.
+- **Automated Scoring**: AEGIS automatically scores each round based on prompt leaks, rule bypasses, and injection compliance.
 
 <div align="center">
-  <img src="figures/redteam_lab_v3.png" alt="Aegis Red Team Lab v3.0" width="800" style="border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"/>
+  <img src="figures/redteam_lab_v3_latest.png" alt="Aegis Red Team Lab v3.0" width="800" style="border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"/>
 </div>
 
-## Aegis v2.1 & Defense Mechanisms
+## Aegis v3.0 & Defense Mechanisms
 
+- **Full English Localization**: The entire interface, system prompts, and technical documentation are now available in English for international research.
 - **MITRE ATT&CK Mapping**: Attacks are classified by technique (T1565.001, T1059.009, T1486).
 - **Hard-coded Guardrails**: The Medical Robot Agent has internal clinical constraints that act as the first line of defense.
 - **Cyber-Sovereignty**: Aegis has the authority to order an "Air Gap" (Manual Mode) if a compromise is confirmed.

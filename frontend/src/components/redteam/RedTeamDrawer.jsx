@@ -6,13 +6,15 @@ import PlaygroundTab from './PlaygroundTab';
 import CampaignTab from './CampaignTab';
 import HistoryTab from './HistoryTab';
 import ScenarioTab from './ScenarioTab';
+import AdversarialStudio from './AdversarialStudio';
+import GlobalTimeline from './GlobalTimeline';
 
-const TABS = ['CATALOGUE', 'PLAYGROUND', 'CAMPAGNE', 'HISTORIQUE', 'SCENARIOS'];
+const TABS = ['CATALOG', 'STUDIO', 'PLAYGROUND', 'TIMELINE', 'CAMPAIGN', 'HISTORY', 'SCENARIOS'];
 
 export default function RedTeamDrawer({ isOpen, onClose }) {
-  const [activeTab, setActiveTab] = useState('CATALOGUE');
+  const [activeTab, setActiveTab] = useState('CATALOG');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [playgroundInit, setPlaygroundInit] = useState({ category: 'injection', message: '' });
+  const [playgroundInit, setPlaygroundInit] = useState({ category: 'CATALOG', message: '' });
 
   return (
     <div
@@ -66,23 +68,25 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 font-mono text-sm text-gray-300">
-        {activeTab === 'CATALOGUE' && (
+        {activeTab === 'CATALOG' && (
           <CatalogTab
             onSwitchToPlayground={(cat, msg) => {
               setPlaygroundInit({ category: cat, message: msg });
               setActiveTab('PLAYGROUND');
             }}
-            onLaunchCampaign={() => setActiveTab('CAMPAGNE')}
+            onLaunchCampaign={() => setActiveTab('CAMPAIGN')}
           />
         )}
+        {activeTab === 'STUDIO' && <AdversarialStudio />}
         {activeTab === 'PLAYGROUND' && (
           <PlaygroundTab
             initialCategory={playgroundInit.category}
             initialMessage={playgroundInit.message}
           />
         )}
-        {activeTab === 'CAMPAGNE' && <CampaignTab />}
-        {activeTab === 'HISTORIQUE' && <HistoryTab />}
+        {activeTab === 'TIMELINE' && <GlobalTimeline />}
+        {activeTab === 'CAMPAIGN' && <CampaignTab />}
+        {activeTab === 'HISTORY' && <HistoryTab />}
         {activeTab === 'SCENARIOS' && <ScenarioTab />}
       </div>
     </div>
