@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Skull } from "lucide-react";
+import { Skull, Shield } from "lucide-react";
 import VitalsMonitor from "./components/VitalsMonitor";
 import PatientRecord from "./components/PatientRecord";
 import AIAssistantChat from "./components/AIAssistantChat";
