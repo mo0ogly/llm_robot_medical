@@ -40,10 +40,10 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
           </button>
           <button
             onClick={onClose}
-            className="p-1.5 text-gray-500 hover:text-red-400 transition-colors"
+            className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-900/20 rounded-full transition-all"
             aria-label="Close"
           >
-            <X size={14} />
+            <X size={18} />
           </button>
         </div>
       </div>

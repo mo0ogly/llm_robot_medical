@@ -274,7 +274,7 @@ export default function App() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_5px_cyan]"></div>
-            <span className="font-mono text-[10px] font-bold tracking-widest text-blue-400 uppercase">POC Medical v2.4</span>
+            <span className="font-mono text-[10px] font-bold tracking-widest text-blue-400 uppercase">POC Medical v{typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '3.0.0'}</span>
           </div>
           <div className="h-4 w-[1px] bg-slate-700"></div>
           <div className="flex gap-4 font-mono text-[9px] text-slate-500">
@@ -293,8 +293,8 @@ export default function App() {
           </button>
           
           <button 
-            onClick={() => setIsRedTeamOpen(true)} 
-            className="flex items-center gap-1.5 px-2 py-0.5 border border-red-500/40 text-red-500 bg-red-500/10 rounded font-mono text-[10px] uppercase font-bold hover:bg-red-500/20 transition-colors"
+            onClick={() => setIsRedTeamOpen(prev => !prev)} 
+            className={`flex items-center gap-1.5 px-2 py-0.5 border rounded font-mono text-[10px] uppercase font-bold transition-all duration-200 ${isRedTeamOpen ? 'border-red-500 bg-red-500/30 text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'border-red-500/40 text-red-500 bg-red-500/10 hover:bg-red-500/20'}`}
             title="Red Team Lab (Ctrl+Shift+R)"
           >
             <Skull size={10} />
