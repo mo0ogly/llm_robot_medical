@@ -350,7 +350,7 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                     {scenario === 'none' ? (
                         <div className="flex flex-col items-center gap-2 opacity-50 p-4">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-                            <span>No record loaded in buffer. Connect to PACS.</span>
+                            <span>{t('patient.no.record')}</span>
                         </div>
                     ) : (
                         viewMode === 'clinical' ? (

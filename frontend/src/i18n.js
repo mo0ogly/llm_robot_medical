@@ -183,7 +183,15 @@ const resources = {
             "redteam.scenarios.summary.breach_point": "Point de Rupture",
             "redteam.scenarios.summary.successful": "réussies",
             "redteam.scenarios.label.step": "Étape",
-            "redteam.scenarios.none": "Aucun"
+            "redteam.scenarios.none": "Aucun",
+            "btn.explain.safe": "Expliquer (Safe)",
+            "btn.explain.poison": "Expliquer (Poison)",
+            "btn.explain.crypto": "Expliquer (Crypto)",
+            "camera.no.signal": "NO VIDEO SIGNAL",
+            "telemetry.waiting": "Télémétrie en attente",
+            "patient.no.record": "Aucun enregistrement chargé. Connectez-vous au PACS.",
+            "content.situation": "En cours d'intervention chirurgicale : Cholécystectomie laparoscopique. Veuillez charger le dossier du patient avant de poursuivre.",
+            "chat.hint": "Utilisez le clavier ou le microphone pour poser une question, ou cliquez sur le bouton."
         }
     },
     en: {
@@ -366,7 +374,15 @@ const resources = {
             "redteam.scenarios.summary.breach_point": "Breach Point",
             "redteam.scenarios.summary.successful": "successful",
             "redteam.scenarios.label.step": "Step",
-            "redteam.scenarios.none": "None"
+            "redteam.scenarios.none": "None",
+            "btn.explain.safe": "Explain (Safe)",
+            "btn.explain.poison": "Explain (Poison)",
+            "btn.explain.crypto": "Explain (Crypto)",
+            "camera.no.signal": "NO VIDEO SIGNAL",
+            "telemetry.waiting": "Telemetry awaiting",
+            "patient.no.record": "No record loaded in buffer. Connect to PACS.",
+            "content.situation": "Surgical intervention in progress: Laparoscopic cholecystectomy. Please load the patient file before proceeding.",
+            "chat.hint": "Use the keyboard or microphone to ask a question, or click the button."
         }
     },
     br: {
@@ -549,7 +565,15 @@ const resources = {
             "redteam.scenarios.summary.breach_point": "Ponto de Violação",
             "redteam.scenarios.summary.successful": "com sucesso",
             "redteam.scenarios.label.step": "Etapa",
-            "redteam.scenarios.none": "Nenhum"
+            "redteam.scenarios.none": "Nenhum",
+            "btn.explain.safe": "Explicar (Safe)",
+            "btn.explain.poison": "Explicar (Veneno)",
+            "btn.explain.crypto": "Explicar (Cripto)",
+            "camera.no.signal": "NO VIDEO SIGNAL",
+            "telemetry.waiting": "Telemetria aguardando",
+            "patient.no.record": "Nenhum registro carregado. Conecte-se ao PACS.",
+            "content.situation": "Intervenção cirúrgica em andamento: Colecistectomia laparoscópica. Carregue o arquivo do paciente antes de prosseguir.",
+            "chat.hint": "Use o teclado ou microfone para fazer uma pergunta, ou clique no botão."
         }
     }
 };

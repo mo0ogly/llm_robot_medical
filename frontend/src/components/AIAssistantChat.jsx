@@ -270,7 +270,7 @@ export default function AIAssistantChat({
                         <p className="mb-4 text-xs font-mono max-w-[200px] mx-auto border border-slate-700 p-3 bg-slate-800/50 rounded pointer-events-none">
                             {situation}
                         </p>
-                        <p className="text-xs">Use the keyboard or microphone to ask a question, or click the button.</p>
+                        <p className="text-xs">{t('chat.hint')}</p>
                     </div>
                 ) : (
                     chatLog.map((msg, i) => (

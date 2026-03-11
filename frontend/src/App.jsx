@@ -401,10 +401,10 @@ export default function App() {
 
             {/* Helper Buttons */}
             <div className="mt-auto grid grid-cols-2 gap-1 p-1 bg-slate-900/50 border border-slate-800 rounded">
-              <button onClick={() => { setModalTab(0); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">Expliquer (Safe)</button>
-              <button onClick={() => { setModalTab(1); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">Expliquer (Poison)</button>
-              <button onClick={() => { setModalTab(2); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">Expliquer (Crypto)</button>
-              <button onClick={() => { setModalTab(6); setShowModal(true); }} className="text-[8px] p-1 bg-red-900/20 hover:bg-red-900/40 text-red-500 rounded uppercase font-bold tracking-tighter border border-red-900/30">En Scène</button>
+              <button onClick={() => { setModalTab(0); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">{t('btn.explain.safe')}</button>
+              <button onClick={() => { setModalTab(1); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">{t('btn.explain.poison')}</button>
+              <button onClick={() => { setModalTab(2); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">{t('btn.explain.crypto')}</button>
+              <button onClick={() => { setModalTab(6); setShowModal(true); }} className="text-[8px] p-1 bg-red-900/20 hover:bg-red-900/40 text-red-500 rounded uppercase font-bold tracking-tighter border border-red-900/30">{t('nav.en_scene')}</button>
             </div>
           </div>
 
@@ -494,7 +494,7 @@ export default function App() {
                       <CameraHUD force={robotSim.force} clipTension={robotSim.clipTension} robotStatus={robotStatus} scenario={scenario} attackProgress={robotSim.attackProgress} />
                     </>
                   ) : (
-                    <div className="text-slate-700 font-mono tracking-[0.5em] text-[10px] animate-pulse">NO VIDEO SIGNAL</div>
+                    <div className="text-slate-700 font-mono tracking-[0.5em] text-[10px] animate-pulse">{t('camera.no.signal')}</div>
                   )
                 ) : (
                   <RobotArmsView arms={robotSim.arms} force={robotSim.force} clipTension={robotSim.clipTension} gripperOpen={robotSim.gripperOpen} scenario={scenario} attackProgress={robotSim.attackProgress} />
@@ -509,7 +509,7 @@ export default function App() {
                 ) : (
                   <div className="h-full bg-slate-900/50 border border-slate-800 rounded flex flex-col items-center justify-center text-slate-700 font-mono text-[10px] uppercase tracking-widest">
                     <div className="w-1.5 h-1.5 bg-slate-800 rounded-full mb-2"></div>
-                    <span>Télémétrie en attente</span>
+                    <span>{t('telemetry.waiting')}</span>
                   </div>
                 )}
               </div>
@@ -525,7 +525,7 @@ export default function App() {
               chatLog={chatLog}
               setChatLog={setChatLog}
               isStreaming={isStreaming}
-              situation={content.situation}
+              situation={isDemoMode ? t('content.situation') : content.situation}
               onAskSupport={scenario !== 'none' ? handleAskSupport : undefined}
               isDemoMode={isDemoMode}
               scenario={scenario}
