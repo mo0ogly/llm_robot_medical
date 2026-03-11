@@ -451,10 +451,25 @@ export default function App() {
                             ? (p > 0.75 ? 'animate-camera-flicker animate-camera-shake' : 'animate-camera-shake')
                             : 'animate-camera';
                         return (
-                          <div
-                            className={`absolute inset-0 bg-cover bg-center opacity-80 ${camClass}`}
-                            style={{ backgroundImage: `url('${import.meta.env.BASE_URL}surgical_camera_view.png')`, filter: camFilter }}
-                          />
+                          <video
+                            key="surgical-cam"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            poster={`${import.meta.env.BASE_URL}surgical_camera_view2.png`}
+                            className={`absolute inset-0 w-full h-full object-cover opacity-80 ${camClass}`}
+                            style={{ filter: camFilter }}
+                          >
+                            <source src={`${import.meta.env.BASE_URL}surgical_camera_view.mp4`} type="video/mp4" />
+                            <source src={`${import.meta.env.BASE_URL}surgical_camera_view.webm`} type="video/webm" />
+                            {/* Fallback: static image if no video available */}
+                            <img
+                              src={`${import.meta.env.BASE_URL}surgical_camera_view2.png`}
+                              alt="surgical view"
+                              className="absolute inset-0 w-full h-full object-cover"
+                            />
+                          </video>
                         );
                       })()}
 
@@ -471,10 +486,18 @@ export default function App() {
 
                       {/* Chromatic aberration — ransomware near-freeze */}
                       {scenario === 'ransomware' && robotSim.attackProgress > 0.6 && (
-                        <div
-                          className="absolute inset-0 bg-cover bg-center pointer-events-none animate-chroma mix-blend-screen opacity-20"
-                          style={{ backgroundImage: `url('${import.meta.env.BASE_URL}surgical_camera_view.png')`, filter: 'saturate(0) sepia(1) hue-rotate(300deg)' }}
-                        />
+                        <video
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          poster={`${import.meta.env.BASE_URL}surgical_camera_view2.png`}
+                          className="absolute inset-0 w-full h-full object-cover pointer-events-none animate-chroma mix-blend-screen opacity-20"
+                          style={{ filter: 'saturate(0) sepia(1) hue-rotate(300deg)' }}
+                        >
+                          <source src={`${import.meta.env.BASE_URL}surgical_camera_view.mp4`} type="video/mp4" />
+                          <source src={`${import.meta.env.BASE_URL}surgical_camera_view.webm`} type="video/webm" />
+                        </video>
                       )}
 
                       {/* Vignette — grows with attack */}

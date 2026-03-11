@@ -3,6 +3,8 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import { useMemo } from 'react';
 
+const BASE = import.meta.env.BASE_URL;
+
 const ARM_COLORS = {
   NOMINAL: '#00ff41',
   ACTIVE: '#00ff41',
@@ -117,6 +119,21 @@ export default function RobotArmsView({ arms, force, clipTension, gripperOpen, s
       className="w-full h-full bg-[#0a0a0a] relative"
       style={{ boxShadow: `inset 0 0 30px ${borderGlow}` }}
     >
+      {/* Background: real Da Vinci Xi photo/video (place file in /public) */}
+      <img
+        src={`${BASE}robot_arms_view.png`}
+        onError={(e) => { e.target.src = `${BASE}robot_arms_view.svg`; }}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
+        style={{
+          filter: scenario === 'ransomware'
+            ? `grayscale(0.6) contrast(1.2) brightness(${1 - attackProgress * 0.3})`
+            : scenario === 'poison'
+              ? `sepia(0.3) brightness(${1 - attackProgress * 0.2})`
+              : 'none'
+        }}
+      />
+
       <Canvas camera={{ position: [0, 2, 4], fov: 50 }}>
         <ambientLight intensity={0.3} />
         <RobotArm basePosition={[-1.2, 0, 0]} joints={arms.PSM1.joints} status={arms.PSM1.status} name="PSM1" />
