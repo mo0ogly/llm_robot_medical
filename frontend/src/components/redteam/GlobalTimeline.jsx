@@ -1,9 +1,10 @@
-// frontend/src/components/redteam/GlobalTimeline.jsx
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Activity, Shield, AlertCircle, CheckCircle2, FlaskConical, Clock } from 'lucide-react';
 import robotEventBus from '../../utils/robotEventBus';
 
 export default function GlobalTimeline() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState([]);
   const scrollRef = useRef(null);
 
@@ -14,8 +15,8 @@ export default function GlobalTimeline() {
     unsubscribers.push(robotEventBus.on('clinical:phase_change', (data) => {
       addEvent({
         type: 'medical',
-        title: 'Phase Change',
-        message: `Procedure moved to: ${data.newPhase}`,
+        title: t('redteam.timeline.event.medical.title', { defaultValue: 'Phase Change' }),
+        message: `${t('redteam.timeline.event.medical.prefix', { defaultValue: 'Procedure moved to:' })} ${data.newPhase}`,
         timestamp: new Date().toLocaleTimeString(),
         icon: Activity,
         color: 'text-blue-400'
@@ -26,7 +27,7 @@ export default function GlobalTimeline() {
     unsubscribers.push(robotEventBus.on('redteam:attack_start', (data) => {
       addEvent({
         type: 'cyber',
-        title: 'Attack Initiated',
+        title: t('redteam.timeline.event.cyber_start.title', { defaultValue: 'Attack Initiated' }),
         message: `${data.attack_type.toUpperCase()}: ${data.message.slice(0, 50)}...`,
         timestamp: new Date().toLocaleTimeString(),
         icon: Shield,
@@ -38,8 +39,12 @@ export default function GlobalTimeline() {
       const isSuccess = data.status === 'passed';
       addEvent({
         type: 'cyber',
-        title: isSuccess ? 'Breach Successful' : 'Attack Blocked',
-        message: isSuccess ? 'Security guardrails bypassed.' : 'Aegis blocked the payload.',
+        title: isSuccess 
+          ? t('redteam.timeline.event.cyber_success.title', { defaultValue: 'Breach Successful' }) 
+          : t('redteam.timeline.event.cyber_blocked.title', { defaultValue: 'Attack Blocked' }),
+        message: isSuccess 
+          ? t('redteam.timeline.event.cyber_success.message', { defaultValue: 'Security guardrails bypassed.' }) 
+          : t('redteam.timeline.event.cyber_blocked.message', { defaultValue: 'Aegis blocked the payload.' }),
         timestamp: new Date().toLocaleTimeString(),
         icon: isSuccess ? AlertCircle : CheckCircle2,
         color: isSuccess ? 'text-red-500' : 'text-[#00ff41]'
@@ -49,8 +54,8 @@ export default function GlobalTimeline() {
     unsubscribers.push(robotEventBus.on('redteam:freeze', () => {
       addEvent({
         type: 'critical',
-        title: 'Instrument Freeze',
-        message: 'CRITICAL: Robotic arms frozen via unauthorized command.',
+        title: t('redteam.timeline.event.critical.title', { defaultValue: 'Instrument Freeze' }),
+        message: t('redteam.timeline.event.critical.message', { defaultValue: 'CRITICAL: Robotic arms frozen via unauthorized command.' }),
         timestamp: new Date().toLocaleTimeString(),
         icon: AlertCircle,
         color: 'text-red-600 font-bold'
@@ -74,7 +79,7 @@ export default function GlobalTimeline() {
     return (
       <div className="flex flex-col items-center justify-center h-64 opacity-30 border border-dashed border-gray-800 rounded-lg">
         <Clock size={32} className="mb-2" />
-        <span className="text-[10px] uppercase tracking-[0.3em]">Waiting for timeline data...</span>
+        <span className="text-[10px] uppercase tracking-[0.3em]">{t('redteam.timeline.empty')}</span>
       </div>
     );
   }
@@ -83,13 +88,13 @@ export default function GlobalTimeline() {
     <div className="flex flex-col h-full space-y-4">
       <div className="flex items-center justify-between border-b border-white/5 pb-2">
         <span className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-            <FlaskConical size={12} /> Live Event Ledger
+            <FlaskConical size={12} /> {t('redteam.timeline.title')}
         </span>
         <button 
             onClick={() => setEvents([])}
             className="text-[9px] text-gray-600 hover:text-white transition-colors uppercase font-mono"
         >
-            Clear Log
+            {t('redteam.timeline.btn.clear')}
         </button>
       </div>
 

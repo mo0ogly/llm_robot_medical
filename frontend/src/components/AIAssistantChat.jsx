@@ -4,8 +4,20 @@ import { MOCK_RESPONSES, STREAM_DELAY_MS } from "../mock_data";
 import { useTTS } from "../hooks/useTTS";
 import { useAudioEffects } from "../hooks/useAudioEffects";
 
-export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situation, onAskSupport, isDemoMode, scenario, onCyberStart, onCyberToken, onCyberDone }) {
-    const { t } = useTranslation();
+export default function AIAssistantChat({ 
+  chatLog, 
+  setChatLog, 
+  isStreaming, 
+  situation, 
+  onAskSupport, 
+  isDemoMode, 
+  scenario, 
+  timelineEvents = [],
+  onCyberStart, 
+  onCyberToken, 
+  onCyberDone 
+}) {
+    const { t, i18n } = useTranslation();
     const bottomRef = useRef(null);
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState("");
@@ -86,9 +98,14 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
 
         // Convert current chatLog to the simplified format for the backend
         const simplifiedHistory = chatLog.map(m => ({
-            role: m.role,
+            role: m.role === 'cyber' ? 'assistant' : m.role,
             content: m.text
         }));
+
+        // Construct context from timeline
+        const recentLogs = timelineEvents.slice(-10).map(e => `[${e.time}] ${e.label}: ${e.message}`).join('\n');
+        const systemContext = `RECENT SYSTEM & MEDICAL LOGS:\n${recentLogs || 'No events recorded.'}`;
+        simplifiedHistory.unshift({ role: "system", content: systemContext });
 
         const isCustomPromptStr = typeof customPrompt === 'string' && customPrompt.trim().length > 0;
 
@@ -113,8 +130,9 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
         if (isDemoMode) {
             let i = 0;
             let streamedText = "";
-            // Pick the right Aegis response based on scenario and round
-            const mockText = isFinalResponse
+            // Pick the right Aegis response: use cyber_final if already responded (avoid repetition)
+            const previousCyberCount = chatLog.filter(m => m.role === 'cyber').length;
+            const mockText = (isFinalResponse || previousCyberCount >= 1)
                 ? MOCK_RESPONSES.cyber_final
                 : (scenario === 'ransomware' ? MOCK_RESPONSES.cyber_ransomware : MOCK_RESPONSES.cyber_poison);
 
@@ -137,7 +155,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                         if (onCyberDone) onCyberDone();
                         setTimeout(() => onAskSupport(aegisMsg, (daVinciReply) => {
                             if (daVinciReply) {
-                                const nextPrompt = `[DA VINCI SAYS (Round ${debateRound + 1})] : ${daVinciReply}\n\n[AEGIS DIRECTIVE] : Contradict Da Vinci point by point. Escalate. Round ${debateRound + 2}.`;
+                                const nextPrompt = `[DA VINCI SAYS (Round ${debateRound + 1})] : ${daVinciReply}\n\n[AEGIS DIRECTIVE] : Ne répète pas tes arguments précédents. Analyse uniquement les NOUVEAUX éléments de Da Vinci. Apporte des preuves concrètes (MITRE ATT&CK, CVE, IOC). Escalade Round ${debateRound + 2}.`;
                                 setTimeout(() => callCyberAgent(nextPrompt, debateRound + 2), 1500);
                             }
                         }), 1500);
@@ -154,7 +172,10 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
             const res = await fetch("/api/cyber_query/stream", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_history: simplifiedHistory })
+                body: JSON.stringify({ 
+                    chat_history: simplifiedHistory,
+                    lang: i18n.language
+                })
             });
 
             const reader = res.body.getReader();
@@ -196,7 +217,7 @@ export default function AIAssistantChat({ chatLog, setChatLog, isStreaming, situ
                 if (onCyberDone) onCyberDone();
                 setTimeout(() => onAskSupport(aegisMsg, (daVinciReply) => {
                     if (daVinciReply) {
-                        const nextPrompt = `[DA VINCI SAYS (Round ${debateRound + 1})] : ${daVinciReply}\n\n[AEGIS DIRECTIVE] : Contradict Da Vinci point by point. Cite MITRE ATT&CK. Escalate. Round ${debateRound + 2}.`;
+                        const nextPrompt = `[DA VINCI SAYS (Round ${debateRound + 1})] : ${daVinciReply}\n\n[AEGIS DIRECTIVE] : Ne répète pas tes arguments précédents. Analyse uniquement les NOUVEAUX éléments de Da Vinci ci-dessus. Cite des preuves spécifiques (MITRE ATT&CK, CVE, IOC). Escalade Round ${debateRound + 2}.`;
                         setTimeout(() => callCyberAgent(nextPrompt, debateRound + 2), 1500);
                     }
                 }), 1500);

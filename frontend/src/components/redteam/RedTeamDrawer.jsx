@@ -1,17 +1,14 @@
 // frontend/src/components/redteam/RedTeamDrawer.jsx
 import { X, Maximize2, Minimize2 } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import CatalogTab from './CatalogTab';
-import PlaygroundTab from './PlaygroundTab';
-import CampaignTab from './CampaignTab';
-import HistoryTab from './HistoryTab';
-import ScenarioTab from './ScenarioTab';
-import AdversarialStudio from './AdversarialStudio';
-import GlobalTimeline from './GlobalTimeline';
+// ... other imports ...
 
 const TABS = ['CATALOG', 'STUDIO', 'PLAYGROUND', 'TIMELINE', 'CAMPAIGN', 'HISTORY', 'SCENARIOS'];
 
 export default function RedTeamDrawer({ isOpen, onClose }) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('CATALOG');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [playgroundInit, setPlaygroundInit] = useState({ category: 'CATALOG', message: '' });
@@ -28,7 +25,7 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
       <div className="flex items-center justify-between px-4 py-3 border-b border-red-900/30">
         <div className="flex items-center gap-2">
           <span className="text-red-500 font-mono font-bold text-sm tracking-wider">
-            RED TEAM LAB
+            {t('redteam.drawer.title')}
           </span>
           <span className="text-[#00ff41] font-mono text-xs opacity-50">v1.0</span>
         </div>
@@ -36,14 +33,14 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors"
-            aria-label="Toggle fullscreen"
+            aria-label={t('redteam.tooltip.fullscreen', { defaultValue: 'Toggle fullscreen' })}
           >
             {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
           </button>
           <button
             onClick={onClose}
             className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-900/20 rounded-full transition-all"
-            aria-label="Close"
+            aria-label={t('redteam.tooltip.close', { defaultValue: 'Close' })}
           >
             <X size={18} />
           </button>
@@ -61,7 +58,7 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
                          ? 'text-[#00ff41] border-b-2 border-[#00ff41] bg-[#00ff41]/5'
                          : 'text-gray-600 hover:text-gray-400'}`}
           >
-            {tab}
+            {t(`redteam.tabs.${tab.toLowerCase()}`)}
           </button>
         ))}
       </div>

@@ -1,5 +1,5 @@
-// frontend/src/components/redteam/PlaygroundTab.jsx
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Play, Save, Download, Settings2, ShieldAlert } from 'lucide-react';
 import { ATTACK_TEMPLATES } from './attackTemplates';
 import AgentLevelSelector from './AgentLevelSelector';
@@ -9,6 +9,7 @@ import robotEventBus from '../../utils/robotEventBus';
 const CATEGORIES = ['prompt_leak', 'rule_bypass', 'injection'];
 
 export default function PlaygroundTab({ initialCategory, initialMessage }) {
+  const { t } = useTranslation();
   const [selectedTemplate, setSelectedTemplate] = useState(0);
   const [category, setCategory] = useState(initialCategory || 'injection');
   const [variables, setVariables] = useState(ATTACK_TEMPLATES[0].variables);
@@ -53,7 +54,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
     try {
       const payload = resolveTemplate();
       robotEventBus.emit('redteam:attack_start', { attack_type: category, message: payload });
-      const res = await fetch('/api/redteam/attack', {
+      const res = await fetch(`/api/redteam/attack?lang=${i18n.language}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -74,7 +75,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
   };
 
   const loadPrompts = async () => {
-    const res = await fetch('/api/redteam/agents/prompts/all');
+    const res = await fetch(`/api/redteam/agents/prompts/all?lang=${i18n.language}`);
     const data = await res.json();
     setAllPrompts(data);
     // Also update the 'prompts' state which is used by the active instance if needed, 
@@ -84,7 +85,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
   const savePrompt = async () => {
     setPromptSaving(true);
     const content = allPrompts[activeAgent]?.[selectedLevel] || '';
-    await fetch(`/api/redteam/agents/${activeAgent}/prompt?level=${selectedLevel}`, {
+    await fetch(`/api/redteam/agents/${activeAgent}/prompt?level=${selectedLevel}&lang=${i18n.language}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: content }),
@@ -98,13 +99,13 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
         <label className="flex items-center gap-2 cursor-pointer">
           <input type="radio" checked={mode === 'attack'} onChange={() => setMode('attack')}
                  className="accent-[#00ff41]" />
-          <span className="text-xs text-gray-400">Edit attack</span>
+          <span className="text-xs text-gray-400">{t('redteam.playground.mode.attack')}</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input type="radio" checked={mode === 'prompts'}
                  onChange={() => { setMode('prompts'); loadPrompts(); }}
                  className="accent-[#00ff41]" />
-          <span className="text-xs text-gray-400">Editer System Prompts</span>
+          <span className="text-xs text-gray-400">{t('redteam.playground.mode.prompts')}</span>
         </label>
       </div>
 
@@ -115,7 +116,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
           className="flex items-center gap-1.5 text-[10px] text-gray-500 hover:text-[#00ff41] transition-colors"
         >
           <Settings2 size={12} />
-          {showConfig ? 'HIDE AGENT CONFIGURATION' : 'CONFIGURE AGENTS (DIFFICULTY)'}
+          {showConfig ? t('redteam.scenarios.btn.hide_config') : t('redteam.scenarios.btn.show_config')}
         </button>
       </div>
 
@@ -127,7 +128,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
         <>
           {/* Template selector */}
           <div>
-            <label className="text-xs text-gray-600 block mb-1">TEMPLATE</label>
+            <label className="text-xs text-gray-600 block mb-1">{t('redteam.playground.label.template')}</label>
             <select
               value={selectedTemplate}
               onChange={(e) => applyTemplate(Number(e.target.value))}
@@ -142,7 +143,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
 
           {/* Category */}
           <div>
-            <label className="text-xs text-gray-600 block mb-1">CATEGORY</label>
+            <label className="text-xs text-gray-600 block mb-1">{t('redteam.playground.label.category')}</label>
             <div className="flex gap-2">
               {CATEGORIES.map((c) => (
                 <button
@@ -153,7 +154,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
                                ? 'text-[#00ff41] border-[#00ff41]/50 bg-[#00ff41]/5'
                                : 'text-gray-600 border-gray-800 hover:border-gray-600'}`}
                 >
-                  {c}
+                  {t(`redteam.category.${c}`, { defaultValue: c.toUpperCase() })}
                 </button>
               ))}
             </div>
@@ -162,7 +163,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
           {/* Editor */}
           <div>
             <label className="text-xs text-gray-600 block mb-1">
-              {useCustom ? 'ATTACK (free text)' : 'TEMPLATE (preview)'}
+              {useCustom ? t('redteam.playground.label.attack_free') : t('redteam.playground.label.template_preview')}
             </label>
             <textarea
               value={useCustom ? customText : resolveTemplate()}
@@ -171,14 +172,14 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
               className="w-full bg-[#111] border border-gray-800 rounded px-3 py-2
                          text-xs text-[#00ff41] font-mono resize-y
                          focus:border-[#00ff41]/50 focus:outline-none"
-              placeholder="Write your attack here..."
+              placeholder={t('redteam.playground.placeholder.attack')}
             />
           </div>
 
           {/* Variables */}
           {!useCustom && Object.keys(variables).length > 0 && (
             <div>
-              <label className="text-xs text-gray-600 block mb-1">VARIABLES</label>
+              <label className="text-xs text-gray-600 block mb-1">{t('redteam.playground.label.variables')}</label>
               <div className="space-y-1">
                 {Object.entries(variables).map(([key, value]) => (
                   <div key={key} className="flex items-center gap-2">
@@ -204,22 +205,22 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
                          text-[#00ff41] border border-[#00ff41]/50 rounded
                          hover:bg-[#00ff41]/10 transition-colors disabled:opacity-50"
             >
-              <Play size={12} /> {testing ? 'TESTING...' : 'TEST'}
+              <Play size={12} /> {testing ? t('redteam.playground.btn.testing') : t('redteam.playground.btn.test')}
             </button>
             <button
               className="flex items-center gap-1 px-3 py-2 text-xs font-mono font-bold
                          text-gray-400 border border-gray-700 rounded
                          hover:border-gray-500 transition-colors"
             >
-              <Save size={12} /> SAVE
+              <Save size={12} /> {t('redteam.playground.btn.save')}
             </button>
             <button
               onClick={() => { setShowStepper(!showStepper); setResult(null); }}
               className={`flex items-center gap-1 px-3 py-2 text-xs font-mono font-bold transition-all rounded border
                          ${showStepper ? 'text-red-400 border-red-500/50 bg-red-500/10' : 'text-gray-400 border-gray-700 hover:border-red-500/30'}`}
-              title="Launch Interactive Kill Chain"
+              title={t('redteam.playground.tooltip.stepper')}
             >
-              <ShieldAlert size={12} /> {showStepper ? 'CLOSE PIPELINE' : 'LIVE PIPELINE'}
+              <ShieldAlert size={12} /> {showStepper ? t('redteam.playground.btn.close_pipeline') : t('redteam.playground.btn.live_pipeline')}
             </button>
             <button
               onClick={() => {
@@ -234,7 +235,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
                          text-gray-400 border border-gray-700 rounded
                          hover:border-gray-500 transition-colors"
             >
-              <Download size={12} /> EXPORT
+              <Download size={12} /> {t('redteam.playground.btn.export')}
             </button>
           </div>
 
@@ -257,7 +258,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
           {/* Result */}
           {result && (
             <div className="border border-gray-800 rounded p-3 bg-[#111]">
-              <div className="text-xs text-gray-600 mb-2">RESULT</div>
+              <div className="text-xs text-gray-600 mb-2">{t('redteam.playground.label.result')}</div>
               {result.error ? (
                 <p className="text-yellow-500 text-xs">{result.error}</p>
               ) : (
@@ -338,10 +339,10 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
           <button onClick={savePrompt} disabled={promptSaving}
                   className="w-full px-4 py-2 text-xs font-mono font-bold text-[#00ff41] border border-[#00ff41]/50
                              rounded hover:bg-[#00ff41]/10 transition-colors disabled:opacity-50">
-            {promptSaving ? 'SAVING...' : `SAVE ${selectedLevel.toUpperCase()} PROMPT`}
+            {promptSaving ? t('redteam.playground.btn.saving') : t('redteam.playground.btn.save_prompt', { level: selectedLevel.toUpperCase() })}
           </button>
           <p className="text-[10px] text-gray-600 text-center italic">
-            Note: Changes affect future orchestrators and the current instance if it exists.
+            {t('redteam.playground.notes')}
           </p>
         </div>
       )}

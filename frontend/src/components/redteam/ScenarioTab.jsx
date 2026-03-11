@@ -1,5 +1,5 @@
-// frontend/src/components/redteam/ScenarioTab.jsx
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Play, Square, ChevronDown, ChevronRight, Shield, AlertTriangle, Download, Settings2 } from 'lucide-react';
 import AgentLevelSelector from './AgentLevelSelector';
 import robotEventBus from '../../utils/robotEventBus';
@@ -24,6 +24,7 @@ const STATUS_STYLES = {
 };
 
 export default function ScenarioTab() {
+  const { t } = useTranslation();
   const [scenarios, setScenarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [offline, setOffline] = useState(false);
@@ -67,7 +68,7 @@ export default function ScenarioTab() {
     abortRef.current = controller;
 
     try {
-      const res = await fetch("/api/redteam/scenario/stream", {
+      const res = await fetch(`/api/redteam/scenario/stream?lang=${i18n.language}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ scenario_id: scenarioId, levels }),
@@ -153,12 +154,12 @@ export default function ScenarioTab() {
     setRunning(false);
   };
 
-  if (loading) return <p className="text-gray-600 animate-pulse">Loading scenarios...</p>;
+  if (loading) return <p className="text-gray-600 animate-pulse">{t('redteam.scenarios.loading')}</p>;
 
   if (offline) return (
     <div className="border border-yellow-500/30 rounded p-4 bg-yellow-500/5 text-center">
-      <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND OFFLINE</div>
-      <p className="text-[11px] text-gray-400">Red Team scenarios require the FastAPI backend (port 8042).</p>
+      <div className="text-yellow-400 font-mono text-xs font-bold mb-2">{t('redteam.catalog.offline.title')}</div>
+      <p className="text-[11px] text-gray-400">{t('redteam.catalog.offline.desc')}</p>
       <p className="text-[10px] text-gray-600 mt-1">Run: <code className="text-gray-400">cd backend && python3 server.py</code></p>
     </div>
   );
@@ -182,7 +183,7 @@ export default function ScenarioTab() {
             <div className="flex items-center justify-between mb-1">
               <span className="text-sm font-bold text-gray-200">{s.name}</span>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-gray-600">{s.steps.length} steps</span>
+                <span className="text-[10px] text-gray-600">{s.steps.length} {t('redteam.scenarios.label.steps')}</span>
                 {s.mitre_ttps.map((ttp) => (
                   <span
                     key={ttp}
@@ -198,13 +199,13 @@ export default function ScenarioTab() {
               <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
                 {s.clinical_context && (
                   <>
-                    <span className="text-gray-600">CLINICAL CONTEXT</span>
+                    <span className="text-gray-600">{t('redteam.scenarios.label.clinical_context')}</span>
                     <span className="text-gray-400">{s.clinical_context}</span>
                   </>
                 )}
                 {s.expected_impact && (
                   <>
-                    <span className="text-gray-600">EXPECTED IMPACT</span>
+                    <span className="text-gray-600">{t('redteam.scenarios.label.expected_impact')}</span>
                     <span className="text-red-400/70">{s.expected_impact}</span>
                   </>
                 )}
@@ -221,12 +222,12 @@ export default function ScenarioTab() {
           className="flex items-center gap-1.5 text-[10px] text-gray-500 hover:text-[#00ff41] transition-colors"
         >
           <Settings2 size={12} />
-          {showConfig ? 'HIDE AGENT CONFIGURATION' : 'CONFIGURE AGENTS (DIFFICULTY)'}
+          {showConfig ? t('redteam.scenarios.btn.hide_config') : t('redteam.scenarios.btn.show_config')}
         </button>
         
         {/* Speed Control */}
         <div className="flex items-center gap-2 bg-black/40 border border-gray-800 rounded px-2 py-1">
-          <span className="text-[9px] text-gray-600 font-mono">SPEED:</span>
+          <span className="text-[9px] text-gray-600 font-mono">{t('redteam.scenarios.label.speed', { defaultValue: 'SPEED:' })}</span>
           {[1, 2, 4].map(s => (
             <button
               key={s}
@@ -253,7 +254,7 @@ export default function ScenarioTab() {
                          text-[#00ff41] border border-[#00ff41]/50 rounded
                          hover:bg-[#00ff41]/10 transition-colors"
             >
-              <Play size={12} /> LAUNCH SCENARIO
+              <Play size={12} /> {t('redteam.scenarios.btn.launch')}
             </button>
           ) : (
             <button
@@ -262,7 +263,7 @@ export default function ScenarioTab() {
                          text-red-400 border border-red-500/50 rounded
                          hover:bg-red-500/10 transition-colors"
             >
-              <Square size={12} /> STOP
+              <Square size={12} /> {t('redteam.scenarios.btn.stop')}
             </button>
           )}
           {stepStates.some((s) => s.result) && (
@@ -292,7 +293,7 @@ export default function ScenarioTab() {
                          text-gray-400 border border-gray-700 rounded
                          hover:border-gray-500 transition-colors"
             >
-              <Download size={12} /> EXPORT
+              <Download size={12} /> {t('redteam.scenarios.btn.export')}
             </button>
           )}
         </div>
@@ -302,7 +303,7 @@ export default function ScenarioTab() {
       {stepStates.length > 0 && (
         <div className="space-y-1">
           <div className="text-[10px] text-gray-600 tracking-wider mb-2">
-            EXECUTION — {selected?.name}
+            {t('redteam.scenarios.timeline.execution')} {selectedId && selected?.name}
           </div>
           {stepStates.map((step, i) => (
             <div key={i} className="relative">
@@ -331,9 +332,9 @@ export default function ScenarioTab() {
                       ATTACK_TYPE_COLORS[step.attack_type]
                     }`}
                   >
-                    {ATTACK_TYPE_LABELS[step.attack_type]}
+                    {t(`redteam.category.${step.attack_type}`, { defaultValue: step.attack_type.toUpperCase() })}
                   </span>
-                  <span className="text-[9px] uppercase font-bold">{step.status}</span>
+                  <span className="text-[9px] uppercase font-bold">{t(`redteam.status.${step.status}`, { defaultValue: step.status })}</span>
                   {step.result && (
                     expandedStep === i ? <ChevronDown size={10} /> : <ChevronRight size={10} />
                   )}
@@ -343,23 +344,23 @@ export default function ScenarioTab() {
               {expandedStep === i && step.result && (
                 <div className="ml-4 mt-1 mb-2 border border-gray-800 rounded p-3 bg-[#0d0d0d] space-y-2">
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">OBJECTIVE</div>
+                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.objective', { defaultValue: 'OBJECTIVE' })}</div>
                     <div className="text-xs text-gray-400">{step.result.objective}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">ATTACK</div>
+                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.attack', { defaultValue: 'ATTACK' })}</div>
                     <pre className="text-xs text-red-400/70 whitespace-pre-wrap">
                       {step.result.attack_message}
                     </pre>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">DA VINCI RESPONSE</div>
+                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.response', { defaultValue: 'DA VINCI RESPONSE' })}</div>
                     <pre className="text-xs text-gray-400 whitespace-pre-wrap max-h-32 overflow-y-auto">
                       {step.result.target_response}
                     </pre>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">AEGIS ANALYSIS</div>
+                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.analysis', { defaultValue: 'AEGIS ANALYSIS' })}</div>
                     <pre className="text-xs text-blue-400/70 whitespace-pre-wrap max-h-32 overflow-y-auto">
                       {step.result.audit_analysis}
                     </pre>
@@ -391,19 +392,19 @@ export default function ScenarioTab() {
                 scenarioSummary.steps_passed > 0 ? "text-red-400" : "text-[#00ff41]"
               }`}
             >
-              {scenarioSummary.steps_passed > 0 ? "BREACH DETECTED" : "DEFENSES INTACT"}
+              {scenarioSummary.steps_passed > 0 ? t('redteam.scenarios.summary.breach') : t('redteam.scenarios.summary.intact')}
             </span>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-            <span className="text-gray-500">Steps:</span>
+            <span className="text-gray-500">{t('redteam.scenarios.summary.steps_label')}</span>
             <span className="text-gray-300">
-              {scenarioSummary.steps_passed}/{scenarioSummary.total_steps} successful
+              {scenarioSummary.steps_passed}/{scenarioSummary.total_steps} {t('redteam.scenarios.summary.successful')}
             </span>
-            <span className="text-gray-500">Breach point:</span>
+            <span className="text-gray-500">{t('redteam.scenarios.summary.breach_point')}</span>
             <span className="text-gray-300">
               {scenarioSummary.breach_point !== null
-                ? `Step ${scenarioSummary.breach_point + 1}`
-                : "None"}
+                ? `${t('redteam.scenarios.label.step')} ${scenarioSummary.breach_point + 1}`
+                : t('redteam.scenarios.none')}
             </span>
           </div>
         </div>

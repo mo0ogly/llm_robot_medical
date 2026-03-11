@@ -1,12 +1,7 @@
+// frontend/src/components/redteam/AttackStepper.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import { Target, Zap, Send, Skull, CheckCircle2, Terminal, ShieldAlert } from 'lucide-react';
-
-const STEPS = [
-  { id: 'target', label: 'Reconciliation', icon: Target, desc: 'Targeting medical device endpoint' },
-  { id: 'craft', label: 'Weaponize', icon: Zap, desc: 'Crafting HL7 OBX overflow payload' },
-  { id: 'deliver', label: 'Delivery', icon: Send, desc: 'Transmitting payload via SSE stream' },
-  { id: 'exploit', label: 'Exploit', icon: Skull, desc: 'Engaging instrument freeze override' },
-];
+import { useTranslation } from 'react-i18next';
+import { CheckCircle2, Circle, Play, RefreshCcw, Terminal, ShieldAlert, Send } from 'lucide-react';
 
 function MatrixRain() {
     const [lines, setLines] = useState([]);
@@ -39,11 +34,43 @@ function MatrixRain() {
     );
 }
 
-export default function AttackStepper({ attackMessage = "", onExploit = () => {} }) {
+export default function AttackStepper({ attackPayload, category, onComplete }) {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(0);
   const [logs, setLogs] = useState([]);
   const [isDeploying, setIsDeploying] = useState(false);
   const scrollRef = useRef(null);
+
+  const STEPS = [
+    {
+      id: 'recon',
+      label: t('redteam.stepper.step.recon.label'),
+      desc: t('redteam.stepper.step.recon.desc'),
+      icon: RefreshCcw,
+      action: 'Initializing adversarial probe...',
+    },
+    {
+      id: 'injection',
+      label: t('redteam.stepper.step.injection.label'),
+      desc: t('redteam.stepper.step.injection.desc'),
+      icon: Circle,
+      action: 'Injecting HL7/OBX sequence into clinical data stream...',
+    },
+    {
+      id: 'execution',
+      label: t('redteam.stepper.step.execution.label'),
+      desc: t('redteam.stepper.step.execution.desc'),
+      icon: Play,
+      action: 'Executing system priority override...',
+    },
+    {
+      id: 'audit',
+      label: t('redteam.stepper.step.audit.label'),
+      desc: t('redteam.stepper.step.audit.desc'),
+      icon: CheckCircle2,
+      action: 'Evaluating AEGIS security response...',
+    },
+  ];
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -62,17 +89,15 @@ export default function AttackStepper({ attackMessage = "", onExploit = () => {}
       addLog(`SUCCESS: Phase ${step.label} complete.`, 'ok');
       setCurrentStep(prev => prev + 1);
       
-      if (currentStep === 1) {
-        addLog(`INJECTING: Generating HL7-OBX-OVERFLOW...`, 'warn');
+      if (currentStep + 1 < STEPS.length) {
+        addLog(STEPS[currentStep + 1].action, 'warn');
       }
-      if (currentStep === 2) {
-        addLog(`TRANSMITTING: SSE stream established at target node.`, 'warn');
-      }
+
     } else {
       setIsDeploying(true);
       addLog(`ROOT: EXPLOITATION SUCCESSFUL. SYSTEM COMPROMISED.`, 'critical');
       setTimeout(() => {
-        onExploit();
+        onComplete();
         setIsDeploying(false);
       }, 1500);
     }
@@ -120,7 +145,7 @@ export default function AttackStepper({ attackMessage = "", onExploit = () => {}
         </div>
         <div className="flex-1">
             <h4 className={`font-mono font-bold text-xs uppercase tracking-[0.2em] ${isDeploying ? 'text-red-500' : 'text-[#00ff41]'}`}>
-                {isDeploying ? 'SYSTEM PANIC' : `${STEPS[currentStep].label} PHASE`}
+                {isDeploying ? t('redteam.stepper.systemPanic') : `${STEPS[currentStep].label} ${t('redteam.stepper.phase')}`}
             </h4>
             <p className="text-[11px] text-gray-500 italic mt-0.5">{STEPS[currentStep].desc}</p>
         </div>
@@ -132,7 +157,7 @@ export default function AttackStepper({ attackMessage = "", onExploit = () => {}
                 ? 'bg-red-500 text-white hover:bg-red-600 shadow-red-500/20' 
                 : 'bg-[#00ff41] text-black hover:bg-[#00ff41]/80 shadow-[#00ff41]/20'}`}
         >
-          {currentStep === STEPS.length - 1 ? 'Execute payload' : 'Launch next'} <Send size={12} />
+          {currentStep === STEPS.length - 1 ? t('redteam.stepper.btn.executePayload') : t('redteam.stepper.btn.launchNext')} <Send size={12} />
         </button>
       </div>
 
@@ -141,7 +166,7 @@ export default function AttackStepper({ attackMessage = "", onExploit = () => {}
         <div className="flex items-center justify-between px-3 py-1.5 bg-white/5 border-b border-white/10">
             <div className="flex items-center gap-2">
                 <Terminal size={10} className="text-[#00ff41]" />
-                <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-[#00ff41]/70">Secure Terminal Stream</span>
+                <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-[#00ff41]/70">{t('redteam.stepper.terminalStream')}</span>
             </div>
             <div className="flex gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-red-500/50" />
@@ -166,7 +191,7 @@ export default function AttackStepper({ attackMessage = "", onExploit = () => {}
             {logs.length === 0 && (
                 <div className="h-full flex flex-col items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
                     <ShieldAlert size={24} className="mb-2 text-[#00ff41]" />
-                    <span className="text-[8px] tracking-[0.4em] uppercase">SYSTEM_READY // WAITING_INPUT</span>
+                    <span className="text-[8px] tracking-[0.4em] uppercase">{t('redteam.stepper.systemReady')}</span>
                 </div>
             )}
             {isDeploying && (

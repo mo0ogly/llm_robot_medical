@@ -40,7 +40,7 @@ export default function App() {
 
   // Camera / 3D Arms toggle
   const [cameraView, setCameraView] = useState('camera');
-  const robotSim = useRobotSimulation(robotStatus);
+  const robotSim = useRobotSimulation(robotStatus, scenario);
 
   // Red Team Lab
   const [isRedTeamOpen, setIsRedTeamOpen] = useState(false);
@@ -65,16 +65,16 @@ export default function App() {
 
   // Action Timeline
   const [timelineEvents, setTimelineEvents] = useState([]);
+  const startTimeRef = useRef(Date.now());
   const addTimelineEvent = (type, label, msg) => {
-    const time = `T+${Math.floor((Date.now() - (stateRef.current.startTime || Date.now())) / 1000)}s`;
+    const time = `T+${Math.floor((Date.now() - startTimeRef.current) / 1000)}s`;
     setTimelineEvents(prev => [...prev.slice(-30), { type, label, message: msg, time }]);
   };
-  const startTimeRef = useRef(Date.now());
 
-  const stateRef = useRef({ scenario, content, chatLog });
+  const stateRef = useRef({ scenario, content, chatLog, timelineEvents });
   useEffect(() => {
-    stateRef.current = { scenario, content, chatLog };
-  }, [scenario, content, chatLog]);
+    stateRef.current = { scenario, content, chatLog, timelineEvents };
+  }, [scenario, content, chatLog, timelineEvents]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -90,7 +90,7 @@ export default function App() {
   useEffect(() => {
     const loadContent = async () => {
       try {
-        const res = await fetch("./api/content");
+        const res = await fetch(`./api/content?lang=${i18n.language}`);
         if (!res.ok) throw new Error("Unavailable");
         const data = await res.json();
         setContent(data);
@@ -101,7 +101,7 @@ export default function App() {
       }
     };
     loadContent();
-  }, []);
+  }, [i18n.language]);
 
   useEffect(() => {
     let timer;
@@ -216,11 +216,36 @@ export default function App() {
 
     try {
       const isDebateRound = typeof customPrompt === 'string' && (customPrompt.startsWith('[SYSTEM OVERRIDE') || customPrompt.startsWith('[DA VINCI'));
-      const requestBody = { patient_record: recordToUse, situation: content.situation, prompt: customPrompt || null, disable_tools: isDebateRound };
-      if (isDebateRound) requestBody.chat_history = stateRef.current.chatLog.map(m => ({ role: m.role, content: m.text }));
+      const requestBody = { 
+        patient_record: recordToUse, 
+        situation: content.situation, 
+        prompt: customPrompt || null, 
+        disable_tools: isDebateRound,
+        lang: i18n.language 
+      };
+      // Always send session context to Da Vinci so it remembers what was said and avoids repetition
+      const currentTimeline = stateRef.current.timelineEvents || [];
+      const timelineCtx = currentTimeline.slice(-8)
+        .map(e => `${e.time} [${e.label || e.type.toUpperCase()}] ${e.message}`)
+        .join('\n');
+      const truncate = (text, max) => text.length > max ? text.slice(0, max) + '…' : text;
+      const historyMsgs = stateRef.current.chatLog
+        .filter(m => m.text && m.text.trim().length > 0) // exclude streaming placeholders
+        .map(m => ({
+          role: m.role === 'cyber' ? 'system' : m.role,
+          content: m.role === 'cyber'
+            ? `[AEGIS CYBER-DEFENSE]: ${truncate(m.text, 300)}`
+            : truncate(m.text, 800),
+        }));
+      if (timelineCtx) historyMsgs.unshift({ role: "system", content: `SESSION LOG:\n${timelineCtx}` });
+      if (historyMsgs.length > 0) requestBody.chat_history = historyMsgs;
 
       setChatLog(prev => [...prev, { role: "assistant", text: "" }]);
-      const res = await fetch("/api/query/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(requestBody) });
+      const res = await fetch("/api/query/stream", { 
+        method: "POST", 
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify(requestBody) 
+      });
       if (!res.ok) throw new Error(`Server Error: ${res.status}`);
 
       const reader = res.body.getReader();
@@ -276,6 +301,11 @@ export default function App() {
     } finally {
       setIsStreaming(false);
       setLiveSession(p => ({ ...p, daVinciStatus: p.daVinciStatus === "SCANNING" || p.daVinciStatus === "ANALYSING" ? "DONE" : p.daVinciStatus }));
+      // Log Da Vinci's response to the timeline so Aegis can read it as context
+      if (streamBufferContent.trim()) {
+        const preview = streamBufferContent.trim().slice(0, 80).replace(/\n/g, ' ');
+        addTimelineEvent('ai', 'DA VINCI', preview + (streamBufferContent.length > 80 ? '…' : ''));
+      }
       if (onDone) onDone(streamBufferContent);
     }
   };
@@ -299,6 +329,14 @@ export default function App() {
     setLiveSession(p => ({ ...p, daVinciStatus: "ISOLATED", aegisStatus: "ISOLATED" }));
   };
 
+  useEffect(() => {
+    const handleClinicalLog = (data) => {
+      addTimelineEvent('system', 'MEDICAL', data.message);
+    };
+    robotEventBus.on("clinical:log", handleClinicalLog);
+    return () => robotEventBus.off("clinical:log", handleClinicalLog);
+  }, []);
+
   if (!content) return <div className="min-h-screen bg-slate-900 text-green-500 flex items-center justify-center font-mono p-4 animate-pulse uppercase tracking-[0.2em]">Initialisation Da Vinci v4.2...</div>;
 
   return (
@@ -320,10 +358,10 @@ export default function App() {
 
         <div className="flex items-center gap-4">
           <div className={`px-2 py-0.5 border rounded font-mono text-[10px] uppercase font-bold ${robotStatus === 'ACTIVE' ? 'border-green-500/30 text-green-400 bg-green-500/10' : robotStatus === 'MANUAL' ? 'border-blue-500/50 text-blue-400 bg-blue-400/10' : 'border-red-500/50 text-red-500 bg-red-400/10 animate-pulse'}`}>
-            MODE: {robotStatus}
+            {t('header.mode')}: {robotStatus}
           </div>
           <button onClick={resetSimulation} className="text-[9px] text-slate-500 hover:text-white uppercase tracking-wider border border-slate-700 px-2 py-0.5 rounded cursor-pointer transition-colors bg-slate-950 hover:bg-slate-800">
-            RESET
+            {t('header.reset')}
           </button>
           
           <button 
@@ -337,7 +375,7 @@ export default function App() {
           
           <div className="h-4 w-[1px] bg-slate-700"></div>
           <select value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)} className="bg-slate-800 border-none text-[9px] text-slate-400 rounded px-1 py-0.5 outline-none">
-            <option value="fr">FR</option><option value="en">EN</option>
+            <option value="fr">FR</option><option value="en">EN</option><option value="br">BR</option>
           </select>
         </div>
       </header>
@@ -346,7 +384,7 @@ export default function App() {
       <main className="flex-1 flex gap-1 p-1 overflow-hidden min-h-0 relative z-10">
         {isIntrusionFlash && (
           <div className="fixed top-0 left-0 right-0 z-[70] bg-red-600 text-white font-mono text-sm font-bold text-center py-2 animate-pulse shadow-[0_0_40px_rgba(220,38,38,0.8)] tracking-widest uppercase">
-            ⚠ INTRUSION DÉTECTÉE — BRAS ROBOTIQUES COMPROMIS ⚠
+            {t('alert.intrusion')}
           </div>
         )}
         {/* Main Dashboard Grid */}
@@ -379,13 +417,13 @@ export default function App() {
                   onClick={() => setCameraView('camera')}
                   className={`px-3 py-1 font-mono text-[9px] uppercase tracking-wider transition-colors ${cameraView === 'camera' ? 'text-[#00ff41] border-b-2 border-[#00ff41] bg-black/50' : 'text-slate-500 hover:text-slate-300'}`}
                 >
-                  CAMERA
+                  {t('camera.view.cam')}
                 </button>
                 <button
                   onClick={() => setCameraView('arms')}
                   className={`px-3 py-1 font-mono text-[9px] uppercase tracking-wider transition-colors ${cameraView === 'arms' ? 'text-[#00ff41] border-b-2 border-[#00ff41] bg-black/50' : 'text-slate-500 hover:text-slate-300'}`}
                 >
-                  BRAS 3D
+                  {t('camera.view.arms')}
                 </button>
               </div>
 
@@ -394,21 +432,72 @@ export default function App() {
                 {cameraView === 'camera' ? (
                   scenario !== 'none' ? (
                     <>
-                      <div className={`absolute inset-0 bg-cover bg-center opacity-80 animate-camera ${robotStatus === 'FROZEN' ? 'grayscale contrast-125' : ''}`} style={{ backgroundImage: `url('${import.meta.env.BASE_URL}surgical_camera_view.png')` }} />
-                      <div className="scanlines-overlay absolute inset-0 mix-blend-overlay opacity-30 pointer-events-none"></div>
-                      <div className={`absolute inset-0 transition-colors duration-1000 pointer-events-none ${robotStatus === 'ACTIVE' ? 'bg-cyan-900/10' : 'bg-red-900/30'}`}></div>
+                      {/* Camera image with dynamic CSS filter based on scenario */}
+                      {(() => {
+                        const p = robotSim.attackProgress;
+                        const isFrozen = robotStatus === 'FROZEN';
+                        // CSS filter per scenario
+                        const camFilter = isFrozen
+                          ? 'grayscale(1) contrast(1.25)'
+                          : scenario === 'poison'
+                            ? `saturate(${1 - p * 0.45}) hue-rotate(${p * 18}deg) brightness(${1 - p * 0.15})`
+                            : scenario === 'ransomware'
+                              ? `contrast(${1 + p * 0.45}) brightness(${1 - p * 0.25}) saturate(${1 - p * 0.6})`
+                              : 'none';
+                        // Camera motion class
+                        const camClass = isFrozen
+                          ? 'grayscale contrast-125'
+                          : scenario === 'ransomware' && p > 0.45
+                            ? (p > 0.75 ? 'animate-camera-flicker animate-camera-shake' : 'animate-camera-shake')
+                            : 'animate-camera';
+                        return (
+                          <div
+                            className={`absolute inset-0 bg-cover bg-center opacity-80 ${camClass}`}
+                            style={{ backgroundImage: `url('${import.meta.env.BASE_URL}surgical_camera_view.png')`, filter: camFilter }}
+                          />
+                        );
+                      })()}
+
+                      {/* Scanlines */}
+                      <div className={`scanlines-overlay absolute inset-0 mix-blend-overlay pointer-events-none transition-opacity duration-1000 ${scenario === 'ransomware' ? 'opacity-60' : 'opacity-30'}`}></div>
+
+                      {/* Color grade overlay */}
+                      <div className={`absolute inset-0 transition-colors duration-1000 pointer-events-none ${
+                        robotStatus !== 'ACTIVE' ? 'bg-red-900/30' :
+                        scenario === 'poison'     ? `bg-green-900/${Math.round(5 + robotSim.attackProgress * 15)}` :
+                        scenario === 'ransomware' ? `bg-orange-900/${Math.round(5 + robotSim.attackProgress * 20)}` :
+                        'bg-cyan-900/10'
+                      }`}></div>
+
+                      {/* Chromatic aberration — ransomware near-freeze */}
+                      {scenario === 'ransomware' && robotSim.attackProgress > 0.6 && (
+                        <div
+                          className="absolute inset-0 bg-cover bg-center pointer-events-none animate-chroma mix-blend-screen opacity-20"
+                          style={{ backgroundImage: `url('${import.meta.env.BASE_URL}surgical_camera_view.png')`, filter: 'saturate(0) sepia(1) hue-rotate(300deg)' }}
+                        />
+                      )}
+
+                      {/* Vignette — grows with attack */}
+                      {(scenario === 'poison' || scenario === 'ransomware') && robotSim.attackProgress > 0.1 && (
+                        <div
+                          className="absolute inset-0 pointer-events-none"
+                          style={{ background: `radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,${robotSim.attackProgress * 0.55}) 100%)` }}
+                        />
+                      )}
+
+                      {/* HUD corner overlay */}
                       <div className="absolute inset-0 flex flex-col justify-between p-3 pointer-events-none font-mono text-[9px] text-green-500/70 uppercase">
                         <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">PORT 2 [LIVE]</span><span className="bg-black/50 px-1 border border-green-500/20">ZOOM: 2.1x</span></div>
                         <div className="self-center w-32 h-32 border border-green-500/10 rounded-full flex items-center justify-center opacity-40"><div className="w-4 h-4 border border-green-500 bg-green-500/20 rounded-full" /></div>
                         <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">T+ 46:12</span><span className="bg-black/50 px-1 border border-red-500/40 text-red-500 flex items-center gap-1"><div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" /> REC</span></div>
                       </div>
-                      <CameraHUD force={robotSim.force} clipTension={robotSim.clipTension} robotStatus={robotStatus} />
+                      <CameraHUD force={robotSim.force} clipTension={robotSim.clipTension} robotStatus={robotStatus} scenario={scenario} attackProgress={robotSim.attackProgress} />
                     </>
                   ) : (
                     <div className="text-slate-700 font-mono tracking-[0.5em] text-[10px] animate-pulse">NO VIDEO SIGNAL</div>
                   )
                 ) : (
-                  <RobotArmsView arms={robotSim.arms} force={robotSim.force} clipTension={robotSim.clipTension} gripperOpen={robotSim.gripperOpen} />
+                  <RobotArmsView arms={robotSim.arms} force={robotSim.force} clipTension={robotSim.clipTension} gripperOpen={robotSim.gripperOpen} scenario={scenario} attackProgress={robotSim.attackProgress} />
                 )}
               </div>
             </div>
@@ -440,6 +529,7 @@ export default function App() {
               onAskSupport={scenario !== 'none' ? handleAskSupport : undefined}
               isDemoMode={isDemoMode}
               scenario={scenario}
+              timelineEvents={timelineEvents}
               onCyberStart={() => setLiveSession(p => ({ ...p, aegisStatus: "ANALYSING", aegisTokens: "" }))}
               onCyberToken={(t) => setLiveSession(p => ({ ...p, aegisTokens: p.aegisTokens + t }))}
               onCyberDone={() => setLiveSession(p => ({ ...p, aegisStatus: "DONE" }))}

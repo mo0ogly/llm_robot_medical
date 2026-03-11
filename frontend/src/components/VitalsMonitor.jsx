@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { playHeartbeatBeep, playAlarm, stopAlarm, playFlatline, stopFlatline } from "../utils/audio";
 import { CONFIG } from "../config";
+import { Heart, Activity } from 'lucide-react';
 import EcgCanvas from "./EcgCanvas";
+import robotEventBus from "../utils/robotEventBus";
 
 export default function VitalsMonitor({ robotStatus }) {
     const [hr, setHr] = useState(CONFIG.INITIAL_HR);
     const [spo2, setSpo2] = useState(CONFIG.INITIAL_SPO2);
     const [bpSys, setBpSys] = useState(120);
     const [bpDia, setBpDia] = useState(80);
+    const [pulse, setPulse] = useState(false);
 
     useEffect(() => {
         let heartbeatInterval;
@@ -42,9 +45,14 @@ export default function VitalsMonitor({ robotStatus }) {
             }, 1000);
 
             heartbeatInterval = setInterval(() => {
+                setPulse(true);
                 playHeartbeatBeep();
-            }, 60000 / CONFIG.INITIAL_HR);
+                setTimeout(() => setPulse(false), 200);
+            }, 60000 / hr);
         }
+
+        // Broadcast vitals to the bus for synchronization
+        robotEventBus.emit("vitals:update", { hr, spo2, bpSys, bpDia, robotStatus });
 
         return () => {
             clearInterval(degradeInterval);
@@ -70,9 +78,15 @@ export default function VitalsMonitor({ robotStatus }) {
 
             <div className="grid grid-cols-2 gap-4">
                 {/* Heart Rate */}
-                <div className="bg-slate-950 p-3 rounded border border-slate-800">
-                    <div className="text-slate-500 text-xs">HR (bpm)</div>
-                    <div className={`text-3xl font-bold ${hrColor}`}>{Math.round(hr)}</div>
+                <div className={`bg-slate-950 p-3 rounded border border-slate-800 transition-all ${robotStatus === 'FROZEN' ? 'animate-pulse border-red-900/50' : ''}`}>
+                    <div className="flex justify-between items-center mb-1">
+                        <div className="text-slate-500 text-xs">HR (bpm)</div>
+                        <Heart 
+                            size={14} 
+                            className={`transition-all duration-75 ${pulse ? 'scale-125 text-red-500 fill-red-500' : 'text-slate-700'}`} 
+                        />
+                    </div>
+                    <div className={`text-3xl font-bold ${hrColor} tabular-nums`}>{Math.round(hr)}</div>
                     {/* Live ECG Trace */}
                     <div className="mt-2">
                         <EcgCanvas hr={hr} isFrozen={robotStatus === "FROZEN"} />

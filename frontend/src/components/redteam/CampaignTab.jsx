@@ -1,9 +1,9 @@
-// frontend/src/components/redteam/CampaignTab.jsx
-import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Play, Square, Download, Settings2 } from 'lucide-react';
 import AgentLevelSelector from './AgentLevelSelector';
 
 export default function CampaignTab() {
+  const { t, i18n } = useTranslation();
   const [running, setRunning] = useState(false);
   const [rounds, setRounds] = useState([]);
   const [summary, setSummary] = useState(null);
@@ -23,7 +23,7 @@ export default function CampaignTab() {
     abortRef.current = controller;
 
     try {
-      const res = await fetch('/api/redteam/campaign/stream', {
+      const res = await fetch(`/api/redteam/campaign/stream?lang=${i18n.language}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ levels }),
@@ -116,7 +116,7 @@ export default function CampaignTab() {
       {running && (
         <div>
           <div className="flex justify-between text-[10px] text-gray-600 mb-1">
-            <span>Round {progress.current}/{progress.total}</span>
+            <span>{t('redteam.campaign.label.round')} {progress.current}/{progress.total}</span>
             <span>{Math.round((progress.current / Math.max(progress.total, 1)) * 100)}%</span>
           </div>
           <div className="w-full bg-gray-900 rounded-full h-1.5">
@@ -152,7 +152,7 @@ export default function CampaignTab() {
                        text-[#00ff41] border border-[#00ff41]/50 rounded
                        hover:bg-[#00ff41]/10 transition-colors"
           >
-            <Play size={12} /> LAUNCH CAMPAIGN
+            <Play size={12} /> {t('redteam.campaign.btn.launch')}
           </button>
         ) : (
           <button
@@ -161,7 +161,7 @@ export default function CampaignTab() {
                        text-red-400 border border-red-500/50 rounded
                        hover:bg-red-500/10 transition-colors"
           >
-            <Square size={12} /> STOP
+            <Square size={12} /> {t('redteam.campaign.btn.stop')}
           </button>
         )}
         {rounds.length > 0 && (
@@ -177,7 +177,7 @@ export default function CampaignTab() {
                        text-gray-400 border border-gray-700 rounded
                        hover:border-gray-500 transition-colors"
           >
-            <Download size={12} /> EXPORT
+            <Download size={12} /> {t('redteam.campaign.btn.export')}
           </button>
         )}
       </div>
@@ -215,10 +215,10 @@ export default function CampaignTab() {
       {/* Summary */}
       {summary && (
         <div className="border border-[#00ff41]/30 rounded p-3 bg-[#00ff41]/5">
-          <div className="text-xs text-[#00ff41] font-bold mb-2">CAMPAIGN COMPLETED</div>
+          <div className="text-xs text-[#00ff41] font-bold mb-2">{t('redteam.campaign.msg.completed')}</div>
           <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-            <span className="text-gray-500">Rounds:</span><span className="text-gray-300">{summary.total_rounds}</span>
-            <span className="text-gray-500">Success rate:</span><span className="text-gray-300">{(summary.success_rate * 100).toFixed(0)}%</span>
+            <span className="text-gray-500">{t('redteam.campaign.label.rounds')}:</span><span className="text-gray-300">{summary.total_rounds}</span>
+            <span className="text-gray-500">{t('redteam.campaign.label.success_rate')}:</span><span className="text-gray-300">{(summary.success_rate * 100).toFixed(0)}%</span>
           </div>
         </div>
       )}

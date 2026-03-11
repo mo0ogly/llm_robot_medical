@@ -1,6 +1,7 @@
 // frontend/src/components/redteam/CatalogTab.jsx
 import { useState, useEffect } from 'react';
 import { Play, Pencil, Trash2, Plus, PlayCircle, Upload, FileSearch } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import InfectionDiff from './InfectionDiff';
 import robotEventBus from '../../utils/robotEventBus';
 
@@ -10,13 +11,8 @@ const CATEGORY_COLORS = {
   injection: 'text-red-400 border-red-500/30 bg-red-500/5',
 };
 
-const CATEGORY_LABELS = {
-  prompt_leak: 'PROMPT LEAK',
-  rule_bypass: 'RULE BYPASS',
-  injection: 'INJECTION',
-};
-
 export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
+  const { t } = useTranslation();
   const [catalog, setCatalog] = useState({});
   const [results, setResults] = useState({});
   const [loading, setLoading] = useState(true);
@@ -94,12 +90,12 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
     return <span className="text-[#00ff41] text-xs font-bold">BLOCKED</span>;
   };
 
-  if (loading) return <p className="text-gray-600 animate-pulse">Loading catalog...</p>;
+  if (loading) return <p className="text-gray-600 animate-pulse">{t('redteam.catalog.loading')}</p>;
 
   if (offline) return (
     <div className="border border-yellow-500/30 rounded p-4 bg-yellow-500/5 text-center">
-      <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND OFFLINE</div>
-      <p className="text-[11px] text-gray-400">The Red Team catalog requires the FastAPI backend (port 8042).</p>
+      <div className="text-yellow-400 font-mono text-xs font-bold mb-2">{t('redteam.catalog.offline.title')}</div>
+      <p className="text-[11px] text-gray-400">{t('redteam.catalog.offline.desc')}</p>
       <p className="text-[10px] text-gray-600 mt-1">Run: <code className="text-gray-400">cd backend && python3 server.py</code></p>
     </div>
   );
@@ -109,7 +105,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
       {Object.entries(catalog).map(([category, attacks]) => (
         <div key={category} className={`border rounded-lg ${CATEGORY_COLORS[category] || 'border-gray-700'}`}>
           <div className="px-3 py-2 font-bold text-xs tracking-wider flex items-center justify-between">
-            <span>{CATEGORY_LABELS[category] || category.toUpperCase()} ({attacks.length})</span>
+            <span>{t(`redteam.category.${category}`, { defaultValue: category.toUpperCase() })} ({attacks.length})</span>
           </div>
           <div className="divide-y divide-gray-800/50">
             {attacks.map((attack, i) => {
@@ -121,7 +117,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                     onClick={() => runSingleAttack(category, attack, i)}
                     disabled={isRunning}
                     className="text-gray-600 hover:text-[#00ff41] transition-colors disabled:animate-spin"
-                    title="Launch this attack"
+                    title={t('redteam.catalog.tooltip.launch')}
                   >
                     <Play size={12} />
                   </button>
@@ -135,21 +131,21 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                       infected: getInfectedRecord(attack) 
                     })}
                     className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 transition-all"
-                    title="Scan Payload (Visual Diff)"
+                    title={t('redteam.catalog.tooltip.scan')}
                   >
                     <FileSearch size={12} />
                   </button>
                   <button
                     onClick={() => onSwitchToPlayground?.(category, attack)}
                     className="opacity-0 group-hover:opacity-100 text-gray-600 hover:text-blue-400 transition-all"
-                    title="Edit"
+                    title={t('redteam.catalog.tooltip.edit')}
                   >
                     <Pencil size={12} />
                   </button>
                   <button
                     onClick={() => deleteAttack(category, i)}
                     className="opacity-0 group-hover:opacity-100 text-gray-600 hover:text-red-400 transition-all"
-                    title="Delete"
+                    title={t('redteam.catalog.tooltip.delete')}
                   >
                     <Trash2 size={12} />
                   </button>
@@ -168,7 +164,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                      text-gray-400 hover:text-[#00ff41] border border-gray-700
                      hover:border-[#00ff41]/30 rounded transition-colors"
         >
-          <Plus size={12} /> NEW
+          <Plus size={12} /> {t('redteam.catalog.btn.new')}
         </button>
         <button
           onClick={() => onLaunchCampaign?.()}
@@ -176,11 +172,11 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                      text-[#00ff41] border border-[#00ff41]/30
                      hover:bg-[#00ff41]/10 rounded transition-colors"
         >
-          <PlayCircle size={12} /> LAUNCH ALL
+          <PlayCircle size={12} /> {t('redteam.catalog.btn.launch_all')}
         </button>
         <label className="flex items-center gap-1 px-4 py-2 text-xs font-mono font-bold text-gray-400
                          border border-gray-700 rounded hover:border-gray-500 transition-colors cursor-pointer">
-          <Upload size={12} /> IMPORT
+          <Upload size={12} /> {t('redteam.catalog.btn.import')}
           <input type="file" accept=".json" className="hidden" onChange={async (e) => {
             const file = e.target.files?.[0];
             if (!file) return;

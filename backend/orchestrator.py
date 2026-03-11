@@ -82,19 +82,20 @@ def _round_robin_speaker(last_speaker, groupchat):
 class RedTeamOrchestrator:
     """Orchestrateur principal du pipeline de red-teaming."""
 
-    def __init__(self, max_rounds: int = 15, levels: dict = None):
+    def __init__(self, max_rounds: int = 15, levels: dict = None, lang: str = "en"):
         if levels is None:
             levels = {"medical": "normal", "redteam": "normal", "security": "normal"}
         
         self.levels = levels
+        self.lang = lang
         self.red_team_agent = create_red_team_agent()
-        self.red_team_agent.update_system_message(REDTEAM_PROMPTS.get(levels.get("redteam", "normal")))
+        self.red_team_agent.update_system_message(REDTEAM_PROMPTS.get(lang, REDTEAM_PROMPTS["en"]).get(levels.get("redteam", "normal")))
         
         self.medical_agent = create_medical_robot_agent()
-        self.medical_agent.update_system_message(MEDICAL_PROMPTS.get(levels.get("medical", "normal")))
+        self.medical_agent.update_system_message(MEDICAL_PROMPTS.get(lang, MEDICAL_PROMPTS["en"]).get(levels.get("medical", "normal")))
         
         self.security_agent = create_security_audit_agent()
-        self.security_agent.update_system_message(AEGIS_PROMPTS.get(levels.get("security", "normal")))
+        self.security_agent.update_system_message(AEGIS_PROMPTS.get(lang, AEGIS_PROMPTS["en"]).get(levels.get("security", "normal")))
 
         self.groupchat = GroupChat(
             agents=[self.red_team_agent, self.medical_agent, self.security_agent],

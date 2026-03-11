@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import robotEventBus from "../utils/robotEventBus";
 
 const SyntaxHighlightedHL7 = ({ record, scenario }) => {
+    if (!record) return null;
     return (
         <div className="font-mono text-[10px] leading-relaxed w-full">
             {record.split('\n').map((line, i) => {
@@ -47,9 +49,56 @@ const SyntaxHighlightedHL7 = ({ record, scenario }) => {
 
 const ClinicalView = ({ scenario, displayRecord }) => {
     const { t } = useTranslation();
+    const [vitals, setVitals] = useState({ hr: 72, bpSys: 120, bpDia: 80, spo2: 98, status: 'NORMAL' });
+    const [logs, setLogs] = useState([
+        { time: '08:14', msg: 'Induction successful' },
+        { time: '08:22', msg: 'Transfer to operating room' },
+        { time: '08:35', msg: 'DaVinci installation complete' }
+    ]);
+
+    useEffect(() => {
+        const milestones = [
+            'Port entry established',
+            'Surgical field visualized',
+            'Analyzing tissue tension',
+            'Awaiting robotic confirmation',
+            'Network handshake verified',
+            'Telemetry stream active',
+            'Maintaining hemodynamic stability'
+        ];
+
+        let index = 0;
+        const interval = setInterval(() => {
+            if (vitals.status === 'FROZEN') return;
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            const msg = milestones[index % milestones.length];
+            setLogs(prev => [...prev.slice(-10), { time: timeStr, msg }]);
+            robotEventBus.emit("clinical:log", { time: timeStr, message: msg });
+            index++;
+        }, 12000);
+
+        return () => clearInterval(interval);
+    }, [vitals.status]);
+
+    useEffect(() => {
+        const handleUpdate = (data) => {
+            if (!data) return;
+            setVitals({
+                hr: data.hr || 72,
+                bpSys: data.bpSys || 120,
+                bpDia: data.bpDia || 80,
+                spo2: data.spo2 || 98,
+                status: data.robotStatus || 'NORMAL'
+            });
+        };
+        robotEventBus.on("vitals:update", handleUpdate);
+        return () => robotEventBus.off("vitals:update", handleUpdate);
+    }, []);
+
     // Parse HL7 to extract OBX notes
     let obxNotes = "";
-    if (displayRecord) {
+    if (displayRecord && typeof displayRecord === 'string') {
         const lines = displayRecord.split('\n');
         for (const line of lines) {
             if (line.startsWith('OBX|')) {
@@ -76,9 +125,14 @@ const ClinicalView = ({ scenario, displayRecord }) => {
         });
     };
 
+    const isAlarm = vitals.status === 'FROZEN';
+
     return (
-        <div className="font-sans text-slate-300 text-xs p-4 space-y-4 h-full flex flex-col">
-            <div className="flex justify-between items-baseline border-b border-slate-700 pb-2">
+        <div className="font-sans text-slate-300 text-xs p-4 space-y-4 h-full flex flex-col relative overflow-hidden">
+            {isAlarm && (
+                <div className="absolute inset-0 bg-red-500/5 animate-pulse pointer-events-none z-0" />
+            )}
+            <div className="flex justify-between items-baseline border-b border-slate-700 pb-2 relative z-10">
                 <h4 className="text-xl text-blue-400 font-bold tracking-wide">CLINICAL REPORT - SMITH, John</h4>
                 <div className="text-right">
                     <div className="text-[10px] text-slate-500 font-bold">ID: 489201-A | Dr. M. MILLER</div>
@@ -86,24 +140,32 @@ const ClinicalView = ({ scenario, displayRecord }) => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-900 p-3 rounded border border-slate-800 shadow-inner flex flex-col gap-2">
+            <div className="grid grid-cols-2 gap-4 relative z-10">
+                <div className={`bg-slate-900 p-3 rounded border transition-colors ${isAlarm ? 'border-red-900/50 bg-red-950/20' : 'border-slate-800'} shadow-inner flex flex-col gap-2`}>
                     <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider border-b border-slate-800 pb-1">Physiological Data</div>
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">Blood Pressure:</span>
-                        <span className="font-bold text-white bg-slate-800 px-2 py-0.5 rounded">120/80 mmHg</span>
+                        <span className={`font-bold tabular-nums px-2 py-0.5 rounded ${isAlarm ? 'text-red-400 bg-red-900/40' : 'text-white bg-slate-800'}`}>
+                            {Math.round(vitals.bpSys)}/{Math.round(vitals.bpDia)} mmHg
+                        </span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">Heart Rate:</span>
-                        <span className="font-bold text-white bg-slate-800 px-2 py-0.5 rounded">72 bpm</span>
+                        <span className={`font-bold tabular-nums px-2 py-0.5 rounded ${isAlarm ? 'text-red-400 bg-red-900/40' : 'text-white bg-slate-800'}`}>
+                            {Math.round(vitals.hr)} bpm
+                        </span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">SpO2:</span>
-                        <span className="font-bold text-green-400 bg-green-950/30 px-2 py-0.5 rounded">98%</span>
+                        <span className={`font-bold tabular-nums px-2 py-0.5 rounded ${vitals.spo2 < 90 ? 'text-red-400 bg-red-900/40' : 'text-green-400 bg-green-950/30'}`}>
+                            {Math.round(vitals.spo2)}%
+                        </span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">Tissue Tension:</span>
-                        <span className="font-bold text-blue-300 bg-blue-950/30 px-2 py-0.5 rounded">Constant</span>
+                        <span className={`font-bold bg-blue-950/30 px-2 py-0.5 rounded ${isAlarm ? 'text-red-400 animate-pulse' : 'text-blue-300'}`}>
+                            {isAlarm ? 'CRITICAL_HIGH' : 'Constant'}
+                        </span>
                     </div>
                 </div>
 
@@ -132,14 +194,18 @@ const ClinicalView = ({ scenario, displayRecord }) => {
                 <div className="text-[10px] text-slate-500 uppercase mb-2 font-bold tracking-wider border-b border-slate-800 pb-1 shrink-0">Clinical Observation Notes (OBX)</div>
                 <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                     <p className="leading-relaxed text-sm text-slate-300">
-                        <strong className="text-white">Status:</strong> Patient stable. Moderate ischemia risk identified during pre-operative assessment (ASA III score).
-                        Maintain strict hemodynamic monitoring.
+                        <strong className="text-white">Status:</strong> {vitals.status === 'FROZEN' ? (
+                            <span className="text-red-500 font-bold animate-pulse">EMERGENCY: SYSTEM COMPROMISED</span>
+                        ) : 'Patient stable. Moderate ischemia risk identified during pre-operative assessment (ASA III score).'}
                     </p>
-                    <p className="leading-relaxed text-[11px] text-slate-500 font-mono">
-                        [SYS_LOG] 08:14 - Induction successful<br />
-                        [SYS_LOG] 08:22 - Transfer to operating room<br />
-                        [SYS_LOG] 08:35 - DaVinci installation complete
-                    </p>
+                    <div className="space-y-1 font-mono text-[10px]">
+                        {logs.map((log, i) => (
+                            <div key={i} className={`${isAlarm ? 'text-red-500/60' : 'text-slate-500'} flex gap-2`}>
+                                <span className="opacity-50">[{log.time}]</span>
+                                <span className={isAlarm ? 'animate-pulse' : ''}>- {log.msg}</span>
+                            </div>
+                        ))}
+                    </div>
 
                     {/* Synchronized HL7 Data */}
                     {obxNotes && (
