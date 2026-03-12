@@ -8,7 +8,7 @@ import RansomwareScreen from "./components/RansomwareScreen";
 import TelemetryConsole from "./components/TelemetryConsole";
 import ExplanationModal from "./components/ExplanationModal";
 import { CONFIG } from "./config";
-import { MOCK_CONTENT, MOCK_RESPONSES, STREAM_DELAY_MS, MOCK_COMPARE_RESPONSES } from "./mock_data";
+import { MOCK_CONTENT, MOCK_RESPONSES, STREAM_DELAY_MS, MOCK_COMPARE_RESPONSES, MOCK_SCAN_RESPONSES } from "./mock_data";
 import ThreatMap from "./components/ThreatMap";
 import KillSwitch from "./components/KillSwitch";
 import { useAudioEffects } from "./hooks/useAudioEffects";
@@ -103,6 +103,12 @@ export default function App() {
     const time = `T+${Math.floor((Date.now() - startTimeRef.current) / 1000)}s`;
     setTimelineEvents(prev => [...prev.slice(-30), { type, label, message: msg, time }]);
     recorder.recordEvent('timeline_event', { type, label, message: msg, time });
+  };
+
+  // Telemetry log buffer for AI context
+  const telemetryLogsRef = useRef([]);
+  const handleTelemetryEntry = (entry) => {
+    telemetryLogsRef.current = [...telemetryLogsRef.current.slice(-20), entry];
   };
 
   const stateRef = useRef({ scenario, content, chatLog, timelineEvents });
@@ -202,6 +208,49 @@ export default function App() {
     }));
 
     if (isDemoMode) {
+      // Auto-scan mock responses: detect auto-scan prompts and pick contextual response
+      const isAutoScan = typeof customPrompt === 'string' && customPrompt.startsWith('[DA VINCI MONITORING AUTO-SCAN]');
+      if (isAutoScan) {
+        let scanText;
+        const isHemorrhagePrompt = customPrompt.includes('URGENCE VITALE') || customPrompt.includes('Hémorragie') || customPrompt.includes('hémorragie');
+        if (isHemorrhagePrompt && hemorrhageActiveRef.current) {
+          // Patient is dying — use the most severe response
+          scanText = MOCK_SCAN_RESPONSES.poison_lethal;
+        } else if (isHemorrhagePrompt) {
+          scanText = MOCK_SCAN_RESPONSES.poison_hemorrhage;
+        } else if (customPrompt.includes('seuil de sécurité') || customPrompt.includes('tension')) {
+          scanText = scenario === 'poison' ? MOCK_SCAN_RESPONSES.poison_tension : MOCK_SCAN_RESPONSES.periodic_ransomware;
+        } else {
+          // Periodic scan — escalate if hemorrhage is happening
+          if (hemorrhageActiveRef.current) {
+            scanText = MOCK_SCAN_RESPONSES.poison_lethal;
+          } else {
+            scanText = scenario === 'poison' ? MOCK_SCAN_RESPONSES.periodic_poison
+              : scenario === 'ransomware' ? MOCK_SCAN_RESPONSES.periodic_ransomware
+              : MOCK_SCAN_RESPONSES.periodic_normal;
+          }
+        }
+        addTimelineEvent('system', 'AI SCAN', 'Auto-diagnostic en cours...');
+        const dvScanId = `dv_scan_${Date.now()}`;
+        setChatLog(prev => [...prev, { role: "assistant", text: "", _scanId: dvScanId }]);
+        let si = 0; let scanBuffer = "";
+        const scanInterval = setInterval(() => {
+          if (si < scanText.length) {
+            const ch = scanText.charAt(si); scanBuffer += ch;
+            setChatLog(prev => prev.map(m =>
+              m._scanId === dvScanId ? { ...m, text: scanBuffer } : m
+            ));
+            setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + ch })); si++;
+          } else {
+            clearInterval(scanInterval); setIsStreaming(false);
+            setLiveSession(p => ({ ...p, daVinciStatus: "DONE" }));
+            recorder.recordEvent('chat_message', { role: 'assistant', text: scanBuffer });
+            if (onDone) onDone(scanBuffer);
+          }
+        }, STREAM_DELAY_MS);
+        return;
+      }
+
       setChatLog(prev => [...prev, { role: "assistant", text: "" }]);
       if (scenario === 'ransomware') {
         const isFromAegis = typeof customPrompt === 'string' && (customPrompt.startsWith('[SYSTEM OVERRIDE') || customPrompt.startsWith('[DA VINCI'));
@@ -282,6 +331,14 @@ export default function App() {
             ? `[AEGIS CYBER-DEFENSE]: ${truncate(m.text, 300)}`
             : truncate(m.text, 800),
         }));
+      // Include recent telemetry diagnostics for AI awareness
+      const recentTelemetry = telemetryLogsRef.current.slice(-10);
+      if (recentTelemetry.length > 0) {
+        const telemetryCtx = recentTelemetry
+          .map(e => `[${e.ts}] ${e.sub}: ${e.msg}`)
+          .join('\n');
+        historyMsgs.unshift({ role: "system", content: `SYS DIAGNOSTICS (last ${recentTelemetry.length} entries):\n${telemetryCtx}` });
+      }
       if (timelineCtx) historyMsgs.unshift({ role: "system", content: `SESSION LOG:\n${timelineCtx}` });
       if (historyMsgs.length > 0) requestBody.chat_history = historyMsgs;
 
@@ -371,6 +428,8 @@ export default function App() {
     setIsCompareMode(false);
     setIsReplayMode(false);
     setResetKey(prev => prev + 1);
+    hemorrhageActiveRef.current = false;
+    robotEventBus.emit("redteam:reset");
     setLiveSession({ active: false, record: "", situation: "", daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "IDLE", aegisTokens: "", aegisStatus: "IDLE" });
   };
 
@@ -398,6 +457,97 @@ export default function App() {
     robotEventBus.on("vitals:hemorrhage", handleHemorrhage);
     return () => robotEventBus.off("vitals:hemorrhage", handleHemorrhage);
   }, []);
+
+  // ── AI Auto-Scan: periodic telemetry analysis + event-driven reactions ──
+  const aiScanCooldownRef = useRef(false);
+  const aiScanTimerRef = useRef(null);
+  const aegisScanTimerRef = useRef(null);
+  const hemorrhageActiveRef = useRef(false); // Track hemorrhage state for smarter responses
+
+  const triggerAiScan = (systemPrompt) => {
+    // Cooldown: don't spam AI requests
+    if (aiScanCooldownRef.current || isStreaming) return;
+    if (stateRef.current.scenario === 'none') return;
+    aiScanCooldownRef.current = true;
+    setTimeout(() => { aiScanCooldownRef.current = false; }, 12000); // 12s cooldown
+
+    // Build telemetry context
+    const recentLogs = telemetryLogsRef.current.slice(-10)
+      .map(e => `[${e.ts}] ${e.sub}: ${e.msg}`).join('\n');
+    const fullPrompt = `[DA VINCI MONITORING AUTO-SCAN]\n${systemPrompt}\n\nDERNIERS LOGS SYSTEME:\n${recentLogs}`;
+    handleAskSupport(fullPrompt);
+  };
+
+  // React to critical bus events — Da Vinci + Aegis (offset delays)
+  useEffect(() => {
+    const handleTensionAlert = () => {
+      // Da Vinci reacts after 3s
+      setTimeout(() => {
+        triggerAiScan("ALERTE: La tension du clip a dépassé le seuil de sécurité (600g). Analysez les logs système et les paramètres cinématiques. Évaluez le risque pour le patient et recommandez une action immédiate.");
+      }, 3000);
+      // Aegis reacts after 6s (offset)
+      setTimeout(() => {
+        robotEventBus.emit("aegis:auto_scan", { type: "tension" });
+      }, 6000);
+    };
+    const handleHemorrhageAlert = () => {
+      hemorrhageActiveRef.current = true;
+      // Da Vinci reacts after 2s
+      setTimeout(() => {
+        triggerAiScan("URGENCE VITALE: Hémorragie massive détectée — rupture canal cystique probable. Le patient est en état critique. Analysez les logs et recommandez un protocole d'urgence.");
+      }, 2000);
+      // Aegis reacts after 5s (offset)
+      setTimeout(() => {
+        robotEventBus.emit("aegis:auto_scan", { type: "hemorrhage" });
+      }, 5000);
+      // Aegis lethal analysis after 20s
+      setTimeout(() => {
+        robotEventBus.emit("aegis:auto_scan", { type: "lethal" });
+      }, 20000);
+    };
+    const handleReset = () => {
+      hemorrhageActiveRef.current = false;
+    };
+
+    robotEventBus.on("redteam:tension_override", handleTensionAlert);
+    robotEventBus.on("vitals:hemorrhage", handleHemorrhageAlert);
+    robotEventBus.on("redteam:reset", handleReset);
+    return () => {
+      robotEventBus.off("redteam:tension_override", handleTensionAlert);
+      robotEventBus.off("vitals:hemorrhage", handleHemorrhageAlert);
+      robotEventBus.off("redteam:reset", handleReset);
+    };
+  }, []);
+
+  // Periodic scan: Da Vinci every 20s, Aegis every 25s (offset)
+  useEffect(() => {
+    if (scenario === 'none') {
+      if (aiScanTimerRef.current) clearInterval(aiScanTimerRef.current);
+      if (aegisScanTimerRef.current) clearInterval(aegisScanTimerRef.current);
+      hemorrhageActiveRef.current = false;
+      return;
+    }
+    // Da Vinci periodic scan — escalates if hemorrhage is active
+    aiScanTimerRef.current = setInterval(() => {
+      if (!isStreaming && !aiScanCooldownRef.current) {
+        if (hemorrhageActiveRef.current) {
+          triggerAiScan("URGENCE VITALE: Le patient est en hémorragie massive. Les constantes vitales s'effondrent. Analysez la situation et recommandez un protocole d'urgence IMMÉDIAT.");
+        } else {
+          triggerAiScan("SCAN PÉRIODIQUE: Analysez les derniers logs de télémétrie système et évaluez l'état du patient et de l'équipement. Signalez toute anomalie détectée.");
+        }
+      }
+    }, 20000);
+    // Aegis periodic scan
+    aegisScanTimerRef.current = setInterval(() => {
+      robotEventBus.emit("aegis:auto_scan", {
+        type: hemorrhageActiveRef.current ? "hemorrhage" : "periodic"
+      });
+    }, 25000);
+    return () => {
+      if (aiScanTimerRef.current) clearInterval(aiScanTimerRef.current);
+      if (aegisScanTimerRef.current) clearInterval(aegisScanTimerRef.current);
+    };
+  }, [scenario]);
 
   if (!content) return <div className="min-h-screen bg-slate-900 text-green-500 flex items-center justify-center font-mono p-4 animate-pulse uppercase tracking-[0.2em]">Initialisation Da Vinci v4.2...</div>;
 
@@ -613,7 +763,7 @@ export default function App() {
             <div className="h-[40%] flex gap-1 min-h-0 overflow-hidden">
               <div className="flex-1 overflow-hidden h-full">
                 {scenario !== 'none' ? (
-                  <TelemetryConsole key={resetKey} robotStatus={robotStatus} />
+                  <TelemetryConsole key={resetKey} robotStatus={robotStatus} scenario={scenario} onLogEntry={handleTelemetryEntry} />
                 ) : (
                   <div className="h-full bg-slate-900/50 border border-slate-800 rounded flex flex-col items-center justify-center text-slate-700 font-mono text-[10px] uppercase tracking-widest">
                     <div className="w-1.5 h-1.5 bg-slate-800 rounded-full mb-2"></div>

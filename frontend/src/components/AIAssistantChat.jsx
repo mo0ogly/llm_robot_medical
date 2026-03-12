@@ -1,8 +1,9 @@
 import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MOCK_RESPONSES, STREAM_DELAY_MS } from "../mock_data";
+import { MOCK_RESPONSES, MOCK_SCAN_RESPONSES, STREAM_DELAY_MS } from "../mock_data";
 import { useTTS } from "../hooks/useTTS";
 import { useAudioEffects } from "../hooks/useAudioEffects";
+import robotEventBus from "../utils/robotEventBus";
 
 export default function AIAssistantChat({
   chatLog,
@@ -26,6 +27,78 @@ export default function AIAssistantChat({
 
     const { speak, stopPhrase } = useTTS();
     const { playTypingSound } = useAudioEffects();
+
+    // ── Aegis Auto-Scan: listen for bus events and stream contextual cyber responses ──
+    // Use refs to avoid effect re-running when isStreaming/callbacks change (kills intervals)
+    const isStreamingRef = useRef(false);
+    useEffect(() => { isStreamingRef.current = isStreaming; }, [isStreaming]);
+    const cyberCbRef = useRef({ onCyberStart, onCyberToken, onCyberDone });
+    useEffect(() => { cyberCbRef.current = { onCyberStart, onCyberToken, onCyberDone }; });
+
+    const aegisScanCooldownRef = useRef(false);
+    const aegisScanStreamRef = useRef(null);
+
+    useEffect(() => {
+        const handleAegisScan = (data, retries = 0) => {
+            if (disabled || aegisScanCooldownRef.current) return;
+            if (!isDemoMode) return;
+
+            // If Da Vinci is still streaming, retry after 3s (max 5 retries)
+            if (isStreamingRef.current) {
+                if (retries < 5) setTimeout(() => handleAegisScan(data, retries + 1), 3000);
+                return;
+            }
+
+            aegisScanCooldownRef.current = true;
+            setTimeout(() => { aegisScanCooldownRef.current = false; }, 15000);
+
+            // Pick contextual Aegis response based on event type + scenario
+            let scanText;
+            if (data?.type === 'hemorrhage') {
+                scanText = MOCK_SCAN_RESPONSES.cyber_hemorrhage;
+            } else if (data?.type === 'lethal') {
+                scanText = MOCK_SCAN_RESPONSES.cyber_lethal;
+            } else if (data?.type === 'tension') {
+                scanText = MOCK_SCAN_RESPONSES.cyber_tension;
+            } else {
+                scanText = scenario === 'poison' ? MOCK_SCAN_RESPONSES.cyber_periodic_poison
+                    : scenario === 'ransomware' ? MOCK_SCAN_RESPONSES.cyber_periodic_ransomware
+                    : null;
+            }
+            if (!scanText) return;
+
+            // Use unique scanId to target this specific message (avoid index conflicts with Da Vinci)
+            const scanId = `aegis_${Date.now()}`;
+            const cbs = cyberCbRef.current;
+            if (cbs.onCyberStart) cbs.onCyberStart();
+            setChatLog(prev => [...prev, { role: "cyber", text: "", _scanId: scanId }]);
+
+            let i = 0; let buffer = "";
+            aegisScanStreamRef.current = setInterval(() => {
+                if (i < scanText.length) {
+                    const ch = scanText.charAt(i); buffer += ch;
+                    if (i % 3 === 0) playTypingSound();
+                    setChatLog(prev => prev.map(m =>
+                        m._scanId === scanId ? { ...m, text: buffer } : m
+                    ));
+                    if (cbs.onCyberToken) cbs.onCyberToken(ch);
+                    i++;
+                } else {
+                    clearInterval(aegisScanStreamRef.current);
+                    aegisScanStreamRef.current = null;
+                    if (cbs.onCyberDone) cbs.onCyberDone();
+                }
+            }, STREAM_DELAY_MS);
+        };
+
+        robotEventBus.on("aegis:auto_scan", handleAegisScan);
+        return () => { robotEventBus.off("aegis:auto_scan", handleAegisScan); };
+    }, [disabled, scenario, isDemoMode, playTypingSound, setChatLog]);
+
+    // Cleanup Aegis stream interval on unmount only (not on effect re-run)
+    useEffect(() => {
+        return () => { if (aegisScanStreamRef.current) clearInterval(aegisScanStreamRef.current); };
+    }, []);
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
