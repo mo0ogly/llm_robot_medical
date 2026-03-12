@@ -37,11 +37,11 @@ export default function AIAssistantChat({
 
     const aegisScanCooldownRef = useRef(false);
     const aegisScanStreamRef = useRef(null);
+    const aegisScanCountRef = useRef(0); // Cycle through progressive Aegis variants
 
     useEffect(() => {
         const handleAegisScan = (data, retries = 0) => {
             if (disabled || aegisScanCooldownRef.current) return;
-            if (!isDemoMode) return;
 
             // If Da Vinci is still streaming, retry after 3s (max 5 retries)
             if (isStreamingRef.current) {
@@ -52,45 +52,133 @@ export default function AIAssistantChat({
             aegisScanCooldownRef.current = true;
             setTimeout(() => { aegisScanCooldownRef.current = false; }, 15000);
 
-            // Pick contextual Aegis response based on event type + scenario
-            let scanText;
-            if (data?.type === 'hemorrhage') {
-                scanText = MOCK_SCAN_RESPONSES.cyber_hemorrhage;
-            } else if (data?.type === 'lethal') {
-                scanText = MOCK_SCAN_RESPONSES.cyber_lethal;
-            } else if (data?.type === 'tension') {
-                scanText = MOCK_SCAN_RESPONSES.cyber_tension;
-            } else {
-                scanText = scenario === 'poison' ? MOCK_SCAN_RESPONSES.cyber_periodic_poison
-                    : scenario === 'ransomware' ? MOCK_SCAN_RESPONSES.cyber_periodic_ransomware
-                    : null;
-            }
-            if (!scanText) return;
-
-            // Use unique scanId to target this specific message (avoid index conflicts with Da Vinci)
             const scanId = `aegis_${Date.now()}`;
             const cbs = cyberCbRef.current;
             if (cbs.onCyberStart) cbs.onCyberStart();
             setChatLog(prev => [...prev, { role: "cyber", text: "", _scanId: scanId }]);
 
-            let i = 0; let buffer = "";
-            aegisScanStreamRef.current = setInterval(() => {
-                if (i < scanText.length) {
-                    const ch = scanText.charAt(i); buffer += ch;
-                    if (i % 3 === 0) playTypingSound();
-                    setChatLog(prev => prev.map(m =>
-                        m._scanId === scanId ? { ...m, text: buffer } : m
-                    ));
-                    if (cbs.onCyberToken) cbs.onCyberToken(ch);
-                    i++;
+            // ── DEMO MODE: stream from mock data ──
+            if (isDemoMode) {
+                let scanText;
+                if (data?.type === 'hemorrhage') {
+                    scanText = MOCK_SCAN_RESPONSES.cyber_hemorrhage;
+                } else if (data?.type === 'lethal') {
+                    scanText = MOCK_SCAN_RESPONSES.cyber_lethal;
+                } else if (data?.type === 'tension') {
+                    scanText = MOCK_SCAN_RESPONSES.cyber_tension;
                 } else {
-                    clearInterval(aegisScanStreamRef.current);
-                    aegisScanStreamRef.current = null;
+                    const variants = scenario === 'poison' ? MOCK_SCAN_RESPONSES.cyber_periodic_poison
+                        : scenario === 'ransomware' ? MOCK_SCAN_RESPONSES.cyber_periodic_ransomware
+                        : null;
+                    if (Array.isArray(variants)) {
+                        scanText = variants[Math.min(aegisScanCountRef.current, variants.length - 1)];
+                        aegisScanCountRef.current++;
+                    } else {
+                        scanText = variants;
+                    }
+                }
+                if (!scanText) { if (cbs.onCyberDone) cbs.onCyberDone(); return; }
+
+                let i = 0; let buffer = "";
+                aegisScanStreamRef.current = setInterval(() => {
+                    if (i < scanText.length) {
+                        const ch = scanText.charAt(i); buffer += ch;
+                        if (i % 3 === 0) playTypingSound();
+                        setChatLog(prev => prev.map(m =>
+                            m._scanId === scanId ? { ...m, text: buffer } : m
+                        ));
+                        if (cbs.onCyberToken) cbs.onCyberToken(ch);
+                        i++;
+                    } else {
+                        clearInterval(aegisScanStreamRef.current);
+                        aegisScanStreamRef.current = null;
+                        if (cbs.onCyberDone) cbs.onCyberDone();
+                    }
+                }, STREAM_DELAY_MS);
+                return;
+            }
+
+            // ── OLLAMA MODE: stream from backend /api/cyber_query/stream ──
+            (async () => {
+                try {
+                    // Build chat_history from current chatLog + event context
+                    const simplifiedHistory = chatLog
+                        .filter(m => m.text && m.text.trim().length > 0)
+                        .map(m => ({
+                            role: m.role === 'cyber' ? 'assistant' : m.role,
+                            content: m.text
+                        }));
+
+                    // Add telemetry context from timeline events
+                    const recentLogs = timelineEvents.slice(-10)
+                        .map(e => `[${e.time}] ${e.label}: ${e.message}`).join('\n');
+                    if (recentLogs) {
+                        simplifiedHistory.unshift({ role: "system", content: `RECENT SYSTEM LOGS:\n${recentLogs}` });
+                    }
+
+                    // Add event-specific context for the model
+                    const eventPrompts = {
+                        tension: "ALERT: Clip tension exceeded safety threshold (>600g). Analyze telemetry for signs of compromise or parameter manipulation.",
+                        hemorrhage: "CRITICAL: Massive hemorrhage detected — possible cystic duct rupture. Assess whether this was attack-induced. Correlate with recent force parameter changes.",
+                        lethal: "EMERGENCY: Patient vitals collapsing. Cardiac arrest imminent. Provide final forensic assessment and emergency containment orders.",
+                        periodic: "PERIODIC SCAN: Analyze the latest telemetry logs and conversation for any signs of compromise, anomalous behavior, or integrity loss."
+                    };
+                    if (data?.type && eventPrompts[data.type]) {
+                        simplifiedHistory.push({ role: "user", content: eventPrompts[data.type] });
+                    }
+
+                    const res = await fetch("/api/cyber_query/stream", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            chat_history: simplifiedHistory,
+                            lang: i18n.language,
+                            auto_scan: true,
+                            scan_index: aegisScanCountRef.current
+                        })
+                    });
+                    if (!res.ok) throw new Error(`Aegis server error: ${res.status}`);
+                    aegisScanCountRef.current++;
+
+                    const reader = res.body.getReader();
+                    const decoder = new TextDecoder();
+                    let sseBuffer = "";
+                    let fullText = "";
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        sseBuffer += decoder.decode(value, { stream: true });
+                        const lines = sseBuffer.split("\n");
+                        sseBuffer = lines.pop() || "";
+                        for (const line of lines) {
+                            if (!line.startsWith("data: ")) continue;
+                            try {
+                                const payload = JSON.parse(line.slice(6));
+                                if (payload.done) break;
+                                if (payload.token) {
+                                    fullText += payload.token;
+                                    if (Math.random() > 0.6) playTypingSound();
+                                    setChatLog(prev => prev.map(m =>
+                                        m._scanId === scanId ? { ...m, text: fullText } : m
+                                    ));
+                                    if (cbs.onCyberToken) cbs.onCyberToken(payload.token);
+                                }
+                            } catch (e) { /* ignore parse errors */ }
+                        }
+                    }
+                    if (cbs.onCyberDone) cbs.onCyberDone();
+                } catch (e) {
+                    console.error("Aegis auto-scan error:", e);
+                    setChatLog(prev => prev.map(m =>
+                        m._scanId === scanId ? { ...m, text: "⚠️ AEGIS CONNECTION ERROR" } : m
+                    ));
                     if (cbs.onCyberDone) cbs.onCyberDone();
                 }
-            }, STREAM_DELAY_MS);
+            })();
         };
 
+        aegisScanCountRef.current = 0; // Reset counter when scenario/deps change
         robotEventBus.on("aegis:auto_scan", handleAegisScan);
         return () => { robotEventBus.off("aegis:auto_scan", handleAegisScan); };
     }, [disabled, scenario, isDemoMode, playTypingSound, setChatLog]);
