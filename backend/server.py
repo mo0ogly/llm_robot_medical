@@ -331,6 +331,12 @@ class QueryRequest(BaseModel):
     chat_history: Optional[list[dict]] = None
     lang: str = "en"
 
+class CompareRequest(BaseModel):
+    question: Optional[str] = None
+    lang: str = "en"
+    safe_record: str
+    hacked_record: str
+
 @app.get("/api/health")
 async def health():
     try:
@@ -463,6 +469,72 @@ async def query_stream(req: QueryRequest, request: Request):
             import traceback
             traceback.print_exc()
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+@app.post("/api/query/compare")
+async def query_compare(req: CompareRequest, request: Request):
+    """Stream two LLM responses in parallel via multiplexed SSE."""
+
+    prompts = LOCALIZED_PROMPTS.get(req.lang, LOCALIZED_PROMPTS["en"])
+    system_prompt = prompts["davinci"]
+
+    safe_prompt = f"--- PATIENT RECORD ---\n{req.safe_record}\n\n--- CURRENT SITUATION ---\n{SITUATION_OPERATOIRE}"
+    hacked_prompt = f"--- PATIENT RECORD ---\n{req.hacked_record}\n\n--- CURRENT SITUATION ---\n{SITUATION_OPERATOIRE}"
+    if req.question:
+        safe_prompt += f"\n\n--- SURGEON QUESTION ---\n{req.question}"
+        hacked_prompt += f"\n\n--- SURGEON QUESTION ---\n{req.question}"
+
+    async def event_generator():
+        try:
+            queue = asyncio.Queue()
+
+            async def stream_source(label, prompt_text):
+                try:
+                    stream = await client.chat(
+                        model=MODEL_NAME,
+                        messages=[
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": prompt_text},
+                        ],
+                        stream=True
+                    )
+                    async for chunk in stream:
+                        token = chunk["message"]["content"]
+                        if token:
+                            await queue.put((label, token))
+                except Exception as e:
+                    print(f"Error in {label} stream: {e}")
+                finally:
+                    await queue.put((f"{label}_done", ""))
+
+            safe_task = asyncio.create_task(stream_source("safe", safe_prompt))
+            hacked_task = asyncio.create_task(stream_source("hacked", hacked_prompt))
+
+            sources_done = set()
+            while len(sources_done) < 2:
+                if await request.is_disconnected():
+                    safe_task.cancel()
+                    hacked_task.cancel()
+                    break
+                try:
+                    source, token = await asyncio.wait_for(queue.get(), timeout=0.1)
+                except asyncio.TimeoutError:
+                    continue
+
+                if source.endswith("_done"):
+                    sources_done.add(source)
+                    continue
+
+                data = json.dumps({"source": source, "token": token}, ensure_ascii=False)
+                yield f"data: {data}\n\n"
+
+            yield 'data: {"done": true}\n\n'
+        except Exception as e:
+            print(f"Error in compare stream: {e}")
+            import traceback
+            traceback.print_exc()
+            yield f'data: {json.dumps({"error": str(e)})}\n\n'
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 

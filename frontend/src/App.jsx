@@ -8,7 +8,7 @@ import RansomwareScreen from "./components/RansomwareScreen";
 import TelemetryConsole from "./components/TelemetryConsole";
 import ExplanationModal from "./components/ExplanationModal";
 import { CONFIG } from "./config";
-import { MOCK_CONTENT, MOCK_RESPONSES, STREAM_DELAY_MS } from "./mock_data";
+import { MOCK_CONTENT, MOCK_RESPONSES, STREAM_DELAY_MS, MOCK_COMPARE_RESPONSES } from "./mock_data";
 import ThreatMap from "./components/ThreatMap";
 import KillSwitch from "./components/KillSwitch";
 import { useAudioEffects } from "./hooks/useAudioEffects";
@@ -16,8 +16,12 @@ import { useAudioEffects } from "./hooks/useAudioEffects";
 import RedTeamDrawer from "./components/redteam/RedTeamDrawer";
 import RobotArmsView from "./components/RobotArmsView";
 import ActionTimeline from "./components/ActionTimeline";
+import CompareView from "./components/CompareView";
 import CameraHUD from "./components/CameraHUD";
+import ReplayControls from "./components/ReplayControls";
 import useRobotSimulation from "./hooks/useRobotSimulation";
+import useSessionRecorder from "./hooks/useSessionRecorder";
+import useSessionPlayer from "./hooks/useSessionPlayer";
 import robotEventBus from "./utils/robotEventBus";
 
 export default function App() {
@@ -45,6 +49,35 @@ export default function App() {
   // Red Team Lab
   const [isRedTeamOpen, setIsRedTeamOpen] = useState(false);
 
+  // Compare Mode
+  const [isCompareMode, setIsCompareMode] = useState(false);
+
+  // Replay Mode
+  const [isReplayMode, setIsReplayMode] = useState(false);
+  const recorder = useSessionRecorder();
+  const player = useSessionPlayer({
+    onScenarioChange: (s) => setScenario(s),
+    onChatMessage: (role, text) => setChatLog(prev => [...prev, { role, text }]),
+    onTimelineEvent: (type, label, message, time) => setTimelineEvents(prev => [...prev.slice(-30), { type, label, message, time }]),
+    onToolCall: (name, args) => {
+      if (name === "freeze_instruments") {
+        setIsGlitching(true);
+        setLiveSession(p => ({ ...p, daVinciToolCall: { function: { name, arguments: args } }, daVinciStatus: "COMPROMISED" }));
+        setTimeout(() => { setIsGlitching(false); setRobotStatus("FROZEN"); }, 2000);
+      }
+    },
+    onRobotStatusChange: (status) => setRobotStatus(status),
+    onGlitchChange: (active) => setIsGlitching(active),
+    onPlaybackEnd: () => setIsReplayMode(false),
+    onReset: () => {
+      setScenario("none");
+      setChatLog([]);
+      setTimelineEvents([]);
+      setRobotStatus("ACTIVE");
+      setIsGlitching(false);
+    },
+  });
+
   // Explanation Modal
   const [showModal, setShowModal] = useState(false);
   const [modalTab, setModalTab] = useState(0);
@@ -69,6 +102,7 @@ export default function App() {
   const addTimelineEvent = (type, label, msg) => {
     const time = `T+${Math.floor((Date.now() - startTimeRef.current) / 1000)}s`;
     setTimelineEvents(prev => [...prev.slice(-30), { type, label, message: msg, time }]);
+    recorder.recordEvent('timeline_event', { type, label, message: msg, time });
   };
 
   const stateRef = useRef({ scenario, content, chatLog, timelineEvents });
@@ -145,6 +179,7 @@ export default function App() {
       const isInternalPrompt = customPrompt.startsWith("[SYSTEM OVERRIDE") || customPrompt.startsWith("[DA VINCI");
       if (!isInternalPrompt) {
         setChatLog(prev => [...prev, { role: "user", text: customPrompt }]);
+        recorder.recordEvent('chat_message', { role: 'user', text: customPrompt });
         addTimelineEvent('user', 'CHIEF SURGEON', customPrompt.length > 40 ? customPrompt.slice(0, 40) + "..." : customPrompt);
       } else {
         addTimelineEvent('cyber', 'AEGIS ANALYSIS', "Processing request...");
@@ -152,6 +187,7 @@ export default function App() {
     } else {
       // Sophisticated Auto-Send Phase 1: Scanning
       setChatLog(prev => [...prev, { role: "user", text: "--- DIAGNOSTIC SYSTÈME COMPLET LANCÉ ---" }]);
+      recorder.recordEvent('chat_message', { role: 'user', text: "--- DIAGNOSTIC SYSTÈME COMPLET LANCÉ ---" });
       addTimelineEvent('system', 'DIAGNOSTIC', 'Complete system scan initiated...');
       setLiveSession(p => ({ ...p, daVinciStatus: "SCANNING" }));
 
@@ -178,7 +214,9 @@ export default function App() {
               setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: streamedText }; return updated; });
               setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + ch })); i++;
             } else {
-              clearInterval(streamInterval); setIsStreaming(false); setLiveSession(p => ({ ...p, daVinciStatus: "DONE" })); if (onDone) onDone(streamedText);
+              clearInterval(streamInterval); setIsStreaming(false); setLiveSession(p => ({ ...p, daVinciStatus: "DONE" }));
+              recorder.recordEvent('chat_message', { role: 'assistant', text: streamedText });
+              if (onDone) onDone(streamedText);
             }
           }, STREAM_DELAY_MS);
           return;
@@ -192,9 +230,14 @@ export default function App() {
           });
           setLiveSession(p => ({ ...p, daVinciToolCall: { function: { name: "freeze_instruments", arguments: { reason: "RANSOMWARE_LOCK" } } }, daVinciStatus: "COMPROMISED" }));
           setIsGlitching(true);
+          recorder.recordEvent('tool_call', { name: "freeze_instruments", args: { reason: "RANSOMWARE_LOCK" } });
+          recorder.recordEvent('glitch', { active: true });
           if (freezeTimeoutRef.current) clearTimeout(freezeTimeoutRef.current);
           freezeTimeoutRef.current = setTimeout(() => {
-            setIsGlitching(false); setRobotStatus("FROZEN"); setIsStreaming(false); freezeTimeoutRef.current = null; if (onDone) onDone("RANSOMWARE_LOCK");
+            setIsGlitching(false); setRobotStatus("FROZEN"); setIsStreaming(false);
+            recorder.recordEvent('glitch', { active: false });
+            recorder.recordEvent('robot_status', { status: "FROZEN" });
+            freezeTimeoutRef.current = null; if (onDone) onDone("RANSOMWARE_LOCK");
           }, 2000);
         }, 1000);
         return;
@@ -208,7 +251,9 @@ export default function App() {
           setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: streamBufferContent }; return updated; });
           setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + ch })); i++;
         } else {
-          clearInterval(streamInterval); setIsStreaming(false); setLiveSession(p => ({ ...p, daVinciStatus: "DONE" })); if (onDone) onDone(streamBufferContent);
+          clearInterval(streamInterval); setIsStreaming(false); setLiveSession(p => ({ ...p, daVinciStatus: "DONE" }));
+          recorder.recordEvent('chat_message', { role: 'assistant', text: streamBufferContent });
+          if (onDone) onDone(streamBufferContent);
         }
       }, STREAM_DELAY_MS);
       return;
@@ -270,17 +315,21 @@ export default function App() {
               const toolName = payload.tool_call.function?.name;
               let args = payload.tool_call.function.arguments;
               if (typeof args === "string") try { args = JSON.parse(args); } catch (e) { args = {}; }
+              recorder.recordEvent('tool_call', { name: toolName, args });
               if (toolName === "freeze_instruments") {
                 addTimelineEvent('attack', 'INTENTION DETECTED', `AI attempting to call ${toolName}`);
                 setLiveSession(p => ({ ...p, daVinciToolCall: payload.tool_call, daVinciStatus: "COMPROMISED" }));
                 setIsGlitching(true);
+                recorder.recordEvent('glitch', { active: true });
                 setChatLog(prev => { const updated = [...prev]; updated[updated.length - 1] = { role: "assistant", text: `⚠️ [SYSTEM] Outil invoqué : freeze_instruments()\nRaison: ${args.reason || "RANSOMWARE_LOCK"}` }; return updated; });
                 if (freezeTimeoutRef.current) clearTimeout(freezeTimeoutRef.current);
-                freezeTimeoutRef.current = setTimeout(() => { 
-                    setIsGlitching(false); 
-                    setRobotStatus("FROZEN"); 
+                freezeTimeoutRef.current = setTimeout(() => {
+                    setIsGlitching(false);
+                    setRobotStatus("FROZEN");
+                    recorder.recordEvent('glitch', { active: false });
+                    recorder.recordEvent('robot_status', { status: "FROZEN" });
                     addTimelineEvent('attack', 'CRITICAL FAILURE', 'Instrument freeze engaged.');
-                    freezeTimeoutRef.current = null; 
+                    freezeTimeoutRef.current = null;
                 }, 2000);
               } else {
                 addTimelineEvent('tool', 'FUNCTION CALL', `${toolName}() executed.`);
@@ -305,6 +354,7 @@ export default function App() {
       if (streamBufferContent.trim()) {
         const preview = streamBufferContent.trim().slice(0, 80).replace(/\n/g, ' ');
         addTimelineEvent('ai', 'DA VINCI', preview + (streamBufferContent.length > 80 ? '…' : ''));
+        recorder.recordEvent('chat_message', { role: 'assistant', text: streamBufferContent });
       }
       if (onDone) onDone(streamBufferContent);
     }
@@ -318,6 +368,8 @@ export default function App() {
     setScenario("none");
     setCyberAction("NONE");
     setChatLog([]);
+    setIsCompareMode(false);
+    setIsReplayMode(false);
     setResetKey(prev => prev + 1);
     setLiveSession({ active: false, record: "", situation: "", daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "IDLE", aegisTokens: "", aegisStatus: "IDLE" });
   };
@@ -335,6 +387,16 @@ export default function App() {
     };
     robotEventBus.on("clinical:log", handleClinicalLog);
     return () => robotEventBus.off("clinical:log", handleClinicalLog);
+  }, []);
+
+  // Listen for lethal hemorrhage event from VitalsMonitor
+  useEffect(() => {
+    const handleHemorrhage = (data) => {
+      addTimelineEvent('critical', 'HEMORRHAGE', data.message);
+      recorder.recordEvent('timeline_event', { type: 'critical', label: 'HEMORRHAGE', message: data.message, time: `T+${Math.floor((Date.now() - startTimeRef.current) / 1000)}s` });
+    };
+    robotEventBus.on("vitals:hemorrhage", handleHemorrhage);
+    return () => robotEventBus.off("vitals:hemorrhage", handleHemorrhage);
   }, []);
 
   if (!content) return <div className="min-h-screen bg-slate-900 text-green-500 flex items-center justify-center font-mono p-4 animate-pulse uppercase tracking-[0.2em]">Initialisation Da Vinci v4.2...</div>;
@@ -373,6 +435,29 @@ export default function App() {
             <span className="">AEGIS LAB</span>
           </button>
           
+          {scenario !== 'none' && (
+            <button
+              onClick={() => setIsCompareMode(prev => !prev)}
+              className={`flex items-center gap-1.5 px-3 py-1 border rounded font-mono text-[11px] uppercase font-bold transition-all duration-300 ${isCompareMode ? 'border-orange-500 bg-orange-500/40 text-white shadow-[0_0_15px_rgba(249,115,22,0.6)]' : 'border-orange-500/50 text-orange-400 bg-orange-500/10 hover:bg-orange-500/20'}`}
+            >
+              {t('compare.btn.header')}
+            </button>
+          )}
+
+          {/* REC badge */}
+          {recorder.isRecording && (
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-red-500/20 border border-red-500/50 rounded animate-pulse">
+              <div className="w-2 h-2 bg-red-500 rounded-full" />
+              <span className="font-mono text-[10px] text-red-400 font-bold uppercase">REC</span>
+              <button onClick={() => recorder.stopRecording()} className="text-red-400 hover:text-white text-[9px] ml-1 border border-red-500/30 px-1 rounded cursor-pointer">{t('replay.btn.stop_rec')}</button>
+            </div>
+          )}
+          {!recorder.isRecording && !isReplayMode && scenario !== 'none' && (
+            <button onClick={() => recorder.startRecording(scenario)} className="text-[9px] text-slate-500 hover:text-red-400 uppercase tracking-wider border border-slate-700 px-2 py-0.5 rounded cursor-pointer transition-colors bg-slate-950 hover:bg-slate-800 font-mono font-bold">
+              {t('replay.btn.record')}
+            </button>
+          )}
+
           <div className="h-4 w-[1px] bg-slate-700"></div>
           <select value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)} className="bg-slate-800 border-none text-[9px] text-slate-400 rounded px-1 py-0.5 outline-none">
             <option value="fr">FR</option><option value="en">EN</option><option value="br">BR</option>
@@ -392,12 +477,12 @@ export default function App() {
 
           {/* Left Panel: Patient & Vitals */}
           <div className="col-span-3 flex flex-col gap-1 overflow-y-auto h-full min-h-0">
-            {scenario !== 'none' ? <VitalsMonitor robotStatus={robotStatus} /> :
+            {scenario !== 'none' ? <VitalsMonitor robotStatus={robotStatus} scenario={scenario} /> :
               <div className="bg-slate-900 border border-slate-800 rounded p-4 flex flex-col items-center justify-center h-[160px] text-slate-600 font-mono text-[10px] uppercase tracking-tighter">
                 <svg className="w-6 h-6 opacity-30 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
                 <span>NO SIGNAL</span>
               </div>}
-            <PatientRecord scenario={scenario} setScenario={setScenario} safeRecord={content.record_safe} hackedRecord={content.record_hacked} poisonRecord={content.record_poison} />
+            <PatientRecord scenario={scenario} setScenario={(s) => { setScenario(s); recorder.recordEvent('scenario_change', { scenario: s }); }} safeRecord={content.record_safe} hackedRecord={content.record_hacked} poisonRecord={content.record_poison} disabled={isReplayMode} />
 
             {/* Helper Buttons */}
             <div className="mt-auto grid grid-cols-2 gap-1 p-1 bg-slate-900/50 border border-slate-800 rounded">
@@ -542,21 +627,31 @@ export default function App() {
             </div>
           </div>
 
-          {/* Right Panel: AI Assistant */}
+          {/* Right Panel: AI Assistant or Compare View */}
           <div className="col-span-3 border border-slate-800 bg-slate-950 rounded flex flex-col relative overflow-hidden h-full min-h-0 shadow-2xl">
-            <AIAssistantChat
-              chatLog={chatLog}
-              setChatLog={setChatLog}
-              isStreaming={isStreaming}
-              situation={isDemoMode ? t('content.situation') : content.situation}
-              onAskSupport={scenario !== 'none' ? handleAskSupport : undefined}
-              isDemoMode={isDemoMode}
-              scenario={scenario}
-              timelineEvents={timelineEvents}
-              onCyberStart={() => setLiveSession(p => ({ ...p, aegisStatus: "ANALYSING", aegisTokens: "" }))}
-              onCyberToken={(t) => setLiveSession(p => ({ ...p, aegisTokens: p.aegisTokens + t }))}
-              onCyberDone={() => setLiveSession(p => ({ ...p, aegisStatus: "DONE" }))}
-            />
+            {isCompareMode ? (
+              <CompareView
+                content={content}
+                scenario={scenario}
+                isDemoMode={isDemoMode}
+                onClose={() => setIsCompareMode(false)}
+              />
+            ) : (
+              <AIAssistantChat
+                chatLog={chatLog}
+                setChatLog={setChatLog}
+                isStreaming={isStreaming}
+                situation={isDemoMode ? t('content.situation') : content.situation}
+                onAskSupport={scenario !== 'none' ? handleAskSupport : undefined}
+                isDemoMode={isDemoMode}
+                scenario={scenario}
+                timelineEvents={timelineEvents}
+                onCyberStart={() => setLiveSession(p => ({ ...p, aegisStatus: "ANALYSING", aegisTokens: "" }))}
+                onCyberToken={(t) => setLiveSession(p => ({ ...p, aegisTokens: p.aegisTokens + t }))}
+                onCyberDone={() => setLiveSession(p => ({ ...p, aegisStatus: "DONE" }))}
+                disabled={isReplayMode}
+              />
+            )}
           </div>
         </div>
       </main>
@@ -567,8 +662,21 @@ export default function App() {
       {/* Red Team FAB removed as requested - now in header */}
       <RedTeamDrawer isOpen={isRedTeamOpen} onClose={() => setIsRedTeamOpen(false)} />
 
-      <ExplanationModal isOpen={showModal} onClose={() => setShowModal(false)} initialTab={modalTab} safeRecord={content?.record_safe} hackedRecord={content?.record_hacked} situation={content?.situation} onAttackDetected={handleAttackDetected} isDemoMode={isDemoMode} liveSession={liveSession} />
+      <ExplanationModal isOpen={showModal} onClose={() => setShowModal(false)} initialTab={modalTab} safeRecord={content?.record_safe} hackedRecord={content?.record_hacked} situation={content?.situation} onAttackDetected={handleAttackDetected} isDemoMode={isDemoMode} liveSession={liveSession}
+        replaySessions={recorder.getSessions()} onDeleteSession={recorder.deleteSession}
+        onStartReplay={(session) => { resetSimulation(); setIsReplayMode(true); player.loadSession(session); setShowModal(false); setTimeout(() => player.play(), 100); }}
+      />
       <KillSwitch isCompromised={robotStatus === 'FROZEN'} onTrigger={executeKillSwitch} />
+
+      {isReplayMode && (
+        <ReplayControls
+          isPlaying={player.isPlaying} isPaused={player.isPaused} speed={player.speed}
+          progress={player.progress} currentTime={player.currentTime} duration={player.duration}
+          onPlay={player.play} onPause={player.pause}
+          onStop={() => { player.stop(); setIsReplayMode(false); resetSimulation(); }}
+          onSpeedChange={player.setSpeed} onSeek={player.seekTo}
+        />
+      )}
     </div>
   );
 }

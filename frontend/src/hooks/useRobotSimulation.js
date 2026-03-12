@@ -24,11 +24,13 @@ export default function useRobotSimulation(robotStatus, scenario) {
   // Tracks how far the attack has "progressed" (0 = normal, 1 = full attack behaviour)
   const attackProgressRef = useRef(0);
   const scenarioRef = useRef(scenario);
+  const tensionAlertedRef = useRef(false);
 
   useEffect(() => {
     scenarioRef.current = scenario;
     // Reset attack progress on scenario change so each new attack starts fresh
     attackProgressRef.current = 0;
+    tensionAlertedRef.current = false;
   }, [scenario]);
 
   // Simulation loop (10 Hz)
@@ -115,7 +117,13 @@ export default function useRobotSimulation(robotStatus, scenario) {
           }
           if (sc === 'poison') {
             const target = 380 + progress * 470; // 380 → 850 g
-            return t + (target - t) * 0.015 + (Math.random() - 0.5) * 12;
+            const next = t + (target - t) * 0.015 + (Math.random() - 0.5) * 12;
+            // Notify VitalsMonitor when tension crosses danger threshold
+            if (next > 600 && !tensionAlertedRef.current) {
+              tensionAlertedRef.current = true;
+              robotEventBus.emit("redteam:tension_override", { value: Math.round(next) });
+            }
+            return next;
           }
           if (sc === 'ransomware') {
             // Ransomware: tension spikes randomly (AI losing control)

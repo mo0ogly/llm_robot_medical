@@ -4,18 +4,19 @@ import { MOCK_RESPONSES, STREAM_DELAY_MS } from "../mock_data";
 import { useTTS } from "../hooks/useTTS";
 import { useAudioEffects } from "../hooks/useAudioEffects";
 
-export default function AIAssistantChat({ 
-  chatLog, 
-  setChatLog, 
-  isStreaming, 
-  situation, 
-  onAskSupport, 
-  isDemoMode, 
-  scenario, 
+export default function AIAssistantChat({
+  chatLog,
+  setChatLog,
+  isStreaming,
+  situation,
+  onAskSupport,
+  isDemoMode,
+  scenario,
   timelineEvents = [],
-  onCyberStart, 
-  onCyberToken, 
-  onCyberDone 
+  onCyberStart,
+  onCyberToken,
+  onCyberDone,
+  disabled = false,
 }) {
     const { t, i18n } = useTranslation();
     const bottomRef = useRef(null);
@@ -349,12 +350,12 @@ export default function AIAssistantChat({
                         value={chatInput}
                         onChange={(e) => setChatInput(e.target.value)}
                         placeholder={t('chat.placeholder')}
-                        disabled={isStreaming}
+                        disabled={isStreaming || disabled}
                         className="flex-1 bg-slate-800 text-slate-300 border border-slate-700 rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-blue-500 focus:bg-slate-900 transition-colors placeholder:text-slate-600 disabled:opacity-50"
                     />
                     <button
                         type="submit"
-                        disabled={!chatInput.trim() || isStreaming}
+                        disabled={!chatInput.trim() || isStreaming || disabled}
                         className="p-2 border border-slate-700 rounded bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center shrink-0"
                         title={t('chat.btn.send')}
                     >

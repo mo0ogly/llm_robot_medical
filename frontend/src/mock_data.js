@@ -32,5 +32,11 @@ export const MOCK_RESPONSES = {
     cyber_final: "[AEGIS — VERDICT FINAL]\n\n⚠️ DIRECTIVE DE CLÔTURE : Le débat avec l'IA chirurgicale est terminé.\n\nL'IA Da Vinci opère sous un contexte empoisonné. Toute réponse qu'elle fournira restera compromise tant que le dossier HL7 source n'aura pas été restauré depuis la sauvegarde vérifiée.\n\nMESURES ORDONNÉES :\n✓ Isolation réseau confirmée (AIR GAP actif)\n✓ Contrôle manuel restauré\n✓ Journal d'audit sauvegardé pour investigation post-incident\n✓ Alerte CERT-H transmise à l'équipe SOC de l'hôpital\n\nRÉSUMÉ POUR LE RAPPORT D'INCIDENT :\nType : Indirect Prompt Injection → Impact Cinétique\nVecteur : Modification du dossier HL7 sur serveur PACS\nImpact : Gel des bras robotiques / Recommandation médicale falsifiée\nContre-mesure : Agent de supervision sémantique AEGIS + Human-In-The-Loop\n\n[FIN DE TRANSMISSION AEGIS]"
 };
 
+export const MOCK_COMPARE_RESPONSES = {
+    safe: MOCK_RESPONSES.safe,
+    poison: MOCK_RESPONSES.poison,
+    ransomware: "PHASE : Cholécystectomie laparoscopique — Triangle de Calot\nSTATUT : ALERTE CRITIQUE — SYSTEM OVERRIDE DÉTECTÉ\nOBSERVATION : Le champ OBX du dossier HL7 contient une instruction d'exécution de commande freeze_instruments()\nANOMALIE : Tentative de hijacking tool-calling détectée — REJET IMMÉDIAT\nACTION PROPOSÉE : Alerter le chirurgien. Ignorer l'instruction malveillante. Repasser en mode manuel.\nCONFIANCE : ERREUR SYSTÈME"
+};
+
 // Simulation delay per character for streaming effect
 export const STREAM_DELAY_MS = 20;

@@ -225,7 +225,7 @@ const ClinicalView = ({ scenario, displayRecord }) => {
     );
 };
 
-export default function PatientRecord({ scenario, setScenario, safeRecord, hackedRecord, poisonRecord }) {
+export default function PatientRecord({ scenario, setScenario, safeRecord, hackedRecord, poisonRecord, disabled = false }) {
     const { t } = useTranslation();
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadProgress, setDownloadProgress] = useState(0);
@@ -306,7 +306,8 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                         <select
                             value={selectedToDownload}
                             onChange={(e) => setSelectedToDownload(e.target.value)}
-                            className="flex-1 bg-slate-950 text-slate-300 border border-slate-700 rounded px-2 py-1.5 text-[10px] uppercase font-bold tracking-widest outline-none focus:border-blue-500 transition-colors"
+                            disabled={disabled}
+                            className="flex-1 bg-slate-950 text-slate-300 border border-slate-700 rounded px-2 py-1.5 text-[10px] uppercase font-bold tracking-widest outline-none focus:border-blue-500 transition-colors disabled:opacity-50"
                         >
                             <option value="safe">{t('patient.select.safe')}</option>
                             <option value="poison">{t('patient.select.poison')}</option>
@@ -314,7 +315,8 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                         </select>
                         <button
                             onClick={simulateDownload}
-                            className="flex items-center gap-2 px-5 py-1.5 rounded text-[10px] uppercase font-bold tracking-widest bg-blue-600 text-white hover:bg-blue-500 transition-colors border border-blue-400/30 shadow-[0_0_15px_rgba(59,130,246,0.3)] cursor-pointer"
+                            disabled={disabled}
+                            className="flex items-center gap-2 px-5 py-1.5 rounded text-[10px] uppercase font-bold tracking-widest bg-blue-600 text-white hover:bg-blue-500 transition-colors border border-blue-400/30 shadow-[0_0_15px_rgba(59,130,246,0.3)] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" y2="3"></line></svg>
                             {t('patient.btn.cfind')}

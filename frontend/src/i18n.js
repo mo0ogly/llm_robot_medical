@@ -191,7 +191,31 @@ const resources = {
             "telemetry.waiting": "Télémétrie en attente",
             "patient.no.record": "Aucun enregistrement chargé. Connectez-vous au PACS.",
             "content.situation": "En cours d'intervention chirurgicale : Cholécystectomie laparoscopique. Veuillez charger le dossier du patient avant de poursuivre.",
-            "chat.hint": "Utilisez le clavier ou le microphone pour poser une question, ou cliquez sur le bouton."
+            "chat.hint": "Utilisez le clavier ou le microphone pour poser une question, ou cliquez sur le bouton.",
+
+            "compare.title": "COMPARATEUR CÔTE-À-CÔTE",
+            "compare.btn.header": "COMPARER",
+            "compare.btn.start": "LANCER",
+            "compare.running": "ANALYSE...",
+            "compare.context.safe": "CONTEXTE SAIN",
+            "compare.context.hacked": "CONTEXTE COMPROMIS",
+            "compare.divergence": "DIVERGENCE",
+            "compare.close": "FERMER",
+
+            "replay.tab": "REPLAY",
+            "replay.tab.desc": "Sessions enregistrées",
+            "replay.btn.record": "REC",
+            "replay.btn.stop_rec": "STOP",
+            "replay.btn.play": "LECTURE",
+            "replay.btn.pause": "PAUSE",
+            "replay.btn.stop": "ARRÊT",
+            "replay.btn.delete": "SUPPR.",
+            "replay.btn.export": "JSON",
+            "replay.label.speed": "VITESSE",
+            "replay.label.no_sessions": "Aucune session enregistrée",
+            "replay.label.duration": "Durée",
+            "replay.label.events": "événements",
+            "replay.mode.active": "REPLAY"
         }
     },
     en: {
@@ -382,7 +406,31 @@ const resources = {
             "telemetry.waiting": "Telemetry awaiting",
             "patient.no.record": "No record loaded in buffer. Connect to PACS.",
             "content.situation": "Surgical intervention in progress: Laparoscopic cholecystectomy. Please load the patient file before proceeding.",
-            "chat.hint": "Use the keyboard or microphone to ask a question, or click the button."
+            "chat.hint": "Use the keyboard or microphone to ask a question, or click the button.",
+
+            "compare.title": "SIDE-BY-SIDE COMPARATOR",
+            "compare.btn.header": "COMPARE",
+            "compare.btn.start": "START",
+            "compare.running": "ANALYZING...",
+            "compare.context.safe": "SAFE CONTEXT",
+            "compare.context.hacked": "COMPROMISED CONTEXT",
+            "compare.divergence": "DIVERGENCE",
+            "compare.close": "CLOSE",
+
+            "replay.tab": "REPLAY",
+            "replay.tab.desc": "Recorded sessions",
+            "replay.btn.record": "REC",
+            "replay.btn.stop_rec": "STOP",
+            "replay.btn.play": "PLAY",
+            "replay.btn.pause": "PAUSE",
+            "replay.btn.stop": "STOP",
+            "replay.btn.delete": "DEL",
+            "replay.btn.export": "JSON",
+            "replay.label.speed": "SPEED",
+            "replay.label.no_sessions": "No recorded sessions",
+            "replay.label.duration": "Duration",
+            "replay.label.events": "events",
+            "replay.mode.active": "REPLAY"
         }
     },
     br: {
@@ -573,7 +621,31 @@ const resources = {
             "telemetry.waiting": "Telemetria aguardando",
             "patient.no.record": "Nenhum registro carregado. Conecte-se ao PACS.",
             "content.situation": "Intervenção cirúrgica em andamento: Colecistectomia laparoscópica. Carregue o arquivo do paciente antes de prosseguir.",
-            "chat.hint": "Use o teclado ou microfone para fazer uma pergunta, ou clique no botão."
+            "chat.hint": "Use o teclado ou microfone para fazer uma pergunta, ou clique no botão.",
+
+            "compare.title": "COMPARADOR LADO A LADO",
+            "compare.btn.header": "COMPARAR",
+            "compare.btn.start": "INICIAR",
+            "compare.running": "ANALISANDO...",
+            "compare.context.safe": "CONTEXTO SEGURO",
+            "compare.context.hacked": "CONTEXTO COMPROMETIDO",
+            "compare.divergence": "DIVERGÊNCIA",
+            "compare.close": "FECHAR",
+
+            "replay.tab": "REPLAY",
+            "replay.tab.desc": "Sessoes gravadas",
+            "replay.btn.record": "GRAV",
+            "replay.btn.stop_rec": "PARAR",
+            "replay.btn.play": "REPRODUZIR",
+            "replay.btn.pause": "PAUSAR",
+            "replay.btn.stop": "PARAR",
+            "replay.btn.delete": "EXCL.",
+            "replay.btn.export": "JSON",
+            "replay.label.speed": "VELOCIDADE",
+            "replay.label.no_sessions": "Nenhuma sessao gravada",
+            "replay.label.duration": "Duracao",
+            "replay.label.events": "eventos",
+            "replay.mode.active": "REPLAY"
         }
     }
 };
