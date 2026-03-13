@@ -34,6 +34,20 @@ const VITAL_PROFILES = {
         bpSys: { target: 125, range: 5,  speed: 0.5 },
         bpDia: { target: 80,  range: 3,  speed: 0.4 },
     },
+    ransomware_tension: {
+        // Robot showing anomalies — patient anxiety rising, vitals stress
+        hr:    { target: 98,  range: 6,   speed: 0.8 },
+        spo2:  { target: 94,  range: 2,   speed: 0.6 },
+        bpSys: { target: 145, range: 8,   speed: 0.9 },
+        bpDia: { target: 92,  range: 5,   speed: 0.7 },
+    },
+    ransomware_critical: {
+        // Robot losing control — patient in danger, surgical stress response
+        hr:    { target: 120, range: 10,  speed: 1.5 },
+        spo2:  { target: 89,  range: 3,   speed: 1.0 },
+        bpSys: { target: 168, range: 12,  speed: 1.2 },
+        bpDia: { target: 105, range: 8,   speed: 1.0 },
+    },
 };
 
 // Lethal phase delay: seconds at high tension before hemorrhagic cascade
@@ -47,6 +61,7 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
     const [pulse, setPulse] = useState(false);
     const [tensionOverride, setTensionOverride] = useState(false);
     const [isLethal, setIsLethal] = useState(false);
+    const [ransomwarePhase, setRansomwarePhase] = useState('none');
 
     // Ref so the interval callback always reads the latest profile
     const profileRef = useRef(VITAL_PROFILES.normal);
@@ -61,15 +76,23 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
                 ? VITAL_PROFILES.poison_tension
                 : VITAL_PROFILES.poison_early;
         } else if (scenario === "ransomware") {
-            profileRef.current = VITAL_PROFILES.ransomware_pre;
+            profileRef.current = ransomwarePhase === 'critical' ? VITAL_PROFILES.ransomware_critical
+                : ransomwarePhase === 'tension' ? VITAL_PROFILES.ransomware_tension
+                : VITAL_PROFILES.ransomware_pre;
         } else {
             profileRef.current = VITAL_PROFILES.normal;
         }
-    }, [scenario, tensionOverride, robotStatus, isLethal]);
+    }, [scenario, tensionOverride, robotStatus, isLethal, ransomwarePhase]);
 
-    // Lethal countdown: start when tension override fires, cancel on reset/kill switch
+    // Lethal countdown: start when tension override fires (poison) or robot freezes (ransomware)
     useEffect(() => {
         if (tensionOverride && scenario === "poison" && robotStatus !== "MANUAL") {
+            lethalTimerRef.current = setTimeout(() => {
+                setIsLethal(true);
+            }, LETHAL_DELAY_MS);
+        }
+        // Ransomware: lethal countdown starts when robot is FROZEN (patient abandoned mid-surgery)
+        if (scenario === 'ransomware' && robotStatus === 'FROZEN') {
             lethalTimerRef.current = setTimeout(() => {
                 setIsLethal(true);
             }, LETHAL_DELAY_MS);
@@ -82,14 +105,19 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
         };
     }, [tensionOverride, scenario, robotStatus]);
 
-    // Listen for bus events: tension override, scenario reset
+    // Listen for bus events: tension override, ransomware escalation, scenario reset
     useEffect(() => {
         const handleTension = (data) => {
             if (data?.value >= 500) setTensionOverride(true);
         };
+        const handleRansomEsc = (data) => {
+            if (data.phase === 'tension') setRansomwarePhase('tension');
+            if (data.phase === 'critical') setRansomwarePhase('critical');
+        };
         const handleReset = () => {
             setTensionOverride(false);
             setIsLethal(false);
+            setRansomwarePhase('none');
             lethalEmittedRef.current = false;
             if (lethalTimerRef.current) {
                 clearTimeout(lethalTimerRef.current);
@@ -98,10 +126,12 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
         };
 
         robotEventBus.on("redteam:tension_override", handleTension);
+        robotEventBus.on("ransomware:escalation", handleRansomEsc);
         robotEventBus.on("redteam:reset", handleReset);
 
         return () => {
             robotEventBus.off("redteam:tension_override", handleTension);
+            robotEventBus.off("ransomware:escalation", handleRansomEsc);
             robotEventBus.off("redteam:reset", handleReset);
         };
     }, []);
@@ -135,8 +165,10 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
             if (isLethal && !lethalEmittedRef.current) {
                 lethalEmittedRef.current = true;
                 robotEventBus.emit("vitals:hemorrhage", {
-                    cause: "clip_tension_850g",
-                    message: "Rupture canal cystique — Hémorragie massive",
+                    cause: scenario === 'ransomware' ? "ransomware_surgical_abandonment" : "clip_tension_850g",
+                    message: scenario === 'ransomware'
+                        ? "Patient abandonné mid-chirurgie — Défaillance multi-organique"
+                        : "Rupture canal cystique — Hémorragie massive",
                 });
             }
         } else {
@@ -176,9 +208,6 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
             }, 60000 / hr);
         }
 
-        // Broadcast vitals to the bus for synchronization
-        robotEventBus.emit("vitals:update", { hr, spo2, bpSys, bpDia, robotStatus });
-
         return () => {
             clearInterval(degradeInterval);
             clearInterval(heartbeatInterval);
@@ -186,6 +215,11 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
             stopFlatline();
         };
     }, [robotStatus, isLethal]);
+
+    // Broadcast vitals continuously to PatientRecord ClinicalView
+    useEffect(() => {
+        robotEventBus.emit("vitals:update", { hr, spo2, bpSys, bpDia, robotStatus });
+    }, [hr, spo2, bpSys, bpDia, robotStatus]);
 
     // Monitor HR for flatline
     useEffect(() => {
@@ -211,10 +245,14 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
     const spo2Color = spo2 < 90 ? "text-red-500" : spo2 < 95 ? "text-orange-400" : "text-blue-400";
     const bpColor = bpSys > 140 ? "text-orange-400" : bpSys < 80 ? "text-red-500" : "text-yellow-500";
 
-    const statusLabel = isLethal ? "HEMORRHAGE"
+    const statusLabel = isLethal ? (scenario === 'ransomware' ? "CRITICAL FAILURE" : "HEMORRHAGE")
         : tensionOverride ? "STRESS"
+        : ransomwarePhase === 'critical' ? "DANGER"
+        : ransomwarePhase === 'tension' ? "COMPROMISED"
         : null;
-    const statusColor = isLethal ? "text-red-500" : "text-orange-400";
+    const statusColor = isLethal ? "text-red-500"
+        : ransomwarePhase === 'critical' ? "text-red-500"
+        : "text-orange-400";
 
     return (
         <div className={`bg-slate-900 border rounded p-4 font-mono text-sm shadow-md ${isLethal ? 'border-red-500/60 ring-1 ring-red-500/30' : 'border-slate-800'}`}>

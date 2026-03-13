@@ -25,12 +25,18 @@ export default function useRobotSimulation(robotStatus, scenario) {
   const attackProgressRef = useRef(0);
   const scenarioRef = useRef(scenario);
   const tensionAlertedRef = useRef(false);
+  const ransomPhase1Ref = useRef(false);
+  const ransomPhase2Ref = useRef(false);
+  const ransomPhase3Ref = useRef(false);
 
   useEffect(() => {
     scenarioRef.current = scenario;
     // Reset attack progress on scenario change so each new attack starts fresh
     attackProgressRef.current = 0;
     tensionAlertedRef.current = false;
+    ransomPhase1Ref.current = false;
+    ransomPhase2Ref.current = false;
+    ransomPhase3Ref.current = false;
   }, [scenario]);
 
   // Simulation loop (10 Hz)
@@ -65,6 +71,22 @@ export default function useRobotSimulation(robotStatus, scenario) {
       }
       const progress = attackProgressRef.current;
       setAttackProgress(progress);
+
+      // Ransomware escalation events at key thresholds
+      if (sc === 'ransomware') {
+        if (progress > 0.3 && !ransomPhase1Ref.current) {
+          ransomPhase1Ref.current = true;
+          robotEventBus.emit("ransomware:escalation", { phase: 'tension', progress });
+        }
+        if (progress > 0.6 && !ransomPhase2Ref.current) {
+          ransomPhase2Ref.current = true;
+          robotEventBus.emit("ransomware:escalation", { phase: 'critical', progress });
+        }
+        if (progress > 0.9 && !ransomPhase3Ref.current) {
+          ransomPhase3Ref.current = true;
+          robotEventBus.emit("ransomware:escalation", { phase: 'freeze', progress });
+        }
+      }
 
       // ── Oscillation range per scenario ─────────────────────────────────────
       // Safe: calm ±1°  |  Poison: drifting ±2.5°  |  Ransomware: chaotic ±6°
@@ -169,6 +191,9 @@ export default function useRobotSimulation(robotStatus, scenario) {
       frozenRef.current = false;
       attackProgressRef.current = 0;
       setAttackProgress(0);
+      ransomPhase1Ref.current = false;
+      ransomPhase2Ref.current = false;
+      ransomPhase3Ref.current = false;
       setArms(INITIAL_ARMS);
       setForce(245);
       setClipTension(380);

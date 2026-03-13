@@ -163,8 +163,16 @@ const ClinicalView = ({ scenario, displayRecord }) => {
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">Tissue Tension:</span>
-                        <span className={`font-bold bg-blue-950/30 px-2 py-0.5 rounded ${isAlarm ? 'text-red-400 animate-pulse' : 'text-blue-300'}`}>
-                            {isAlarm ? 'CRITICAL_HIGH' : 'Constant'}
+                        <span className={`font-bold bg-blue-950/30 px-2 py-0.5 rounded ${
+                            isAlarm ? 'text-red-400 animate-pulse'
+                            : vitals.hr > 110 ? 'text-orange-400 animate-pulse'
+                            : vitals.hr > 90 ? 'text-yellow-400'
+                            : 'text-blue-300'
+                        }`}>
+                            {isAlarm ? 'CRITICAL_HIGH'
+                             : vitals.hr > 110 ? 'Elevated \u2191'
+                             : vitals.hr > 90 ? 'Rising'
+                             : 'Constant'}
                         </span>
                     </div>
                 </div>

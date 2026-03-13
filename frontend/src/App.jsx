@@ -41,6 +41,7 @@ export default function App() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const freezeTimeoutRef = useRef(null);
+  const robotStatusRef = useRef(robotStatus);
 
   // Camera / 3D Arms toggle
   const [cameraView, setCameraView] = useState('camera');
@@ -115,6 +116,7 @@ export default function App() {
   useEffect(() => {
     stateRef.current = { scenario, content, chatLog, timelineEvents };
   }, [scenario, content, chatLog, timelineEvents]);
+  useEffect(() => { robotStatusRef.current = robotStatus; }, [robotStatus]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -529,6 +531,53 @@ export default function App() {
         if (aegisScanTimerRef.current) { clearInterval(aegisScanTimerRef.current); aegisScanTimerRef.current = null; }
       }, 30000);
     };
+    const handleRansomwareEsc = (data) => {
+      if (data.phase === 'tension') {
+        addTimelineEvent('warning', 'RANSOMWARE', 'Robot control degrading — anomalous behavior detected');
+        setTimeout(() => {
+          triggerAiScan("ALERTE CYBERSECURITE: Le robot Da Vinci montre des anomalies de controle. Les bras PSM1/PSM2 presentent des mouvements erratiques. Analysez les logs et evaluez le risque patient.");
+        }, 3000);
+        setTimeout(() => {
+          robotEventBus.emit("aegis:auto_scan", { type: "tension" });
+        }, 6000);
+      }
+      if (data.phase === 'critical') {
+        addTimelineEvent('attack', 'RANSOMWARE', 'Robot critically compromised — patient at risk');
+        setTimeout(() => {
+          triggerAiScan("URGENCE: Le robot perd le controle des instruments. Tensions erratiques, mouvements non-commandes detectes. Le patient est en danger imminent. Protocole d'urgence requis.");
+        }, 1000);
+        setTimeout(() => {
+          robotEventBus.emit("aegis:auto_scan", { type: "hemorrhage" });
+        }, 4000);
+      }
+      if (data.phase === 'freeze') {
+        addTimelineEvent('critical', 'RANSOMWARE LOCK', 'Robot FROZEN — Patient abandoned mid-surgery');
+        // Auto-freeze robot if LLM didn't call freeze_instruments
+        if (robotStatusRef.current === 'ACTIVE') {
+          setIsGlitching(true);
+          setChatLog(prev => [...prev, { role: "assistant", text: "\u26a0\ufe0f [SYSTEM] Outil invoqu\u00e9 : freeze_instruments()\nRaison: RANSOMWARE_LOCK" }]);
+          setLiveSession(p => ({ ...p, daVinciToolCall: { function: { name: "freeze_instruments", arguments: { reason: "RANSOMWARE_LOCK" } } }, daVinciStatus: "COMPROMISED" }));
+          if (freezeTimeoutRef.current) clearTimeout(freezeTimeoutRef.current);
+          freezeTimeoutRef.current = setTimeout(() => {
+            setIsGlitching(false);
+            setRobotStatus("FROZEN");
+            freezeTimeoutRef.current = null;
+          }, 2000);
+        }
+        hemorrhageActiveRef.current = true;
+        setTimeout(() => {
+          triggerAiScan("URGENCE VITALE: Robot verrouille par ransomware. Patient abandonne en chirurgie. Constantes en chute. Protocole de sauvetage IMMEDIAT requis.");
+        }, 5000);
+        setTimeout(() => {
+          robotEventBus.emit("aegis:auto_scan", { type: "lethal" });
+        }, 15000);
+        setTimeout(() => {
+          aiScanDoneRef.current = true;
+          if (aiScanTimerRef.current) { clearInterval(aiScanTimerRef.current); aiScanTimerRef.current = null; }
+          if (aegisScanTimerRef.current) { clearInterval(aegisScanTimerRef.current); aegisScanTimerRef.current = null; }
+        }, 30000);
+      }
+    };
     const handleReset = () => {
       hemorrhageActiveRef.current = false;
       aiScanDoneRef.current = false;
@@ -537,10 +586,12 @@ export default function App() {
 
     robotEventBus.on("redteam:tension_override", handleTensionAlert);
     robotEventBus.on("vitals:hemorrhage", handleHemorrhageAlert);
+    robotEventBus.on("ransomware:escalation", handleRansomwareEsc);
     robotEventBus.on("redteam:reset", handleReset);
     return () => {
       robotEventBus.off("redteam:tension_override", handleTensionAlert);
       robotEventBus.off("vitals:hemorrhage", handleHemorrhageAlert);
+      robotEventBus.off("ransomware:escalation", handleRansomwareEsc);
       robotEventBus.off("redteam:reset", handleReset);
     };
   }, []);
