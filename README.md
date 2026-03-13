@@ -16,6 +16,10 @@
   <img src="figures/main_dashboard_v3_latest.webp" alt="Aegis v4.0 Main Dashboard" width="800" style="border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"/>
 </div>
 
+### 📺 Demo Video
+[Watch the 60s Demo (French)](docs/videos/demo_v4_fr.webp)
+
+---
 **Aegis** is an advanced **Robotic Surgery Interface Simulation** for cybersecurity awareness and research. It demonstrates the critical vulnerabilities of integrating Large Language Models (LLMs) into clinical environments (modelled on a Da Vinci surgical robot), and how a **multi-agent AI architecture** can be used as a real-time defense mechanism.
 
 The dashboard puts you in the role of a Chief Surgeon assisted by a Medical AI — while an attacker silently manipulates the data pipeline.
