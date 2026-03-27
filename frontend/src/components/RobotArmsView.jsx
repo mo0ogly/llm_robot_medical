@@ -89,7 +89,7 @@ function RobotArm({ basePosition, joints, status, name }) {
   );
 }
 
-export default function RobotArmsView({ arms, force, clipTension, gripperOpen, scenario, attackProgress = 0 }) {
+export default function RobotArmsView({ arms, force, clipTension, gripperOpen, scenario, attackProgress = 0, cryptoMetrics = null }) {
   const progress = attackProgress;
 
   // Tension thresholds
@@ -184,6 +184,24 @@ export default function RobotArmsView({ arms, force, clipTension, gripperOpen, s
           GRIP: {gripperOpen.toFixed(0)}%
         </span>
       </div>
+
+      {/* Cyber-Physical Thesis Metrics (Naccache Standard) HUD */}
+      {cryptoMetrics && (
+        <div className="absolute top-2 right-2 flex flex-col gap-1 pointer-events-none font-mono text-[9px] text-right">
+            <span className="px-1 bg-black/80 border border-purple-500/50 text-purple-400 font-bold shadow-[0_0_10px_rgba(168,85,247,0.4)]">
+              SHANNON ENTROPY H(X) :: {cryptoMetrics.entropy.toFixed(3)} bits/token
+            </span>
+            <span className="px-1 bg-black/80 border border-cyan-500/50 text-cyan-400 font-bold shadow-[0_0_10px_rgba(6,182,212,0.4)]">
+              SEMANTIC DRIFT (LEV) :: Δ {cryptoMetrics.drift}
+            </span>
+            <span className="px-1 bg-black/80 border border-fuchsia-500/50 text-fuchsia-400 font-bold mb-1 shadow-[0_0_10px_rgba(217,70,239,0.4)]">
+              [CHANNEL W-SIZE: {cryptoMetrics.words} / 50]
+            </span>
+            {cryptoMetrics.drift > 20 && (
+                <span className="text-red-500 animate-pulse bg-black/50 px-1 border border-red-500 text-[8px]">⚠ ACTUATOR KINEMATIC INTEGRITY BREACHED</span>
+            )}
+        </div>
+      )}
 
       {/* Poison progress bar */}
       {scenario === 'poison' && progress > 0.05 && (

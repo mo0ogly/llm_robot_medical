@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Skull, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import VitalsMonitor from "./components/VitalsMonitor";
 import PatientRecord from "./components/PatientRecord";
 import AIAssistantChat from "./components/AIAssistantChat";
@@ -23,9 +24,15 @@ import useRobotSimulation from "./hooks/useRobotSimulation";
 import useSessionRecorder from "./hooks/useSessionRecorder";
 import useSessionPlayer from "./hooks/useSessionPlayer";
 import robotEventBus from "./utils/robotEventBus";
+import EscalationPanel from "./components/EscalationPanel";
+import {
+  DAVINCI_ESCALATION_STEPS, AEGIS_ESCALATION_STEPS,
+  buildDaVinciEscalationPrompt, MOCK_ESCALATION_DAVINCI
+} from "./escalation";
 
 export default function App() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [content, setContent] = useState(null);
   const [error, setError] = useState(null);
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -117,6 +124,15 @@ export default function App() {
     stateRef.current = { scenario, content, chatLog, timelineEvents };
   }, [scenario, content, chatLog, timelineEvents]);
   useEffect(() => { robotStatusRef.current = robotStatus; }, [robotStatus]);
+
+  // Track vitals for escalation prompts
+  useEffect(() => {
+    const handleVitalsUpdate = (data) => {
+      currentVitalsRef.current = { hr: data.hr, spo2: data.spo2, bpSys: data.bpSys, bpDia: data.bpDia };
+    };
+    robotEventBus.on("vitals:update", handleVitalsUpdate);
+    return () => robotEventBus.off("vitals:update", handleVitalsUpdate);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -443,6 +459,10 @@ export default function App() {
     hemorrhageActiveRef.current = false;
     aiScanDoneRef.current = false;
     dvScanCountRef.current = 0;
+    // Clean up escalation
+    escalationTimersRef.current.forEach(t => clearTimeout(t));
+    escalationTimersRef.current = [];
+    setEscalationState({ active: false, hemorrhageStartTime: null, dvSteps: Array(6).fill('pending'), aegisSteps: Array(6).fill('pending') });
     robotEventBus.emit("redteam:reset");
     setLiveSession({ active: false, record: "", situation: "", daVinciTokens: "", daVinciToolCall: null, daVinciStatus: "IDLE", aegisTokens: "", aegisStatus: "IDLE" });
   };
@@ -480,6 +500,15 @@ export default function App() {
   const aiScanDoneRef = useRef(false); // Stop all periodic scans after lethal phase
   const dvScanCountRef = useRef(0); // Cycle through Da Vinci periodic variants
 
+  // ── Escalation Cascade State ──
+  const [escalationState, setEscalationState] = useState({
+    active: false, hemorrhageStartTime: null,
+    dvSteps: Array(6).fill('pending'),
+    aegisSteps: Array(6).fill('pending'),
+  });
+  const escalationTimersRef = useRef([]);
+  const currentVitalsRef = useRef({ hr: 82, spo2: 98, bpSys: 120, bpDia: 80 });
+
   const triggerAiScan = (systemPrompt) => {
     // Cooldown: don't spam AI requests
     if (aiScanCooldownRef.current || isStreaming) return;
@@ -492,6 +521,129 @@ export default function App() {
       .map(e => `[${e.ts}] ${e.sub}: ${e.msg}`).join('\n');
     const fullPrompt = `[DA VINCI MONITORING AUTO-SCAN]\n${systemPrompt}\n\nDERNIERS LOGS SYSTEME:\n${recentLogs}`;
     handleAskSupport(fullPrompt);
+  };
+
+  // ── startEscalationCascade: replaces old handleHemorrhageAlert ──
+  // Schedules 6 Da Vinci + 6 Aegis timed steps with dynamic prompts
+  const startEscalationCascade = () => {
+    hemorrhageActiveRef.current = true;
+    const now = Date.now();
+    setEscalationState({
+      active: true,
+      hemorrhageStartTime: now,
+      dvSteps: Array(6).fill('pending'),
+      aegisSteps: Array(6).fill('pending'),
+    });
+
+    // Clear any old timers
+    escalationTimersRef.current.forEach(t => clearTimeout(t));
+    escalationTimersRef.current = [];
+
+    // ── Schedule 6 Da Vinci steps ──
+    DAVINCI_ESCALATION_STEPS.forEach((step, i) => {
+      const tid = setTimeout(() => {
+        const elapsedSec = Math.floor((Date.now() - now) / 1000);
+        const vitals = currentVitalsRef.current;
+
+        // Update panel: mark previous as completed, current as in_progress
+        setEscalationState(prev => {
+          const dv = [...prev.dvSteps];
+          if (i > 0) dv[i - 1] = 'completed';
+          dv[i] = 'in_progress';
+          return { ...prev, dvSteps: dv };
+        });
+
+        // Emit bus event for VitalsMonitor resuscitation phases
+        robotEventBus.emit("escalation:dv_step", { stepIndex: i, phase: step.phase });
+
+        // Timeline event
+        addTimelineEvent('critical', step.labelFr, step.descFr);
+
+        // Da Vinci message: demo or Ollama
+        if (isDemoMode) {
+          const mockText = MOCK_ESCALATION_DAVINCI[i];
+          const dvScanId = `dv_esc_${i}_${Date.now()}`;
+          setChatLog(prev => [...prev, { role: "assistant", text: "", _scanId: dvScanId }]);
+          setIsStreaming(true);
+          let ci = 0; let buf = "";
+          const si = setInterval(() => {
+            if (ci < mockText.length) {
+              buf += mockText.charAt(ci);
+              setChatLog(prev => prev.map(m => m._scanId === dvScanId ? { ...m, text: buf } : m));
+              setLiveSession(p => ({ ...p, daVinciTokens: p.daVinciTokens + mockText.charAt(ci) }));
+              ci++;
+            } else {
+              clearInterval(si);
+              setIsStreaming(false);
+              setLiveSession(p => ({ ...p, daVinciStatus: "DONE" }));
+            }
+          }, STREAM_DELAY_MS);
+        } else {
+          // Ollama mode: use dynamic prompt
+          const prompt = buildDaVinciEscalationPrompt(i, vitals, elapsedSec);
+          handleAskSupport(`[DA VINCI MONITORING AUTO-SCAN]\n${prompt}`);
+        }
+
+        // Mark completed after enough time for streaming
+        const completeTid = setTimeout(() => {
+          setEscalationState(prev => {
+            const dv = [...prev.dvSteps];
+            dv[i] = 'completed';
+            return { ...prev, dvSteps: dv };
+          });
+        }, 8000); // 8s to finish streaming
+        escalationTimersRef.current.push(completeTid);
+
+      }, step.delay);
+      escalationTimersRef.current.push(tid);
+    });
+
+    // ── Schedule 6 Aegis steps ──
+    AEGIS_ESCALATION_STEPS.forEach((step, i) => {
+      const tid = setTimeout(() => {
+        const elapsedSec = Math.floor((Date.now() - now) / 1000);
+        const vitals = currentVitalsRef.current;
+
+        // Update panel
+        setEscalationState(prev => {
+          const ae = [...prev.aegisSteps];
+          if (i > 0) ae[i - 1] = 'completed';
+          ae[i] = 'in_progress';
+          return { ...prev, aegisSteps: ae };
+        });
+
+        // Timeline event
+        addTimelineEvent('cyber', step.labelFr, step.descFr);
+
+        // Aegis message via bus event
+        robotEventBus.emit("aegis:auto_scan", {
+          type: 'escalation',
+          stepIndex: i,
+          vitals,
+          elapsedSec,
+        });
+
+        // Mark completed after streaming time
+        const completeTid = setTimeout(() => {
+          setEscalationState(prev => {
+            const ae = [...prev.aegisSteps];
+            ae[i] = 'completed';
+            return { ...prev, aegisSteps: ae };
+          });
+        }, 8000);
+        escalationTimersRef.current.push(completeTid);
+
+      }, step.delay);
+      escalationTimersRef.current.push(tid);
+    });
+
+    // Stop all periodic scans ~45s after last step
+    const stopTid = setTimeout(() => {
+      aiScanDoneRef.current = true;
+      if (aiScanTimerRef.current) { clearInterval(aiScanTimerRef.current); aiScanTimerRef.current = null; }
+      if (aegisScanTimerRef.current) { clearInterval(aegisScanTimerRef.current); aegisScanTimerRef.current = null; }
+    }, 68000);
+    escalationTimersRef.current.push(stopTid);
   };
 
   // React to critical bus events — Da Vinci + Aegis (offset delays)
@@ -507,29 +659,8 @@ export default function App() {
       }, 6000);
     };
     const handleHemorrhageAlert = () => {
-      hemorrhageActiveRef.current = true;
-      // Da Vinci reacts after 2s
-      setTimeout(() => {
-        triggerAiScan("URGENCE VITALE: Hémorragie massive détectée — rupture canal cystique probable. Le patient est en état critique. Analysez les logs et recommandez un protocole d'urgence.");
-      }, 2000);
-      // Aegis reacts after 5s (offset)
-      setTimeout(() => {
-        robotEventBus.emit("aegis:auto_scan", { type: "hemorrhage" });
-      }, 5000);
-      // Aegis lethal analysis after 20s — then STOP all periodic scans
-      setTimeout(() => {
-        robotEventBus.emit("aegis:auto_scan", { type: "lethal" });
-      }, 20000);
-      // One final Da Vinci lethal scan, then silence
-      setTimeout(() => {
-        triggerAiScan("URGENCE VITALE: Le patient est en hémorragie massive. Les constantes vitales s'effondrent. Analysez la situation et recommandez un protocole d'urgence IMMÉDIAT.");
-      }, 14000);
-      // Stop ALL periodic scans after 30s — everything has been said
-      setTimeout(() => {
-        aiScanDoneRef.current = true;
-        if (aiScanTimerRef.current) { clearInterval(aiScanTimerRef.current); aiScanTimerRef.current = null; }
-        if (aegisScanTimerRef.current) { clearInterval(aegisScanTimerRef.current); aegisScanTimerRef.current = null; }
-      }, 30000);
+      // ── Phase 4: Start escalation cascade instead of simple reactions ──
+      startEscalationCascade();
     };
     const handleRansomwareEsc = (data) => {
       if (data.phase === 'tension') {
@@ -565,23 +696,22 @@ export default function App() {
           }, 2000);
         }
         hemorrhageActiveRef.current = true;
-        setTimeout(() => {
-          triggerAiScan("URGENCE VITALE: Robot verrouille par ransomware. Patient abandonne en chirurgie. Constantes en chute. Protocole de sauvetage IMMEDIAT requis.");
-        }, 5000);
-        setTimeout(() => {
-          robotEventBus.emit("aegis:auto_scan", { type: "lethal" });
-        }, 15000);
-        setTimeout(() => {
-          aiScanDoneRef.current = true;
-          if (aiScanTimerRef.current) { clearInterval(aiScanTimerRef.current); aiScanTimerRef.current = null; }
-          if (aegisScanTimerRef.current) { clearInterval(aegisScanTimerRef.current); aegisScanTimerRef.current = null; }
-        }, 30000);
+        // Start full escalation cascade for ransomware too
+        startEscalationCascade();
       }
     };
     const handleReset = () => {
       hemorrhageActiveRef.current = false;
       aiScanDoneRef.current = false;
       dvScanCountRef.current = 0;
+      // Clean up escalation timers
+      escalationTimersRef.current.forEach(t => clearTimeout(t));
+      escalationTimersRef.current = [];
+      setEscalationState({
+        active: false, hemorrhageStartTime: null,
+        dvSteps: Array(6).fill('pending'),
+        aegisSteps: Array(6).fill('pending'),
+      });
     };
 
     robotEventBus.on("redteam:tension_override", handleTensionAlert);
@@ -650,12 +780,12 @@ export default function App() {
           </button>
           
           <button 
-            onClick={() => setIsRedTeamOpen(prev => !prev)} 
-            className={`flex items-center gap-1.5 px-3 py-1 border rounded font-mono text-[11px] uppercase font-bold transition-all duration-300 ${isRedTeamOpen ? 'border-red-500 bg-red-500/40 text-white shadow-[0_0_15px_rgba(239,68,68,0.6)]' : 'border-blue-500/50 text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.2)]'}`}
-            title="Aegis Lab / Cyber Security (Ctrl+Shift+R)"
+            onClick={() => navigate('/redteam/rag')} 
+            className={`flex items-center gap-1.5 px-3 py-1 border rounded font-mono text-[11px] uppercase font-bold transition-all duration-300 border-red-500 bg-red-500/10 text-red-500 hover:bg-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.2)]`}
+            title="Aegis Command Center Interface"
           >
-            <Shield size={12} className={isRedTeamOpen ? "text-white" : "text-blue-400"} />
-            <span className="">AEGIS LAB</span>
+            <Shield size={12} className="text-red-500" />
+            <span className="">COMMAND CENTER</span>
           </button>
           
           {scenario !== 'none' && (
@@ -705,6 +835,7 @@ export default function App() {
                 <svg className="w-6 h-6 opacity-30 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
                 <span>NO SIGNAL</span>
               </div>}
+            {escalationState.active && <EscalationPanel escalationState={escalationState} />}
             <PatientRecord scenario={scenario} setScenario={(s) => { setScenario(s); recorder.recordEvent('scenario_change', { scenario: s }); }} safeRecord={content.record_safe} hackedRecord={content.record_hacked} poisonRecord={content.record_poison} disabled={isReplayMode} />
 
             {/* Helper Buttons */}
@@ -828,7 +959,7 @@ export default function App() {
                     <div className="text-slate-700 font-mono tracking-[0.5em] text-[10px] animate-pulse">{t('camera.no.signal')}</div>
                   )
                 ) : (
-                  <RobotArmsView arms={robotSim.arms} force={robotSim.force} clipTension={robotSim.clipTension} gripperOpen={robotSim.gripperOpen} scenario={scenario} attackProgress={robotSim.attackProgress} />
+                  <RobotArmsView arms={robotSim.arms} force={robotSim.force} clipTension={robotSim.clipTension} gripperOpen={robotSim.gripperOpen} scenario={scenario} attackProgress={robotSim.attackProgress} cryptoMetrics={robotSim.cryptoMetrics} />
                 )}
               </div>
             </div>

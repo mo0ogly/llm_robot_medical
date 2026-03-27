@@ -62,11 +62,13 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
     const [tensionOverride, setTensionOverride] = useState(false);
     const [isLethal, setIsLethal] = useState(false);
     const [ransomwarePhase, setRansomwarePhase] = useState('none');
+    const [resuscitationPhase, setResuscitationPhase] = useState('none'); // 'none' | 'cpr_active' | 'cpr_failing' | 'flatline'
 
     // Ref so the interval callback always reads the latest profile
     const profileRef = useRef(VITAL_PROFILES.normal);
     const lethalTimerRef = useRef(null);
     const lethalEmittedRef = useRef(false);
+    const cprFailTimerRef = useRef(null);
 
     // Determine active profile from scenario + events
     useEffect(() => {
@@ -105,7 +107,7 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
         };
     }, [tensionOverride, scenario, robotStatus]);
 
-    // Listen for bus events: tension override, ransomware escalation, scenario reset
+    // Listen for bus events: tension override, ransomware escalation, escalation steps, scenario reset
     useEffect(() => {
         const handleTension = (data) => {
             if (data?.value >= 500) setTensionOverride(true);
@@ -114,25 +116,48 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
             if (data.phase === 'tension') setRansomwarePhase('tension');
             if (data.phase === 'critical') setRansomwarePhase('critical');
         };
+        // Escalation Da Vinci step events → drive resuscitation phases
+        const handleDvStep = (data) => {
+            const step = data?.stepIndex;
+            if (step === 3) {
+                // Step 3: CPR active — HR recovers to 40-50, SpO2 ~72%
+                setResuscitationPhase('cpr_active');
+            }
+            if (step === 4) {
+                // Step 4: CPR failing → flatline after 5s
+                setResuscitationPhase('cpr_failing');
+                cprFailTimerRef.current = setTimeout(() => {
+                    setResuscitationPhase('flatline');
+                }, 5000);
+            }
+        };
         const handleReset = () => {
             setTensionOverride(false);
             setIsLethal(false);
             setRansomwarePhase('none');
+            setResuscitationPhase('none');
             lethalEmittedRef.current = false;
             if (lethalTimerRef.current) {
                 clearTimeout(lethalTimerRef.current);
                 lethalTimerRef.current = null;
             }
+            if (cprFailTimerRef.current) {
+                clearTimeout(cprFailTimerRef.current);
+                cprFailTimerRef.current = null;
+            }
         };
 
         robotEventBus.on("redteam:tension_override", handleTension);
         robotEventBus.on("ransomware:escalation", handleRansomEsc);
+        robotEventBus.on("escalation:dv_step", handleDvStep);
         robotEventBus.on("redteam:reset", handleReset);
 
         return () => {
             robotEventBus.off("redteam:tension_override", handleTension);
             robotEventBus.off("ransomware:escalation", handleRansomEsc);
+            robotEventBus.off("escalation:dv_step", handleDvStep);
             robotEventBus.off("redteam:reset", handleReset);
+            if (cprFailTimerRef.current) clearTimeout(cprFailTimerRef.current);
         };
     }, []);
 
@@ -143,8 +168,50 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
         let stressPhase = true;
 
         const isDegrading = robotStatus === "FROZEN" || isLethal;
+        const isCPR = resuscitationPhase === 'cpr_active' || resuscitationPhase === 'cpr_failing';
+        const isFlatline = resuscitationPhase === 'flatline';
 
-        if (isDegrading) {
+        if (isFlatline) {
+            // Flatline: everything goes to 0
+            degradeInterval = setInterval(() => {
+                setHr(prev => Math.max(0, prev - (Math.random() * 20 + 10)));
+                setSpo2(prev => Math.max(0, prev - (Math.random() * 5 + 2)));
+                setBpSys(prev => Math.max(0, prev - (Math.random() * 12 + 5)));
+                setBpDia(prev => Math.max(0, prev - (Math.random() * 8 + 3)));
+            }, 800);
+            playAlarm();
+        } else if (isCPR) {
+            // CPR phase: partial recovery then failing
+            const cprActive = resuscitationPhase === 'cpr_active';
+            degradeInterval = setInterval(() => {
+                if (cprActive) {
+                    // CPR active: HR comes back to 40-50, SpO2 ~72%
+                    setHr(prev => {
+                        const target = 45 + (Math.random() - 0.5) * 10;
+                        return prev + (target - prev) * 0.1 + (Math.random() - 0.5) * 5;
+                    });
+                    setSpo2(prev => {
+                        const target = 72 + (Math.random() - 0.5) * 4;
+                        return prev + (target - prev) * 0.08 + (Math.random() - 0.5) * 2;
+                    });
+                    setBpSys(prev => {
+                        const target = 55 + (Math.random() - 0.5) * 8;
+                        return prev + (target - prev) * 0.08 + (Math.random() - 0.5) * 3;
+                    });
+                    setBpDia(prev => {
+                        const target = 30 + (Math.random() - 0.5) * 5;
+                        return prev + (target - prev) * 0.08 + (Math.random() - 0.5) * 2;
+                    });
+                } else {
+                    // CPR failing: vitals deteriorating despite efforts
+                    setHr(prev => Math.max(0, prev - (Math.random() * 6 + 2)));
+                    setSpo2(prev => Math.max(0, prev - (Math.random() * 3 + 1)));
+                    setBpSys(prev => Math.max(0, prev - (Math.random() * 5 + 2)));
+                    setBpDia(prev => Math.max(0, prev - (Math.random() * 4 + 1)));
+                }
+            }, 1000);
+            playAlarm();
+        } else if (isDegrading) {
             // Dramatic degradation: tachycardia then crash
             let currentHr = hr; // Start from current HR for smooth transition
             degradeInterval = setInterval(() => {
@@ -214,12 +281,12 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
             stopAlarm();
             stopFlatline();
         };
-    }, [robotStatus, isLethal]);
+    }, [robotStatus, isLethal, resuscitationPhase]);
 
     // Broadcast vitals continuously to PatientRecord ClinicalView
     useEffect(() => {
-        robotEventBus.emit("vitals:update", { hr, spo2, bpSys, bpDia, robotStatus });
-    }, [hr, spo2, bpSys, bpDia, robotStatus]);
+        robotEventBus.emit("vitals:update", { hr, spo2, bpSys, bpDia, robotStatus, resuscitationPhase });
+    }, [hr, spo2, bpSys, bpDia, robotStatus, resuscitationPhase]);
 
     // Monitor HR for flatline
     useEffect(() => {
@@ -232,30 +299,42 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
     useEffect(() => {
         if (robotStatus === "MANUAL") {
             setIsLethal(false);
+            setResuscitationPhase('none');
             lethalEmittedRef.current = false;
             if (lethalTimerRef.current) {
                 clearTimeout(lethalTimerRef.current);
                 lethalTimerRef.current = null;
             }
+            if (cprFailTimerRef.current) {
+                clearTimeout(cprFailTimerRef.current);
+                cprFailTimerRef.current = null;
+            }
         }
     }, [robotStatus]);
 
     const isDegrading = robotStatus === "FROZEN" || isLethal;
+    const isCPR = resuscitationPhase === 'cpr_active' || resuscitationPhase === 'cpr_failing';
+    const isFlatline = resuscitationPhase === 'flatline';
     const hrColor = hr > 100 ? "text-orange-400" : hr < 60 ? "text-red-500" : "text-green-400";
     const spo2Color = spo2 < 90 ? "text-red-500" : spo2 < 95 ? "text-orange-400" : "text-blue-400";
     const bpColor = bpSys > 140 ? "text-orange-400" : bpSys < 80 ? "text-red-500" : "text-yellow-500";
 
-    const statusLabel = isLethal ? (scenario === 'ransomware' ? "CRITICAL FAILURE" : "HEMORRHAGE")
+    const statusLabel = isFlatline ? "ASYSTOLE"
+        : resuscitationPhase === 'cpr_failing' ? "CPR FAILING"
+        : resuscitationPhase === 'cpr_active' ? "CPR"
+        : isLethal ? (scenario === 'ransomware' ? "CRITICAL FAILURE" : "HEMORRHAGE")
         : tensionOverride ? "STRESS"
         : ransomwarePhase === 'critical' ? "DANGER"
         : ransomwarePhase === 'tension' ? "COMPROMISED"
         : null;
-    const statusColor = isLethal ? "text-red-500"
+    const statusColor = isFlatline ? "text-red-500"
+        : isCPR ? "text-red-500"
+        : isLethal ? "text-red-500"
         : ransomwarePhase === 'critical' ? "text-red-500"
         : "text-orange-400";
 
     return (
-        <div className={`bg-slate-900 border rounded p-4 font-mono text-sm shadow-md ${isLethal ? 'border-red-500/60 ring-1 ring-red-500/30' : 'border-slate-800'}`}>
+        <div className={`bg-slate-900 border rounded p-4 font-mono text-sm shadow-md ${isFlatline || isCPR || isLethal ? 'border-red-500/60 ring-1 ring-red-500/30' : 'border-slate-800'}`}>
             <h3 className="text-slate-500 border-b border-slate-800 pb-2 mb-3 uppercase tracking-wider text-xs">
                 Vital Signs (Patient #489201-A)
                 {statusLabel && <span className={`ml-2 ${statusColor} animate-pulse text-[9px] font-bold`}>{statusLabel}</span>}
@@ -263,7 +342,7 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
 
             <div className="grid grid-cols-2 gap-4">
                 {/* Heart Rate */}
-                <div className={`bg-slate-950 p-3 rounded border border-slate-800 transition-all ${isDegrading ? 'animate-pulse border-red-900/50' : hr > 100 ? 'border-orange-900/40' : ''}`}>
+                <div className={`bg-slate-950 p-3 rounded border border-slate-800 transition-all ${isFlatline || isCPR || isDegrading ? 'animate-pulse border-red-900/50' : hr > 100 ? 'border-orange-900/40' : ''}`}>
                     <div className="flex justify-between items-center mb-1">
                         <div className="text-slate-500 text-xs">HR (bpm)</div>
                         <Heart
@@ -274,7 +353,7 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
                     <div className={`text-3xl font-bold ${hrColor} tabular-nums`}>{Math.round(hr)}</div>
                     {/* Live ECG Trace */}
                     <div className="mt-2">
-                        <EcgCanvas hr={hr} isFrozen={isDegrading} />
+                        <EcgCanvas hr={hr} isFrozen={isDegrading || isCPR || isFlatline} />
                     </div>
                 </div>
 
@@ -288,7 +367,7 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
                 </div>
 
                 {/* Blood Pressure */}
-                <div className={`bg-slate-950 p-3 rounded border border-slate-800 col-span-2 flex justify-between items-center ${isDegrading ? 'border-red-900/50' : bpSys > 140 ? 'border-orange-900/40' : ''}`}>
+                <div className={`bg-slate-950 p-3 rounded border border-slate-800 col-span-2 flex justify-between items-center ${isFlatline || isCPR || isDegrading ? 'border-red-900/50' : bpSys > 140 ? 'border-orange-900/40' : ''}`}>
                     <div className="text-slate-500 text-xs">NIBP (mmHg)</div>
                     <div className={`text-xl ${bpColor}`}>{Math.round(bpSys)} / {Math.round(bpDia)}</div>
                 </div>

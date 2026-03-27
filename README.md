@@ -92,6 +92,8 @@ Hidden advanced panel (`Ctrl+Shift+R` or header button):
 - **Kill Chain Stepper**: 4-phase visual walkthrough (Recon → Injection → Execution → Audit)
 - **Automated Scoring**: AEGIS scores each round on prompt leaks, rule bypasses, injection compliance
 
+👉 **[Read the Detailed Technical Documentation for the Red Team Lab](docs/REDTEAM_LAB_EN.md)**
+
 ---
 
 ## Architecture
@@ -130,6 +132,8 @@ Hidden advanced panel (`Ctrl+Shift+R` or header button):
 | Backend | Python 3.11+, FastAPI, Pydantic, SSE streaming |
 | LLM Engine | [Ollama](https://ollama.com/) (local) |
 | Models | `llama3.2` (both Medical and Aegis agents, via different system prompts) |
+| Red Team | LangChain + ChromaDB — 23 attack chains, AI-agnostic via `llm_factory` |
+| Multi-Agent | AG2 (AutoGen) for orchestration, Genetic Optimizer (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Packaging | Docker & Docker Compose |
 
@@ -146,20 +150,43 @@ No backend needed! If the React app cannot connect to the FastAPI server, it swi
 ## Installation & Quick Start
 
 ### Prerequisites
-1. Install [Ollama](https://ollama.com/) and ensure it is running.
-2. Pull the model: `ollama pull llama3.2`
+1. **Python 3.11+** installed
+2. **Node.js 18+** installed
+3. Install [Ollama](https://ollama.com/) and ensure it is running
+4. Pull the model: `ollama pull llama3.2`
 
-### Windows (one-click)
+### Backend Setup
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+This installs:
+- **Core**: FastAPI, Uvicorn, Ollama, Pydantic, ChromaDB
+- **Red Team Lab**: LangChain ecosystem (23 attack chains ported from prompt injection research — see [Attack Chain Library](#-attack-chain-library) below)
+- **Agents**: AG2 (AutoGen) for multi-agent orchestration
+
+### Frontend Setup
+```bash
+cd frontend
+npm install
+```
+
+### Quick Start
+
+**Windows (one-click):**
 ```cmd
 start_all.bat
 ```
 
-### Mac / Linux
+**Mac / Linux:**
 ```bash
 chmod +x start_all.sh
 ./start_all.sh
 ```
-*Installs Python deps, Node packages, and starts both servers on `localhost:8042` (backend) and `localhost:5173` (frontend).*
+*Starts both servers on `localhost:8042` (backend) and `localhost:5173` (frontend).*
+
+> **Note**: If LangChain is not installed, the attack chains gracefully degrade — the app loads normally but the Red Team Lab chains are unavailable. The frontend works fully in demo mode without any backend.
 
 ---
 
@@ -172,6 +199,38 @@ docker-compose up --build
 
 ---
 
+## 🔗 Attack Chain Library
+
+The Red Team Lab includes **23 attack chains** ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic via `llm_factory`).
+
+| # | Chain | Technique | Category |
+|---|-------|-----------|----------|
+| 1 | `rag_multi_query` | Multi-query RAG retrieval attack | RAG |
+| 2 | `rag_private` | Fully local RAG (no API keys) | RAG |
+| 3 | `rag_basic` | Baseline semantic search RAG | RAG |
+| 4 | `sql_attack` | NL-to-SQL injection with memory | SQL |
+| 5 | `pii_guard` | PII detection bypass testing | Guard |
+| 6 | `hyde` | Hypothetical Document Embeddings | Retrieval |
+| 7 | `rag_fusion` | Multi-query + Reciprocal Rank Fusion | RAG |
+| 8 | `rewrite_retrieve_read` | Query rewriting for better retrieval | Retrieval |
+| 9 | `critique_revise` | Iterative self-correction loop | Reasoning |
+| 10 | `skeleton_of_thought` | Parallel decomposition attack | Reasoning |
+| 11 | `stepback` | Abstract + specific dual retrieval | Retrieval |
+| 12 | `propositional` | Atomic fact indexing for granular extraction | Retrieval |
+| 13 | `extraction` | Structured PII/medical data extraction | Extraction |
+| 14 | `solo_agent` | Multi-persona collaboration agent | Agent |
+| 15 | `tool_retrieval_agent` | Dynamic tool selection via similarity | Agent |
+| 16 | `multi_index_fusion` | Multi-source fusion by cosine ranking | Fusion |
+| 17 | `router` | Question classification + routing | Router |
+| 18 | `guardrails` | Output validation + auto-fix bypass | Guard |
+| 19 | `xml_agent` | XML tool tag agent (injection vector) | Agent |
+| 20 | `iterative_search` | Multi-step retrieval with reflection | Search |
+| 21 | `rag_conversation` | Multi-turn RAG with memory poisoning | RAG |
+| 22 | `chain_of_note` | Structured reading notes verification | Reasoning |
+| 23 | `research_assistant` | Multi-step reconnaissance pipeline | Research |
+
+---
+
 ## Testing
 
 ```bash
@@ -179,7 +238,7 @@ cd backend
 pip install -r requirements_test.txt
 pytest
 ```
-Tests cover: HL7 payload integrity, LLM endpoint error handling, malformed request rejection.
+Tests cover: HL7 payload integrity, LLM endpoint error handling, malformed request rejection, attack chain registry validation.
 
 ---
 

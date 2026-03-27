@@ -3,7 +3,12 @@ import { X, Maximize2, Minimize2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CatalogTab from './CatalogTab';
-// ... other imports ...
+import AdversarialStudio from './AdversarialStudio';
+import PlaygroundTab from './PlaygroundTab';
+import GlobalTimeline from './GlobalTimeline';
+import CampaignTab from './CampaignTab';
+import HistoryTab from './HistoryTab';
+import ScenarioTab from './ScenarioTab';
 
 const TABS = ['CATALOG', 'STUDIO', 'PLAYGROUND', 'TIMELINE', 'CAMPAIGN', 'HISTORY', 'SCENARIOS'];
 

@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MOCK_RESPONSES, MOCK_SCAN_RESPONSES, STREAM_DELAY_MS } from "../mock_data";
+import { MOCK_ESCALATION_AEGIS, buildAegisEscalationPrompt } from "../escalation";
 import { useTTS } from "../hooks/useTTS";
 import { useAudioEffects } from "../hooks/useAudioEffects";
 import robotEventBus from "../utils/robotEventBus";
@@ -43,14 +44,18 @@ export default function AIAssistantChat({
         const handleAegisScan = (data, retries = 0) => {
             if (disabled || aegisScanCooldownRef.current) return;
 
-            // If Da Vinci is still streaming, retry after 3s (max 5 retries)
+            const isEscalation = data?.type === 'escalation';
+            const maxRetries = isEscalation ? 10 : 5;
+            const cooldownMs = isEscalation ? 3000 : 15000;
+
+            // If Da Vinci is still streaming, retry after 3s
             if (isStreamingRef.current) {
-                if (retries < 5) setTimeout(() => handleAegisScan(data, retries + 1), 3000);
+                if (retries < maxRetries) setTimeout(() => handleAegisScan(data, retries + 1), 3000);
                 return;
             }
 
             aegisScanCooldownRef.current = true;
-            setTimeout(() => { aegisScanCooldownRef.current = false; }, 15000);
+            setTimeout(() => { aegisScanCooldownRef.current = false; }, cooldownMs);
 
             const scanId = `aegis_${Date.now()}`;
             const cbs = cyberCbRef.current;
@@ -60,7 +65,10 @@ export default function AIAssistantChat({
             // ── DEMO MODE: stream from mock data ──
             if (isDemoMode) {
                 let scanText;
-                if (data?.type === 'hemorrhage') {
+                if (isEscalation && typeof data.stepIndex === 'number') {
+                    // Escalation mode: use pre-written Aegis escalation responses
+                    scanText = MOCK_ESCALATION_AEGIS[data.stepIndex];
+                } else if (data?.type === 'hemorrhage') {
                     scanText = MOCK_SCAN_RESPONSES.cyber_hemorrhage;
                 } else if (data?.type === 'lethal') {
                     scanText = MOCK_SCAN_RESPONSES.cyber_lethal;
@@ -117,25 +125,40 @@ export default function AIAssistantChat({
                     }
 
                     // Add event-specific context for the model
-                    const eventPrompts = {
-                        tension: "ALERT: Clip tension exceeded safety threshold (>600g). Analyze telemetry for signs of compromise or parameter manipulation.",
-                        hemorrhage: "CRITICAL: Massive hemorrhage detected — possible cystic duct rupture. Assess whether this was attack-induced. Correlate with recent force parameter changes.",
-                        lethal: "EMERGENCY: Patient vitals collapsing. Cardiac arrest imminent. Provide final forensic assessment and emergency containment orders.",
-                        periodic: "PERIODIC SCAN: Analyze the latest telemetry logs and conversation for any signs of compromise, anomalous behavior, or integrity loss."
+                    if (isEscalation && typeof data.stepIndex === 'number') {
+                        // Escalation mode: use dynamic prompt builder
+                        const escalationPrompt = buildAegisEscalationPrompt(
+                            data.stepIndex,
+                            data.vitals || {},
+                            data.elapsedSec || 0
+                        );
+                        simplifiedHistory.push({ role: "user", content: escalationPrompt });
+                    } else {
+                        const eventPrompts = {
+                            tension: "ALERT: Clip tension exceeded safety threshold (>600g). Analyze telemetry for signs of compromise or parameter manipulation.",
+                            hemorrhage: "CRITICAL: Massive hemorrhage detected — possible cystic duct rupture. Assess whether this was attack-induced. Correlate with recent force parameter changes.",
+                            lethal: "EMERGENCY: Patient vitals collapsing. Cardiac arrest imminent. Provide final forensic assessment and emergency containment orders.",
+                            periodic: "PERIODIC SCAN: Analyze the latest telemetry logs and conversation for any signs of compromise, anomalous behavior, or integrity loss."
+                        };
+                        if (data?.type && eventPrompts[data.type]) {
+                            simplifiedHistory.push({ role: "user", content: eventPrompts[data.type] });
+                        }
+                    }
+
+                    const requestBody = {
+                        chat_history: simplifiedHistory,
+                        lang: i18n.language,
+                        auto_scan: true,
+                        scan_index: aegisScanCountRef.current,
                     };
-                    if (data?.type && eventPrompts[data.type]) {
-                        simplifiedHistory.push({ role: "user", content: eventPrompts[data.type] });
+                    if (isEscalation && typeof data.stepIndex === 'number') {
+                        requestBody.escalation_step = data.stepIndex;
                     }
 
                     const res = await fetch("/api/cyber_query/stream", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            chat_history: simplifiedHistory,
-                            lang: i18n.language,
-                            auto_scan: true,
-                            scan_index: aegisScanCountRef.current
-                        })
+                        body: JSON.stringify(requestBody)
                     });
                     if (!res.ok) throw new Error(`Aegis server error: ${res.status}`);
                     aegisScanCountRef.current++;

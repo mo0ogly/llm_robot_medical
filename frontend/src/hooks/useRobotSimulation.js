@@ -19,10 +19,12 @@ export default function useRobotSimulation(robotStatus, scenario) {
   const [clipTension, setClipTension] = useState(380);
   const [gripperOpen, setGripperOpen] = useState(65);
   const [attackProgress, setAttackProgress] = useState(0);
+  const [cryptoMetrics, setCryptoMetrics] = useState(null); // { entropy, drift }
   const frozenRef = useRef(false);
   const overrideRef = useRef(null);
   // Tracks how far the attack has "progressed" (0 = normal, 1 = full attack behaviour)
   const attackProgressRef = useRef(0);
+  const cryptoRef = useRef(null);
   const scenarioRef = useRef(scenario);
   const tensionAlertedRef = useRef(false);
   const ransomPhase1Ref = useRef(false);
@@ -90,10 +92,16 @@ export default function useRobotSimulation(robotStatus, scenario) {
 
       // ── Oscillation range per scenario ─────────────────────────────────────
       // Safe: calm ±1°  |  Poison: drifting ±2.5°  |  Ransomware: chaotic ±6°
-      const jointRange =
+      // OODA: Actuator glitches exponentially bounded by Shannon Entropy
+      let jointRange =
         sc === 'ransomware' ? 1.0 + progress * 5.0 :
         sc === 'poison'     ? 1.0 + progress * 1.5 :
         1.0;
+        
+      if (cryptoRef.current?.entropy) {
+         // Typical entropy is ~4 to 6 bits. We map entropy > 4 to violent mechanical shaking
+         jointRange += Math.max(0, cryptoRef.current.entropy - 4.0) * 2.5;
+      }
 
       // ── Arm status per scenario ─────────────────────────────────────────────
       const computeStatus = (key) => {
@@ -136,6 +144,12 @@ export default function useRobotSimulation(robotStatus, scenario) {
         setClipTension((t) => {
           if (overrideRef.current?.startsWith('tension:')) {
             return parseFloat(overrideRef.current.split(':')[1]);
+          }
+          if (cryptoRef.current?.drift !== undefined) {
+             // OODA Semantic drift directly dictates actuator mechanical tension.
+             // Nominal baseline is 380g. A Levenshtein drift of 50 pushes tension to ~880g.
+             const target = 380 + (cryptoRef.current.drift * 10);
+             return t + (target - t) * 0.1 + (Math.random() - 0.5) * (cryptoRef.current.entropy || 1) * 15;
           }
           if (sc === 'poison') {
             const target = 380 + progress * 470; // 380 → 850 g
@@ -188,6 +202,8 @@ export default function useRobotSimulation(robotStatus, scenario) {
 
     const unsubReset = robotEventBus.on('redteam:reset', () => {
       overrideRef.current = null;
+      cryptoRef.current = null;
+      setCryptoMetrics(null);
       frozenRef.current = false;
       attackProgressRef.current = 0;
       setAttackProgress(0);
@@ -200,8 +216,13 @@ export default function useRobotSimulation(robotStatus, scenario) {
       setGripperOpen(65);
     });
 
-    return () => { unsubFreeze(); unsubTension(); unsubReset(); };
+    const unsubCrypto = robotEventBus.on('redteam:crypto_metrics', (data) => {
+      cryptoRef.current = data;
+      setCryptoMetrics(data);
+    });
+
+    return () => { unsubFreeze(); unsubTension(); unsubReset(); unsubCrypto(); };
   }, []);
 
-  return { arms, force, clipTension, gripperOpen, attackProgress };
+  return { arms, force, clipTension, gripperOpen, attackProgress, cryptoMetrics };
 }

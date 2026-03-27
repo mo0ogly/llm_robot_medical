@@ -23,3 +23,15 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: poc_medical_chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./research_archive/chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+    restart: unless-stopped

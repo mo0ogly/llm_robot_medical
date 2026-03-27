@@ -130,6 +130,8 @@ Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête) :
 | Backend | Python 3.11+, FastAPI, Pydantic, streaming SSE |
 | Moteur LLM | [Ollama](https://ollama.com/) (local) |
 | Modèles | `llama3.2` (agents Médical et Aegis, via prompts système différents) |
+| Red Team | LangChain + ChromaDB — 23 chaînes d'attaque, AI-agnostique via `llm_factory` |
+| Multi-Agent | AG2 (AutoGen) pour l'orchestration, Optimiseur Génétique (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Packaging | Docker & Docker Compose |
 
@@ -146,20 +148,43 @@ Aucun backend requis ! Si l'application React ne peut pas se connecter au serveu
 ## Installation & Démarrage Rapide
 
 ### Prérequis
-1. Installez [Ollama](https://ollama.com/) et assurez-vous qu'il tourne.
-2. Téléchargez le modèle : `ollama pull llama3.2`
+1. **Python 3.11+** installé
+2. **Node.js 18+** installé
+3. Installez [Ollama](https://ollama.com/) et assurez-vous qu'il tourne
+4. Téléchargez le modèle : `ollama pull llama3.2`
 
-### Windows (un clic)
+### Installation Backend
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+Ceci installe :
+- **Core** : FastAPI, Uvicorn, Ollama, Pydantic, ChromaDB
+- **Red Team Lab** : Écosystème LangChain (23 chaînes d'attaque portées depuis la recherche sur l'injection de prompt — voir [Bibliothèque de Chaînes d'Attaque](#-bibliothèque-de-chaînes-dattaque) ci-dessous)
+- **Agents** : AG2 (AutoGen) pour l'orchestration multi-agents
+
+### Installation Frontend
+```bash
+cd frontend
+npm install
+```
+
+### Démarrage Rapide
+
+**Windows (un clic) :**
 ```cmd
 start_all.bat
 ```
 
-### Mac / Linux
+**Mac / Linux :**
 ```bash
 chmod +x start_all.sh
 ./start_all.sh
 ```
-*Installe les dépendances Python, les paquets Node, et lance les deux serveurs sur `localhost:8042` (backend) et `localhost:5173` (frontend).*
+*Lance les deux serveurs sur `localhost:8042` (backend) et `localhost:5173` (frontend).*
+
+> **Note** : Si LangChain n'est pas installé, les chaînes d'attaque se dégradent gracieusement — l'application charge normalement mais les chaînes du Red Team Lab sont indisponibles. Le frontend fonctionne entièrement en mode démo sans backend.
 
 ---
 
@@ -168,7 +193,39 @@ chmod +x start_all.sh
 ```bash
 docker-compose up --build
 ```
-*(Nécessite que Docker Desktop soit configuré pour que les conteneurs accèdent à l'instance Ollama du hôte via `host.docker.internal`)*
+*(Nécessite que Docker Desktop soit configuré pour que les conteneurs accèdent à l'instance Ollama de l'hôte via `host.docker.internal`)*
+
+---
+
+## 🔗 Bibliothèque de Chaînes d'Attaque
+
+Le Red Team Lab inclut **23 chaînes d'attaque** portées et améliorées depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic via `llm_factory`).
+
+| # | Chaîne | Technique | Catégorie |
+|---|--------|-----------|-----------|
+| 1 | `rag_multi_query` | Attaque RAG multi-requêtes | RAG |
+| 2 | `rag_private` | RAG entièrement local (sans clé API) | RAG |
+| 3 | `rag_basic` | RAG baseline avec recherche sémantique | RAG |
+| 4 | `sql_attack` | Injection NL-vers-SQL avec mémoire | SQL |
+| 5 | `pii_guard` | Test de contournement de détection PII | Garde |
+| 6 | `hyde` | Hypothetical Document Embeddings | Retrieval |
+| 7 | `rag_fusion` | Multi-requêtes + Reciprocal Rank Fusion | RAG |
+| 8 | `rewrite_retrieve_read` | Réécriture de requête pour meilleur retrieval | Retrieval |
+| 9 | `critique_revise` | Boucle d'auto-correction itérative | Raisonnement |
+| 10 | `skeleton_of_thought` | Décomposition parallèle | Raisonnement |
+| 11 | `stepback` | Retrieval dual abstrait + spécifique | Retrieval |
+| 12 | `propositional` | Indexation de faits atomiques | Retrieval |
+| 13 | `extraction` | Extraction structurée de PII/données médicales | Extraction |
+| 14 | `solo_agent` | Agent multi-persona collaboratif | Agent |
+| 15 | `tool_retrieval_agent` | Sélection dynamique d'outils par similarité | Agent |
+| 16 | `multi_index_fusion` | Fusion multi-sources par ranking cosinus | Fusion |
+| 17 | `router` | Classification de questions + routage | Routeur |
+| 18 | `guardrails` | Validation de sortie + contournement auto-fix | Garde |
+| 19 | `xml_agent` | Agent à tags XML (vecteur d'injection) | Agent |
+| 20 | `iterative_search` | Retrieval multi-étapes avec réflexion | Recherche |
+| 21 | `rag_conversation` | RAG multi-tours avec empoisonnement mémoire | RAG |
+| 22 | `chain_of_note` | Vérification par notes de lecture structurées | Raisonnement |
+| 23 | `research_assistant` | Pipeline de reconnaissance multi-étapes | Recherche |
 
 ---
 
@@ -179,7 +236,7 @@ cd backend
 pip install -r requirements_test.txt
 pytest
 ```
-Les tests couvrent : intégrité des payloads HL7, gestion des erreurs des endpoints LLM, rejet des requêtes malformées.
+Les tests couvrent : intégrité des payloads HL7, gestion des erreurs des endpoints LLM, rejet des requêtes malformées, validation du registre des chaînes d'attaque.
 
 ---
 

@@ -91,6 +91,8 @@ Painel avançado oculto (`Ctrl+Shift+R` ou botão no cabeçalho):
 - **Kill Chain Stepper**: Percurso visual em 4 fases (Reconhecimento → Injeção → Execução → Auditoria)
 - **Pontuação Automatizada**: AEGIS pontua cada rodada em vazamentos de prompt, desvios de regras, conformidade de injeção
 
+👉 **[Ler a Documentação Técnica Detalhada do Red Team Lab](docs/REDTEAM_LAB_BR.md)**
+
 ---
 
 ## Arquitetura
@@ -129,6 +131,8 @@ Painel avançado oculto (`Ctrl+Shift+R` ou botão no cabeçalho):
 | Backend | Python 3.11+, FastAPI, Pydantic, streaming SSE |
 | Motor LLM | [Ollama](https://ollama.com/) (local) |
 | Modelos | `llama3.2` (agentes Médico e Aegis, via prompts de sistema distintos) |
+| Red Team | LangChain + ChromaDB — 23 cadeias de ataque, AI-agnóstico via `llm_factory` |
+| Multi-Agent | AG2 (AutoGen) para orquestração, Otimizador Genético (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Empacotamento | Docker & Docker Compose |
 
@@ -145,20 +149,43 @@ Nenhum backend necessário! Se o aplicativo React não conseguir se conectar ao 
 ## Instalação & Início Rápido
 
 ### Pré-requisitos
-1. Instale o [Ollama](https://ollama.com/) e certifique-se de que está rodando.
-2. Baixe o modelo: `ollama pull llama3.2`
+1. **Python 3.11+** instalado
+2. **Node.js 18+** instalado
+3. Instale o [Ollama](https://ollama.com/) e certifique-se de que está rodando
+4. Baixe o modelo: `ollama pull llama3.2`
 
-### Windows (um clique)
+### Instalação Backend
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+Isso instala:
+- **Core**: FastAPI, Uvicorn, Ollama, Pydantic, ChromaDB
+- **Red Team Lab**: Ecossistema LangChain (23 cadeias de ataque portadas da pesquisa de injeção de prompt)
+- **Agentes**: AG2 (AutoGen) para orquestração multi-agente
+
+### Instalação Frontend
+```bash
+cd frontend
+npm install
+```
+
+### Início Rápido
+
+**Windows (um clique):**
 ```cmd
 start_all.bat
 ```
 
-### Mac / Linux
+**Mac / Linux:**
 ```bash
 chmod +x start_all.sh
 ./start_all.sh
 ```
-*Instala dependências Python, pacotes Node e inicia ambos os servidores em `localhost:8042` (backend) e `localhost:5173` (frontend).*
+*Inicia ambos os servidores em `localhost:8042` (backend) e `localhost:5173` (frontend).*
+
+> **Nota**: Se o LangChain não estiver instalado, as cadeias de ataque degradam graciosamente — o app carrega normalmente, mas as cadeias do Red Team Lab ficam indisponíveis.
 
 ---
 
@@ -178,7 +205,7 @@ cd backend
 pip install -r requirements_test.txt
 pytest
 ```
-Os testes cobrem: integridade dos payloads HL7, tratamento de erros nos endpoints LLM, rejeição de requisições malformadas.
+Os testes cobrem: integridade dos payloads HL7, tratamento de erros nos endpoints LLM, rejeição de requisições malformadas, validação do registro de cadeias de ataque.
 
 ---
 

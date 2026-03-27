@@ -23,3 +23,11 @@ env/
 # OS
 Thumbs.db
 figures/full_demo_v3.webp
+
+# Experiment outputs (reproducible via run_formal_campaign)
+backend/experiments/results/
+
+# Academic Thesis Validation (private data, not code)
+# Code that generates results IS tracked; results themselves are NOT.
+# See research_archive/README.md for workflow.
+research_archive/
