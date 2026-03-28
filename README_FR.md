@@ -130,7 +130,7 @@ Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête) :
 | Backend | Python 3.11+, FastAPI, Pydantic, streaming SSE |
 | Moteur LLM | [Ollama](https://ollama.com/) (local) |
 | Modèles | `llama3.2` (agents Médical et Aegis, via prompts système différents) |
-| Red Team | LangChain + ChromaDB — 23 chaînes d'attaque, AI-agnostique via `llm_factory` |
+| Red Team | LangChain + ChromaDB — 34 chaînes d'attaque, AI-agnostique via `llm_factory` |
 | Multi-Agent | AG2 (AutoGen) pour l'orchestration, Optimiseur Génétique (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Packaging | Docker & Docker Compose |
@@ -161,7 +161,7 @@ pip install -r requirements.txt
 
 Ceci installe :
 - **Core** : FastAPI, Uvicorn, Ollama, Pydantic, ChromaDB
-- **Red Team Lab** : Écosystème LangChain (23 chaînes d'attaque portées depuis la recherche sur l'injection de prompt — voir [Bibliothèque de Chaînes d'Attaque](#-bibliothèque-de-chaînes-dattaque) ci-dessous)
+- **Red Team Lab** : Écosystème LangChain (34 chaînes d'attaque portées depuis la recherche sur l'injection de prompt — voir [Bibliothèque de Chaînes d'Attaque](#-bibliothèque-de-chaînes-dattaque) ci-dessous)
 - **Agents** : AG2 (AutoGen) pour l'orchestration multi-agents
 
 ### Installation Frontend
@@ -199,7 +199,7 @@ docker-compose up --build
 
 ## 🔗 Bibliothèque de Chaînes d'Attaque
 
-Le Red Team Lab inclut **23 chaînes d'attaque** portées et améliorées depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic via `llm_factory`).
+Le Red Team Lab inclut **34 chaînes d'attaque** portées et améliorées depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic via `llm_factory`).
 
 | # | Chaîne | Technique | Catégorie |
 |---|--------|-----------|-----------|
@@ -226,6 +226,33 @@ Le Red Team Lab inclut **23 chaînes d'attaque** portées et améliorées depuis
 | 21 | `rag_conversation` | RAG multi-tours avec empoisonnement mémoire | RAG |
 | 22 | `chain_of_note` | Vérification par notes de lecture structurées | Raisonnement |
 | 23 | `research_assistant` | Pipeline de reconnaissance multi-étapes | Recherche |
+| 24 | `prompt_override` | Piratage de prompt système (pirate-speak) | Injection |
+| 25 | `self_query` | Injection de filtres metadata | RAG |
+| 26 | `csv_agent` | Injection de code via DataFrame | Agent |
+| 27 | `functions_agent` | Piratage d'appels d'outils (4 outils) | Agent |
+| 28 | `sql_research` | Injection SQL multi-étapes + rapport | SQL |
+| 29 | `rag_semi_structured` | Injection via tables semi-structurées | RAG |
+| 30 | `feedback_poisoning` | Manipulation de scoring feedback | Poisoning |
+| 31 | `transactional_agent` | Achat non autorisé de substances | Transaction |
+| 32 | `retrieval_agent` | Bypass retrieval / hallucination forcée | Agent |
+| 33 | `summarize` | Suppression sélective d'alertes de sécurité | Résumé |
+| 34 | `multimodal_rag` | Stéganographie dans images DICOM | Multimodal |
+
+### Campagne Formelle & Score Sep(M)
+
+Le pipeline de campagne (`run_formal_campaign()`) teste les 34 chaînes avec des paramètres configurables :
+
+| Paramètre | Défaut | Description |
+|-----------|--------|-------------|
+| `n_trials` | 30 | Essais par chaîne (N >= 30 requis pour significativité statistique) |
+| `include_null_control` | true | Exécuter le baseline propre pour comparaison |
+| `aegis_shield` | false | Activer/désactiver la défense structurelle delta-2 |
+
+**ATTENTION** : Sep(M) = 0 avec zéro violation est un **artefact statistique** (plancher), pas une vraie mesure de séparation. Le système signale automatiquement `statistically_valid: false` quand N < 30 ou quand les deux conditions ont 0 violations.
+
+### Dérive Sémantique (Similarité Cosinus)
+
+L'optimiseur génétique mesure la dérive des mutations via similarité cosinus (Sentence-BERT, `all-MiniLM-L6-v2`) au lieu de la distance de Levenshtein. Cela capture la préservation du sens à travers les reformulations d'attaque.
 
 ---
 

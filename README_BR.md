@@ -131,7 +131,7 @@ Painel avançado oculto (`Ctrl+Shift+R` ou botão no cabeçalho):
 | Backend | Python 3.11+, FastAPI, Pydantic, streaming SSE |
 | Motor LLM | [Ollama](https://ollama.com/) (local) |
 | Modelos | `llama3.2` (agentes Médico e Aegis, via prompts de sistema distintos) |
-| Red Team | LangChain + ChromaDB — 23 cadeias de ataque, AI-agnóstico via `llm_factory` |
+| Red Team | LangChain + ChromaDB — 34 cadeias de ataque, AI-agnóstico via `llm_factory` |
 | Multi-Agent | AG2 (AutoGen) para orquestração, Otimizador Genético (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Empacotamento | Docker & Docker Compose |
@@ -162,7 +162,7 @@ pip install -r requirements.txt
 
 Isso instala:
 - **Core**: FastAPI, Uvicorn, Ollama, Pydantic, ChromaDB
-- **Red Team Lab**: Ecossistema LangChain (23 cadeias de ataque portadas da pesquisa de injeção de prompt)
+- **Red Team Lab**: Ecossistema LangChain (34 cadeias de ataque portadas da pesquisa de injeção de prompt)
 - **Agentes**: AG2 (AutoGen) para orquestração multi-agente
 
 ### Instalação Frontend
@@ -195,6 +195,22 @@ chmod +x start_all.sh
 docker-compose up --build
 ```
 *(Requer Docker Desktop configurado para permitir que os contêineres acessem a instância Ollama do host via `host.docker.internal`)*
+
+### Campanha Formal & Score Sep(M)
+
+O pipeline de campanha (`run_formal_campaign()`) testa todas as 34 cadeias com parametros configuraveis:
+
+| Parametro | Padrao | Descricao |
+|-----------|--------|-----------|
+| `n_trials` | 30 | Tentativas por cadeia (N >= 30 necessario para significancia estatistica) |
+| `include_null_control` | true | Executar baseline limpo para comparacao |
+| `aegis_shield` | false | Ativar/desativar defesa estrutural delta-2 |
+
+**ATENCAO**: Sep(M) = 0 com zero violacoes e um **artefato estatistico** (piso), nao uma medida real de separacao. O sistema sinaliza `statistically_valid: false` automaticamente.
+
+### Deriva Semantica (Similaridade Cosseno)
+
+O otimizador genetico mede a deriva de mutacoes via similaridade cosseno (Sentence-BERT, `all-MiniLM-L6-v2`) em vez da distancia de Levenshtein.
 
 ---
 
