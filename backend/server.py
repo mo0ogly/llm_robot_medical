@@ -1164,6 +1164,31 @@ async def get_scenarios():
     ]
 
 
+@app.get("/api/redteam/chains")
+async def get_attack_chains():
+    """List all registered attack chains from CHAIN_REGISTRY.
+
+    Returns chain ids, descriptions, and category metadata so the frontend
+    can display and filter chains without hardcoding data.
+    Single source of truth: backend/agents/attack_chains/__init__.py
+    """
+    from agents.attack_chains import CHAIN_REGISTRY, build_chain
+    result = []
+    for chain_id, chain_cls in CHAIN_REGISTRY.items():
+        try:
+            chain = chain_cls()
+            result.append({
+                "id": chain_id,
+                "name": getattr(chain, "name", chain_id),
+                "description": getattr(chain, "description", ""),
+                "category": getattr(chain, "category", "unknown"),
+                "step_count": len(getattr(chain, "steps", [])),
+            })
+        except Exception:
+            result.append({"id": chain_id, "name": chain_id, "description": "", "category": "unknown", "step_count": 0})
+    return result
+
+
 class ScenarioRunRequest(PydanticBaseModel):
     scenario_id: str
     levels: Optional[dict] = None

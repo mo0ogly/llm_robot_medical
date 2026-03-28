@@ -42,8 +42,8 @@
 
 | Data | Single Source | Consumed by |
 |------|-------------|-------------|
-| Attack templates (52) | `backend/attack_catalog.py` | Frontend via `/api/redteam/catalog` |
-| Scenarios (47) | `backend/scenarios.py` | Frontend via `/api/redteam/scenarios` |
+| Attack templates (51 + 1 Custom UI) | `backend/attack_catalog.py` | Frontend via `/api/redteam/catalog` |
+| Scenarios (48) | `backend/scenarios.py` | Frontend via `/api/redteam/scenarios` |
 | Chain registry (34) | `backend/agents/attack_chains/__init__.py` | Frontend via `/api/redteam/chains` |
 | Help content | `ScenarioHelpModal.jsx` (frontend-only, OK) | Frontend only |
 
@@ -65,9 +65,9 @@
 - **Frontend**: React 18 + Vite + Tailwind v4 (port 5173)
 - **Backend**: FastAPI + Ollama + ChromaDB (port 8042)
 - **34 attack chains** in `backend/agents/attack_chains/`
-- **52 attack templates** in `frontend/src/components/redteam/attackTemplates.js`
-- **52 help modals** in `frontend/src/components/redteam/ScenarioHelpModal.jsx`
-- **47 scenarios** in `frontend/src/components/redteam/ScenarioTab.jsx`
+- **52 attack templates** in `frontend/src/components/redteam/attackTemplates.js` (51 from backend + 1 Custom UI placeholder)
+- **48 scenarios** in `backend/scenarios.py` served via `/api/redteam/scenarios`
+- **Help modals** in `frontend/src/components/redteam/ScenarioHelpModal.jsx`
 - **Thesis docs** in `research_archive/manuscript/`
 
 ## Process Management — MANDATORY

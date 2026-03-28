@@ -28,22 +28,23 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-red-900/30">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <span className="text-red-500 font-mono font-bold text-sm tracking-wider">
             {t('redteam.drawer.title')}
           </span>
           <span className="text-[#00ff41] font-mono text-xs opacity-50">v2.0</span>
-        </div>
-        <div className="flex items-center gap-2">
+          <div className="h-4 w-px bg-neutral-700" />
           <select
             value={i18n.language}
             onChange={(e) => i18n.changeLanguage(e.target.value)}
-            className="bg-neutral-900 border border-red-900/50 text-xs text-red-400 font-mono font-bold rounded px-2 py-1 outline-none hover:border-red-500/50 hover:bg-neutral-800 transition-colors cursor-pointer"
+            className="bg-black border-2 border-red-500/60 text-sm text-red-400 font-mono font-bold rounded px-3 py-1 outline-none hover:border-red-500 hover:bg-red-500/10 transition-colors cursor-pointer"
           >
             <option value="en">EN</option>
             <option value="fr">FR</option>
             <option value="br">BR</option>
           </select>
+        </div>
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors"
