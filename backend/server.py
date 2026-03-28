@@ -1006,6 +1006,30 @@ async def run_full_audit():
         return JSONResponse(status_code=503, content={"error": str(e)})
 
 
+@app.get("/api/redteam/campaign/latest")
+async def get_latest_campaign():
+    """Retourne le dernier fichier campaign_*.json depuis research_archive/data/raw/.
+
+    Utilise par AnalysisView.jsx pour afficher les resultats reels au lieu du DEMO_DATA.
+    Retourne 404 si aucune campagne n'a encore ete executee.
+    """
+    import glob
+    import json as _json
+    archive_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..", "research_archive", "data", "raw",
+    )
+    files = sorted(glob.glob(os.path.join(archive_dir, "campaign_*.json")))
+    if not files:
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=404,
+            content={"error": "No campaign results yet. Run run_formal_campaign() first."},
+        )
+    with open(files[-1], encoding="utf-8") as f:
+        return _json.load(f)
+
+
 @app.post("/api/redteam/campaign/stream")
 async def run_campaign_stream(request: dict = None, lang: str = "en"):
     """Lance une campagne complete avec streaming SSE des resultats."""
@@ -1105,12 +1129,17 @@ async def update_agent_prompt(agent_name: str, body: dict, level: Optional[str] 
 
 
 # === SCENARIO ENDPOINTS ===
-from scenarios import SCENARIO_CATALOG, get_scenario_by_id
+from scenarios import get_scenario_by_id, get_all_scenarios
 
 
 @app.get("/api/redteam/scenarios")
 async def get_scenarios():
-    """Liste tous les scenarios disponibles avec metadonnees."""
+    """Liste tous les scenarios disponibles avec metadonnees.
+
+    Appelle get_all_scenarios() a chaque requete pour eviter le probleme
+    de capture du SCENARIO_CATALOG a l'import (10 scenarios au lieu de 48
+    quand le module est importe avant l'ajout des nouveaux scenarios).
+    """
     return [
         {
             "id": s.id,
@@ -1131,7 +1160,7 @@ async def get_scenarios():
                 for step in s.steps
             ],
         }
-        for s in SCENARIO_CATALOG
+        for s in get_all_scenarios()
     ]
 
 
@@ -1274,6 +1303,62 @@ async def reset_rag():
         chroma = get_chroma_client()
         chroma.delete_collection("aegis_corpus")
         return {"status": "reset"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class SeedRagRequest(BaseModel):
+    """Request body for the RAG seeding endpoint.
+
+    Used by the add-scenario skill Phase 1c to pre-position adversarial documents
+    (and legitimate references) into ChromaDB before running run_formal_campaign().
+
+    Without seeding, RAG-based attack chains retrieve nothing and attacks are inert.
+    """
+    scenario_id: str
+    chain_id: str = "multimodal_rag"
+
+
+@app.post("/api/redteam/seed-rag")
+async def seed_rag_for_scenario(req: SeedRagRequest):
+    """Pre-position adversarial payload + scientist references into ChromaDB.
+
+    Called by add-scenario skill Phase 1c for any scenario with a RAG chain_id.
+    Idempotent — re-seeding the same scenario overwrites existing chunks (upsert).
+
+    Returns:
+        documents: list of seeding results (one per document ingested)
+        total_chunks: total number of ChromaDB chunks inserted
+        collection: target collection name
+        gap_check: result of querying aegis_corpus for existing coverage
+    """
+    try:
+        from seed_rag import seed_scenario_adversarial, query_rag_for_gaps
+        results = seed_scenario_adversarial(req.scenario_id, chain_id=req.chain_id)
+        gap = query_rag_for_gaps(req.scenario_id)
+        total_chunks = sum(r.get("n_chunks", 0) for r in results)
+        return {
+            "status": "seeded",
+            "scenario_id": req.scenario_id,
+            "chain_id": req.chain_id,
+            "documents": results,
+            "total_chunks": total_chunks,
+            "gap_check": gap,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/redteam/seed-rag/check/{scenario_id}")
+async def check_rag_coverage(scenario_id: str, collection: str = "aegis_corpus"):
+    """Check if ChromaDB already has coverage for a scenario topic.
+
+    Used by Doc Writer Phase 3 to decide whether to trigger a web search.
+    Returns gap_detected=True if coverage is thin (< 2 matching chunks).
+    """
+    try:
+        from seed_rag import query_rag_for_gaps
+        return query_rag_for_gaps(scenario_id, collection_name=collection)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

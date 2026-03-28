@@ -83,14 +83,31 @@ One-click mechanical isolation: disconnects the robot from the LLM and forces ma
 ### 🌍 i18n — 3 Languages
 Full interface, prompts and documentation in **French**, **English**, and **Brazilian Portuguese**.
 
-### 🔴 Red Team Lab (Aegis Lab)
-Hidden advanced panel (`Ctrl+Shift+R` or header button):
-- **Playground**: Test manual injections, edit system prompts for each agent
-- **Multi-Agent Config**: Independent difficulty levels (EASY / NORMAL / HARD) per agent
-- **Campaigns**: Automated SSE audit runs measuring attack success rates
-- **Scenarios**: 47 scenarios (10 original + 37 kill-chain/solo) covering all 34 backend chains
-- **Kill Chain Stepper**: 4-phase visual walkthrough (Recon → Injection → Execution → Audit)
-- **Automated Scoring**: AEGIS scores each round on prompt leaks, rule bypasses, injection compliance
+### 🔴 Adversarial Studio v2.0 — Formal Adversarial Research Lab
+Hidden advanced panel (`Ctrl+Shift+R` or header button). Five integrated panels:
+
+| Panel | Description |
+|-------|-------------|
+| **Prompt Forge** | 52 API-served attack templates with detailed help modals (attack mechanism, formal framework, defense analysis) |
+| **System Prompt Lab** | 3 agents (Da Vinci, Aegis, Attacker) x 3 difficulty levels (EASY / NORMAL / HARD) |
+| **Execution Engine** | Single-shot, multi-agent campaign, and Sep(M) formal audit modes |
+| **Formal Metrics Dashboard** | SVC 6D scoring + Sep(M) separation score + Integrity(S) verification |
+| **Session Intelligence** | Full history, RETEX (lessons learned), CSV/JSON export |
+
+**SVC (Scenario Vulnerability Composite)** — 6-dimension weighted score:
+
+| Dim | Name | Weight |
+|-----|------|--------|
+| d1 | Clinical Plausibility | 0.25 |
+| d2 | Authority Chain | 0.20 |
+| d3 | Injection Concealment | 0.20 |
+| d4 | Forbidden Directive | 0.15 |
+| d5 | Multi-turn Potential | 0.10 |
+| d6 | Semantic Novelty | 0.10 |
+
+**Sep(M)** — Instruction/data separation score per Zverev et al. (ICLR 2025). Requires N >= 30 per condition for statistical validity; the system flags `statistically_valid: false` when this threshold is not met.
+
+**Integrity(S)** — Defined as Reachable(M,i) ⊆ Allowed(i) per the DY-AGENT threat model. Verifies that no reachable model state violates the allowed action set for a given input.
 
 👉 **[Read the Detailed Technical Documentation for the Red Team Lab](docs/REDTEAM_LAB_EN.md)**
 
@@ -201,7 +218,7 @@ docker-compose up --build
 
 ## 🔗 Attack Chain Library
 
-The Red Team Lab includes **34 attack chains** and **47 scenarios** (10 original + 37 kill-chain/solo), ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic via `llm_factory`). Each chain has at least one dedicated scenario. The 52 frontend attack templates each have a detailed help modal explaining the attack mechanism, formal framework link, and defense analysis.
+The Adversarial Studio includes **34 attack chains**, **47 scenarios**, and **52 attack templates**, ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499; Zverev et al., 2025, ICLR; Reimers & Gurevych, 2019, Sentence-BERT). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic via `llm_factory`). Each chain has at least one dedicated scenario. The 52 attack templates each have a detailed help modal explaining the attack mechanism, formal framework link, and defense analysis.
 
 #### Formal Campaign & Sep(M) Score
 
@@ -213,7 +230,7 @@ The campaign runner (`run_formal_campaign()`) tests all 34 chains with configura
 | `include_null_control` | true | Run clean baseline for comparison |
 | `aegis_shield` | false | Enable/disable delta-2 structural defense |
 
-**Sep(M)** (Zverev et al. 2025) measures instruction/data separation. **WARNING:** Sep(M) = 0 with zero violations is a statistical floor artifact, not a real measurement. The system flags this automatically with `statistically_valid: false`.
+**Sep(M)** (Zverev et al., ICLR 2025) measures instruction/data separation. **WARNING:** Sep(M) = 0 with zero violations is a statistical floor artifact, not a real measurement. The system flags this automatically with `statistically_valid: false`.
 
 #### Semantic Drift (Cosine Similarity)
 

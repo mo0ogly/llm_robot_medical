@@ -83,14 +83,23 @@ Isolation mécanique en un clic : déconnecte le robot du LLM et force le mode m
 ### 🌍 Internationalisation — 3 Langues
 Interface, prompts et documentation intégralement disponibles en **Français**, **Anglais** et **Portugais (Brésil)**.
 
-### 🔴 Red Team Lab (Aegis Lab)
-Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête) :
-- **Playground** : Testez des injections manuelles, éditez les prompts système de chaque agent
-- **Configuration Multi-Agent** : Niveaux de difficulté indépendants (FACILE / NORMAL / DIFFICILE) par agent
-- **Campagnes** : Audits SSE automatisés mesurant le taux de succès des vecteurs d'attaque
-- **Scénarios** : 47 scénarios (10 originaux + 37 kill-chain/solo) couvrant les 34 chaînes backend
-- **Kill Chain Stepper** : Parcours visuel en 4 phases (Recon → Injection → Exécution → Audit)
-- **Scoring Automatique** : AEGIS note chaque round sur les fuites de prompt, contournements de règles, conformité d'injection
+### 🔴 Adversarial Studio v2.0 — Laboratoire de Recherche Adversariale Formelle
+Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête), repensé en 5 panneaux intégrés :
+
+1. **Prompt Forge** (52 templates API) — Catalogue d'attaques servi par le backend (`/api/redteam/catalog`), avec assistant de forge de payloads et optimiseur génétique (Liu et al., 2023)
+2. **System Prompt Lab** (3 agents x 3 niveaux) — Configuration multi-agent avec niveaux de difficulté indépendants (FACILE / NORMAL / DIFFICILE) par agent (Da Vinci, Aegis, Attaquant)
+3. **Moteur d'Exécution** — Trois modes : single-shot, campagne multi-chaînes, et calcul formel Sep(M) (Zverev et al., ICLR 2025). 47 scénarios couvrant les 34 chaînes backend. Kill Chain Stepper en 4 phases (Recon, Injection, Exécution, Audit)
+4. **Tableau de Bord Métriques Formelles** — Scoring SVC 6D + Sep(M) + Integrity(S) :
+   - **SVC (Score de Viabilité de Compromission)** sur 6 dimensions pondérées :
+     - d1 Plausibilite Clinique (w=0.25)
+     - d2 Chaine d'Autorite (w=0.20)
+     - d3 Dissimulation d'Injection (w=0.20)
+     - d4 Directive Interdite (w=0.15)
+     - d5 Potentiel Multi-tour (w=0.10)
+     - d6 Nouveaute Semantique (w=0.10)
+   - **Sep(M)** d'apres Zverev et al. (ICLR 2025) avec validite statistique (N >= 30 par condition)
+   - **Integrity(S)** := Reachable(M,i) &#8838; Allowed(i) selon le modele de menace DY-AGENT
+5. **Intelligence de Session** — Historique complet des runs, RETEX (retour d'experience) automatise, et export CSV/JSON des resultats de campagne
 
 ---
 
@@ -199,7 +208,9 @@ docker-compose up --build
 
 ## 🔗 Bibliothèque de Chaînes d'Attaque
 
-Le Red Team Lab inclut **34 chaînes d'attaque** et **47 scénarios** (10 originaux + 37 kill-chain/solo), portés et améliorés depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic via `llm_factory`). Chaque chaîne a au minimum un scénario dédié. Les 52 templates d'attaque frontend ont chacun une modale d'aide détaillée expliquant le mécanisme, le cadre formel, et l'analyse de défense.
+L'Adversarial Studio v2.0 inclut **34 chaînes d'attaque**, **47 scénarios** et **52 templates d'attaque**, portés et améliorés depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic via `llm_factory`). Chaque chaîne a au minimum un scénario dédié. Les 52 templates d'attaque frontend ont chacun une modale d'aide détaillée expliquant le mécanisme, le cadre formel, et l'analyse de défense.
+
+**Références formelles** : Liu et al. (2023, arXiv:2306.05499), Zverev et al. (2025, ICLR — Sep(M)), Reimers & Gurevych (2019 — Sentence-BERT / all-MiniLM-L6-v2).
 
 | # | Chaîne | Technique | Catégorie |
 |---|--------|-----------|-----------|

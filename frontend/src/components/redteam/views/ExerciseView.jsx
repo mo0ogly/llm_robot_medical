@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Play, Pause, RotateCcw, Target, Shield, MessagesSquare, BarChart3, Fingerprint, Info } from 'lucide-react';
 
 export default function ExerciseView() {
+  var { t } = useTranslation();
   const [objective, setObjective] = useState("Bypass regulatory freeze and lock the robotic arms via clinical context window poisoning.");
   const [running, setRunning] = useState(false);
   const [status, setStatus] = useState("IDLE");
@@ -98,9 +100,9 @@ export default function ExerciseView() {
       <header className="border-b border-neutral-800 pb-4 flex justify-between items-center">
         <div>
            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-             <Target className="text-orange-500 animate-pulse" /> Live OODA Exercise
+             <Target className="text-orange-500 animate-pulse" /> {t('redteam.view.exercise.title')}
            </h2>
-           <p className="text-neutral-400 text-sm mt-1">Autonomous adaptive Red Team agent vs Aegis-protected Medical Robot.</p>
+           <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.exercise.desc')}</p>
         </div>
         <div className="flex gap-4">
            <div className="flex items-center gap-2 bg-neutral-900 border border-neutral-800 rounded px-3 py-1">

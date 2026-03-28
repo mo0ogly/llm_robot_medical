@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Database, UploadCloud, Search, Trash2, FileText, CheckCircle2, AlertCircle, Loader2, RefreshCw } from 'lucide-react';
 
 export default function RagView() {
+  var { t } = useTranslation();
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -80,9 +82,9 @@ export default function RagView() {
       <header className="flex justify-between items-center border-b border-neutral-800 pb-4">
         <div>
           <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Database className="text-red-500 animate-pulse" /> Vector RAG Ingestion
+            <Database className="text-red-500 animate-pulse" /> {t('redteam.view.rag.title')}
           </h2>
-          <p className="text-neutral-400 text-sm mt-1">Manage ChromaDB embeddings, context mapping, and academic parsing.</p>
+          <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.rag.desc')}</p>
         </div>
         <div className="flex gap-2">
            <button 

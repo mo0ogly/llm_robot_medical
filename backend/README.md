@@ -72,7 +72,7 @@ All chains are registered via `@register_chain` decorator and can be listed with
 
 - **52 attack templates** with configurable variables (`attackTemplates.js`)
 - **52 help modals** with formal framework, mechanism, defense analysis (`ScenarioHelpModal.jsx`)
-- **47 scenarios** (10 original + 37 kill-chain/solo) covering all 34 chains (`ScenarioTab.jsx`)
+- **48 scenarios** (10 original + 37 kill-chain/solo) covering all 34 chains (`ScenarioTab.jsx`)
 - Each chain has at minimum 1 dedicated scenario for individual testing
 
 ## 🤖 AI Agents
@@ -88,7 +88,38 @@ All chains are registered via `@register_chain` decorator and can be listed with
 - `POST /api/redteam/attack/stream`: SSE stream for a single targeted attack.
 - `POST /api/redteam/campaign/stream`: SSE stream for a full security audit.
 - `GET /api/scenarios`: List available Red Team scenarios.
-- `POST /api/redteam/separation-score`: Compute Sep(M) from data vs instruction position.
+
+## 📡 Adversarial Studio v2.0 API
+
+These endpoints power the Adversarial Studio UI for interactive red-teaming, statistical analysis, and agent prompt management.
+
+### Attack Catalog & Templates
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/redteam/templates` | Returns all 52 attack templates with full metadata (category, variables, description, MITRE mapping) |
+| `GET` | `/api/redteam/catalog` | Attack payloads grouped by category for the catalog browser |
+
+### Attack Execution
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/redteam/attack` | Execute a single attack against the target model. Accepts template ID, variable overrides, and scenario context. Returns verdict, response, and timing. |
+| `POST` | `/api/redteam/multi-trial` | Multi-trial statistical analysis. Runs N trials per condition and returns violation rates with Wilson 95% confidence intervals. |
+
+### Formal Analysis
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/redteam/separation-score` | Compute Sep(M) (Zverev et al. 2025) from data-position vs instruction-position payloads. Returns separation score, statistical validity flag, and warnings. |
+| `POST` | `/api/redteam/svc` | SVC 6-dimensional scoring (Clinical Plausibility Score). Evaluates attack outputs across six clinical safety dimensions. |
+
+### Agent Prompt Management
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/redteam/agents/prompts/all` | Retrieve all agent system prompts (RedTeam, DaVinci, AEGIS) for inspection and editing. |
+| `PUT` | `/api/redteam/agents/{name}/prompt` | Update a specific agent's system prompt at runtime. `{name}` is one of: `redteam`, `davinci`, `aegis`. |
 
 ## Sep(M) — Separation Score (Zverev et al. 2025)
 

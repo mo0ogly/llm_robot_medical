@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BarChart2, TrendingUp, Award, Microscope, FileJson, FileText, Share2, Info, RefreshCw } from 'lucide-react';
 
 // Demo data when backend is not running
@@ -24,7 +25,7 @@ function useCampaignData() {
 
   var fetchData = function() {
     setLoading(true);
-    fetch('http://localhost:8042/api/redteam/campaign/latest')
+    fetch('/api/redteam/campaign/latest')
       .then(function(r) { return r.json(); })
       .then(function(campaign) {
         var agg = campaign.aggregate || {};
@@ -84,6 +85,7 @@ function useCampaignData() {
 }
 
 export default function AnalysisView() {
+  var { t } = useTranslation();
   var _h = useCampaignData(), data = _h.data, loading = _h.loading, refresh = _h.refresh;
   var conjectures = data.conjectures;
 
@@ -92,9 +94,9 @@ export default function AnalysisView() {
       <header className="border-b border-neutral-800 pb-4 flex justify-between items-center">
         <div>
            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-             <BarChart2 className="text-green-500 animate-pulse" /> Scientometric Analysis
+             <BarChart2 className="text-green-500 animate-pulse" /> {t('redteam.view.analysis.title')}
            </h2>
-           <p className="text-neutral-400 text-sm mt-1">Formal thesis validation metrics: Entropy H(X), Levenshtein Distance, and Sep(M) results.</p>
+           <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.analysis.desc')}</p>
         </div>
         <div className="flex gap-3">
            <button className="bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-2 shadow-lg active:scale-95">

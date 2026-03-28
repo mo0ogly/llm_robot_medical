@@ -9,7 +9,7 @@ import robotEventBus from '../../utils/robotEventBus';
 const CATEGORIES = ['prompt_leak', 'rule_bypass', 'injection'];
 
 export default function PlaygroundTab({ initialCategory, initialMessage }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selectedTemplate, setSelectedTemplate] = useState(0);
   const [category, setCategory] = useState(initialCategory || 'injection');
   const [variables, setVariables] = useState(ATTACK_TEMPLATES[0].variables);
@@ -28,22 +28,22 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
   const [showStepper, setShowStepper] = useState(false);
 
   const applyTemplate = (index) => {
-    const t = ATTACK_TEMPLATES[index];
+    const tmpl = ATTACK_TEMPLATES[index];
     setSelectedTemplate(index);
-    setCategory(t.category);
-    setVariables({ ...t.variables });
-    setUseCustom(t.template === '');
-    if (t.template === '') {
+    setCategory(tmpl.category);
+    setVariables({ ...tmpl.variables });
+    setUseCustom(tmpl.template === '');
+    if (tmpl.template === '') {
       setCustomText('');
     }
   };
 
   const resolveTemplate = () => {
     if (useCustom) return customText;
-    const t = ATTACK_TEMPLATES[selectedTemplate];
-    let text = t.template;
+    const tmpl = ATTACK_TEMPLATES[selectedTemplate];
+    let text = tmpl.template;
     for (const [key, value] of Object.entries(variables)) {
-      text = text.replaceAll(`{{${key}}}`, value);
+      text = text.replaceAll('{{' + key + '}}', value);
     }
     return text;
   };
@@ -54,7 +54,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
     try {
       const payload = resolveTemplate();
       robotEventBus.emit('redteam:attack_start', { attack_type: category, message: payload });
-      const res = await fetch(`/api/redteam/attack?lang=${i18n.language}`, {
+      const res = await fetch('/api/redteam/attack?lang=' + i18n.language, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -63,7 +63,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
           levels 
         }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       setResult(data);
       robotEventBus.emit('redteam:attack_result', data);
@@ -75,7 +75,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
   };
 
   const loadPrompts = async () => {
-    const res = await fetch(`/api/redteam/agents/prompts/all?lang=${i18n.language}`);
+    const res = await fetch('/api/redteam/agents/prompts/all?lang=' + i18n.language);
     const data = await res.json();
     setAllPrompts(data);
     // Also update the 'prompts' state which is used by the active instance if needed, 
@@ -85,7 +85,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
   const savePrompt = async () => {
     setPromptSaving(true);
     const content = allPrompts[activeAgent]?.[selectedLevel] || '';
-    await fetch(`/api/redteam/agents/${activeAgent}/prompt?level=${selectedLevel}&lang=${i18n.language}`, {
+    await fetch('/api/redteam/agents/' + activeAgent + '/prompt?level=' + selectedLevel + '&lang=' + i18n.language, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: content }),
@@ -135,8 +135,8 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
               className="w-full bg-[#111] border border-gray-800 rounded px-3 py-2
                          text-xs text-gray-300 font-mono focus:border-[#00ff41]/50 focus:outline-none"
             >
-              {ATTACK_TEMPLATES.map((t, i) => (
-                <option key={i} value={i}>{t.name}</option>
+              {ATTACK_TEMPLATES.map((tmpl, i) => (
+                <option key={i} value={i}>{tmpl.name}</option>
               ))}
             </select>
           </div>
@@ -154,7 +154,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
                                ? 'text-[#00ff41] border-[#00ff41]/50 bg-[#00ff41]/5'
                                : 'text-gray-600 border-gray-800 hover:border-gray-600'}`}
                 >
-                  {t(`redteam.category.${c}`, { defaultValue: c.toUpperCase() })}
+                  {t('redteam.category.' + c)}
                 </button>
               ))}
             </div>
@@ -183,7 +183,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
               <div className="space-y-1">
                 {Object.entries(variables).map(([key, value]) => (
                   <div key={key} className="flex items-center gap-2">
-                    <span className="text-xs text-purple-400 w-28 shrink-0">{`{{${key}}}`}</span>
+                    <span className="text-xs text-purple-400 w-28 shrink-0">{'{{' + key + '}}'}</span>
                     <input
                       value={value}
                       onChange={(e) => setVariables((v) => ({ ...v, [key]: e.target.value }))}
@@ -245,7 +245,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
               <div className="flex items-center gap-2 mb-3 px-1">
                 <ShieldAlert size={14} className="text-red-500" />
                 <span className="text-[10px] font-mono font-bold text-red-500 uppercase tracking-[0.3em]">
-                  Interactive Kill Chain Execution
+                  {t('redteam.playground.stepper_title')}
                 </span>
               </div>
               <AttackStepper 
@@ -264,21 +264,21 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
               ) : (
                 <>
                   <div className="flex gap-2 mb-2">
-                    {result.scores?.prompt_leak && <span className="text-purple-400 text-xs font-bold px-2 py-0.5 bg-purple-500/10 rounded">LEAK</span>}
-                    {result.scores?.rule_bypass && <span className="text-orange-400 text-xs font-bold px-2 py-0.5 bg-orange-500/10 rounded">BYPASS</span>}
-                    {result.scores?.injection_success && <span className="text-red-400 text-xs font-bold px-2 py-0.5 bg-red-500/10 rounded">INJECTED</span>}
+                    {result.scores?.prompt_leak && <span className="text-purple-400 text-xs font-bold px-2 py-0.5 bg-purple-500/10 rounded">{t('redteam.playground.badge.leak')}</span>}
+                    {result.scores?.rule_bypass && <span className="text-orange-400 text-xs font-bold px-2 py-0.5 bg-orange-500/10 rounded">{t('redteam.playground.badge.bypass')}</span>}
+                    {result.scores?.injection_success && <span className="text-red-400 text-xs font-bold px-2 py-0.5 bg-red-500/10 rounded">{t('redteam.playground.badge.injected')}</span>}
                     {!result.scores?.prompt_leak && !result.scores?.rule_bypass && !result.scores?.injection_success && (
-                      <span className="text-[#00ff41] text-xs font-bold px-2 py-0.5 bg-[#00ff41]/10 rounded">BLOCKED</span>
+                      <span className="text-[#00ff41] text-xs font-bold px-2 py-0.5 bg-[#00ff41]/10 rounded">{t('redteam.playground.badge.blocked')}</span>
                     )}
                   </div>
                   <details className="text-xs">
-                    <summary className="text-gray-500 cursor-pointer hover:text-gray-300">Da Vinci Response</summary>
+                    <summary className="text-gray-500 cursor-pointer hover:text-gray-300">{t('redteam.playground.result.davinci_response')}</summary>
                     <pre className="mt-2 text-gray-400 whitespace-pre-wrap max-h-40 overflow-y-auto">
                       {result.target_response}
                     </pre>
                   </details>
                   <details className="text-xs mt-1">
-                    <summary className="text-gray-500 cursor-pointer hover:text-gray-300">AEGIS Analysis</summary>
+                    <summary className="text-gray-500 cursor-pointer hover:text-gray-300">{t('redteam.playground.result.aegis_analysis')}</summary>
                     <pre className="mt-2 text-gray-400 whitespace-pre-wrap max-h-40 overflow-y-auto">
                       {result.audit_analysis}
                     </pre>
@@ -314,7 +314,7 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
                     ? 'text-yellow-400 border-yellow-500/30 bg-yellow-500/5' 
                     : 'text-gray-600 border-transparent hover:bg-white/5'}`}
               >
-                {l}
+                {t('redteam.level.' + l)}
               </button>
             ))}
           </div>

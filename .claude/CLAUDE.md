@@ -15,6 +15,25 @@
 
 **Rule**: Never say "done" without checking ALL relevant docs are updated. If the user has to ask "is this documented?" — it wasn't.
 
+## Mandatory Trilingual i18n (FR / EN / BR)
+
+**CRITICAL**: ALL user-visible strings in the frontend MUST be trilingual (French, English, Brazilian Portuguese). This is a non-negotiable rule.
+
+**Rules**:
+1. **NEVER hardcode** user-visible strings in .jsx/.js files. Always use `t('key')` from react-i18next.
+2. **EVERY new string** must have a key in `frontend/src/i18n.js` in ALL THREE language sections (fr, en, br).
+3. **Key naming**: Use the component namespace prefix (e.g., `redteam.studio.v2.*`, `redteam.catalog.*`, `redteam.scenarios.*`).
+4. **Technical terms** (BREACH, SVC, Sep(M), MITRE, HL7, etc.) stay in English across all languages.
+5. **Scientific content** (formal framework references, formulas, dimension labels) stays in English — these are academic terms.
+6. **Help modals** (ScenarioHelpModal, StudioHelpModal): UI chrome (headers, buttons, labels) must be trilingual. Academic content body can remain English-only.
+7. **Verification**: After adding any new component or UI element, grep for hardcoded strings: `grep -n '"[A-Z]' file.jsx | grep -v className | grep -v import` — any match is a potential i18n violation.
+8. **Language selector**: The Command Center (Red Team Lab) has its own language dropdown in the header (RedTeamDrawer.jsx). Both the main app and the lab support FR/EN/BR switching.
+
+**When adding a new feature**:
+1. Write all UI strings as `t('namespace.key')` from the start
+2. Add keys to i18n.js in all 3 sections simultaneously
+3. Test in FR and EN before declaring done
+
 ## SINGLE SOURCE OF TRUTH — Strict Homogeneity
 
 **CRITICAL**: Backend and frontend MUST be strictly synchronized. NEVER have different data in Python vs JavaScript.
@@ -50,6 +69,60 @@
 - **52 help modals** in `frontend/src/components/redteam/ScenarioHelpModal.jsx`
 - **47 scenarios** in `frontend/src/components/redteam/ScenarioTab.jsx`
 - **Thesis docs** in `research_archive/manuscript/`
+
+## Process Management — MANDATORY
+
+**NEVER run raw process commands.** All start/stop/restart/build operations MUST go through the AEGIS scripts.
+
+| OS | Script | Location |
+|----|--------|----------|
+| Windows (PowerShell) | `.\aegis.ps1` | project root |
+| Linux / macOS / WSL | `./aegis.sh` | project root |
+
+**Enforced by hook** `.claude/hooks/process_guard.sh` — direct `uvicorn` or `npm run dev` calls are blocked.
+
+### Command reference
+
+```
+# Start
+.\aegis.ps1 start              # start backend + frontend
+.\aegis.ps1 start backend      # backend only (:8042)
+.\aegis.ps1 start frontend     # frontend only (:5173)
+
+# Stop / Kill
+.\aegis.ps1 stop               # stop both
+.\aegis.ps1 kill-port 8042     # force-kill port 8042
+.\aegis.ps1 kill-port 5173     # force-kill port 5173
+
+# Restart
+.\aegis.ps1 restart            # stop + start both
+.\aegis.ps1 restart backend    # restart backend only
+
+# Health
+.\aegis.ps1 health             # HTTP check :8042 + :5173 + :11434
+
+# Build
+.\aegis.ps1 build              # build frontend + check backend syntax
+.\aegis.ps1 build frontend     # Vite build only
+.\aegis.ps1 build backend      # py_compile check only
+
+# Logs
+.\aegis.ps1 logs               # tail logs/backend.log + logs/frontend.log
+
+# Interactive menu
+.\aegis.ps1                    # full TUI menu
+```
+
+### If a command is missing from the scripts
+
+Add it to **both** `aegis.ps1` AND `aegis.sh` following the existing pattern:
+- PS1: add a function `Verb-Target` and register in `Invoke-*` dispatch
+- SH: add a function `verb_target` and register in `do_*` dispatch + interactive menu
+
+### Log files
+- `logs/backend.log` — uvicorn stdout/stderr
+- `logs/frontend.log` — Vite dev server stdout/stderr
+- `logs/build_frontend.log` — last Vite build output
 
 ## Template Literal Bug (esbuild/JSX)
 

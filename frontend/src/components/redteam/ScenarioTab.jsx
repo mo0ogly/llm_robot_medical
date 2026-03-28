@@ -521,7 +521,7 @@ var DEMO_SCENARIOS = [
 ];
 
 export default function ScenarioTab() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [scenarios, setScenarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [offline, setOffline] = useState(false);
@@ -571,7 +571,7 @@ export default function ScenarioTab() {
     abortRef.current = controller;
 
     try {
-      const res = await fetch(`/api/redteam/scenario/stream?lang=${i18n.language}`, {
+      const res = await fetch('/api/redteam/scenario/stream?lang=' + i18n.language, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ scenario_id: scenarioId, levels }),
@@ -668,8 +668,8 @@ export default function ScenarioTab() {
       {/* Offline banner */}
       {offline && (
         <div className="border border-yellow-500/30 rounded p-2 bg-yellow-500/5 text-center">
-          <span className="text-yellow-400 font-mono text-[10px] font-bold">DEMO MODE</span>
-          <span className="text-[10px] text-gray-500 ml-2">Backend offline — showing demo scenarios (run not available)</span>
+          <span className="text-yellow-400 font-mono text-[10px] font-bold">{t('redteam.scenarios.demo_mode')}</span>
+          <span className="text-[10px] text-gray-500 ml-2">{t('redteam.scenarios.demo_offline')}</span>
         </div>
       )}
 
@@ -732,7 +732,7 @@ export default function ScenarioTab() {
         
         {/* Speed Control */}
         <div className="flex items-center gap-2 bg-black/40 border border-gray-800 rounded px-2 py-1">
-          <span className="text-[9px] text-gray-600 font-mono">{t('redteam.scenarios.label.speed', { defaultValue: 'SPEED:' })}</span>
+          <span className="text-[9px] text-gray-600 font-mono">{t('redteam.scenarios.label.speed')}</span>
           {[1, 2, 4].map(s => (
             <button
               key={s}
@@ -790,7 +790,7 @@ export default function ScenarioTab() {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = `scenario-${selectedId}-${new Date().toISOString().slice(0, 10)}.json`;
+                a.download = 'scenario-' + selectedId + '-' + new Date().toISOString().slice(0, 10) + '.json';
                 a.click();
                 URL.revokeObjectURL(url);
               }}
@@ -837,9 +837,9 @@ export default function ScenarioTab() {
                       ATTACK_TYPE_COLORS[step.attack_type]
                     }`}
                   >
-                    {t(`redteam.category.${step.attack_type}`, { defaultValue: step.attack_type.toUpperCase() })}
+                    {t('redteam.category.' + step.attack_type, { defaultValue: step.attack_type.toUpperCase() })}
                   </span>
-                  <span className="text-[9px] uppercase font-bold">{t(`redteam.status.${step.status}`, { defaultValue: step.status })}</span>
+                  <span className="text-[9px] uppercase font-bold">{t('redteam.status.' + step.status, { defaultValue: step.status })}</span>
                   {step.result && (
                     expandedStep === i ? <ChevronDown size={10} /> : <ChevronRight size={10} />
                   )}
@@ -849,23 +849,23 @@ export default function ScenarioTab() {
               {expandedStep === i && step.result && (
                 <div className="ml-4 mt-1 mb-2 border border-gray-800 rounded p-3 bg-[#0d0d0d] space-y-2">
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.objective', { defaultValue: 'OBJECTIVE' })}</div>
+                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.objective')}</div>
                     <div className="text-xs text-gray-400">{step.result.objective}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.attack', { defaultValue: 'ATTACK' })}</div>
+                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.attack')}</div>
                     <pre className="text-xs text-red-400/70 whitespace-pre-wrap">
                       {step.result.attack_message}
                     </pre>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.response', { defaultValue: 'DA VINCI RESPONSE' })}</div>
+                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.response')}</div>
                     <pre className="text-xs text-gray-400 whitespace-pre-wrap max-h-32 overflow-y-auto">
                       {step.result.target_response}
                     </pre>
                   </div>
                   <div>
-                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.analysis', { defaultValue: 'AEGIS ANALYSIS' })}</div>
+                    <div className="text-[10px] text-gray-600 mb-1">{t('redteam.scenarios.step.analysis')}</div>
                     <pre className="text-xs text-blue-400/70 whitespace-pre-wrap max-h-32 overflow-y-auto">
                       {step.result.audit_analysis}
                     </pre>
@@ -908,7 +908,7 @@ export default function ScenarioTab() {
             <span className="text-gray-500">{t('redteam.scenarios.summary.breach_point')}</span>
             <span className="text-gray-300">
               {scenarioSummary.breach_point !== null
-                ? `${t('redteam.scenarios.label.step')} ${scenarioSummary.breach_point + 1}`
+                ? t('redteam.scenarios.label.step') + ' ' + (scenarioSummary.breach_point + 1)
                 : t('redteam.scenarios.none')}
             </span>
           </div>

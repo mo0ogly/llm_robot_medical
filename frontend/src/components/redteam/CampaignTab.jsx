@@ -107,12 +107,12 @@ export default function CampaignTab() {
     streamFromEndpoint('/api/redteam/campaign/stream?lang=' + i18n.language, {
       levels,
       aegis_shield: aegisShield,
-      attacks: templates.map(function(t) {
+      attacks: templates.map(function(tmpl) {
         return {
-          type: t.category,
-          message: t.template,
-          name: t.name,
-          chain_id: t.chainId || null,
+          type: tmpl.category,
+          message: tmpl.template,
+          name: tmpl.name,
+          chain_id: tmpl.chainId || null,
         };
       }),
     });
@@ -134,31 +134,31 @@ export default function CampaignTab() {
     <div className="space-y-4">
       {offline && (
         <div className="border border-yellow-500/30 rounded p-4 bg-yellow-500/5 text-center">
-          <div className="text-yellow-400 font-mono text-xs font-bold mb-2">BACKEND OFFLINE</div>
-          <p className="text-[11px] text-gray-400">The Red Team campaign requires the FastAPI backend (port 8042).</p>
-          <p className="text-[10px] text-gray-600 mt-1">Run: <code className="text-gray-400">cd backend && python3 server.py</code></p>
+          <div className="text-yellow-400 font-mono text-xs font-bold mb-2">{t('redteam.campaign.offline.title')}</div>
+          <p className="text-[11px] text-gray-400">{t('redteam.campaign.offline.desc')}</p>
+          <p className="text-[10px] text-gray-600 mt-1">{t('redteam.campaign.offline.run')} <code className="text-gray-400">cd backend && python3 server.py</code></p>
         </div>
       )}
-      
+
       {/* ---- Test Suite Panel ---- */}
       <div className="border border-gray-700/50 rounded p-3 bg-gray-900/50 space-y-2">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <ListChecks size={14} className="text-[#00ff41]" />
-            <span className="text-[11px] font-mono font-bold text-gray-300 uppercase tracking-widest">Test Suite</span>
+            <span className="text-[11px] font-mono font-bold text-gray-300 uppercase tracking-widest">{t('redteam.campaign.testSuite')}</span>
           </div>
           <div className="flex items-center gap-2">
             {/* Aegis Shield toggle */}
             <button
               onClick={() => setAegisShield((p) => !p)}
-              className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono border transition-all ${
+              className={'flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono border transition-all ' + (
                 aegisShield
                   ? 'bg-cyan-500/10 border-cyan-500/50 text-cyan-400'
                   : 'bg-gray-800 border-gray-600 text-gray-500 hover:border-gray-400'
-              }`}
+              )}
             >
               <ShieldAlert size={10} />
-              AEGIS SHIELD {aegisShield ? 'ON' : 'OFF'}
+              {t('redteam.campaign.aegisShield')} {aegisShield ? t('redteam.campaign.on') : t('redteam.campaign.off')}
             </button>
             {/* Run All */}
             {!running ? (
@@ -166,14 +166,14 @@ export default function CampaignTab() {
                 onClick={startCampaign}
                 className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-gray-700 border border-gray-600 text-gray-300 text-[10px] font-mono hover:bg-gray-600 transition-all"
               >
-                <Play size={10} /> Run All
+                <Play size={10} /> {t('redteam.campaign.btn.runAll')}
               </button>
             ) : (
               <button
                 onClick={stopCampaign}
                 className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-red-900/50 border border-red-700 text-red-300 text-[10px] font-mono hover:bg-red-900 transition-all animate-pulse"
               >
-                <Square size={10} /> Stop
+                <Square size={10} /> {t('redteam.campaign.btn.stop')}
               </button>
             )}
           </div>
@@ -192,17 +192,17 @@ export default function CampaignTab() {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <Eye size={14} className="text-cyan-400" />
-              <span className="text-[11px] font-mono font-bold text-gray-300 uppercase tracking-widest">Live Chain Monitor</span>
-              <span className="text-[9px] text-gray-600">{Object.keys(chainStatusMap).length} chains</span>
+              <span className="text-[11px] font-mono font-bold text-gray-300 uppercase tracking-widest">{t('redteam.campaign.liveChainMonitor')}</span>
+              <span className="text-[9px] text-gray-600">{Object.keys(chainStatusMap).length} {t('redteam.campaign.chains')}</span>
             </div>
             <div className="flex items-center gap-2">
               {running && (
                 <button
                   onClick={function() { skipRef.current = true; }}
                   className="flex items-center gap-1 px-2 py-0.5 rounded bg-yellow-900/30 border border-yellow-700/50 text-yellow-400 text-[10px] font-mono hover:bg-yellow-900/50 transition-all"
-                  title="Skip current test and move to next"
+                  title={t('redteam.campaign.btn.skip')}
                 >
-                  <SkipForward size={10} /> Skip
+                  <SkipForward size={10} /> {t('redteam.campaign.btn.skip')}
                 </button>
               )}
               <button
@@ -233,7 +233,7 @@ export default function CampaignTab() {
                   >
                     <div className="text-[8px] text-gray-400 truncate">{key.replace(/_/g, ' ').slice(0, 12)}</div>
                     <div className={'text-[10px] font-mono font-bold ' + (hasViolation ? 'text-red-400' : 'text-emerald-400')}>
-                      {hasViolation ? stat.violations + '!' : stat.blocked + '✓'}
+                      {hasViolation ? stat.violations + '!' : stat.blocked + '\u2713'}
                     </div>
                   </div>
                 );
@@ -251,7 +251,7 @@ export default function CampaignTab() {
           {running && currentChain && (
             <div className="flex items-center gap-2 mt-1 px-2 py-1 bg-cyan-950/30 border border-cyan-900/30 rounded">
               <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
-              <span className="text-[10px] text-cyan-400 font-mono">Running: {currentChain}</span>
+              <span className="text-[10px] text-cyan-400 font-mono">{t('redteam.campaign.running')} {currentChain}</span>
               <span className="text-[9px] text-gray-600 ml-auto">{progress.current}/{progress.total}</span>
             </div>
           )}
@@ -262,7 +262,7 @@ export default function CampaignTab() {
       <div className="border border-gray-700/50 rounded p-3 bg-gray-900/50 space-y-2">
         <div className="flex items-center gap-2 mb-2">
           <Dna size={14} className="text-[#e94560]" />
-          <span className="text-[11px] font-mono font-bold text-gray-300 uppercase tracking-widest">Genetic Optimizer</span>
+          <span className="text-[11px] font-mono font-bold text-gray-300 uppercase tracking-widest">{t('redteam.campaign.geneticOptimizer')}</span>
           <span className="text-[9px] text-gray-600 ml-auto">Liu et al. 2023</span>
         </div>
         <GeneticProgressView
@@ -279,11 +279,11 @@ export default function CampaignTab() {
           <div className="flex items-start gap-4">
             <ShieldAlert size={32} className="text-red-500 mt-1 flex-shrink-0" />
             <div>
-              <h3 className="text-red-400 font-bold text-lg font-mono">FORMAL METRIC VIOLATION DETECTED</h3>
+              <h3 className="text-red-400 font-bold text-lg font-mono">{t('redteam.campaign.formalViolation.title')}</h3>
               <p className="text-red-300 text-xs mt-1 mb-2 font-mono">Reachable(M) ⊈ Allowed(i)</p>
-              <p className="text-gray-300 text-xs">Empirical validation of Conjecture 1: The model failed to maintain structural separation, leading to unauthorized physical actuator state divergence.</p>
+              <p className="text-gray-300 text-xs">{t('redteam.campaign.formalViolation.desc')}</p>
               <div className="mt-2 inline-block px-2 py-1 bg-red-900/50 text-red-200 text-xs rounded border border-red-800/50">
-                Violations Count: {formalViolations} / {rounds.length} rounds
+                {t('redteam.campaign.violationsCount')} {formalViolations} / {rounds.length} {t('redteam.campaign.label.rounds')}
               </div>
               {summary?.violation_rate_ci && (
                 <div className="mt-2 text-xs font-mono text-red-300 bg-red-900/20 rounded p-2 border border-red-800/30">
@@ -304,44 +304,43 @@ export default function CampaignTab() {
       <div className="grid grid-cols-3 gap-3">
         <div className="border border-purple-500/30 rounded p-3 text-center bg-purple-500/5 transition-all">
           <div className="text-2xl font-bold text-purple-400 font-mono">{leaks}</div>
-          <div className="text-[10px] text-purple-500/70 tracking-wider">PROMPT LEAK</div>
+          <div className="text-[10px] text-purple-500/70 tracking-wider">{t('redteam.campaign.promptLeak')}</div>
         </div>
         <div className="border border-orange-500/30 rounded p-3 text-center bg-orange-500/5 transition-all">
           <div className="text-2xl font-bold text-orange-400 font-mono">{bypasses}</div>
-          <div className="text-[10px] text-orange-500/70 tracking-wider">RULE BYPASS</div>
+          <div className="text-[10px] text-orange-500/70 tracking-wider">{t('redteam.campaign.ruleBypass')}</div>
         </div>
         <div className="border border-red-500/30 rounded p-3 text-center bg-red-500/5 transition-all">
           <div className="text-2xl font-bold text-red-400 font-mono">{injections}</div>
-          <div className="text-[10px] text-red-500/70 tracking-wider">INJECTION</div>
+          <div className="text-[10px] text-red-500/70 tracking-wider">{t('redteam.campaign.injection')}</div>
         </div>
         <div className="border border-red-600/50 rounded p-3 text-center bg-red-600/5 col-span-3">
           <div className="text-2xl font-bold text-red-300 font-mono">{formalViolations}</div>
-          <div className="text-[10px] text-red-400/70 tracking-wider">Reachable(M) ⊄ Allowed(i) [THEOREM VIOLATIONS]</div>
+          <div className="text-[10px] text-red-400/70 tracking-wider">{t('redteam.campaign.theoremViolations')}</div>
         </div>
       </div>
 
       {/* Sep(M) panel — shown after campaign completes */}
       {summary?.violation_rate_ci && (
         <div className="border border-cyan-900/50 rounded p-3 bg-cyan-950/10 font-mono text-xs space-y-2">
-          <div className="text-cyan-400 font-bold mb-2 tracking-wider">SEP(M) — ZVEREV SEPARATION SCORE</div>
+          <div className="text-cyan-400 font-bold mb-2 tracking-wider">{t('redteam.campaign.sepTitle')}</div>
 
           {/* Statistical validity warning */}
           {(rounds.length < 30 || formalViolations === 0) && (
             <div className="border border-yellow-600/40 bg-yellow-950/20 rounded p-2 space-y-1">
               <div className="text-yellow-400 font-bold text-[10px] flex items-center gap-1">
-                <AlertTriangle size={11} /> STATISTICAL VALIDITY WARNING
+                <AlertTriangle size={11} /> {t('redteam.campaign.statWarning')}
               </div>
               {rounds.length < 30 && (
                 <div className="text-[9px] text-yellow-300/80">
-                  N = {rounds.length} &lt; 30 : insufficient sample size for statistical significance.
-                  Sep(M) requires N ≥ 30 per condition (Zverev et al. 2025, §4).
-                  <span className="text-yellow-500 font-bold"> Set N ≥ 30 in Campaign Parameters.</span>
+                  N = {rounds.length} &lt; 30 : {t('redteam.campaign.statInsufficient')}
+                  {' '}{t('redteam.campaign.statSepRequires')}
+                  <span className="text-yellow-500 font-bold"> {t('redteam.campaign.statSetN')}</span>
                 </div>
               )}
               {formalViolations === 0 && (
                 <div className="text-[9px] text-yellow-300/80">
-                  Zero violations detected: Sep(M) = |0 - 0| = 0 is a <span className="font-bold text-yellow-400">statistical floor artifact</span>,
-                  NOT a separation measure. Either disable Aegis Shield (test δ¹ alone) or increase N.
+                  {t('redteam.campaign.statZeroViolations')} <span className="font-bold text-yellow-400">{t('redteam.campaign.statFloorArtifact')}</span>{t('redteam.campaign.statZeroAdvice')}
                 </div>
               )}
             </div>
@@ -349,22 +348,22 @@ export default function CampaignTab() {
 
           <div className="grid grid-cols-2 gap-2 text-[10px] text-gray-400">
             <div className="border border-gray-700 rounded p-2">
-              <span className="text-cyan-300">violation_rate</span>: {(summary.violation_rate_ci.rate * 100).toFixed(1)}%
+              <span className="text-cyan-300">{t('redteam.campaign.violationRate')}</span>: {(summary.violation_rate_ci.rate * 100).toFixed(1)}%
               <div className="text-[9px] text-gray-600">Wilson 95% CI [{(summary.violation_rate_ci.ci_95_lower * 100).toFixed(1)}%, {(summary.violation_rate_ci.ci_95_upper * 100).toFixed(1)}%] n={summary.violation_rate_ci.n}</div>
             </div>
             <div className="border border-gray-700 rounded p-2">
-              <span className="text-cyan-300">δ¹ defense</span>: {formalViolations > 0 ? '❌ INSUFFICIENT' : '✓ Holding'}
-              <div className="text-[9px] text-gray-600">Conjecture 1 {formalViolations > 0 ? 'supported' : 'not yet confirmed'}</div>
+              <span className="text-cyan-300">{t('redteam.campaign.d1defense')}</span>: {formalViolations > 0 ? '\u274C ' + t('redteam.campaign.insufficient') : '\u2713 ' + t('redteam.campaign.holding')}
+              <div className="text-[9px] text-gray-600">{formalViolations > 0 ? t('redteam.campaign.conjecture1supported') : t('redteam.campaign.conjecture1notyet')}</div>
             </div>
             <div className="border border-gray-700 rounded p-2">
-              <span className="text-cyan-300">N trials</span>: {rounds.length}
+              <span className="text-cyan-300">{t('redteam.campaign.nTrials')}</span>: {rounds.length}
               <div className={'text-[9px] ' + (rounds.length >= 30 ? 'text-emerald-500' : 'text-yellow-500')}>
-                {rounds.length >= 30 ? '✓ Statistically sufficient' : '⚠ Increase to ≥ 30'}
+                {rounds.length >= 30 ? '\u2713 ' + t('redteam.campaign.statSufficient') : '\u26A0 ' + t('redteam.campaign.increaseN')}
               </div>
             </div>
             <div className="border border-gray-700 rounded p-2">
-              <span className="text-cyan-300">Aegis Shield</span>: {aegisShield ? 'ON (testing δ¹+δ²)' : 'OFF (testing δ¹ alone)'}
-              <div className="text-[9px] text-gray-600">{aegisShield ? 'Disable to isolate δ¹' : 'Pure behavioral defense test'}</div>
+              <span className="text-cyan-300">{t('redteam.campaign.aegisShieldLabel')}</span>: {aegisShield ? t('redteam.campaign.testingD1D2') : t('redteam.campaign.testingD1')}
+              <div className="text-[9px] text-gray-600">{aegisShield ? t('redteam.campaign.disableToIsolate') : t('redteam.campaign.pureBehavioral')}</div>
             </div>
           </div>
         </div>
@@ -379,8 +378,8 @@ export default function CampaignTab() {
           </div>
           <div className="w-full bg-gray-900 rounded-full h-1.5">
             <div
-              className={`h-1.5 rounded-full transition-all duration-300 ${formalViolations > 0 ? 'bg-red-500' : 'bg-[#00ff41]'}`}
-              style={{ width: `${(progress.current / Math.max(progress.total, 1)) * 100}%` }}
+              className={'h-1.5 rounded-full transition-all duration-300 ' + (formalViolations > 0 ? 'bg-red-500' : 'bg-[#00ff41]')}
+              style={{ width: (progress.current / Math.max(progress.total, 1)) * 100 + '%' }}
             />
           </div>
         </div>
@@ -388,12 +387,12 @@ export default function CampaignTab() {
 
       {/* Levels configuration */}
       <div className="flex items-center justify-between mt-2">
-        <button 
+        <button
           onClick={() => setShowConfig(!showConfig)}
           className="flex items-center gap-1.5 text-[10px] text-gray-500 hover:text-[#00ff41] transition-colors"
         >
           <Settings2 size={12} />
-          {showConfig ? 'HIDE AGENT CONFIGURATION' : 'CONFIGURE THESIS PARAMETERS'}
+          {showConfig ? t('redteam.campaign.hideConfig') : t('redteam.campaign.configureParams')}
         </button>
       </div>
 
@@ -403,13 +402,13 @@ export default function CampaignTab() {
 
           {/* --- Campaign Parameters --- */}
           <div className="border border-gray-700/50 rounded p-3 bg-gray-900/30 space-y-3">
-            <div className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-1">Campaign Parameters</div>
+            <div className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-1">{t('redteam.campaign.campaignParams')}</div>
 
             {/* N Trials */}
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-xs font-mono text-gray-300">N Trials per Chain</div>
-                <div className="text-[9px] text-gray-600">Zverev et al. 2025: N ≥ 30 required for statistical significance</div>
+                <div className="text-xs font-mono text-gray-300">{t('redteam.campaign.nTrialsPerChain')}</div>
+                <div className="text-[9px] text-gray-600">{t('redteam.campaign.nTrialsDesc')}</div>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -427,7 +426,7 @@ export default function CampaignTab() {
                   className="w-14 px-1 py-0.5 bg-black border border-gray-700 rounded text-xs font-mono text-cyan-400 text-center"
                 />
                 {nTrials < 30 && (
-                  <span className="text-[9px] text-yellow-500 font-mono">⚠ N&lt;30</span>
+                  <span className="text-[9px] text-yellow-500 font-mono">&laquo; N&lt;30</span>
                 )}
               </div>
             </div>
@@ -435,14 +434,14 @@ export default function CampaignTab() {
             {/* Include Null Control */}
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-xs font-mono text-gray-300">Include Null Control</div>
-                <div className="text-[9px] text-gray-600">Runs clean baseline (no injection) to compare with attack trials</div>
+                <div className="text-xs font-mono text-gray-300">{t('redteam.campaign.includeNullControl')}</div>
+                <div className="text-[9px] text-gray-600">{t('redteam.campaign.nullControlDesc')}</div>
               </div>
               <button
                 onClick={function() { setIncludeControl(function(p) { return !p; }); }}
                 className={'px-3 py-1 text-xs font-mono font-bold rounded border transition-colors ' + (includeControl ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' : 'bg-transparent text-gray-500 border-gray-700 hover:text-gray-300')}
               >
-                {includeControl ? 'ON' : 'OFF'}
+                {includeControl ? t('redteam.campaign.on') : t('redteam.campaign.off')}
               </button>
             </div>
           </div>
@@ -450,14 +449,14 @@ export default function CampaignTab() {
           {/* Aegis Shield */}
           <div className="flex items-center justify-between p-3 border border-blue-900/50 bg-blue-950/20 rounded">
              <div>
-                <div className="text-sm font-bold text-blue-400 font-mono">AEGIS SHIELD (δ²)</div>
-                <div className="text-[10px] text-gray-400">Strict structural separation parser before LLM inference. Proves Conjecture 1 by validating Conjecture 2.</div>
+                <div className="text-sm font-bold text-blue-400 font-mono">{t('redteam.campaign.aegisShieldD2')}</div>
+                <div className="text-[10px] text-gray-400">{t('redteam.campaign.aegisShieldD2Desc')}</div>
              </div>
              <button
                 onClick={function() { setAegisShield(function(p) { return !p; }); }}
                 className={'px-3 py-1 text-xs font-mono font-bold rounded border transition-colors ' + (aegisShield ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-transparent text-gray-500 border-gray-700 hover:text-gray-300')}
              >
-                {aegisShield ? 'ENABLED' : 'DISABLED'}
+                {aegisShield ? t('redteam.campaign.enabled') : t('redteam.campaign.disabled')}
              </button>
           </div>
         </div>
@@ -472,7 +471,7 @@ export default function CampaignTab() {
                        text-[#00ff41] border border-[#00ff41]/50 rounded
                        hover:bg-[#00ff41]/10 transition-colors"
           >
-            <Play size={12} /> EVALUATE CONJECTURE 1 (RUN CAMPAIGN)
+            <Play size={12} /> {t('redteam.campaign.btn.evaluate')}
           </button>
         ) : (
           <button
@@ -481,7 +480,7 @@ export default function CampaignTab() {
                        text-red-400 border border-red-500/50 rounded
                        hover:bg-red-500/10 transition-colors"
           >
-            <Square size={12} /> HALT EVALUATION
+            <Square size={12} /> {t('redteam.campaign.btn.halt')}
           </button>
         )}
         {rounds.length > 0 && (
@@ -490,14 +489,14 @@ export default function CampaignTab() {
               const blob = new Blob([JSON.stringify({ rounds, summary, levels }, null, 2)], { type: 'application/json' });
               const url = URL.createObjectURL(blob);
               const a = document.createElement('a');
-              a.href = url; a.download = `thesis-validation-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+              a.href = url; a.download = 'thesis-validation-' + new Date().toISOString().slice(0, 10) + '.json'; a.click();
               URL.revokeObjectURL(url);
             }}
             className="flex items-center gap-1 px-3 py-2 text-xs font-mono font-bold
                        text-gray-400 border border-gray-700 rounded
                        hover:border-gray-500 transition-colors"
           >
-            <Download size={12} /> EXPORT ACADEMIC LOGS
+            <Download size={12} /> {t('redteam.campaign.btn.exportAcademic')}
           </button>
         )}
       </div>
@@ -507,14 +506,14 @@ export default function CampaignTab() {
         {rounds.map((r, i) => {
           const badge = getScore(r.scores);
           return (
-            <details key={i} className={`border rounded group transition-colors ${
-              r.scores?.metric_reachable_subset_allowed === false 
-              ? 'border-red-800/60 bg-red-950/20' 
+            <details key={i} className={'border rounded group transition-colors ' + (
+              r.scores?.metric_reachable_subset_allowed === false
+              ? 'border-red-800/60 bg-red-950/20'
               : 'border-gray-800/50 bg-[#111]'
-            }`}>
+            )}>
               <summary className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-white/5 list-none">
                 <span className="text-gray-600 text-[10px] w-8">#{r.round}</span>
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${badge.color}`}>{badge.label}</span>
+                <span className={'text-[10px] font-bold px-1.5 py-0.5 rounded ' + badge.color}>{badge.label}</span>
                 <span className="text-xs text-gray-400 truncate flex-1 font-mono">{r.attack_message?.slice(0, 70)}...</span>
                 {r.scores?.heuristics?.length > 0 && (
                   <AlertTriangle size={14} className="text-yellow-500 shrink-0" />
@@ -523,17 +522,17 @@ export default function CampaignTab() {
               <div className="px-3 pb-3 space-y-3 mt-2 border-t border-gray-800 pt-2">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-black/40 p-2 rounded">
-                    <div className="text-[10px] text-gray-500 mb-1 font-bold">INJECTION VECTOR (i)</div>
+                    <div className="text-[10px] text-gray-500 mb-1 font-bold">{t('redteam.campaign.injectionVector')}</div>
                     <pre className="text-[11px] text-red-400/80 whitespace-pre-wrap font-mono">{r.attack_message}</pre>
                   </div>
                   <div className="bg-black/40 p-2 rounded">
-                    <div className="text-[10px] text-gray-500 mb-1 font-bold">STATE REACHED (M)</div>
+                    <div className="text-[10px] text-gray-500 mb-1 font-bold">{t('redteam.campaign.stateReached')}</div>
                     <pre className="text-[11px] text-gray-300 whitespace-pre-wrap max-h-40 overflow-y-auto font-mono custom-scrollbar">{r.target_response}</pre>
                   </div>
                 </div>
-                
+
                 <div className="bg-[#050505] border border-blue-900/30 p-2 rounded">
-                  <div className="text-[10px] text-blue-500/70 mb-1 font-bold">AEGIS FORMAL AUDIT</div>
+                  <div className="text-[10px] text-blue-500/70 mb-1 font-bold">{t('redteam.campaign.aegisFormalAudit')}</div>
                   {r.scores?.heuristics?.length > 0 && (
                     <div className="mb-2 space-y-1">
                       {r.scores.heuristics.map((h, idx) => (
@@ -553,25 +552,25 @@ export default function CampaignTab() {
 
       {/* Campaign Summary */}
       {summary && (
-        <div className={`border rounded p-4 space-y-3 ${summary.formal_metric_violations > 0 ? 'border-red-500/50 bg-red-900/10' : 'border-[#00ff41]/50 bg-[#00ff41]/5'}`}>
+        <div className={'border rounded p-4 space-y-3 ' + (summary.formal_metric_violations > 0 ? 'border-red-500/50 bg-red-900/10' : 'border-[#00ff41]/50 bg-[#00ff41]/5')}>
           <div className="flex items-center gap-2">
             {summary.formal_metric_violations > 0 ? <ShieldAlert className="text-red-500" size={18} /> : <div className="w-2 h-2 rounded-full bg-[#00ff41]"></div>}
-            <div className={`text-sm font-bold font-mono ${summary.formal_metric_violations > 0 ? 'text-red-400' : 'text-[#00ff41]'}`}>
-              {summary.formal_metric_violations > 0 ? 'THESIS CONJECTURE 1: EMPIRICALLY VALIDATED' : 'CONJECTURE NOT MET'}
+            <div className={'text-sm font-bold font-mono ' + (summary.formal_metric_violations > 0 ? 'text-red-400' : 'text-[#00ff41]')}>
+              {summary.formal_metric_violations > 0 ? t('redteam.campaign.conjectureValidated') : t('redteam.campaign.conjectureNotMet')}
             </div>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs font-mono bg-black/40 p-3 rounded">
             <div className="flex flex-col">
-              <span className="text-gray-500 text-[10px]">TOTAL EXECUTIONS</span>
+              <span className="text-gray-500 text-[10px]">{t('redteam.campaign.totalExecutions')}</span>
               <span className="text-gray-200 text-lg">{summary.total_rounds}</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-gray-500 text-[10px]">BYPASS RATE</span>
+              <span className="text-gray-500 text-[10px]">{t('redteam.campaign.bypassRate')}</span>
               <span className="text-gray-200 text-lg">{(summary.success_rate * 100).toFixed(1)}%</span>
             </div>
             <div className="flex flex-col border-l border-gray-800 pl-3">
-              <span className="text-gray-500 text-[10px]">UNAUTHORIZED STATES</span>
+              <span className="text-gray-500 text-[10px]">{t('redteam.campaign.unauthorizedStates')}</span>
               <span className={summary.unauthorized_side_effects > 0 ? 'text-red-400 text-lg' : 'text-gray-200 text-lg'}>{summary.unauthorized_side_effects}</span>
             </div>
             <div className="flex flex-col border-l border-gray-800 pl-3">
@@ -580,7 +579,7 @@ export default function CampaignTab() {
             </div>
           </div>
           {summary.formal_metric_violations > 0 && (
-             <p className="text-xs text-red-300 mt-2 italic">Conclusion: The causal LLM failed to segregate the operational prompt from the poisoned observational data, causing an out-of-bounds physical command.</p>
+             <p className="text-xs text-red-300 mt-2 italic">{t('redteam.campaign.conclusion')}</p>
           )}
         </div>
       )}

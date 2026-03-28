@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Terminal as TerminalIcon, Download, Trash2, Cpu, Shield, AlertTriangle, Bug } from 'lucide-react';
 
 export default function LogsView() {
+  var { t } = useTranslation();
   const [logs, setLogs] = useState([
     { id: 1, time: new Date().toLocaleTimeString(), level: 'INFO', module: 'SYS', msg: 'Aegis Red Team Lab initialized.' },
     { id: 2, time: new Date().toLocaleTimeString(), level: 'SUCCESS', module: 'DEFENSE', msg: 'Aegis Shield (δ²) structural separation verified.' },
@@ -35,9 +37,9 @@ export default function LogsView() {
       <header className="border-b border-neutral-800 pb-4 flex justify-between items-center">
         <div>
            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-             <TerminalIcon className="text-neutral-400" /> Ground Truth Telemetry
+             <TerminalIcon className="text-neutral-400" /> {t('redteam.view.logs.title')}
            </h2>
-           <p className="text-neutral-400 text-sm mt-1">Raw Server-Sent Events (SSE) log stream from the FastAPI backend Orchestrator.</p>
+           <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.logs.desc')}</p>
         </div>
         <div className="flex gap-3">
            <button 

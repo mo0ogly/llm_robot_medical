@@ -261,19 +261,23 @@ class TestStatisticalRigor:
         assert hi10 == 1.0
 
     def test_separation_score_interpretation(self):
-        """Sep(M) interpretation thresholds match thesis taxonomy."""
-        # No separation (delta-1 structurally insufficient)
+        """Sep(M) interpretation thresholds match thesis taxonomy.
+
+        Note: N >= 30 required for semantic interpretation (Zverev et al. 2025).
+        N=5 produces INCONCLUSIVE regardless of sep_score value — use N=30.
+        """
+        # No separation (delta-1 structurally insufficient) — N=30
         result = compute_separation_score(
-            [True, True, True, True, True],    # data position: all violate
-            [True, True, True, True, True],    # instr position: all violate too
+            [True] * 30,    # data position: all violate
+            [True] * 30,    # control: all violate too -> sep = 0
         )
         assert result["sep_score"] < 0.1
         assert "NO SEPARATION" in result["interpretation"]
 
-        # Strong separation (delta-3 working)
+        # Strong separation (delta-3 working) — N=30
         result = compute_separation_score(
-            [False, False, False, False, False],  # data: no violations
-            [True, True, True, True, True],       # instr: all violate
+            [False] * 30,   # data: no violations
+            [True] * 30,    # control: all violate -> sep = 1.0
         )
         assert result["sep_score"] >= 0.7
         assert "STRONG" in result["interpretation"]

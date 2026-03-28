@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Lock, ShieldAlert, Cpu, CheckCircle, XCircle, Settings, ShieldCheck, Zap } from 'lucide-react';
 
 export default function DefenseView() {
+  var { t } = useTranslation();
   const [shieldActive, setShieldActive] = useState(true);
   const [threshold, setThreshold] = useState(4);
   const [loading, setLoading] = useState(false);
@@ -83,9 +85,9 @@ export default function DefenseView() {
       <header className="border-b border-neutral-800 pb-4 flex justify-between items-center">
         <div>
            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-             <Lock className="text-blue-500 animate-pulse" /> Aegis Defenses (δ²)
+             <Lock className="text-blue-500 animate-pulse" /> {t('redteam.view.defense.title')}
            </h2>
-           <p className="text-neutral-400 text-sm mt-1">Structural separation, tag extraction, and SD-RAG sanitizer parameters.</p>
+           <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.defense.desc')}</p>
         </div>
         <div className="flex items-center gap-3">
            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${shieldActive ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-500'}`}>
