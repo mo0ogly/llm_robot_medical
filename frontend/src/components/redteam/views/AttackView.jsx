@@ -671,7 +671,8 @@ function CatalogCrudTab({ onInsert, t }) {
                 template: entry.message || entry.template || '',
                 message: entry.message || entry.template || '',
                 variables: entry.variables || {},
-                chain_id: entry.chain_id || null
+                chain_id: entry.chain_id || null,
+                help_md: entry.help_md || ''
               });
             }
           });
