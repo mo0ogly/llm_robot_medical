@@ -3339,6 +3339,11 @@ def get_scenario_by_id(scenario_id: str) -> Optional[Scenario]:
     return None
 
 
+def get_all_scenarios() -> list:
+    """Returns the full SCENARIO_CATALOG list (single source of truth)."""
+    return SCENARIO_CATALOG
+
+
 def render_message(step: ScenarioStep) -> str:
     """Substitutes {{variables}} in the attack message."""
     msg = step.message
