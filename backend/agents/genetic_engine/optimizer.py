@@ -310,12 +310,24 @@ class GeneticPromptOptimizer:
             ...     if event['type'] == 'success':
             ...         print(f"Found: {event['best_chromosome']['attack_prompt']}")
         """
+        # Semantic drift analyzer (cosine similarity — replaces Levenshtein, thesis W2)
+        try:
+            from agents.semantic_drift import SemanticDriftAnalyzer
+            drift_analyzer = SemanticDriftAnalyzer()
+            drift_available = True
+        except ImportError:
+            drift_analyzer = None
+            drift_available = False
+        baseline_prompt = None  # set after gen 0
+        drift_history = []      # per-generation drift from baseline
+
         # 1. Generate initial population
         population = await self._generate_initial_population()
         yield {
             "type": "init",
             "population_size": len(population),
             "intention": self.intention.name,
+            "semantic_drift_available": drift_available,
             "config": {
                 "max_iterations": self.config.max_iterations,
                 "population_size": self.config.population_size,
@@ -358,6 +370,21 @@ class GeneticPromptOptimizer:
                 if not c.aegis_scores.get("metric_reachable_subset_allowed", True)
             )
 
+            # --- Semantic Drift Measurement (thesis W2) ---
+            best_prompt = best.build_attack_prompt()
+            gen_drift = None
+            if baseline_prompt is None:
+                baseline_prompt = best_prompt  # gen 0 = reference
+                gen_drift = {"drift_from_baseline": 0.0, "similarity": 1.0}
+            elif drift_analyzer is not None:
+                sim = drift_analyzer.cosine_similarity(baseline_prompt, best_prompt)
+                gen_drift = {
+                    "drift_from_baseline": round(1.0 - sim, 4),
+                    "similarity": round(sim, 4),
+                }
+            if gen_drift:
+                drift_history.append(gen_drift)
+
             yield {
                 "type": "generation_done",
                 "generation": generation + 1,
@@ -366,23 +393,37 @@ class GeneticPromptOptimizer:
                 "population_size": len(population),
                 "aegis_violations": aegis_violations,
                 "top_3": [c.to_dict() for c in population[:3]],
+                "semantic_drift": gen_drift,
             }
 
             # Check success
             if best.fitness_score >= self.config.success_threshold:
                 best.is_successful = True
+                # Compute full mutation chain drift analysis
+                drift_summary = None
+                if drift_analyzer and baseline_prompt:
+                    top_prompts = [baseline_prompt] + [c.build_attack_prompt() for c in population[:3]]
+                    drift_summary = drift_analyzer.analyze_mutation_chain(top_prompts)
                 yield {
                     "type": "success",
                     "generation": generation + 1,
                     "best_chromosome": best.to_dict(),
                     "aegis_violations": aegis_violations,
+                    "semantic_drift_history": drift_history,
+                    "semantic_drift_summary": drift_summary,
                 }
                 return
 
-        # Max iterations reached
+        # Max iterations reached — include full drift analysis
+        drift_summary = None
+        if drift_analyzer and baseline_prompt and self.best_chromosome:
+            top_prompts = [baseline_prompt, self.best_chromosome.build_attack_prompt()]
+            drift_summary = drift_analyzer.analyze_mutation_chain(top_prompts)
         yield {
             "type": "complete",
             "best_chromosome": self.best_chromosome.to_dict() if self.best_chromosome else None,
             "total_generations": self.config.max_iterations,
             "final_fitness": self.best_chromosome.fitness_score if self.best_chromosome else 0,
+            "semantic_drift_history": drift_history,
+            "semantic_drift_summary": drift_summary,
         }
