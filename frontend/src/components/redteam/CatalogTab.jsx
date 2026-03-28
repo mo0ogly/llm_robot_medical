@@ -1,6 +1,6 @@
 // frontend/src/components/redteam/CatalogTab.jsx
 import { useState, useEffect } from 'react';
-import { Play, Pencil, Trash2, Plus, PlayCircle, Upload, FileSearch } from 'lucide-react';
+import { Play, Pencil, Trash2, Plus, PlayCircle, Upload, FileSearch, ChevronDown, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import InfectionDiff from './InfectionDiff';
 import robotEventBus from '../../utils/robotEventBus';
@@ -18,6 +18,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
   const [loading, setLoading] = useState(true);
   const [runningAttack, setRunningAttack] = useState(null);
   const [offline, setOffline] = useState(false);
+  const [expandedCats, setExpandedCats] = useState({});
   const [diffTarget, setDiffTarget] = useState(null); // { attack, category, safe, infected }
   const [baseRecord, setBaseRecord] = useState("");
 
@@ -44,9 +45,23 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
   useEffect(() => {
     fetch('/api/redteam/catalog')
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((data) => { setCatalog(data); setLoading(false); })
+      .then((data) => {
+        setCatalog(data);
+        const init = {};
+        Object.keys(data).forEach(function(k) { init[k] = true; });
+        setExpandedCats(init);
+        setLoading(false);
+      })
       .catch(() => { setOffline(true); setLoading(false); });
   }, []);
+
+  const toggleCategory = (cat) => {
+    setExpandedCats(function(prev) {
+      var next = Object.assign({}, prev);
+      next[cat] = !prev[cat];
+      return next;
+    });
+  };
 
   const runSingleAttack = async (attackType, attackMessage, index) => {
     const key = `${attackType}-${index}`;
@@ -104,10 +119,16 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
     <div className="space-y-4">
       {Object.entries(catalog).map(([category, attacks]) => (
         <div key={category} className={`border rounded-lg ${CATEGORY_COLORS[category] || 'border-gray-700'}`}>
-          <div className="px-3 py-2 font-bold text-xs tracking-wider flex items-center justify-between">
-            <span>{t(`redteam.category.${category}`, { defaultValue: category.toUpperCase() })} ({attacks.length})</span>
-          </div>
-          <div className="divide-y divide-gray-800/50">
+          <button
+            onClick={() => toggleCategory(category)}
+            className="w-full px-3 py-2 font-bold text-xs tracking-wider flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+          >
+            <span className="flex items-center gap-1">
+              {expandedCats[category] ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+              {t('redteam.category.' + category, { defaultValue: category.toUpperCase() })} ({attacks.length})
+            </span>
+          </button>
+          {expandedCats[category] && <div className="divide-y divide-gray-800/50">
             {attacks.map((attack, i) => {
               const key = `${category}-${i}`;
               const isRunning = runningAttack === key;
@@ -152,7 +173,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                 </div>
               );
             })}
-          </div>
+          </div>}
         </div>
       ))}
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Swords, Code, Play, ShieldAlert, Cpu, Activity, AlertTriangle, CheckCircle, BookOpen, X, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Swords, Code, Play, ShieldAlert, Cpu, Activity, AlertTriangle, CheckCircle, BookOpen, X, ChevronRight, Info } from 'lucide-react';
 import { ATTACK_TEMPLATES } from '../attackTemplates';
 
 // Build demo catalog from attackTemplates when backend is offline
@@ -307,6 +308,7 @@ function PromptForgeAssistant({ onInsert }) {
 // ── Main AttackView ─────────────────────────────────────────────────────────
 
 export default function AttackView() {
+  var { t } = useTranslation();
   var [catalog, setCatalog] = useState({});
   var [selectedCategory, setSelectedCategory] = useState('injection');
   var [payload, setPayload] = useState('');
@@ -314,6 +316,7 @@ export default function AttackView() {
   var [result, setResult] = useState(null);
   var [offline, setOffline] = useState(false);
   var [showAssistant, setShowAssistant] = useState(false);
+  var [showHelp, setShowHelp] = useState(false);
 
   useEffect(function() {
     fetch('/api/redteam/catalog')
@@ -336,22 +339,38 @@ export default function AttackView() {
       });
   }, []);
 
-  const runAttack = async () => {
+  var runAttack = async function() {
     setLoading(true);
     setResult(null);
     try {
-      const response = await fetch('/api/redteam/attack', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          attack_type: selectedCategory,
-          attack_message: payload
-        })
+      var bodyPayload = JSON.stringify({
+        attack_type: selectedCategory,
+        attack_message: payload
       });
-      const data = await response.json();
-      setResult(data);
+      var results = await Promise.allSettled([
+        fetch('/api/redteam/attack', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: bodyPayload
+        }).then(function(res) { return res.json(); }),
+        fetch('/api/redteam/svc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: payload, attack_type: selectedCategory })
+        }).then(function(res) { return res.json(); })
+      ]);
+      var attackResult = results[0].status === 'fulfilled' ? results[0].value : null;
+      var svcResult = results[1].status === 'fulfilled' ? results[1].value : null;
+      if (attackResult) {
+        if (svcResult) {
+          attackResult.svc = svcResult;
+        }
+        setResult(attackResult);
+      } else {
+        console.error('Attack failed:', results[0].reason);
+      }
     } catch (err) {
-      console.error("Attack failed:", err);
+      console.error('Attack failed:', err);
     } finally {
       setLoading(false);
     }
@@ -381,6 +400,18 @@ export default function AttackView() {
            <p className="text-neutral-400 text-sm mt-1">Design OODA attack instructions and static Context Poisoning vectors.</p>
         </div>
         <div className="flex gap-3 items-center">
+          {/* Help / Info toggle */}
+          <button
+            onClick={function() { setShowHelp(function(v) { return !v; }); }}
+            className={'p-2 rounded text-xs font-bold transition-all border ' + (
+              showHelp
+                ? 'bg-blue-950/30 border-blue-500/60 text-blue-400 hover:bg-blue-950/50'
+                : 'bg-neutral-900 border-neutral-700 text-neutral-400 hover:border-neutral-500 hover:text-neutral-200'
+            )}
+            title={t('redteam.forge.help_toggle')}
+          >
+            <Info size={14} />
+          </button>
           {/* Toggle Prompt Forge Assistant */}
           <button
             onClick={function() { setShowAssistant(function(v) { return !v; }); }}
@@ -409,6 +440,24 @@ export default function AttackView() {
           </button>
         </div>
       </header>
+
+      {showHelp && (
+        <div className="relative border border-blue-500/30 rounded-lg p-4 bg-blue-950/10 backdrop-blur-sm mb-2 animate-in fade-in duration-300">
+          <button
+            onClick={function() { setShowHelp(false); }}
+            className="absolute top-2 right-2 text-neutral-500 hover:text-white"
+          >
+            <X size={14} />
+          </button>
+          <h3 className="text-sm font-bold text-blue-400 mb-2">{t('redteam.forge.help_title')}</h3>
+          <ul className="text-xs text-neutral-300 space-y-1 list-disc list-inside">
+            <li>{t('redteam.forge.help_step1')}</li>
+            <li>{t('redteam.forge.help_step2')}</li>
+            <li>{t('redteam.forge.help_step3')}</li>
+            <li>{t('redteam.forge.help_step4')}</li>
+          </ul>
+        </div>
+      )}
 
       <div className={'grid grid-cols-1 gap-6 flex-1 overflow-hidden ' + (showAssistant ? 'lg:grid-cols-4' : 'lg:grid-cols-4')}>
         {/* Left: Attack Catalog Selection */}

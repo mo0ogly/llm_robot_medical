@@ -89,6 +89,10 @@ All chains are registered via `@register_chain` decorator and can be listed with
 - `POST /api/redteam/campaign/stream`: SSE stream for a full security audit.
 - `GET /api/scenarios`: List available Red Team scenarios.
 - `POST /api/redteam/separation-score`: Compute Sep(M) from data vs instruction position.
+- `GET /api/redteam/chains`: Chain registry listing.
+- `GET /api/redteam/telemetry/stream`: SSE real-time telemetry stream.
+- `GET /api/redteam/telemetry`: Telemetry buffer snapshot (JSON).
+- `GET /api/redteam/telemetry/health`: Telemetry subsystem health.
 
 ## Sep(M) — Separation Score (Zverev et al. 2025)
 

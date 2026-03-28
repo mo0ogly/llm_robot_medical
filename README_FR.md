@@ -137,6 +137,23 @@ Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête) :
 
 ---
 
+## Endpoints API
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `GET` | `/api/vitals` | Signes vitaux actuels du patient |
+| `POST` | `/api/chat` | Envoyer un message à l'assistant chirurgical |
+| `POST` | `/api/redteam/attack/stream` | Flux SSE pour une attaque ciblée unique |
+| `POST` | `/api/redteam/campaign/stream` | Flux SSE pour un audit de sécurité complet |
+| `GET` | `/api/scenarios` | Liste des scénarios Red Team disponibles |
+| `POST` | `/api/redteam/separation-score` | Calcul du Sep(M) à partir des positions data vs instruction |
+| `GET` | `/api/redteam/chains` | Liste du registre des chaînes d'attaque |
+| `GET` | `/api/redteam/telemetry/stream` | Flux SSE de télémétrie en temps réel |
+| `GET` | `/api/redteam/telemetry` | Snapshot du buffer de télémétrie (JSON) |
+| `GET` | `/api/redteam/telemetry/health` | Santé du sous-système de télémétrie |
+
+---
+
 ## Mode Démo "Hors Ligne"
 
 Aucun backend requis ! Si l'application React ne peut pas se connecter au serveur FastAPI, elle bascule automatiquement en **Mode Démo Mocké** avec des réponses pré-rédigées qui illustrent tous les scénarios d'attaque.

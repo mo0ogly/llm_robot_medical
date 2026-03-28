@@ -139,6 +139,23 @@ Hidden advanced panel (`Ctrl+Shift+R` or header button):
 
 ---
 
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/vitals` | Current patient vital signs |
+| `POST` | `/api/chat` | Send a message to the surgical assistant |
+| `POST` | `/api/redteam/attack/stream` | SSE stream for a single targeted attack |
+| `POST` | `/api/redteam/campaign/stream` | SSE stream for a full security audit |
+| `GET` | `/api/scenarios` | List available Red Team scenarios |
+| `POST` | `/api/redteam/separation-score` | Compute Sep(M) from data vs instruction position |
+| `GET` | `/api/redteam/chains` | Chain registry listing |
+| `GET` | `/api/redteam/telemetry/stream` | SSE real-time telemetry stream |
+| `GET` | `/api/redteam/telemetry` | Telemetry buffer snapshot (JSON) |
+| `GET` | `/api/redteam/telemetry/health` | Telemetry subsystem health |
+
+---
+
 ## "Offline" Demo Mode
 
 No backend needed! If the React app cannot connect to the FastAPI server, it switches automatically to **Mock Demo Mode** using pre-crafted responses that fully demonstrate all attack scenarios.

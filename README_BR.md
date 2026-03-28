@@ -138,6 +138,23 @@ Painel avançado oculto (`Ctrl+Shift+R` ou botão no cabeçalho):
 
 ---
 
+## Endpoints da API
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `GET` | `/api/vitals` | Sinais vitais atuais do paciente |
+| `POST` | `/api/chat` | Enviar uma mensagem ao assistente cirúrgico |
+| `POST` | `/api/redteam/attack/stream` | Stream SSE para um ataque direcionado único |
+| `POST` | `/api/redteam/campaign/stream` | Stream SSE para uma auditoria de segurança completa |
+| `GET` | `/api/scenarios` | Lista dos cenários Red Team disponíveis |
+| `POST` | `/api/redteam/separation-score` | Cálculo do Sep(M) a partir das posições data vs instrução |
+| `GET` | `/api/redteam/chains` | Listagem do registro de cadeias de ataque |
+| `GET` | `/api/redteam/telemetry/stream` | Stream SSE de telemetria em tempo real |
+| `GET` | `/api/redteam/telemetry` | Snapshot do buffer de telemetria (JSON) |
+| `GET` | `/api/redteam/telemetry/health` | Saúde do subsistema de telemetria |
+
+---
+
 ## Modo de Demonstração "Offline"
 
 Nenhum backend necessário! Se o aplicativo React não conseguir se conectar ao servidor FastAPI, ele muda automaticamente para o **Modo de Demonstração Simulado** com respostas pré-elaboradas que ilustram todos os cenários de ataque.
