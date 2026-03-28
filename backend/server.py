@@ -1329,31 +1329,66 @@ def get_chroma_client():
 
 @app.get("/api/rag/documents")
 async def list_documents():
-    """Liste tous les documents uniques dans la collection RAG."""
+    """List all unique documents in the RAG collection with chunk counts."""
     try:
         chroma = get_chroma_client()
         collection = chroma.get_or_create_collection("aegis_corpus")
-        
-        # Get all IDs and metadatas
+
         results = collection.get(include=["metadatas"])
-        
-        # Flatten and unique by source/filename
-        docs = []
-        seen_sources = set()
-        
+
+        doc_chunks = {}
         if results["metadatas"]:
             for meta in results["metadatas"]:
                 source = meta.get("source", "unknown")
-                if source not in seen_sources:
-                    docs.append({
-                        "id": source, # Use filename as ID for easier UI management
+                if source not in doc_chunks:
+                    doc_chunks[source] = {
+                        "id": source,
                         "filename": source,
                         "type": meta.get("type", "text"),
-                        "date": meta.get("date", "N/A")
-                    })
-                    seen_sources.add(source)
-        
-        return docs
+                        "date": meta.get("date", "N/A"),
+                        "chunk_count": 0,
+                    }
+                doc_chunks[source]["chunk_count"] += 1
+
+        return list(doc_chunks.values())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/rag/documents/{filename}/chunks")
+async def get_document_chunks(filename: str, limit: int = 20):
+    """Return chunks for a specific document with content preview."""
+    try:
+        chroma = get_chroma_client()
+        collection = chroma.get_or_create_collection("aegis_corpus")
+
+        results = collection.get(
+            where={"source": filename},
+            include=["documents", "metadatas", "embeddings"],
+        )
+
+        chunks = []
+        for i, doc_id in enumerate(results["ids"]):
+            text = results["documents"][i] if results["documents"] else ""
+            meta = results["metadatas"][i] if results["metadatas"] else {}
+            has_embedding = bool(
+                results.get("embeddings") and results["embeddings"][i]
+            )
+            chunks.append({
+                "id": doc_id,
+                "content": text[:500],
+                "length": len(text),
+                "metadata": meta,
+                "has_embedding": has_embedding,
+            })
+            if len(chunks) >= limit:
+                break
+
+        return {
+            "filename": filename,
+            "total_chunks": len(results["ids"]),
+            "chunks": chunks,
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
