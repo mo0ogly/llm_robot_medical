@@ -15,6 +15,32 @@
 
 **Rule**: Never say "done" without checking ALL relevant docs are updated. If the user has to ask "is this documented?" — it wasn't.
 
+## SINGLE SOURCE OF TRUTH — Strict Homogeneity
+
+**CRITICAL**: Backend and frontend MUST be strictly synchronized. NEVER have different data in Python vs JavaScript.
+
+**Architecture rule**: Data is defined ONCE, in Python (backend), and served via API. The frontend consumes the API. NO hardcoded data in .jsx/.js files that duplicates or contradicts backend data.
+
+| Data | Single Source | Consumed by |
+|------|-------------|-------------|
+| Attack templates (52) | `backend/attack_catalog.py` | Frontend via `/api/redteam/catalog` |
+| Scenarios (37) | `backend/scenarios.py` | Frontend via `/api/redteam/scenarios` |
+| Chain registry (34) | `backend/agents/attack_chains/__init__.py` | Frontend via `/api/redteam/chains` |
+| Help content | `ScenarioHelpModal.jsx` (frontend-only, OK) | Frontend only |
+
+**Violations to catch**:
+- Frontend has data that backend doesn't serve → SYNC backend
+- Backend has data that frontend doesn't display → SYNC frontend
+- Counts differ between README/frontend/backend → FIX immediately
+- Demo fallback data diverges from backend data → REGENERATE from backend
+
+**When adding a new template/scenario/chain**:
+1. Add in backend (Python) FIRST
+2. Expose via API endpoint
+3. Frontend consumes API (no local copy)
+4. Demo fallback auto-generated from backend export if needed
+5. Update all docs (checklist above)
+
 ## Project Structure
 
 - **Frontend**: React 18 + Vite + Tailwind v4 (port 5173)

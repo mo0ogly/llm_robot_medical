@@ -787,7 +787,7 @@ async def cyber_query_stream(req: CyberQueryRequest, request: Request):
 
 # === RED TEAM ORCHESTRATOR ENDPOINTS ===
 from pydantic import BaseModel as PydanticBaseModel
-from agents.red_team_agent import ATTACK_CATALOG
+from attack_catalog import get_catalog_by_category, get_templates_full
 
 
 class RedTeamAttackRequest(PydanticBaseModel):
@@ -801,11 +801,11 @@ _orchestrator = None
 _custom_catalog = None
 
 def _get_catalog():
+    """Return attack catalog from the single source of truth (attack_catalog.py)."""
     global _custom_catalog
     if _custom_catalog is None:
-        from agents.red_team_agent import ATTACK_CATALOG
         import copy
-        _custom_catalog = copy.deepcopy(ATTACK_CATALOG)
+        _custom_catalog = copy.deepcopy(get_catalog_by_category())
     return _custom_catalog
 
 
@@ -822,8 +822,14 @@ def _get_orchestrator(levels=None, lang="en"):
 
 @app.get("/api/redteam/catalog")
 async def get_attack_catalog():
-    """Liste toutes les attaques disponibles par catégorie."""
+    """Return attack payloads grouped by category (legacy format, 51 payloads)."""
     return _get_catalog()
+
+
+@app.get("/api/redteam/templates")
+async def get_attack_templates():
+    """Return all 52 attack templates with full metadata (name, category, chain_id, variables)."""
+    return get_templates_full()
 
 
 @app.post("/api/redteam/catalog/{category}")
