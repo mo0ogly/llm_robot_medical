@@ -787,7 +787,7 @@ async def cyber_query_stream(req: CyberQueryRequest, request: Request):
 
 # === RED TEAM ORCHESTRATOR ENDPOINTS ===
 from pydantic import BaseModel as PydanticBaseModel
-from attack_catalog import get_catalog_by_category, get_templates_full
+from attack_catalog import get_catalog_by_category, get_templates_full, get_template_help, get_all_help
 
 
 class RedTeamAttackRequest(PydanticBaseModel):
@@ -841,6 +841,21 @@ async def add_attack(category: str, body: dict):
         catalog[category] = []
     catalog[category].append(message)
     return {"status": "added", "category": category, "total": len(catalog[category])}
+
+
+@app.get("/api/redteam/templates/{template_id}/help")
+async def get_template_help_endpoint(template_id: str):
+    """Return the AEGIS audit MD help for a specific template."""
+    content = get_template_help(template_id)
+    if not content:
+        return {"error": "Template help not found", "template_id": template_id}
+    return {"template_id": template_id, "help": content}
+
+
+@app.get("/api/redteam/templates/help/all")
+async def get_all_template_help():
+    """Return all AEGIS audit MD help content, keyed by template ID."""
+    return get_all_help()
 
 
 @app.delete("/api/redteam/catalog/{category}/{index}")
