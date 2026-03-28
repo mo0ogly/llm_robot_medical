@@ -16,6 +16,8 @@ export default function CampaignTab() {
   const [levels, setLevels] = useState({ medical: 'normal', redteam: 'normal', security: 'normal' });
   const [showConfig, setShowConfig] = useState(false);
   const [aegisShield, setAegisShield] = useState(false);
+  const [nTrials, setNTrials] = useState(30);
+  const [includeControl, setIncludeControl] = useState(true);
   const [activeTab, setActiveTab] = useState('suite'); // 'suite' | 'full' | 'genetic'
   const [showLiveGrid, setShowLiveGrid] = useState(true);
   const [currentChain, setCurrentChain] = useState(null);
@@ -92,8 +94,14 @@ export default function CampaignTab() {
     setRunning(false);
   };
 
-  const startCampaign = () =>
-    streamFromEndpoint(`/api/redteam/campaign/stream?lang=${i18n.language}`, { levels, aegis_shield: aegisShield });
+  var startCampaign = function() {
+    return streamFromEndpoint('/api/redteam/campaign/stream?lang=' + i18n.language, {
+      levels: levels,
+      aegis_shield: aegisShield,
+      n_trials: nTrials,
+      include_null_control: includeControl,
+    });
+  };
 
   const runSelected = (templates) =>
     streamFromEndpoint('/api/redteam/campaign/stream?lang=' + i18n.language, {
@@ -312,10 +320,33 @@ export default function CampaignTab() {
         </div>
       </div>
 
-      {/* Sep(M) panel — shown after campaign completes with enough data */}
+      {/* Sep(M) panel — shown after campaign completes */}
       {summary?.violation_rate_ci && (
-        <div className="border border-cyan-900/50 rounded p-3 bg-cyan-950/10 font-mono text-xs space-y-1">
+        <div className="border border-cyan-900/50 rounded p-3 bg-cyan-950/10 font-mono text-xs space-y-2">
           <div className="text-cyan-400 font-bold mb-2 tracking-wider">SEP(M) — ZVEREV SEPARATION SCORE</div>
+
+          {/* Statistical validity warning */}
+          {(rounds.length < 30 || formalViolations === 0) && (
+            <div className="border border-yellow-600/40 bg-yellow-950/20 rounded p-2 space-y-1">
+              <div className="text-yellow-400 font-bold text-[10px] flex items-center gap-1">
+                <AlertTriangle size={11} /> STATISTICAL VALIDITY WARNING
+              </div>
+              {rounds.length < 30 && (
+                <div className="text-[9px] text-yellow-300/80">
+                  N = {rounds.length} &lt; 30 : insufficient sample size for statistical significance.
+                  Sep(M) requires N ≥ 30 per condition (Zverev et al. 2025, §4).
+                  <span className="text-yellow-500 font-bold"> Set N ≥ 30 in Campaign Parameters.</span>
+                </div>
+              )}
+              {formalViolations === 0 && (
+                <div className="text-[9px] text-yellow-300/80">
+                  Zero violations detected: Sep(M) = |0 - 0| = 0 is a <span className="font-bold text-yellow-400">statistical floor artifact</span>,
+                  NOT a separation measure. Either disable Aegis Shield (test δ¹ alone) or increase N.
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-2 text-[10px] text-gray-400">
             <div className="border border-gray-700 rounded p-2">
               <span className="text-cyan-300">violation_rate</span>: {(summary.violation_rate_ci.rate * 100).toFixed(1)}%
@@ -325,8 +356,17 @@ export default function CampaignTab() {
               <span className="text-cyan-300">δ¹ defense</span>: {formalViolations > 0 ? '❌ INSUFFICIENT' : '✓ Holding'}
               <div className="text-[9px] text-gray-600">Conjecture 1 {formalViolations > 0 ? 'supported' : 'not yet confirmed'}</div>
             </div>
+            <div className="border border-gray-700 rounded p-2">
+              <span className="text-cyan-300">N trials</span>: {rounds.length}
+              <div className={'text-[9px] ' + (rounds.length >= 30 ? 'text-emerald-500' : 'text-yellow-500')}>
+                {rounds.length >= 30 ? '✓ Statistically sufficient' : '⚠ Increase to ≥ 30'}
+              </div>
+            </div>
+            <div className="border border-gray-700 rounded p-2">
+              <span className="text-cyan-300">Aegis Shield</span>: {aegisShield ? 'ON (testing δ¹+δ²)' : 'OFF (testing δ¹ alone)'}
+              <div className="text-[9px] text-gray-600">{aegisShield ? 'Disable to isolate δ¹' : 'Pure behavioral defense test'}</div>
+            </div>
           </div>
-          <div className="text-[9px] text-gray-600 mt-1">To compute Sep(M): POST /api/redteam/separation-score — compares data-position vs instruction-position violation rates.</div>
         </div>
       )}
 
@@ -360,15 +400,62 @@ export default function CampaignTab() {
       {showConfig && (
         <div className="space-y-3">
           <AgentLevelSelector levels={levels} onChange={setLevels} />
-          
+
+          {/* --- Campaign Parameters --- */}
+          <div className="border border-gray-700/50 rounded p-3 bg-gray-900/30 space-y-3">
+            <div className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-1">Campaign Parameters</div>
+
+            {/* N Trials */}
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-xs font-mono text-gray-300">N Trials per Chain</div>
+                <div className="text-[9px] text-gray-600">Zverev et al. 2025: N ≥ 30 required for statistical significance</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="2" max="100" step="1"
+                  value={nTrials}
+                  onChange={function(e) { setNTrials(parseInt(e.target.value)); }}
+                  className="w-24 accent-cyan-500"
+                />
+                <input
+                  type="number"
+                  min="2" max="200"
+                  value={nTrials}
+                  onChange={function(e) { setNTrials(Math.max(2, parseInt(e.target.value) || 2)); }}
+                  className="w-14 px-1 py-0.5 bg-black border border-gray-700 rounded text-xs font-mono text-cyan-400 text-center"
+                />
+                {nTrials < 30 && (
+                  <span className="text-[9px] text-yellow-500 font-mono">⚠ N&lt;30</span>
+                )}
+              </div>
+            </div>
+
+            {/* Include Null Control */}
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-xs font-mono text-gray-300">Include Null Control</div>
+                <div className="text-[9px] text-gray-600">Runs clean baseline (no injection) to compare with attack trials</div>
+              </div>
+              <button
+                onClick={function() { setIncludeControl(function(p) { return !p; }); }}
+                className={'px-3 py-1 text-xs font-mono font-bold rounded border transition-colors ' + (includeControl ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' : 'bg-transparent text-gray-500 border-gray-700 hover:text-gray-300')}
+              >
+                {includeControl ? 'ON' : 'OFF'}
+              </button>
+            </div>
+          </div>
+
+          {/* Aegis Shield */}
           <div className="flex items-center justify-between p-3 border border-blue-900/50 bg-blue-950/20 rounded">
              <div>
                 <div className="text-sm font-bold text-blue-400 font-mono">AEGIS SHIELD (δ²)</div>
                 <div className="text-[10px] text-gray-400">Strict structural separation parser before LLM inference. Proves Conjecture 1 by validating Conjecture 2.</div>
              </div>
-             <button 
-                onClick={() => setAegisShield(!aegisShield)} 
-                className={`px-3 py-1 text-xs font-mono font-bold rounded border transition-colors ${aegisShield ? 'bg-blue-500/20 text-blue-400 border-blue-500/50 shadow-[#00ff41]/20' : 'bg-transparent text-gray-500 border-gray-700 hover:text-gray-300'}`}
+             <button
+                onClick={function() { setAegisShield(function(p) { return !p; }); }}
+                className={'px-3 py-1 text-xs font-mono font-bold rounded border transition-colors ' + (aegisShield ? 'bg-blue-500/20 text-blue-400 border-blue-500/50' : 'bg-transparent text-gray-500 border-gray-700 hover:text-gray-300')}
              >
                 {aegisShield ? 'ENABLED' : 'DISABLED'}
              </button>
