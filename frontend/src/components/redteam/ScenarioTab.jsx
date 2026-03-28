@@ -521,7 +521,7 @@ var DEMO_SCENARIOS = [
 ];
 
 export default function ScenarioTab() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [scenarios, setScenarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [offline, setOffline] = useState(false);
