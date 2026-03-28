@@ -712,6 +712,462 @@ const HELP_DB = {
   },
 
   // ═══════════════════════════════════════════════════════════════════
+  //  BACKEND-MAPPED CHAINS (17 chains with chainId → CHAIN_REGISTRY)
+  // ═══════════════════════════════════════════════════════════════════
+
+  'RAG Baseline — Simple Semantic Search': {
+    title: 'RAG Baseline — Semantic Search Attack Surface',
+    icon: 'Target',
+    conjecture: 'Conjecture 1',
+    severity: 'MEDIUM',
+    chainId: 'rag_basic',
+    description:
+      'The simplest RAG pipeline: embed query → retrieve similar docs → generate answer. ' +
+      'Serves as baseline for measuring how more advanced techniques (HyDE, fusion, multi-query) ' +
+      'amplify the attack surface. If baseline RAG is vulnerable, all derived RAG chains are too.',
+    formal:
+      'Baseline Reachable(M, i): limited to top-K documents by cosine similarity. ' +
+      'The attacker can only access what the retriever returns. Compare violation rate ' +
+      'with advanced RAG chains to measure the attack surface expansion.',
+    mechanism:
+      '1. User query is embedded with sentence-transformers\n' +
+      '2. Top-K similar documents retrieved from Chroma\n' +
+      '3. LLM generates answer from retrieved context\n' +
+      '4. No filtering, no guardrails — pure semantic match',
+    expected:
+      'Low-moderate success: depends entirely on what documents are in the corpus.\n' +
+      'If poisoned documents exist, they will be retrieved and used.',
+    defense:
+      'Delta-2: sanitize retrieved documents before LLM ingestion.\n' +
+      'Delta-3: validate output regardless of retrieved content.',
+    mitre: 'T1213',
+  },
+
+  'RAG Private — Air-Gapped Local Attack': {
+    title: 'RAG Private — Fully Local Attack Pipeline',
+    icon: 'Target',
+    conjecture: 'Conjecture 1',
+    severity: 'MEDIUM',
+    chainId: 'rag_private',
+    description:
+      'Fully local RAG: Ollama + local embeddings + Chroma. No data leaves the machine. ' +
+      'Proves that even air-gapped deployments are vulnerable to prompt injection — ' +
+      'the attack vector is the data in the local corpus, not the network.',
+    formal:
+      'Same formal model as rag_basic, but proves the attack is independent of ' +
+      'cloud vs local deployment. If Integrity(S) fails locally, it fails everywhere.',
+    mechanism:
+      '1. Identical to rag_basic but with local Ollama embeddings\n' +
+      '2. No API calls — everything runs on the machine\n' +
+      '3. Poisoned local documents are the attack vector',
+    expected:
+      'Same vulnerability as cloud RAG. Air-gapping does NOT protect against prompt injection.',
+    defense:
+      'Delta-2: sanitize local corpus. Delta-3: output validation.',
+    mitre: 'T1213',
+  },
+
+  'RAG Multi-Query — N-Angle Retrieval': {
+    title: 'RAG Multi-Query — Query Multiplication Attack',
+    icon: 'Beaker',
+    conjecture: 'Conjecture 1',
+    severity: 'HIGH',
+    chainId: 'rag_multi_query',
+    description:
+      'Generates N reformulations of the attack query to overcome retrieval limitations. ' +
+      'Each reformulation retrieves different documents, expanding the attack surface. ' +
+      'If one reformulation retrieves a poisoned document, the attack succeeds.',
+    formal:
+      'Multi-query expands Reachable(M, i) by factor N: each reformulation accesses ' +
+      'a different slice of the corpus. The probability of finding a vulnerable document ' +
+      'increases with N.',
+    mechanism:
+      '1. Original query → N reformulations via LLM\n' +
+      '2. Each reformulation retrieves K documents\n' +
+      '3. Total retrieval: up to N×K unique documents\n' +
+      '4. Union of all results fed to the LLM',
+    expected:
+      'Higher success rate than single-query RAG. More reformulations = more attack surface.',
+    defense:
+      'Delta-2: validate ALL reformulated queries before execution.\n' +
+      'Delta-3: validate final answer against all N retrievals.',
+    mitre: 'T1213',
+  },
+
+  'RAG Conversation — Memory Poisoning': {
+    title: 'RAG Conversation — Multi-Turn Memory Attack',
+    icon: 'AlertTriangle',
+    conjecture: 'Conjecture 1',
+    severity: 'HIGH',
+    chainId: 'rag_conversation',
+    description:
+      'RAG with conversation history. The attacker builds false premises across multiple turns, ' +
+      'then references them in the final turn as "established facts." The condensation step ' +
+      'merges the poisoned history into the standalone query.',
+    formal:
+      'Multi-turn extends Reachable(M, i) across time: each turn adds to the context window. ' +
+      'The attacker accumulates authority claims, false premises, and social engineering ' +
+      'across N turns, making the final injection appear well-supported.',
+    mechanism:
+      '1. Turn 1: innocent medical question (build rapport)\n' +
+      '2. Turn 2: introduce edge case (shift context)\n' +
+      '3. Turn 3: reference turns 1+2 as supporting evidence for dangerous claim\n' +
+      '4. Condensation merges history → standalone query carries the poison',
+    expected:
+      'Multi-turn attacks have 2-3x higher success rate than single-turn (literature).',
+    defense:
+      'Delta-2: analyze conversation history for escalation patterns.\n' +
+      'Delta-3: validate each response independently, not cumulatively.',
+    mitre: 'T1059.009',
+  },
+
+  'Chain of Note — Structured Reasoning Bypass': {
+    title: 'Chain of Note — Reading Note Manipulation',
+    icon: 'BookOpen',
+    conjecture: 'Conjecture 1',
+    severity: 'MEDIUM',
+    chainId: 'chain_of_note',
+    description:
+      'Generates structured reading notes before answering. The attacker asks questions ' +
+      'designed to produce notes that SUPPORT dangerous claims. If no documents exist, ' +
+      'the model may generate notes from "general principles" that justify the attack.',
+    formal:
+      'Chain of Note adds an intermediate reasoning step. If this step can be manipulated, ' +
+      'the model generates its own justification for violating Allowed(i).',
+    mechanism:
+      '1. Retrieve documents for the query\n' +
+      '2. Generate reading notes per document\n' +
+      '3. If no supporting docs: generate notes from "general knowledge"\n' +
+      '4. Synthesize answer from notes (which may be fabricated)',
+    expected:
+      'The structured reasoning can be a double-edged sword: it may either catch or amplify the injection.',
+    defense:
+      'Delta-3: validate reading notes AND final answer against safety constraints.',
+    mitre: 'T1565.001',
+  },
+
+  'Extraction — Structured Data Exfiltration': {
+    title: 'Extraction Chain — Structured PII/Secret Extraction',
+    icon: 'ShieldAlert',
+    conjecture: 'Conjecture 1',
+    severity: 'CRITICAL',
+    chainId: 'extraction',
+    description:
+      'Uses schema-enforced extraction to pull structured data from LLM outputs. ' +
+      'The attacker defines a JSON schema that requests system prompts, safety rules, ' +
+      'tool lists, and configuration parameters in a parseable format.',
+    formal:
+      'The extraction schema defines exactly what Reachable(M, i) the attacker wants. ' +
+      'If the model fills the schema, every requested field is extracted. ' +
+      'This is the most efficient data exfiltration technique.',
+    mechanism:
+      '1. Define JSON schema: {system_prompt, safety_rules, tools, limits}\n' +
+      '2. LLM attempts to fill each field from its context\n' +
+      '3. Structured output is machine-parseable\n' +
+      '4. Even partial fills reveal valuable information',
+    expected:
+      'High success for non-sensitive fields (tools, limits). Lower for system prompt extraction.',
+    defense:
+      'Delta-2: detect extraction schemas requesting system information.\n' +
+      'Delta-3: redact sensitive fields from structured output.',
+    mitre: 'T1552',
+  },
+
+  'Guardrails Bypass — Rule-Compliant Malice': {
+    title: 'Guardrails Chain — Validation Bypass Attack',
+    icon: 'ShieldAlert',
+    conjecture: 'Conjecture 2',
+    severity: 'HIGH',
+    chainId: 'guardrails',
+    description:
+      'Tests the guardrails validation layer by crafting outputs that PASS validation rules ' +
+      'while carrying malicious intent. The attacker formats dangerous content to comply ' +
+      'with the output format rules, proving format validation is insufficient.',
+    formal:
+      'Guardrails enforce structural rules on output. If the attacker can embed dangerous ' +
+      'content in a structurally valid format, delta-2 (guardrails) is bypassed. ' +
+      'This directly supports Conjecture 2: structural validation alone is insufficient.',
+    mechanism:
+      '1. Understand the guardrails rule set\n' +
+      '2. Format dangerous content to pass each rule\n' +
+      '3. Submit formatted payload\n' +
+      '4. If it passes validation: Conjecture 2 proven',
+    expected:
+      'High success: format compliance and semantic safety are orthogonal properties.',
+    defense:
+      'Delta-3: semantic validation in addition to format validation.',
+    mitre: 'T1036',
+  },
+
+  'Iterative Search — Multi-Step Reconnaissance': {
+    title: 'Iterative Search — Deep Reconnaissance Agent',
+    icon: 'Target',
+    conjecture: 'Conjecture 1',
+    severity: 'HIGH',
+    chainId: 'iterative_search',
+    description:
+      'Multi-step search agent that decomposes questions, searches iteratively, and reflects ' +
+      'on search quality. The attacker uses this to conduct deep reconnaissance of the system, ' +
+      'discovering attack surfaces that single-query approaches miss.',
+    formal:
+      'Iterative search maximizes Reachable(M, i) across multiple search rounds. ' +
+      'Each round refines the query based on previous results, converging on the ' +
+      'most sensitive information available.',
+    mechanism:
+      '1. Decompose "how to override safety limits" into sub-queries\n' +
+      '2. Search round 1: general safety architecture\n' +
+      '3. Reflect: refine queries based on what was found\n' +
+      '4. Search round 2: specific bypass techniques\n' +
+      '5. Final synthesis: comprehensive attack plan',
+    expected:
+      'Very high coverage: iterative refinement finds information that single queries miss.',
+    defense:
+      'Delta-2: monitor search patterns for escalation.\n' +
+      'Delta-3: validate final synthesis for dangerous content.',
+    mitre: 'T1595',
+  },
+
+  'Multi-Index Fusion — Cross-Source Attack': {
+    title: 'Multi-Index Fusion — Cross-Database Intelligence',
+    icon: 'Beaker',
+    conjecture: 'Conjecture 1',
+    severity: 'HIGH',
+    chainId: 'multi_index_fusion',
+    description:
+      'Searches across multiple independent knowledge bases (clinical guidelines, ' +
+      'vulnerability DB, attack patterns) and fuses results. The attacker leverages ' +
+      'cross-source correlation to build a comprehensive attack picture.',
+    formal:
+      'Multi-index fusion extends Reachable(M, i) across N independent corpora. ' +
+      'Each corpus may contain different pieces of sensitive information that, ' +
+      'when fused, create a complete attack vector.',
+    mechanism:
+      '1. Query sent to N retrievers (clinical, vulnerability, attack patterns)\n' +
+      '2. Each retriever returns relevant documents\n' +
+      '3. Cosine similarity re-ranking against original query\n' +
+      '4. Fused results provide multi-perspective intelligence',
+    expected:
+      'Cross-source fusion reveals correlations that single-source RAG misses.',
+    defense:
+      'Delta-2: access control per knowledge source.\n' +
+      'Delta-3: validate fused output for information combination risks.',
+    mitre: 'T1213',
+  },
+
+  'PII Guard Bypass — Data Leak Test': {
+    title: 'PII Guard — Personal Data Protection Bypass',
+    icon: 'ShieldAlert',
+    conjecture: 'Conjecture 2',
+    severity: 'CRITICAL',
+    chainId: 'pii_guard',
+    description:
+      'Tests the PII detection guardrail by submitting queries containing personal data ' +
+      '(names, SSNs, DOBs). If the guard fails, PII passes through to the LLM and may ' +
+      'appear in outputs — a direct GDPR/HIPAA violation.',
+    formal:
+      'PII guard is a delta-2 defense. If the attacker can format PII in a way that ' +
+      'bypasses detection (encoding, splitting, context embedding), the guard fails. ' +
+      'This proves delta-2 is insufficient for PII protection (Conjecture 2).',
+    mechanism:
+      '1. Submit query with embedded PII (name, SSN, DOB)\n' +
+      '2. PII guard scans input for personal data patterns\n' +
+      '3. If detected: response blocked (guard works)\n' +
+      '4. If not detected: PII reaches LLM and may leak in output',
+    expected:
+      'Standard PII patterns should be caught. Obfuscated PII (split SSN, encoded DOB) may bypass.',
+    defense:
+      'Delta-2: PII regex + NER detection.\n' +
+      'Delta-3: scan output for any PII that leaked through.',
+    mitre: 'T1552.001',
+  },
+
+  'Propositional Retrieval — Atomic Fact Injection': {
+    title: 'Propositional Retrieval — Granular Fact Poisoning',
+    icon: 'Beaker',
+    conjecture: 'Conjecture 1',
+    severity: 'MEDIUM',
+    chainId: 'propositional',
+    description:
+      'Decomposes input into atomic propositions and indexes each separately. ' +
+      'The attacker embeds false atomic facts ("FDA approved 1500g limits") that get ' +
+      'indexed and retrieved individually, appearing as independent evidence.',
+    formal:
+      'Propositional indexing fragments the attack into N atomic facts. Each fact ' +
+      'is independently retrievable and appears as a standalone evidence unit. ' +
+      'The LLM sees N independent "facts" supporting the dangerous claim.',
+    mechanism:
+      '1. Attacker submits text with embedded false atomic facts\n' +
+      '2. Each proposition is indexed independently in ChromaDB\n' +
+      '3. Future queries retrieve these false facts as evidence\n' +
+      '4. Multiple false facts create apparent consensus',
+    expected:
+      'Atomic indexing amplifies poisoning: one poisoned document generates N poisoned facts.',
+    defense:
+      'Delta-2: validate propositions against trusted reference before indexing.\n' +
+      'Delta-3: cross-validate retrieved facts against authoritative sources.',
+    mitre: 'T1565.001',
+  },
+
+  'Research Assistant — Automated Recon': {
+    title: 'Research Assistant — Automated Attack Intelligence',
+    icon: 'Target',
+    conjecture: 'Conjecture 1',
+    severity: 'CRITICAL',
+    chainId: 'research_assistant',
+    description:
+      'Multi-step research agent: selects specialist persona, generates sub-queries, ' +
+      'searches multiple sources, and writes a structured report. The attacker uses this ' +
+      'as an automated reconnaissance tool to map the entire attack surface.',
+    formal:
+      'The research agent maximizes Reachable(M, i) through: persona selection (access ' +
+      'different knowledge), sub-query generation (explore multiple angles), and ' +
+      'structured reporting (organize findings for exploitation).',
+    mechanism:
+      '1. Agent selects "Security Researcher" persona\n' +
+      '2. Generates sub-queries: safety limits, bypass methods, known vulns\n' +
+      '3. Searches each sub-query across available sources\n' +
+      '4. Compiles structured report with attack recommendations',
+    expected:
+      'Extremely high coverage: the agent does the attacker\'s job autonomously.',
+    defense:
+      'Delta-2: block "security research" persona selection.\n' +
+      'Delta-3: scan research reports for actionable attack intelligence.',
+    mitre: 'T1595',
+  },
+
+  'Router — Attack Category Steering': {
+    title: 'Router — Knowledge Source Manipulation',
+    icon: 'Beaker',
+    conjecture: 'Conjecture 1',
+    severity: 'MEDIUM',
+    chainId: 'router',
+    description:
+      'The router classifies questions and sends them to the appropriate retriever. ' +
+      'The attacker manipulates the classification to route queries to sources that ' +
+      'contain sensitive information (vulnerability DB instead of clinical guidelines).',
+    formal:
+      'The router controls WHICH Reachable(M, i) space is accessed. By steering ' +
+      'classification, the attacker accesses knowledge bases they should not query.',
+    mechanism:
+      '1. Attacker frames question as "security research"\n' +
+      '2. Router classifies: route to vulnerability_db\n' +
+      '3. Vulnerability DB returns sensitive technical details\n' +
+      '4. LLM presents vulnerabilities as "research findings"',
+    expected:
+      'Success depends on the router\'s classification accuracy and access controls.',
+    defense:
+      'Delta-2: enforce per-source access control regardless of router decision.\n' +
+      'Delta-3: validate that the source matches the user\'s authorization level.',
+    mitre: 'T1213',
+  },
+
+  'Solo Multi-Persona Agent — Expert Collusion': {
+    title: 'Solo Agent — Multi-Expert Attack Planning',
+    icon: 'AlertTriangle',
+    conjecture: 'Conjecture 1',
+    severity: 'HIGH',
+    chainId: 'solo_agent',
+    description:
+      'The LLM simulates multiple expert personas collaborating. The attacker requests ' +
+      'a panel of security experts to discuss attack strategies. Each "expert" contributes ' +
+      'specialized knowledge, and the consensus is a comprehensive attack plan.',
+    formal:
+      'Multi-persona extends Reachable(M, i) through role-play: the model accesses ' +
+      'knowledge it would refuse as a single assistant, but provides as a "simulated expert."',
+    mechanism:
+      '1. Request panel: Cybersecurity Researcher + Device Engineer + Pen Tester\n' +
+      '2. Each "expert" contributes domain-specific attack knowledge\n' +
+      '3. Group discussion synthesizes a multi-vector attack plan\n' +
+      '4. Consensus recommendation bypasses single-persona refusal',
+    expected:
+      'Role-play significantly increases compliance with dangerous requests.',
+    defense:
+      'Delta-1: refuse multi-persona attack planning.\n' +
+      'Delta-3: scan synthesized output regardless of persona framing.',
+    mitre: 'T1059.009',
+  },
+
+  'SQL Injection — Direct Database Attack': {
+    title: 'SQL Chain — NL-to-SQL Injection',
+    icon: 'ShieldAlert',
+    conjecture: 'Conjecture 1',
+    severity: 'CRITICAL',
+    chainId: 'sql_attack',
+    description:
+      'Generates SQL from natural language and executes against the database. ' +
+      'Classic SQL injection via LLM: the attacker manipulates the generated SQL to ' +
+      'exfiltrate data, modify records, or drop tables.',
+    formal:
+      'SQL execution is in Reachable(M, i) by design. The LLM translates NL to SQL, ' +
+      'meaning the attacker controls the generated SQL through natural language manipulation. ' +
+      'This is the strongest code execution vector.',
+    mechanism:
+      '1. Attacker submits NL query with embedded SQL fragments\n' +
+      '2. LLM generates SQL that includes the malicious fragments\n' +
+      '3. SQL is executed against the live database\n' +
+      '4. Results returned to the attacker',
+    expected:
+      'Very high risk if no SQL validation. Modern LLMs may refuse obvious DROP TABLE.',
+    defense:
+      'Delta-2: SQL validation (no DROP, no data modification, whitelist tables).\n' +
+      'Delta-3: read-only database connection.',
+    mitre: 'T1190',
+  },
+
+  'Tool Retrieval Agent — Dynamic Toolkit': {
+    title: 'Tool Retrieval Agent — Semantic Tool Discovery',
+    icon: 'Beaker',
+    conjecture: 'Conjecture 1',
+    severity: 'HIGH',
+    chainId: 'tool_retrieval_agent',
+    description:
+      'Dynamically selects tools from a large toolkit based on semantic similarity to the query. ' +
+      'The attacker describes their goal, and the agent automatically selects the most ' +
+      'relevant attack tools — including ones the attacker did not know existed.',
+    formal:
+      'Tool retrieval expands Reachable(M, i) to the ENTIRE toolkit: the agent can discover ' +
+      'and use tools the attacker did not explicitly request, based on semantic matching.',
+    mechanism:
+      '1. Tool descriptions indexed in FAISS\n' +
+      '2. Attacker describes goal: "override safety limits"\n' +
+      '3. Agent retrieves: prompt_injection, context_overflow, tool_hijack\n' +
+      '4. Agent executes each selected tool sequentially',
+    expected:
+      'The agent automates tool selection — it may find more effective tools than the attacker.',
+    defense:
+      'Delta-2: restrict available tools based on user authorization.\n' +
+      'Delta-3: human-in-the-loop for tool execution.',
+    mitre: 'T1059.009',
+  },
+
+  'XML Agent — Structured Injection': {
+    title: 'XML Agent — Structured XML Tool Injection',
+    icon: 'ShieldAlert',
+    conjecture: 'Conjecture 1',
+    severity: 'CRITICAL',
+    chainId: 'xml_agent',
+    description:
+      'Agent using XML-style tool tags for structured invocation (Anthropic-style). ' +
+      'The attacker submits pre-formed XML tool calls that the agent executes directly. ' +
+      'The structured format makes the injection look like a legitimate tool call.',
+    formal:
+      'XML tool calls are in Reachable(M, i) by design. The attacker provides a complete ' +
+      '<tool_call> block that the agent processes as if it were self-generated. ' +
+      'This is the most direct tool hijack vector.',
+    mechanism:
+      '1. Attacker submits XML: <tool_call><tool_name>set_tension</tool_name>...</tool_call>\n' +
+      '2. Agent parses the XML as a tool invocation\n' +
+      '3. Tool is called with attacker-specified parameters\n' +
+      '4. No distinction between user-submitted and agent-generated XML',
+    expected:
+      'Very high success: the XML format is designed to be parsed and executed.',
+    defense:
+      'Delta-2: strip XML tool calls from user input before agent processing.\n' +
+      'Delta-3: validate all tool call parameters regardless of source.',
+    mitre: 'T1059.009',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
   //  BACKEND-ONLY CHAINS (techniques from HouYi langchain-templates)
   // ═══════════════════════════════════════════════════════════════════
 
