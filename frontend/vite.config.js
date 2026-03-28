@@ -13,7 +13,7 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(version),
   },
   server: {
-    port: 5173,
+    port: parseInt(process.env.PORT || '5173', 10),
     proxy: {
       '/api': {
         target: 'http://localhost:8042',

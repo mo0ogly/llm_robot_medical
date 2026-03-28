@@ -248,9 +248,17 @@ export default function PlaygroundTab({ initialCategory, initialMessage }) {
                   {t('redteam.playground.stepper_title')}
                 </span>
               </div>
-              <AttackStepper 
-                attackMessage={resolveTemplate()} 
-                onExploit={runTest} 
+              <AttackStepper
+                attackMessage={resolveTemplate()}
+                category={category}
+                levels={levels}
+                lang={i18n.language}
+                onComplete={(data) => {
+                  if (data && data.attack) {
+                    setResult(data.attack);
+                    robotEventBus.emit('redteam:attack_result', data.attack);
+                  }
+                }}
               />
             </div>
           )}
