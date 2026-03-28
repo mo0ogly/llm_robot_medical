@@ -14,6 +14,8 @@ import DefenseView from './components/redteam/views/DefenseView.jsx'
 import LogsView from './components/redteam/views/LogsView.jsx'
 import AnalysisView from './components/redteam/views/AnalysisView.jsx'
 import ResultExplorer from './components/redteam/views/ResultExplorer.jsx'
+import ScenariosView from './components/redteam/views/ScenariosView.jsx'
+import CampaignView from './components/redteam/views/CampaignView.jsx'
 
 // import.meta.env.BASE_URL = "/llm_robot_medical/" (from vite.config.js)
 // BrowserRouter basename strips this prefix before matching routes
@@ -32,6 +34,8 @@ createRoot(document.getElementById('root')).render(
           <Route path="defense" element={<DefenseView />} />
           <Route path="logs" element={<LogsView />} />
           <Route path="analysis" element={<AnalysisView />} />
+          <Route path="scenarios" element={<ScenariosView />} />
+          <Route path="campaign" element={<CampaignView />} />
           <Route path="results" element={<ResultExplorer />} />
         </Route>
       </Routes>

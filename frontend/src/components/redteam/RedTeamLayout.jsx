@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { ShieldAlert, Database, Swords, Activity, Lock, Terminal, BarChart2, FileText } from 'lucide-react';
+import { ShieldAlert, Database, Swords, Activity, Lock, Terminal, BarChart2, FileText, Target, FlaskConical } from 'lucide-react';
 
 export default function RedTeamLayout() {
   const navItems = [
@@ -10,6 +10,8 @@ export default function RedTeamLayout() {
     { id: 'defense', label: 'Aegis Defenses', icon: <Lock size={20} />, path: '/redteam/defense' },
     { id: 'logs', label: 'Telemetry Logs', icon: <Terminal size={20} />, path: '/redteam/logs' },
     { id: 'analysis', label: 'Analytics', icon: <BarChart2 size={20} />, path: '/redteam/analysis' },
+    { id: 'scenarios', label: 'Scenarios', icon: <Target size={20} />, path: '/redteam/scenarios' },
+    { id: 'campaign', label: 'Campaign', icon: <FlaskConical size={20} />, path: '/redteam/campaign' },
     { id: 'results', label: 'Results Explorer', icon: <FileText size={20} />, path: '/redteam/results' },
   ];
 
