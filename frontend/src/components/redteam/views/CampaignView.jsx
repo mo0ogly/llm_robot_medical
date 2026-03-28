@@ -1,14 +1,30 @@
 // View wrapper for CampaignTab in the Command Center layout
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import CampaignTab from '../CampaignTab';
 
 export default function CampaignView() {
   var { t } = useTranslation();
+  var [count, setCount] = useState(0);
+
+  useEffect(function() {
+    fetch('/api/redteam/catalog')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var total = 0;
+        Object.values(data).forEach(function(arr) { total += arr.length; });
+        setCount(total);
+      })
+      .catch(function() { setCount(0); });
+  }, []);
+
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
         <h1 className="text-2xl font-bold text-neutral-100">{t('redteam.view.campaign.title')}</h1>
-        <span className="text-xs text-neutral-500 font-mono bg-neutral-800 px-2 py-1 rounded">52 templates</span>
+        <span className="text-xs text-neutral-500 font-mono bg-neutral-800 px-2 py-1 rounded">
+          {count + ' ' + t('redteam.view.catalog.badge_templates')}
+        </span>
       </div>
       <p className="text-sm text-neutral-400 mb-6">
         {t('redteam.view.campaign.desc')}

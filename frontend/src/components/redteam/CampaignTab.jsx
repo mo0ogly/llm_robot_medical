@@ -1,10 +1,11 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Square, Download, Settings2, AlertTriangle, ShieldAlert, ListChecks, Dna, SkipForward, Eye, EyeOff } from 'lucide-react';
+import { Play, Square, Download, Settings2, AlertTriangle, ShieldAlert, ListChecks, Dna, SkipForward, Eye, EyeOff, HelpCircle } from 'lucide-react';
 import AgentLevelSelector from './AgentLevelSelector';
 import DigitalTwin from './DigitalTwin';
 import TestSuitePanel from './TestSuitePanel';
 import GeneticProgressView from './GeneticProgressView';
+import ScenarioHelpModal from './ScenarioHelpModal';
 
 export default function CampaignTab() {
   const { t, i18n } = useTranslation();
@@ -21,9 +22,20 @@ export default function CampaignTab() {
   const [activeTab, setActiveTab] = useState('suite'); // 'suite' | 'full' | 'genetic'
   const [showLiveGrid, setShowLiveGrid] = useState(true);
   const [currentChain, setCurrentChain] = useState(null);
+  const [showCampaignHelp, setShowCampaignHelp] = useState(false);
   const abortRef = useRef(null);
   const feedRef = useRef(null);
   const skipRef = useRef(false);
+  const logEndRef = useRef(null);
+
+  // ── State: Execution Log Console ──
+  var [execLog, setExecLog] = useState([]);
+
+  var addLog = useCallback(function(level, msg) {
+    setExecLog(function(prev) {
+      return prev.concat([{ ts: new Date().toISOString().slice(11, 23), level: level, msg: msg }]).slice(-120);
+    });
+  }, []);
 
   // Build per-chain status from rounds
   var chainStatusMap = useMemo(function() {
@@ -50,6 +62,9 @@ export default function CampaignTab() {
     setRunning(true);
     setRounds([]);
     setSummary(null);
+    setExecLog([]);
+    var mode = body.attacks ? 'selected(' + body.attacks.length + ')' : 'full';
+    addLog('info', 'Campaign started — mode=' + mode + ' N=' + (body.n_trials || 'default') + ' aegis=' + (body.aegis_shield ? 'ON' : 'OFF'));
     const controller = new AbortController();
     abortRef.current = controller;
     try {
@@ -75,11 +90,22 @@ export default function CampaignTab() {
             if (payload.type === 'round_start') {
               setProgress({ current: payload.round, total: payload.total });
               setCurrentChain(payload.attack_name || payload.chain_id || null);
+              addLog('info', 'Round ' + payload.round + '/' + payload.total + ' — chain: ' + (payload.attack_name || payload.chain_id || 'unknown'));
             } else if (payload.type === 'round_result') {
               setRounds((prev) => [...prev, payload]);
               feedRef.current?.scrollTo(0, feedRef.current.scrollHeight);
+              var violation = payload.scores && !payload.scores.metric_reachable_subset_allowed;
+              addLog(violation ? 'breach' : 'secure', 'Round ' + payload.round + ' verdict: ' + (violation ? 'BREACH — Reachable ⊈ Allowed' : 'SECURE — attack blocked'));
+              if (payload.target_response) {
+                addLog('response', 'Response: ' + (payload.target_response || '').substring(0, 100) + (payload.target_response.length > 100 ? '...' : ''));
+              }
+              if (payload.audit_analysis) {
+                addLog('audit', 'AEGIS: ' + (payload.audit_analysis || '').split('\n')[0].substring(0, 100));
+              }
             } else if (payload.type === 'campaign_done') {
               setSummary(payload.summary);
+              var s = payload.summary || {};
+              addLog('result', 'Campaign complete — ' + (s.total_rounds || 0) + ' rounds, ' + ((s.success_rate || 0) * 100).toFixed(1) + '% bypass, ' + (s.formal_metric_violations || 0) + ' violations');
               const entry = { date: new Date().toISOString(), summary: payload.summary, roundCount: payload.summary?.total_rounds || 0 };
               const saved = JSON.parse(localStorage.getItem('redteam_history') || '[]');
               saved.unshift(entry);
@@ -89,7 +115,13 @@ export default function CampaignTab() {
         }
       }
     } catch (e) {
-      if (e.name !== 'AbortError') { console.error(e); setOffline(true); }
+      if (e.name !== 'AbortError') {
+        console.error(e);
+        setOffline(true);
+        addLog('error', 'FAILED: ' + (e.message || 'unknown error'));
+      } else {
+        addLog('warn', 'Campaign aborted by user');
+      }
     }
     setRunning(false);
   };
@@ -132,6 +164,26 @@ export default function CampaignTab() {
 
   return (
     <div className="space-y-4">
+      {/* ---- Campaign Help Button ---- */}
+      <div className="flex justify-end">
+        <button
+          onClick={function() { setShowCampaignHelp(true); }}
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded border border-gray-700 bg-gray-800/50 hover:bg-gray-700/50 text-gray-400 hover:text-gray-200 transition-colors text-[11px] font-mono"
+          title={t('redteam.campaign.helpBtn')}
+        >
+          <HelpCircle size={13} />
+          <span>{t('redteam.campaign.helpBtn')}</span>
+        </button>
+      </div>
+
+      {/* ---- Campaign Help Modal ---- */}
+      {showCampaignHelp && (
+        <ScenarioHelpModal
+          templateName="Formal Campaign"
+          onClose={function() { setShowCampaignHelp(false); }}
+        />
+      )}
+
       {offline && (
         <div className="border border-yellow-500/30 rounded p-4 bg-yellow-500/5 text-center">
           <div className="text-yellow-400 font-mono text-xs font-bold mb-2">{t('redteam.campaign.offline.title')}</div>
@@ -500,6 +552,54 @@ export default function CampaignTab() {
           </button>
         )}
       </div>
+
+      {/* ── Execution Log Console ── */}
+      {execLog.length > 0 && (
+        <div className="bg-black border border-neutral-800 rounded overflow-hidden">
+          <div className="flex items-center justify-between px-3 py-1.5 bg-neutral-950 border-b border-neutral-800">
+            <span className="text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-wider">Execution Log</span>
+            <button
+              onClick={function() { setExecLog([]); }}
+              className="text-[8px] font-mono text-neutral-600 hover:text-neutral-400 transition-colors"
+            >CLEAR</button>
+          </div>
+          <div className="p-2 max-h-48 overflow-y-auto font-mono text-[10px] space-y-0.5" ref={logEndRef}>
+            {execLog.map(function(log, i) {
+              var colors = {
+                info: 'text-neutral-500',
+                attack: 'text-yellow-400',
+                svc: 'text-cyan-400',
+                breach: 'text-red-400 font-bold',
+                secure: 'text-green-400 font-bold',
+                response: 'text-neutral-400 italic',
+                audit: 'text-blue-400',
+                result: 'text-purple-400',
+                warn: 'text-amber-400',
+                error: 'text-red-500 font-bold',
+              };
+              var prefixes = {
+                info: 'INF',
+                attack: 'ATK',
+                svc: 'SVC',
+                breach: 'BRK',
+                secure: 'SEC',
+                response: 'TGT',
+                audit: 'AUD',
+                result: 'RES',
+                warn: 'WRN',
+                error: 'ERR',
+              };
+              return (
+                <div key={i} className={'flex gap-2 ' + (colors[log.level] || 'text-neutral-500')}>
+                  <span className="text-neutral-700 shrink-0">{log.ts}</span>
+                  <span className="shrink-0 w-7">[{prefixes[log.level] || 'LOG'}]</span>
+                  <span className="break-all">{log.msg}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Feed */}
       <div ref={feedRef} className="space-y-2 max-h-[50vh] overflow-y-auto pr-1 custom-scrollbar">

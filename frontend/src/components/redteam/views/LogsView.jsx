@@ -42,15 +42,15 @@ export default function LogsView() {
            <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.logs.desc')}</p>
         </div>
         <div className="flex gap-3">
-           <button 
+           <button
              onClick={clearLogs}
              className="p-2 text-neutral-500 hover:text-red-500 transition-colors"
-             title="Clear Terminal"
+             title={t('redteam.logs.btn.clear')}
            >
               <Trash2 size={18} />
            </button>
            <button className="bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-2">
-              <Download size={16} /> Export JSON
+              <Download size={16} /> {t('redteam.logs.btn.export')}
            </button>
         </div>
       </header>
@@ -110,7 +110,7 @@ export default function LogsView() {
            <input 
              type="text" 
              className="flex-1 bg-transparent text-white outline-none placeholder-neutral-800" 
-             placeholder="Inject manual system signal or diagnostic command..." 
+             placeholder={t('redteam.logs.input.placeholder')}
            />
            <div className="flex gap-2 opacity-30">
               <Cpu size={14} />

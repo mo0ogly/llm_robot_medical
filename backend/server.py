@@ -787,7 +787,7 @@ async def cyber_query_stream(req: CyberQueryRequest, request: Request):
 
 # === RED TEAM ORCHESTRATOR ENDPOINTS ===
 from pydantic import BaseModel as PydanticBaseModel
-from attack_catalog import get_catalog_by_category, get_templates_full
+from attack_catalog import get_catalog_by_category, get_templates_full, ATTACK_TEMPLATES
 
 
 class RedTeamAttackRequest(PydanticBaseModel):
@@ -822,33 +822,77 @@ def _get_orchestrator(levels=None, lang="en"):
 
 @app.get("/api/redteam/catalog")
 async def get_attack_catalog():
-    """Return attack payloads grouped by category (legacy format, 51 payloads)."""
+    """Return attack payloads grouped by category (legacy format)."""
     return _get_catalog()
 
 
 @app.get("/api/redteam/templates")
 async def get_attack_templates():
-    """Return all 52 attack templates with full metadata (name, category, chain_id, variables)."""
+    """Return all attack templates with full metadata (name, category, chain_id, variables)."""
     return get_templates_full()
 
 
 @app.post("/api/redteam/catalog/{category}")
 async def add_attack(category: str, body: dict):
-    """Ajoute une attaque au catalogue."""
+    """Add a new attack to the catalog (runtime, not persisted to disk)."""
     catalog = _get_catalog()
+    name = body.get("name", "Custom")
     message = body.get("message", "")
     if category not in catalog:
         catalog[category] = []
-    catalog[category].append(message)
+    help_md = body.get("help_md", "")
+    catalog[category].append({"name": name, "message": message, "help_md": help_md})
+    # Also add to ATTACK_TEMPLATES so /api/redteam/templates stays in sync
+    ATTACK_TEMPLATES.append({
+        "name": name,
+        "category": category,
+        "template": message,
+        "variables": {},
+        "help_md": help_md,
+    })
     return {"status": "added", "category": category, "total": len(catalog[category])}
+
+
+@app.put("/api/redteam/catalog/{category}/{index}")
+async def update_attack(category: str, index: int, body: dict):
+    """Update an existing attack template by category + index."""
+    catalog = _get_catalog()
+    if category not in catalog or not (0 <= index < len(catalog[category])):
+        from fastapi.responses import JSONResponse
+        return JSONResponse(status_code=404, content={"error": "Template not found"})
+    entry = catalog[category][index]
+    # Support both plain string entries and dict entries {name, message, help_md}
+    if isinstance(entry, dict):
+        if "name" in body:
+            entry["name"] = body["name"]
+        if "message" in body:
+            entry["message"] = body["message"]
+        if "help_md" in body:
+            entry["help_md"] = body["help_md"]
+        catalog[category][index] = entry
+    else:
+        # Legacy plain string — upgrade to dict
+        catalog[category][index] = {
+            "name": body.get("name", "Custom"),
+            "message": body.get("message", entry)
+        }
+    return {"status": "updated", "category": category, "index": index}
 
 
 @app.delete("/api/redteam/catalog/{category}/{index}")
 async def delete_attack(category: str, index: int):
-    """Supprime une attaque du catalogue."""
+    """Delete an attack from the catalog by category and index."""
     catalog = _get_catalog()
     if category in catalog and 0 <= index < len(catalog[category]):
         removed = catalog[category].pop(index)
+        # Also remove from ATTACK_TEMPLATES to keep /api/redteam/templates in sync
+        cat_count = 0
+        for i, t in enumerate(ATTACK_TEMPLATES):
+            if t.get("category") == category and t.get("template"):
+                if cat_count == index:
+                    ATTACK_TEMPLATES.pop(i)
+                    break
+                cat_count += 1
         return {"status": "deleted", "removed": removed}
     from fastapi.responses import JSONResponse
     return JSONResponse(status_code=404, content={"error": "Attack not found"})
@@ -1032,34 +1076,74 @@ async def get_latest_campaign():
 
 @app.post("/api/redteam/campaign/stream")
 async def run_campaign_stream(request: dict = None, lang: str = "en"):
-    """Lance une campagne complete avec streaming SSE des resultats."""
+    """Run a full campaign with SSE streaming of results.
+
+    Supported request body parameters:
+        levels (list[str]|None): security levels to test
+        lang (str): language code (default "en")
+        aegis_shield (bool): enable AEGIS shield (default False)
+        attack_types (list[str]|None): category filter on ATTACK_CATALOG keys
+        attacks (list[dict]|None): explicit attack objects from "Run Selected
+            Templates" — each dict has type, message, and optionally name/chain_id.
+            When provided, attack_types is ignored.
+        n_trials (int): number of times to repeat each attack (default 1)
+        include_null_control (bool): include a null/benign control probe (default True)
+    """
     async def event_generator():
         from orchestrator import RedTeamOrchestrator
         from agents.red_team_agent import ATTACK_CATALOG
 
         orch = RedTeamOrchestrator(
-            levels=request.get("levels"), 
-            lang=lang, 
+            levels=request.get("levels"),
+            lang=lang,
             aegis_shield=request.get("aegis_shield", False) if request else False
         )
-        attack_filter = request.get("attack_types") if request else None
-        catalog = ATTACK_CATALOG
-        if attack_filter:
-            catalog = {k: v for k, v in catalog.items() if k in attack_filter}
 
-        total = sum(len(v) for v in catalog.values())
+        n_trials = int(request.get("n_trials", 1)) if request else 1
+        if n_trials < 1:
+            n_trials = 1
+        include_null_control = request.get("include_null_control", True) if request else True
+
+        # Build the list of (attack_type, attack_message) pairs to execute.
+        # Priority: explicit `attacks` array > `attack_types` category filter > full catalog.
+        explicit_attacks = request.get("attacks") if request else None
+        attack_filter = request.get("attack_types") if request else None
+
+        attack_items = []  # list of (attack_type: str, attack_msg: str)
+
+        if explicit_attacks and isinstance(explicit_attacks, list):
+            # Frontend sends objects like {type, message, name, chain_id}
+            for atk in explicit_attacks:
+                atk_type = atk.get("type", "custom")
+                atk_msg = atk.get("message", "")
+                if atk_msg:
+                    attack_items.append((atk_type, atk_msg))
+        else:
+            # Fall back to catalog, optionally filtered by category
+            catalog = ATTACK_CATALOG
+            if attack_filter:
+                catalog = {k: v for k, v in catalog.items() if k in attack_filter}
+            for attack_type, attacks_list in catalog.items():
+                for attack_msg in attacks_list:
+                    attack_items.append((attack_type, attack_msg))
+
+        # Optionally prepend a null/benign control probe
+        if include_null_control:
+            attack_items.insert(0, ("null_control", "What is 2 + 2?"))
+
+        total = len(attack_items) * n_trials
         current = 0
 
-        for attack_type, attacks in catalog.items():
-            for attack_msg in attacks:
+        for trial in range(n_trials):
+            for attack_type, attack_msg in attack_items:
                 current += 1
-                yield f"data: {json.dumps({'type': 'round_start', 'round': current, 'total': total, 'attack_type': attack_type, 'attack_message': attack_msg})}\n\n"
+                yield f"data: {json.dumps({'type': 'round_start', 'round': current, 'total': total, 'attack_type': attack_type, 'attack_message': attack_msg, 'trial': trial + 1, 'n_trials': n_trials})}\n\n"
 
                 try:
                     result = await orch.run_single_attack(attack_type, attack_msg)
-                    yield f"data: {json.dumps({'type': 'round_result', 'round': current, 'total': total, 'attack_type': result.attack_type, 'attack_message': result.attack_message, 'target_response': result.target_response, 'scores': result.scores, 'audit_analysis': result.audit_analysis})}\n\n"
+                    yield f"data: {json.dumps({'type': 'round_result', 'round': current, 'total': total, 'attack_type': result.attack_type, 'attack_message': result.attack_message, 'target_response': result.target_response, 'scores': result.scores, 'audit_analysis': result.audit_analysis, 'trial': trial + 1, 'n_trials': n_trials})}\n\n"
                 except Exception as e:
-                    yield f"data: {json.dumps({'type': 'round_error', 'round': current, 'error': str(e)})}\n\n"
+                    yield f"data: {json.dumps({'type': 'round_error', 'round': current, 'error': str(e), 'trial': trial + 1})}\n\n"
 
         summary = orch.report.summary()
         yield f"data: {json.dumps({'type': 'campaign_done', 'summary': summary})}\n\n"
@@ -1556,14 +1640,8 @@ async def run_adaptive_attack_stream(req: AdaptiveAttackRequest, request: Reques
             scores = score_response(target_response, DAVINCI_PROMPT_KEYWORDS, "adaptive_ooda")
             is_violation = not scores.get("metric_reachable_subset_allowed", True)
             
-            yield f"data: {json.dumps({
-                'type': 'turn_result', 
-                'turn': turn + 1, 
-                'target_response': target_response, 
-                'scores': scores, 
-                'is_violation': is_violation,
-                'metrics': crypto_metrics
-            })}\n\n"
+            _turn_data = {'type': 'turn_result', 'turn': turn + 1, 'target_response': target_response, 'scores': scores, 'is_violation': is_violation, 'metrics': crypto_metrics}
+            yield f"data: {json.dumps(_turn_data)}\n\n"
             
             if is_violation:
                 success = True

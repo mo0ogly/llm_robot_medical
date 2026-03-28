@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FileText, Search, Download, Trash2, FileJson, FileCode, CheckCircle, AlertCircle, Loader2, ChevronRight, HardDrive, TreePine, ChevronDown, Shield, ShieldAlert, ShieldCheck } from 'lucide-react';
 
 /**
@@ -6,7 +7,7 @@ import { FileText, Search, Download, Trash2, FileJson, FileCode, CheckCircle, Al
  * Displays a tree: Campaign → Chain → Trial with color-coded violations.
  * Green = Allowed(i) satisfied, Red = Reachable(M) ⊄ Allowed(i), Orange = warning.
  */
-function CampaignTreeView({ data }) {
+function CampaignTreeView({ data, t }) {
   var _e = useState({}), expanded = _e[0], setExpanded = _e[1];
 
   var toggle = function(key) {
@@ -21,8 +22,8 @@ function CampaignTreeView({ data }) {
     return (
       React.createElement('div', { className: 'p-8 text-center text-neutral-600' },
         React.createElement(TreePine, { size: 32, className: 'mx-auto mb-3 opacity-30' }),
-        React.createElement('p', { className: 'text-xs font-mono uppercase tracking-widest' }, 'No campaign data loaded'),
-        React.createElement('p', { className: 'text-[10px] mt-2 text-neutral-700' }, 'Load a campaign_*.json file from the sidebar')
+        React.createElement('p', { className: 'text-xs font-mono uppercase tracking-widest' }, t('redteam.explorer.tree.empty')),
+        React.createElement('p', { className: 'text-[10px] mt-2 text-neutral-700' }, t('redteam.explorer.tree.empty.desc'))
       )
     );
   }
@@ -35,7 +36,7 @@ function CampaignTreeView({ data }) {
       // Campaign header
       React.createElement('div', { className: 'p-3 rounded-lg bg-neutral-900 border border-neutral-800' },
         React.createElement('div', { className: 'flex justify-between items-center' },
-          React.createElement('span', { className: 'text-white font-bold' }, 'FORMAL CAMPAIGN'),
+          React.createElement('span', { className: 'text-white font-bold' }, t('redteam.explorer.campaign')),
           React.createElement('span', {
             className: 'px-2 py-0.5 rounded text-[9px] font-bold ' +
               (agg.violation_rate > 0.5 ? 'bg-red-900/30 text-red-400 border border-red-500/30' :
@@ -104,6 +105,7 @@ function CampaignTreeView({ data }) {
 }
 
 export default function ResultExplorer() {
+  var { t } = useTranslation();
   const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileContent, setFileContent] = useState(null);
@@ -155,7 +157,7 @@ export default function ResultExplorer() {
 
         // Auto-detect campaign files and render TreeView
         if (obj.per_chain && obj.aggregate && obj.separation_score) {
-          return <CampaignTreeView data={obj} />;
+          return <CampaignTreeView data={obj} t={t} />;
         }
         const formatted = JSON.stringify(obj, null, 2);
         // Simple regex highlighting for JSON
@@ -232,14 +234,14 @@ export default function ResultExplorer() {
             <HardDrive size={24} className="text-red-500" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white flex items-center gap-2">Experimental Results Repository</h2>
-            <p className="text-xs text-neutral-500 uppercase tracking-widest font-mono">Digital Archeology & Ph.D. Benchmarks</p>
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">{t('redteam.explorer.title')}</h2>
+            <p className="text-xs text-neutral-500 uppercase tracking-widest font-mono">{t('redteam.explorer.subtitle')}</p>
           </div>
         </div>
         <div className="flex items-center gap-4">
            {selectedFile && (
              <button className="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs font-bold transition-all border border-neutral-700 text-neutral-300">
-               <Download size={14} /> EXPORT SOURCE
+               <Download size={14} /> {t('redteam.explorer.btn.export')}
              </button>
            )}
            <button onClick={fetchFiles} className="p-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-all border border-neutral-700">
@@ -258,7 +260,7 @@ export default function ResultExplorer() {
               <input 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search experiments..." 
+                placeholder={t('redteam.explorer.search.placeholder')}
                 className="w-full bg-neutral-900 border border-neutral-800 rounded-lg py-2 pl-9 pr-4 text-xs focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none transition-all placeholder:text-neutral-600"
               />
             </div>
@@ -268,11 +270,11 @@ export default function ResultExplorer() {
             {loading ? (
               <div className="flex flex-col items-center justify-center h-48 opacity-30">
                 <Loader2 className="animate-spin mb-2" />
-                <span className="text-[10px] uppercase font-mono tracking-widest">Indexing directory...</span>
+                <span className="text-[10px] uppercase font-mono tracking-widest">{t('redteam.explorer.indexing')}</span>
               </div>
             ) : filteredFiles.length === 0 ? (
               <div className="p-8 text-center">
-                <p className="text-xs text-neutral-600 uppercase tracking-widest font-mono">No results found in experiments/results</p>
+                <p className="text-xs text-neutral-600 uppercase tracking-widest font-mono">{t('redteam.explorer.no_results')}</p>
               </div>
             ) : (
               <div className="py-2">
@@ -312,14 +314,14 @@ export default function ResultExplorer() {
           {fileLoading ? (
             <div className="flex-1 flex flex-col items-center justify-center opacity-50">
               <Loader2 size={32} className="animate-spin text-red-500 mb-4" />
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">Decrypting statistical node...</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">{t('redteam.explorer.loading')}</p>
             </div>
           ) : selectedFile ? (
             <div className="flex-1 flex flex-col overflow-hidden animate-in slide-in-from-right-2 duration-500">
               {/* Toolbar */}
               <div className="px-6 py-3 border-b border-neutral-800 bg-neutral-900/20 flex justify-between items-center text-[10px] font-mono text-neutral-500">
                 <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1"><CheckCircle size={12} className="text-emerald-500 text-[8px]" /> INTEGRITY VERIFIED</span>
+                  <span className="flex items-center gap-1"><CheckCircle size={12} className="text-emerald-500 text-[8px]" /> {t('redteam.explorer.integrity')}</span>
                   <span className="uppercase">{fileContent?.type} FORMAT</span>
                 </div>
                 <div>
@@ -334,8 +336,8 @@ export default function ResultExplorer() {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-neutral-600 border border-dashed border-neutral-800 m-8 rounded-3xl bg-neutral-900/10">
                <FileCode size={48} className="mb-4 opacity-20" />
-               <h3 className="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-2">No Document Selected</h3>
-               <p className="text-[10px] max-w-[240px] text-center font-mono uppercase tracking-tighter">Please select a result file from the Digital Archeology sidebar to visualize statistical data.</p>
+               <h3 className="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-2">{t('redteam.explorer.empty.title')}</h3>
+               <p className="text-[10px] max-w-[240px] text-center font-mono uppercase tracking-tighter">{t('redteam.explorer.empty.desc')}</p>
             </div>
           )}
         </main>

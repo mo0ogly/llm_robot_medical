@@ -219,13 +219,16 @@ export default function TestSuitePanel({ onRunSelected, rounds, summary, running
                 ? <CheckSquare size={12} className="flex-shrink-0" />
                 : <Square size={12} className="flex-shrink-0" />}
               <span className="text-[10px] font-mono truncate">{name}</span>
-              <button
+              <span
+                role="button"
+                tabIndex={0}
                 onClick={(e) => { e.stopPropagation(); setHelpTemplate(name); }}
-                className="p-0.5 rounded hover:bg-white/10 transition-colors flex-shrink-0 opacity-30 hover:opacity-100"
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); setHelpTemplate(name); } }}
+                className="p-0.5 rounded hover:bg-white/10 transition-colors flex-shrink-0 opacity-30 hover:opacity-100 cursor-pointer"
                 title="View attack documentation"
               >
                 <HelpCircle size={11} />
-              </button>
+              </span>
               <span className="text-[9px] opacity-50 flex-shrink-0">{category}</span>
             </button>
           );

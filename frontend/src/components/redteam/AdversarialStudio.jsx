@@ -77,7 +77,7 @@ var HELP_SECTIONS = [
     title: 'P1 — PROMPT FORGE',
     color: 'text-red-400',
     items: [
-      { field: 'Template Selector', desc: 'Browse 52 attack templates served from the backend API (/api/redteam/templates). Each template has a name, category (injection/rule_bypass/prompt_leak), optional chain_id, and variable placeholders.' },
+      { field: 'Template Selector', desc: 'Browse attack templates served from the backend API (/api/redteam/templates). Each template has a name, category (injection/rule_bypass/prompt_leak), optional chain_id, and variable placeholders.' },
       { field: 'Category Filter', desc: 'Filter templates by attack type: INJECTION (OBX/HL7 poisoning, tool hijacking), RULE BYPASS (authority chain, regulatory framing), PROMPT LEAK (translation trick, admin role-play).' },
       { field: 'Search', desc: 'Full-text search across template names. Matches are instant.' },
       { field: 'Variable Editor', desc: 'When a template contains {{VARIABLE}} placeholders, edit their values here. Variables are substituted in real-time before execution.' },
