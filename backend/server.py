@@ -949,6 +949,49 @@ async def compute_sep_score(req: SepScoreRequest, lang: str = "en"):
         return JSONResponse(status_code=503, content={"error": str(e)})
 
 
+@app.post("/api/redteam/svc")
+async def compute_svc_score(request: dict):
+    """
+    Calcule le Score de Vraisemblance Clinique (SVC) pour un prompt d'injection.
+
+    Contribution originale de la thèse doctorale (Naccache, ENS, 2026).
+    Référence : Chapitre X.Y.6.3, prompt_injection_construction.md
+
+    Body:
+        {
+          "prompt": str,
+          "attack_type": "injection" | "rule_bypass" | "prompt_leak",
+          "max_tension_g": int (optionnel, défaut 800)
+        }
+
+    Returns:
+        {
+          "svc": float,
+          "dimensions": {d1..d6},
+          "weights": {d1..d6},
+          "interpretation": str,
+          "mitre_ttps": [str],
+          "authority_types_found": [str],
+          "high_potential": bool,
+          "missing_dimensions": [str]
+        }
+    """
+    try:
+        from agents.security_audit_agent import compute_svc, AllowedOutputSpec
+        prompt = request.get("prompt", "")
+        attack_type = request.get("attack_type", "injection")
+        max_tension_g = request.get("max_tension_g", 800)
+        if not prompt:
+            from fastapi.responses import JSONResponse
+            return JSONResponse(status_code=400, content={"error": "prompt is required"})
+        spec = AllowedOutputSpec(max_tension_g=max_tension_g)
+        result = compute_svc(prompt=prompt, attack_type=attack_type, spec=spec)
+        return result
+    except Exception as e:
+        from fastapi.responses import JSONResponse
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
 @app.post("/api/redteam/run-all")
 async def run_full_audit():
     """Exécute TOUTES les attaques du catalogue."""
