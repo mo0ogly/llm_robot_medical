@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Square, Download, Settings2, AlertTriangle, ShieldAlert, ListChecks, Dna } from 'lucide-react';
+import { Play, Square, Download, Settings2, AlertTriangle, ShieldAlert, ListChecks, Dna, SkipForward, Eye, EyeOff } from 'lucide-react';
 import AgentLevelSelector from './AgentLevelSelector';
 import DigitalTwin from './DigitalTwin';
 import TestSuitePanel from './TestSuitePanel';
@@ -17,8 +17,24 @@ export default function CampaignTab() {
   const [showConfig, setShowConfig] = useState(false);
   const [aegisShield, setAegisShield] = useState(false);
   const [activeTab, setActiveTab] = useState('suite'); // 'suite' | 'full' | 'genetic'
+  const [showLiveGrid, setShowLiveGrid] = useState(true);
+  const [currentChain, setCurrentChain] = useState(null);
   const abortRef = useRef(null);
   const feedRef = useRef(null);
+  const skipRef = useRef(false);
+
+  // Build per-chain status from rounds
+  var chainStatusMap = useMemo(function() {
+    var map = {};
+    rounds.forEach(function(r) {
+      var key = r.chain_id || r.attack_name || r.attack_type || ('round_' + r.round);
+      if (!map[key]) map[key] = { total: 0, violations: 0, blocked: 0, name: r.attack_name || key };
+      map[key].total++;
+      if (r.scores && !r.scores.metric_reachable_subset_allowed) map[key].violations++;
+      else map[key].blocked++;
+    });
+    return map;
+  }, [rounds]);
 
   // startCampaign and runSelected both delegate to streamFromEndpoint below
 
@@ -54,8 +70,10 @@ export default function CampaignTab() {
           if (!line.startsWith('data: ')) continue;
           try {
             const payload = JSON.parse(line.slice(6));
-            if (payload.type === 'round_start') setProgress({ current: payload.round, total: payload.total });
-            else if (payload.type === 'round_result') {
+            if (payload.type === 'round_start') {
+              setProgress({ current: payload.round, total: payload.total });
+              setCurrentChain(payload.attack_name || payload.chain_id || null);
+            } else if (payload.type === 'round_result') {
               setRounds((prev) => [...prev, payload]);
               feedRef.current?.scrollTo(0, feedRef.current.scrollHeight);
             } else if (payload.type === 'campaign_done') {
@@ -78,10 +96,17 @@ export default function CampaignTab() {
     streamFromEndpoint(`/api/redteam/campaign/stream?lang=${i18n.language}`, { levels, aegis_shield: aegisShield });
 
   const runSelected = (templates) =>
-    streamFromEndpoint(`/api/redteam/campaign/stream?lang=${i18n.language}`, {
+    streamFromEndpoint('/api/redteam/campaign/stream?lang=' + i18n.language, {
       levels,
       aegis_shield: aegisShield,
-      attacks: templates.map((t) => ({ type: t.category, message: t.template, name: t.name })),
+      attacks: templates.map(function(t) {
+        return {
+          type: t.category,
+          message: t.template,
+          name: t.name,
+          chain_id: t.chainId || null,
+        };
+      }),
     });
 
   const getScore = (scores) => {
@@ -152,6 +177,78 @@ export default function CampaignTab() {
           running={running}
         />
       </div>
+
+      {/* ---- Live Chain Status Grid ---- */}
+      {(running || Object.keys(chainStatusMap).length > 0) && (
+        <div className="border border-gray-700/50 rounded p-3 bg-gray-900/50 space-y-2">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Eye size={14} className="text-cyan-400" />
+              <span className="text-[11px] font-mono font-bold text-gray-300 uppercase tracking-widest">Live Chain Monitor</span>
+              <span className="text-[9px] text-gray-600">{Object.keys(chainStatusMap).length} chains</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {running && (
+                <button
+                  onClick={function() { skipRef.current = true; }}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded bg-yellow-900/30 border border-yellow-700/50 text-yellow-400 text-[10px] font-mono hover:bg-yellow-900/50 transition-all"
+                  title="Skip current test and move to next"
+                >
+                  <SkipForward size={10} /> Skip
+                </button>
+              )}
+              <button
+                onClick={function() { setShowLiveGrid(function(p) { return !p; }); }}
+                className="text-gray-500 hover:text-gray-300 transition-colors"
+              >
+                {showLiveGrid ? <EyeOff size={12} /> : <Eye size={12} />}
+              </button>
+            </div>
+          </div>
+
+          {showLiveGrid && (
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-1">
+              {Object.entries(chainStatusMap).map(function(entry) {
+                var key = entry[0];
+                var stat = entry[1];
+                var hasViolation = stat.violations > 0;
+                var isCurrent = currentChain === key;
+                var bg = hasViolation
+                  ? 'bg-red-900/40 border-red-600/60'
+                  : 'bg-emerald-900/20 border-emerald-600/30';
+                if (isCurrent) bg = 'bg-cyan-900/40 border-cyan-400/60 animate-pulse';
+                return (
+                  <div
+                    key={key}
+                    className={'border rounded px-1.5 py-1 text-center cursor-default transition-all ' + bg}
+                    title={stat.name + ': ' + stat.violations + '/' + stat.total + ' violations'}
+                  >
+                    <div className="text-[8px] text-gray-400 truncate">{key.replace(/_/g, ' ').slice(0, 12)}</div>
+                    <div className={'text-[10px] font-mono font-bold ' + (hasViolation ? 'text-red-400' : 'text-emerald-400')}>
+                      {hasViolation ? stat.violations + '!' : stat.blocked + '✓'}
+                    </div>
+                  </div>
+                );
+              })}
+              {running && currentChain && !chainStatusMap[currentChain] && (
+                <div className="border border-cyan-400/60 bg-cyan-900/40 rounded px-1.5 py-1 text-center animate-pulse">
+                  <div className="text-[8px] text-cyan-300 truncate">{(currentChain || '').replace(/_/g, ' ').slice(0, 12)}</div>
+                  <div className="text-[10px] font-mono font-bold text-cyan-400">...</div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Current test indicator */}
+          {running && currentChain && (
+            <div className="flex items-center gap-2 mt-1 px-2 py-1 bg-cyan-950/30 border border-cyan-900/30 rounded">
+              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+              <span className="text-[10px] text-cyan-400 font-mono">Running: {currentChain}</span>
+              <span className="text-[9px] text-gray-600 ml-auto">{progress.current}/{progress.total}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ---- Genetic Prompt Optimizer (Liu et al., 2023) ---- */}
       <div className="border border-gray-700/50 rounded p-3 bg-gray-900/50 space-y-2">
