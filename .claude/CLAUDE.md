@@ -140,6 +140,7 @@ a.download = 'aegis_' + date + '.csv';
 - All docstrings in English
 - Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 - `research_archive/` is in .gitignore — use `git add -f` for thesis docs
+- **Exception PDCA C-52**: `research_archive/manuscript/` files are intentionally tracked via `git add -f` (thesis deliverables). This is NOT a violation — the .gitignore prevents accidental additions but thesis docs require explicit tracking.
 
 ## Statistical Validity
 
