@@ -24,7 +24,7 @@
 | Data | Single Source | Consumed by |
 |------|-------------|-------------|
 | Attack templates (52) | `backend/attack_catalog.py` | Frontend via `/api/redteam/catalog` |
-| Scenarios (37) | `backend/scenarios.py` | Frontend via `/api/redteam/scenarios` |
+| Scenarios (47) | `backend/scenarios.py` | Frontend via `/api/redteam/scenarios` |
 | Chain registry (34) | `backend/agents/attack_chains/__init__.py` | Frontend via `/api/redteam/chains` |
 | Help content | `ScenarioHelpModal.jsx` (frontend-only, OK) | Frontend only |
 
@@ -48,7 +48,7 @@
 - **34 attack chains** in `backend/agents/attack_chains/`
 - **52 attack templates** in `frontend/src/components/redteam/attackTemplates.js`
 - **52 help modals** in `frontend/src/components/redteam/ScenarioHelpModal.jsx`
-- **37 scenarios** in `frontend/src/components/redteam/ScenarioTab.jsx`
+- **47 scenarios** in `frontend/src/components/redteam/ScenarioTab.jsx`
 - **Thesis docs** in `research_archive/manuscript/`
 
 ## Template Literal Bug (esbuild/JSX)

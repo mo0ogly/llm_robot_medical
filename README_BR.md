@@ -162,7 +162,7 @@ pip install -r requirements.txt
 
 Isso instala:
 - **Core**: FastAPI, Uvicorn, Ollama, Pydantic, ChromaDB
-- **Red Team Lab**: Ecossistema LangChain (34 cadeias de ataque + 37 cenarios kill-chain portados da pesquisa de injecao de prompt)
+- **Red Team Lab**: Ecossistema LangChain (34 cadeias de ataque + 47 cenarios portados da pesquisa de injecao de prompt)
 - **Agentes**: AG2 (AutoGen) para orquestração multi-agente
 
 ### Instalação Frontend
@@ -198,7 +198,7 @@ docker-compose up --build
 
 ### Campanha Formal & Score Sep(M)
 
-O Red Team Lab inclui **34 cadeias** e **37 cenarios kill-chain** (18 multi-etapas + 19 solo). Cada cadeia tem pelo menos um cenario dedicado. Os 52 templates de ataque tem modais de ajuda detalhados.
+O Red Team Lab inclui **34 cadeias** e **47 cenarios** (10 originais + 37 kill-chain/solo). Cada cadeia tem pelo menos um cenario dedicado. Os 52 templates de ataque tem modais de ajuda detalhados.
 
 O pipeline de campanha (`run_formal_campaign()`) testa todas as 34 cadeias com parametros configuraveis:
 

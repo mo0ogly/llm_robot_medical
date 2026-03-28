@@ -6,7 +6,7 @@ export default function ScenariosView() {
     <div>
       <div className="flex items-center gap-3 mb-6">
         <h1 className="text-2xl font-bold text-neutral-100">Kill-Chain Scenarios</h1>
-        <span className="text-xs text-neutral-500 font-mono bg-neutral-800 px-2 py-1 rounded">34 chains / 37 scenarios</span>
+        <span className="text-xs text-neutral-500 font-mono bg-neutral-800 px-2 py-1 rounded">34 chains / 47 scenarios</span>
       </div>
       <p className="text-sm text-neutral-400 mb-6">
         Multi-step attack scenarios chaining 3-5 backend attack chains into realistic kill chains.

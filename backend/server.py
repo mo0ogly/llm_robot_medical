@@ -1083,6 +1083,7 @@ async def get_scenarios():
                     "objective": step.objective,
                     "message": step.message,
                     "variables": step.variables,
+                    "chain_id": step.chain_id,
                 }
                 for step in s.steps
             ],

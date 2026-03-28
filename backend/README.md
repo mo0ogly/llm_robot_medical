@@ -72,7 +72,7 @@ All chains are registered via `@register_chain` decorator and can be listed with
 
 - **52 attack templates** with configurable variables (`attackTemplates.js`)
 - **52 help modals** with formal framework, mechanism, defense analysis (`ScenarioHelpModal.jsx`)
-- **37 kill-chain scenarios** (18 multi-step + 19 solo) covering all 34 chains (`ScenarioTab.jsx`)
+- **47 scenarios** (10 original + 37 kill-chain/solo) covering all 34 chains (`ScenarioTab.jsx`)
 - Each chain has at minimum 1 dedicated scenario for individual testing
 
 ## 🤖 AI Agents
