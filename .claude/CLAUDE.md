@@ -1,5 +1,20 @@
 # CLAUDE.md — Project Rules for poc_medical
 
+## ZERO PLACEHOLDER / ZERO DECORATIVE — ABSOLUTE RULE
+
+**THIS IS A DOCTORAL THESIS PROJECT (ENS, 2026), NOT A DEMO OR AWARENESS TOOL.**
+
+**CAPITAL RULE — NO EXCEPTIONS:**
+1. **ZERO placeholder** — Every UI element MUST be wired to a real backend API call. No `setTimeout` faking progress, no hardcoded "SUCCESS" messages, no simulated terminal output.
+2. **ZERO decorative** — No Matrix rain, no fake exploitation animations, no theatrical "SYSTEM COMPROMISED" messages unless they reflect an actual API response.
+3. **Every phase shown in the UI MUST correspond to a real operation**: a real HTTP request, a real computation, a real LLM call.
+4. **Terminal/console outputs** must display real data returned by the backend (actual response text, actual scores, actual timing).
+5. **If a UI component cannot be wired to a real backend call, it must be removed** — not left as decoration.
+
+**Why**: The thesis director will reject any component that simulates results. Every visual element must be scientifically reproducible and traceable to real data.
+
+**Audit check**: `grep -rn 'setTimeout\|EXPLOITATION SUCCESSFUL\|SYSTEM COMPROMISED\|MatrixRain\|animate-matrix' frontend/src/` — any match is a violation.
+
 ## Mandatory Post-Change Documentation Checklist
 
 **AFTER EVERY feature, fix, or integration** — before declaring "done":
