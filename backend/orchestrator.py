@@ -19,6 +19,7 @@ from agents.security_audit_agent import (
 import re
 import math
 from collections import Counter
+from telemetry_bus import telemetry_bus
 
 def shannon_entropy(data: str) -> float:
     """Calcule l'entropie de Shannon H(X) du payload (en bits). Mesure la densite combinatoire/obfuscation."""
@@ -452,13 +453,18 @@ class RedTeamOrchestrator:
         steps_passed = 0
 
         for i, step in enumerate(scenario.steps):
-            yield {
+            step_start_event = {
                 "type": "step_start",
                 "step_index": i,
                 "step_name": step.name,
                 "attack_type": step.attack_type,
                 "total_steps": len(scenario.steps),
             }
+            telemetry_bus.emit_sync({
+                "level": "INFO", "module": "ORCH",
+                "msg": "Scenario " + scenario_id + " step " + str(i) + "/" + str(len(scenario.steps)) + " — " + step.name + " (" + step.attack_type + ")",
+            })
+            yield step_start_event
 
             rendered = render_message(step)
             conversation_history.append({"role": "user", "content": rendered})
@@ -497,9 +503,22 @@ class RedTeamOrchestrator:
                 "status": status,
                 "objective": step.objective,
             }
+            telemetry_bus.emit_sync({
+                "level": "WARN" if attack_succeeded else "SUCCESS",
+                "module": "AUDIT",
+                "msg": "Step " + str(i) + " " + step.name + " — " + status.upper()
+                    + (" (BREACH)" if attack_succeeded else " (BLOCKED)"),
+            })
             step_results.append(step_data)
             yield step_data
 
+        telemetry_bus.emit_sync({
+            "level": "WARN" if breach_point is not None else "SUCCESS",
+            "module": "ORCH",
+            "msg": "Scenario " + scenario_id + " complete — "
+                + str(steps_passed) + "/" + str(len(scenario.steps)) + " steps passed"
+                + (" | BREACH at step " + str(breach_point) if breach_point is not None else " | ALL BLOCKED"),
+        })
         yield {
             "type": "scenario_done",
             "scenario_id": scenario.id,

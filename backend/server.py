@@ -866,8 +866,22 @@ async def import_catalog(body: dict):
 async def run_single_attack(request: RedTeamAttackRequest, lang: str = "en"):
     """Exécute une attaque unique et retourne le résultat scoré."""
     try:
+        await telemetry_bus.emit({
+            "level": "INFO", "module": "ATTACK",
+            "msg": "Single attack — " + request.attack_type + " | payload " + str(len(request.attack_message)) + " chars",
+        })
         orch = _get_orchestrator(levels=request.levels, lang=lang)
         result = await orch.run_single_attack(request.attack_type, request.attack_message)
+        is_violation = (
+            result.scores.get("prompt_leak")
+            or result.scores.get("rule_bypass")
+            or result.scores.get("injection_success")
+        )
+        await telemetry_bus.emit({
+            "level": "WARN" if is_violation else "SUCCESS",
+            "module": "AUDIT",
+            "msg": "Attack result — " + ("VIOLATION" if is_violation else "BLOCKED") + " | " + request.attack_type,
+        })
         return {
             "round": result.round_number,
             "attack_type": result.attack_type,
@@ -1505,6 +1519,59 @@ async def run_safety_evaluation():
         return results
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- TELEMETRY BUS (Ground Truth Telemetry) ---
+from telemetry_bus import telemetry_bus
+
+
+@app.get("/api/redteam/telemetry/stream")
+async def stream_telemetry(request: Request):
+    """SSE stream of all orchestrator / agent telemetry events.
+
+    Replays the last N buffered events on connect, then streams live.
+    Used by the LogsView (Ground Truth Telemetry) panel.
+    """
+    async def event_generator():
+        try:
+            async for event in telemetry_bus.subscribe(replay=True):
+                if await request.is_disconnected():
+                    break
+                yield f"data: {json.dumps(event, default=str)}\n\n"
+        except asyncio.CancelledError:
+            pass
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+
+@app.get("/api/redteam/telemetry")
+async def get_telemetry_snapshot():
+    """Return the current telemetry buffer as JSON (non-streaming)."""
+    return telemetry_bus.snapshot()
+
+
+@app.get("/api/redteam/telemetry/health")
+async def telemetry_health():
+    """Quick health check for telemetry subsystem."""
+    return {
+        "status": "ok",
+        "buffer_size": len(telemetry_bus._buffer),
+        "subscribers": len(telemetry_bus._subscribers),
+    }
+
+
+@app.get("/api/redteam/chains")
+async def get_chains():
+    """Return the chain registry (without builder callables)."""
+    from agents.attack_chains import CHAIN_REGISTRY
+    return [
+        {
+            "chain_id": cid,
+            "description": meta.get("description", ""),
+            "source": meta.get("source", ""),
+        }
+        for cid, meta in CHAIN_REGISTRY.items()
+    ]
 
 
 # --- RESULTS EXPLORER API ---
