@@ -1,23 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { Swords, Code, Play, ShieldAlert, Cpu, Activity, AlertTriangle, CheckCircle } from 'lucide-react';
+import { ATTACK_TEMPLATES } from '../attackTemplates';
+
+// Build demo catalog from attackTemplates when backend is offline
+function buildDemoCatalog() {
+  var cats = {};
+  ATTACK_TEMPLATES.forEach(function(t) {
+    if (!t.template) return; // skip empty Custom
+    var cat = t.category || 'injection';
+    if (!cats[cat]) cats[cat] = [];
+    // Resolve variables in template
+    var msg = t.template;
+    if (t.variables) {
+      Object.keys(t.variables).forEach(function(k) {
+        msg = msg.replace(new RegExp('\\{\\{' + k + '\\}\\}', 'g'), t.variables[k]);
+      });
+    }
+    cats[cat].push({ name: t.name, message: msg });
+  });
+  return cats;
+}
 
 export default function AttackView() {
-  const [catalog, setCatalog] = useState({});
-  const [selectedCategory, setSelectedCategory] = useState('injection');
-  const [payload, setPayload] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
+  var [catalog, setCatalog] = useState({});
+  var [selectedCategory, setSelectedCategory] = useState('injection');
+  var [payload, setPayload] = useState('');
+  var [loading, setLoading] = useState(false);
+  var [result, setResult] = useState(null);
+  var [offline, setOffline] = useState(false);
 
-  useEffect(() => {
+  useEffect(function() {
     fetch('/api/redteam/catalog')
-      .then(res => res.json())
-      .then(data => {
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
         setCatalog(data);
         if (data.injection && data.injection.length > 0) {
           setPayload(data.injection[0]);
         }
       })
-      .catch(err => console.error("Filter fetch failed:", err));
+      .catch(function() {
+        // Fallback to demo catalog from attackTemplates
+        console.warn('Backend missing, using demo attack catalog.');
+        var demo = buildDemoCatalog();
+        setCatalog(demo);
+        setOffline(true);
+        if (demo.injection && demo.injection.length > 0) {
+          setPayload(demo.injection[0].message || demo.injection[0]);
+        }
+      });
   }, []);
 
   const runAttack = async () => {
@@ -43,6 +73,13 @@ export default function AttackView() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 h-full flex flex-col p-4 bg-black/20 rounded-xl border border-white/5 shadow-2xl backdrop-blur-md">
+      {offline && (
+        <div className="border border-yellow-500/30 rounded p-2 bg-yellow-500/5 text-center mb-4">
+          <span className="text-yellow-400 font-mono text-[10px] font-bold">DEMO MODE</span>
+          <span className="text-[10px] text-gray-500 ml-2">Backend offline — 52 templates loaded from local catalog (execution disabled)</span>
+        </div>
+      )}
+
       <header className="border-b border-neutral-800 pb-4 flex justify-between items-center">
         <div>
            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -77,20 +114,24 @@ export default function AttackView() {
                <div key={cat} className="space-y-1">
                  <div className="text-[10px] text-neutral-600 font-bold uppercase mb-1 ml-1">{cat}</div>
                  <div className="space-y-1">
-                    {catalog[cat].map((msg, idx) => (
-                      <div 
+                    {catalog[cat].map(function(item, idx) {
+                      var msg = typeof item === 'string' ? item : item.message;
+                      var label = typeof item === 'string' ? item : item.name;
+                      return (
+                      <div
                         key={idx}
-                        onClick={() => { setSelectedCategory(cat); setPayload(msg); }}
-                        className={`p-2 text-[11px] font-mono rounded cursor-pointer transition-all border ${
-                          payload === msg 
-                            ? 'bg-red-950/20 border-red-500/50 text-red-200' 
+                        onClick={function() { setSelectedCategory(cat); setPayload(msg); }}
+                        className={'p-2 text-[11px] font-mono rounded cursor-pointer transition-all border ' + (
+                          payload === msg
+                            ? 'bg-red-950/20 border-red-500/50 text-red-200'
                             : 'bg-black/40 border-neutral-800 text-neutral-500 hover:border-neutral-600'
-                        } truncate`}
+                        ) + ' truncate'}
                         title={msg}
                       >
-                        {msg}
+                        {label}
                       </div>
-                    ))}
+                      );
+                    })}
                  </div>
                </div>
              ))}
