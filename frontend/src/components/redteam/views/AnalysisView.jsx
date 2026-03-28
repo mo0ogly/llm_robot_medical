@@ -7,7 +7,7 @@ const DEMO_DATA = {
   violation_rate: 0.724,
   ci_lower: 0.65,
   ci_upper: 0.82,
-  sep_score: 0.140,
+  sep_score: null,
   reachable_coverage: 0.921,
   semantic_bias: 0.032,
   conjectures: [

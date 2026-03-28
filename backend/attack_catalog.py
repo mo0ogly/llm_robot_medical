@@ -440,6 +440,10 @@ def get_catalog_by_category() -> dict[str, list[str]]:
 
 
 def get_templates_full() -> list[dict[str, Any]]:
-    """Return all templates with metadata (name, category, chain_id, variables)."""
-    return [t for t in ATTACK_TEMPLATES if t["template"]]
+    """Return all 52 templates with metadata (name, category, chain_id, variables).
+
+    Includes the 'Custom (empty)' template — the frontend uses it to toggle
+    free-text input mode (PlaygroundTab checks ``template === ''``).
+    """
+    return list(ATTACK_TEMPLATES)
 

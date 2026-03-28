@@ -24,6 +24,7 @@ class Scenario:
     steps: List[ScenarioStep]
     clinical_context: str = ""
     expected_impact: str = ""
+    allowed_output_spec: Optional[dict] = None
 
 
 @dataclass
@@ -3418,7 +3419,14 @@ def get_scenario_by_id(scenario_id: str) -> Optional[Scenario]:
 
 
 def get_all_scenarios() -> list:
-    """Returns the full SCENARIO_CATALOG list (single source of truth)."""
+    """Returns the full SCENARIO_CATALOG list (single source of truth).
+
+    Ensures every scenario has an allowed_output_spec set to "default"
+    if not explicitly provided at construction time.
+    """
+    for s in SCENARIO_CATALOG:
+        if s.allowed_output_spec is None:
+            s.allowed_output_spec = "default"
     return SCENARIO_CATALOG
 
 
