@@ -31,7 +31,7 @@ python server.py
 - **server.py**: FastAPI endpoints for UI interaction and SSE streaming.
 - **orchestrator.py**: AutoGen implementation of the multi-agent logic (RedTeam, DaVinci, Aegis).
 - **agents/prompts.py**: System prompts for different difficulty levels.
-- **agents/attack_chains/**: 23 attack chain modules (see below).
+- **agents/attack_chains/**: 34 attack chain modules (see below).
 - **agents/attack_chains/llm_factory.py**: AI-agnostic LLM/embedding provider factory (Ollama/OpenAI/Anthropic).
 - **scenarios.py**: Definitions of complex attack scenarios.
 
@@ -81,3 +81,31 @@ All chains are registered via `@register_chain` decorator and can be listed with
 - `POST /api/redteam/attack/stream`: SSE stream for a single targeted attack.
 - `POST /api/redteam/campaign/stream`: SSE stream for a full security audit.
 - `GET /api/scenarios`: List available Red Team scenarios.
+- `POST /api/redteam/separation-score`: Compute Sep(M) from data vs instruction position.
+
+## Sep(M) — Separation Score (Zverev et al. 2025)
+
+The separation score measures whether the model treats data-position and instruction-position payloads differently.
+
+```
+Sep(M) = |P_data(violation) - P_instr(violation)|
+```
+
+**Statistical validity requirements:**
+
+| Parameter | Required | Configurable in UI |
+|-----------|----------|-------------------|
+| N trials per chain | >= 30 | Slider in Campaign Parameters |
+| Violations detected | > 0 in at least 1 condition | Disable Aegis Shield to test delta-1 alone |
+| Null control included | Recommended | Toggle in Campaign Parameters |
+
+**WARNING:** `Sep(M) = 0` with zero violations is a **statistical floor artifact**, not a separation measure. The function returns `statistically_valid: false` and `warnings` when conditions are not met.
+
+## Semantic Drift (Cosine Similarity)
+
+Replaces Levenshtein distance for measuring mutation drift in the genetic optimizer.
+
+- Model: `all-MiniLM-L6-v2` (Sentence-BERT)
+- Module: `agents/semantic_drift.py`
+- Integrated in: `agents/genetic_engine/optimizer.py` (per-generation SSE events)
+- Dependency: `sentence-transformers` (in requirements.txt)

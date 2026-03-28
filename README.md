@@ -132,7 +132,7 @@ Hidden advanced panel (`Ctrl+Shift+R` or header button):
 | Backend | Python 3.11+, FastAPI, Pydantic, SSE streaming |
 | LLM Engine | [Ollama](https://ollama.com/) (local) |
 | Models | `llama3.2` (both Medical and Aegis agents, via different system prompts) |
-| Red Team | LangChain + ChromaDB — 23 attack chains, AI-agnostic via `llm_factory` |
+| Red Team | LangChain + ChromaDB — 34 attack chains, AI-agnostic via `llm_factory` |
 | Multi-Agent | AG2 (AutoGen) for orchestration, Genetic Optimizer (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Packaging | Docker & Docker Compose |
@@ -163,7 +163,7 @@ pip install -r requirements.txt
 
 This installs:
 - **Core**: FastAPI, Uvicorn, Ollama, Pydantic, ChromaDB
-- **Red Team Lab**: LangChain ecosystem (23 attack chains ported from prompt injection research — see [Attack Chain Library](#-attack-chain-library) below)
+- **Red Team Lab**: LangChain ecosystem (34 attack chains ported from prompt injection research — see [Attack Chain Library](#-attack-chain-library) below)
 - **Agents**: AG2 (AutoGen) for multi-agent orchestration
 
 ### Frontend Setup
@@ -201,7 +201,23 @@ docker-compose up --build
 
 ## 🔗 Attack Chain Library
 
-The Red Team Lab includes **23 attack chains** ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic via `llm_factory`).
+The Red Team Lab includes **34 attack chains** ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic via `llm_factory`).
+
+#### Formal Campaign & Sep(M) Score
+
+The campaign runner (`run_formal_campaign()`) tests all 34 chains with configurable parameters:
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `n_trials` | 30 | Trials per chain (must be >= 30 for statistical significance) |
+| `include_null_control` | true | Run clean baseline for comparison |
+| `aegis_shield` | false | Enable/disable delta-2 structural defense |
+
+**Sep(M)** (Zverev et al. 2025) measures instruction/data separation. **WARNING:** Sep(M) = 0 with zero violations is a statistical floor artifact, not a real measurement. The system flags this automatically with `statistically_valid: false`.
+
+#### Semantic Drift (Cosine Similarity)
+
+The genetic optimizer tracks mutation drift using cosine similarity (Sentence-BERT, `all-MiniLM-L6-v2`) instead of Levenshtein distance. This captures meaning preservation across attack reformulations.
 
 | # | Chain | Technique | Category |
 |---|-------|-----------|----------|

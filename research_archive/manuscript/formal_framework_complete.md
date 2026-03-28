@@ -234,6 +234,35 @@ Ou :
 
 **Implementation** : `security_audit_agent.py :: compute_separation_score(data_results, instr_results)`
 
+#### Validite statistique de Sep(M)
+
+**ATTENTION** : Sep(M) = 0 avec 0 violations dans les deux conditions est un **artefact statistique** (plancher), PAS une mesure de separation. La fonction retourne desormais :
+
+```python
+result = compute_separation_score(data_results, instr_results)
+# result["statistically_valid"] = True/False
+# result["warnings"] = ["N=5 < 30 : insufficient sample size...", ...]
+```
+
+**Conditions de validite** :
+
+| Condition | Requis | Sinon |
+|-----------|--------|-------|
+| N par condition | >= 30 | `statistically_valid = False`, warning "insufficient sample size" |
+| Violations | > 0 dans au moins 1 condition | `statistically_valid = False`, warning "statistical floor artifact" |
+| Conditions non vides | n_data > 0 AND n_instr > 0 | `statistically_valid = False`, warning "zero trials" |
+
+**Pourquoi N >= 30** : La loi des grands nombres et le theoreme central limite necessitent un echantillon suffisant pour que la proportion empirique converge vers la vraie probabilite. En dessous de 30, l'intervalle de Wilson est trop large pour distinguer les conditions.
+
+**Pourquoi 0/0 est un artefact** : Si le shield bloque tout (0 violations data, 0 violations control), alors Sep(M) = |0 - 0| = 0. Cela ne prouve PAS l'absence de separation — cela prouve que le shield fonctionne. Pour mesurer Sep(M), il faut :
+1. Desactiver le shield (`aegis_shield=False`) pour tester delta-1 seul
+2. Augmenter N pour obtenir assez de violations par la variance naturelle
+
+**Interface utilisateur** : Le panneau "Campaign Parameters" dans l'onglet CAMPAGNE permet de configurer :
+- `N Trials` : slider 2-100 + input numerique (warning jaune si N < 30)
+- `Include Null Control` : toggle ON/OFF pour les trials de reference
+- `Aegis Shield` : toggle ON/OFF pour isoler delta-1 vs delta-1+delta-2
+
 ### 4.3 Derive semantique (Cosine Similarity) — W2 corrige
 
 Reference : Reimers & Gurevych (2019) Sentence-BERT
