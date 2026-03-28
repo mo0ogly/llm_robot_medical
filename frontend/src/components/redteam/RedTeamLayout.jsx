@@ -1,17 +1,27 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { ShieldAlert, Database, Swords, Activity, Lock, Terminal, BarChart2, FileText, Target, FlaskConical } from 'lucide-react';
+import { ShieldAlert, Database, Swords, Activity, Lock, Terminal, BarChart2, FileText, Target, FlaskConical, BookOpen, Beaker, Clock, History } from 'lucide-react';
 
 export default function RedTeamLayout() {
   const navItems = [
+    // --- Infrastructure ---
     { id: 'rag', label: 'RAG Ingestion', icon: <Database size={20} />, path: '/redteam/rag' },
     { id: 'attack', label: 'Attack Forge', icon: <Swords size={20} />, path: '/redteam/attack' },
+    // --- From Drawer: CATALOG, STUDIO, PLAYGROUND ---
+    { id: 'catalog', label: 'Attack Catalog', icon: <BookOpen size={20} />, path: '/redteam/catalog' },
+    { id: 'studio', label: 'Adversarial Studio', icon: <Beaker size={20} />, path: '/redteam/studio' },
+    { id: 'playground', label: 'Playground', icon: <Terminal size={20} />, path: '/redteam/playground' },
+    // --- Operations ---
     { id: 'exercise', label: 'Live Exercise', icon: <Activity size={20} />, path: '/redteam/exercise' },
-    { id: 'defense', label: 'Aegis Defenses', icon: <Lock size={20} />, path: '/redteam/defense' },
-    { id: 'logs', label: 'Telemetry Logs', icon: <Terminal size={20} />, path: '/redteam/logs' },
-    { id: 'analysis', label: 'Analytics', icon: <BarChart2 size={20} />, path: '/redteam/analysis' },
     { id: 'scenarios', label: 'Scenarios', icon: <Target size={20} />, path: '/redteam/scenarios' },
     { id: 'campaign', label: 'Campaign', icon: <FlaskConical size={20} />, path: '/redteam/campaign' },
+    // --- Defense & Analysis ---
+    { id: 'defense', label: 'Aegis Defenses', icon: <Lock size={20} />, path: '/redteam/defense' },
+    { id: 'timeline', label: 'Timeline', icon: <Clock size={20} />, path: '/redteam/timeline' },
+    { id: 'logs', label: 'Telemetry Logs', icon: <Terminal size={20} />, path: '/redteam/logs' },
+    { id: 'analysis', label: 'Analytics', icon: <BarChart2 size={20} />, path: '/redteam/analysis' },
+    // --- Results ---
+    { id: 'history', label: 'History', icon: <History size={20} />, path: '/redteam/history' },
     { id: 'results', label: 'Results Explorer', icon: <FileText size={20} />, path: '/redteam/results' },
   ];
 
