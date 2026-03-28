@@ -3,9 +3,12 @@ import { useTranslation } from 'react-i18next';
 import {
   ShieldAlert, Zap, AlertTriangle, Crosshair, BarChart3, History, Download,
   RefreshCw, ChevronDown, ChevronUp, Shield, Target, Search,
-  CheckCircle, XCircle, Settings, RotateCcw, Copy, Trash2, HelpCircle, X
+  CheckCircle, XCircle, Settings, RotateCcw, Copy, Trash2, HelpCircle, X,
+  Maximize2, Database
 } from 'lucide-react';
 import robotEventBus from '../../utils/robotEventBus';
+import PayloadEditModal from './shared/PayloadEditModal';
+import CatalogCrudTab from './shared/CatalogCrudTab';
 
 // ── Constants ────────────────────────────────────────────────────────────────
 var CATEGORIES = ['injection', 'rule_bypass', 'prompt_leak'];
@@ -209,7 +212,7 @@ function PanelHeader({ isOpen, onToggle, icon, title, subtitle, tag, tagColor })
 // ══════════════════════════════════════════════════════════════════════════════
 // ── MAIN COMPONENT ───────────────────────────────────────────────────────────
 // ══════════════════════════════════════════════════════════════════════════════
-export default function AdversarialStudio() {
+export default function AdversarialStudio({ initialPayload, initialCategory }) {
   var { t } = useTranslation();
 
   // ── State: Prompt Forge (P1) ──
@@ -221,6 +224,17 @@ export default function AdversarialStudio() {
   var [useCustom, setUseCustom] = useState(false);
   var [variables, setVariables] = useState({});
   var [isBackendOnline, setIsBackendOnline] = useState(true);
+  var [p1SubTab, setP1SubTab] = useState('forge'); // 'forge' | 'catalog'
+  var [advModalOpen, setAdvModalOpen] = useState(false);
+
+  // ── Accept external payload injection ──
+  useEffect(function() {
+    if (initialPayload) {
+      setCustomPayload(initialPayload);
+      setUseCustom(true);
+      if (initialCategory) setAttackType(initialCategory);
+    }
+  }, [initialPayload, initialCategory]);
 
   // ── State: System Prompt Lab (P2) ──
   var [allPrompts, setAllPrompts] = useState({});
@@ -523,7 +537,50 @@ export default function AdversarialStudio() {
           tagColor="bg-red-500/15 text-red-400"
         />
         {panels.p1 && (
-          <div className="p-4 bg-black/30 border-t border-neutral-800 space-y-4">
+          <div className="bg-black/30 border-t border-neutral-800">
+
+            {/* Advanced Edit Modal */}
+            <PayloadEditModal
+              isOpen={advModalOpen}
+              onClose={function() { setAdvModalOpen(false); }}
+              onSave={function(data, onSuccess) { setCustomPayload(data.body); setUseCustom(true); setAttackType(data.category); onSuccess(); }}
+              onInsert={function(text) { setCustomPayload(text); setUseCustom(true); }}
+              initialName={''}
+              initialBody={useCustom ? customPayload : resolvePayload()}
+              initialCategory={attackType}
+              initialHelpMd={''}
+              isNew={false}
+              t={t}
+            />
+
+            {/* Sub-tabs: FORGE | CATALOGUE */}
+            <div className="flex border-b border-neutral-800">
+              <button
+                onClick={function() { setP1SubTab('forge'); }}
+                className={'flex-1 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 ' +
+                  (p1SubTab === 'forge' ? 'border-b-2 border-red-500 text-red-400 bg-red-950/10' : 'text-neutral-600 hover:text-neutral-400 border-b-2 border-transparent')}
+              >
+                <Crosshair size={10} /> {t('redteam.studio.v2.forge.tab_forge')}
+              </button>
+              <button
+                onClick={function() { setP1SubTab('catalog'); }}
+                className={'flex-1 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 ' +
+                  (p1SubTab === 'catalog' ? 'border-b-2 border-cyan-500 text-cyan-400 bg-cyan-950/10' : 'text-neutral-600 hover:text-neutral-400 border-b-2 border-transparent')}
+              >
+                <Database size={10} /> {t('redteam.studio.v2.forge.tab_catalog')}
+              </button>
+            </div>
+
+            {/* Catalog CRUD sub-tab */}
+            {p1SubTab === 'catalog' && (
+              <div className="p-3" style={{maxHeight: '400px', overflowY: 'auto'}}>
+                <CatalogCrudTab onInsert={function(text) { setCustomPayload(text); setUseCustom(true); }} t={t} />
+              </div>
+            )}
+
+            {/* Forge sub-tab content */}
+            {p1SubTab === 'forge' && (
+            <div className="p-4 space-y-4">
 
             {/* Category filter + Search */}
             <div className="flex gap-2 items-center">
@@ -638,6 +695,13 @@ export default function AdversarialStudio() {
               />
               <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
+                  onClick={function() { setAdvModalOpen(true); }}
+                  className="p-1 bg-neutral-900 border border-neutral-700 rounded hover:bg-neutral-800 transition-colors"
+                  title={t('redteam.attack.modal.fullscreen')}
+                >
+                  <Maximize2 size={10} className="text-cyan-400" />
+                </button>
+                <button
                   onClick={function() {
                     navigator.clipboard.writeText(resolvePayload());
                   }}
@@ -654,6 +718,8 @@ export default function AdversarialStudio() {
                 </span>
               </div>
             </div>
+            </div>
+            )}
           </div>
         )}
       </div>

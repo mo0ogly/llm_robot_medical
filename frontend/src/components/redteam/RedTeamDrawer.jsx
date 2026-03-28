@@ -17,6 +17,7 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState('CATALOG');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [playgroundInit, setPlaygroundInit] = useState({ category: 'CATALOG', message: '' });
+  const [studioInit, setStudioInit] = useState({ category: null, message: null });
 
   return (
     <div
@@ -83,13 +84,13 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
         {activeTab === 'CATALOG' && (
           <CatalogTab
             onSwitchToPlayground={(cat, msg) => {
-              setPlaygroundInit({ category: cat, message: msg });
-              setActiveTab('PLAYGROUND');
+              setStudioInit({ category: cat, message: msg });
+              setActiveTab('STUDIO');
             }}
             onLaunchCampaign={() => setActiveTab('CAMPAIGN')}
           />
         )}
-        {activeTab === 'STUDIO' && <AdversarialStudio />}
+        {activeTab === 'STUDIO' && <AdversarialStudio initialPayload={studioInit.message} initialCategory={studioInit.category} />}
         {activeTab === 'PLAYGROUND' && (
           <PlaygroundTab
             initialCategory={playgroundInit.category}

@@ -9,7 +9,7 @@ export default function RedTeamLayout() {
   var navItems = [
     // --- Infrastructure ---
     { id: 'rag', label: t('redteam.nav.rag', { defaultValue: 'RAG Ingestion' }), icon: <Database size={20} />, path: '/redteam/rag' },
-    { id: 'attack', label: t('redteam.nav.attack', { defaultValue: 'Payload Forge' }), icon: <Swords size={20} />, path: '/redteam/attack' },
+    // Payload Forge removed — merged into Adversarial Studio
     // --- From Drawer: CATALOG, STUDIO, PLAYGROUND ---
     { id: 'catalog', label: t('redteam.nav.catalog', { defaultValue: 'Attack Catalog' }), icon: <BookOpen size={20} />, path: '/redteam/catalog' },
     { id: 'studio', label: t('redteam.nav.studio', { defaultValue: 'Adversarial Studio' }), icon: <Beaker size={20} />, path: '/redteam/studio' },

@@ -8,7 +8,7 @@ import App from './App.jsx'
 // Red Team Laboratory Views
 import RedTeamLayout from './components/redteam/RedTeamLayout.jsx'
 import RagView from './components/redteam/views/RagView.jsx'
-import AttackView from './components/redteam/views/AttackView.jsx'
+// AttackView removed — redirects to Studio (fusion Payload Forge → Adversarial Studio)
 import ExerciseView from './components/redteam/views/ExerciseView.jsx'
 import DefenseView from './components/redteam/views/DefenseView.jsx'
 import LogsView from './components/redteam/views/LogsView.jsx'
@@ -34,7 +34,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/redteam" element={<RedTeamLayout />}>
           <Route index element={<Navigate to="rag" replace />} />
           <Route path="rag" element={<RagView />} />
-          <Route path="attack" element={<AttackView />} />
+          <Route path="attack" element={<Navigate to="/llm_robot_medical/redteam/studio" replace />} />
           <Route path="exercise" element={<ExerciseView />} />
           <Route path="defense" element={<DefenseView />} />
           <Route path="logs" element={<LogsView />} />
