@@ -2,8 +2,9 @@
 // Provides: attack selection checkboxes, category filter, run-selected, and export (JSON/CSV/MD)
 
 import { useState, useMemo } from 'react';
-import { CheckSquare, Square, Filter, FlaskConical, Download, FileJson, FileText, Table2 } from 'lucide-react';
+import { CheckSquare, Square, Filter, FlaskConical, Download, FileJson, FileText, Table2, HelpCircle } from 'lucide-react';
 import { ATTACK_TEMPLATES } from './attackTemplates';
+import ScenarioHelpModal from './ScenarioHelpModal';
 
 const CATEGORIES = ['all', 'injection', 'rule_bypass', 'prompt_leak'];
 
@@ -128,6 +129,7 @@ export default function TestSuitePanel({ onRunSelected, rounds, summary, running
   const [selected, setSelected] = useState(() => new Set(ATTACK_TEMPLATES.map((_, i) => i)));
   const [filter, setFilter] = useState('all');
   const [showExport, setShowExport] = useState(false);
+  const [helpTemplate, setHelpTemplate] = useState(null);
 
   const filtered = useMemo(
     () => ATTACK_TEMPLATES.map((t, i) => ({ ...t, idx: i }))
@@ -217,7 +219,14 @@ export default function TestSuitePanel({ onRunSelected, rounds, summary, running
                 ? <CheckSquare size={12} className="flex-shrink-0" />
                 : <Square size={12} className="flex-shrink-0" />}
               <span className="text-[10px] font-mono truncate">{name}</span>
-              <span className="ml-auto text-[9px] opacity-50 flex-shrink-0">{category}</span>
+              <button
+                onClick={(e) => { e.stopPropagation(); setHelpTemplate(name); }}
+                className="p-0.5 rounded hover:bg-white/10 transition-colors flex-shrink-0 opacity-30 hover:opacity-100"
+                title="View attack documentation"
+              >
+                <HelpCircle size={11} />
+              </button>
+              <span className="text-[9px] opacity-50 flex-shrink-0">{category}</span>
             </button>
           );
         })}
@@ -269,6 +278,14 @@ export default function TestSuitePanel({ onRunSelected, rounds, summary, running
           </div>
         )}
       </div>
+
+      {/* Help Modal */}
+      {helpTemplate && (
+        <ScenarioHelpModal
+          templateName={helpTemplate}
+          onClose={() => setHelpTemplate(null)}
+        />
+      )}
     </div>
   );
 }
