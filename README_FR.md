@@ -88,7 +88,7 @@ Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête) :
 - **Playground** : Testez des injections manuelles, éditez les prompts système de chaque agent
 - **Configuration Multi-Agent** : Niveaux de difficulté indépendants (FACILE / NORMAL / DIFFICILE) par agent
 - **Campagnes** : Audits SSE automatisés mesurant le taux de succès des vecteurs d'attaque
-- **Scénarios** : Chaînes d'attaque en plusieurs étapes (Compromission de Ligature, Attaque en Cascade…)
+- **Scénarios** : 37 scénarios kill-chain (18 multi-étapes + 19 solo) couvrant les 34 chaînes backend
 - **Kill Chain Stepper** : Parcours visuel en 4 phases (Recon → Injection → Exécution → Audit)
 - **Scoring Automatique** : AEGIS note chaque round sur les fuites de prompt, contournements de règles, conformité d'injection
 
@@ -199,7 +199,7 @@ docker-compose up --build
 
 ## 🔗 Bibliothèque de Chaînes d'Attaque
 
-Le Red Team Lab inclut **34 chaînes d'attaque** portées et améliorées depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic via `llm_factory`).
+Le Red Team Lab inclut **34 chaînes d'attaque** et **37 scénarios kill-chain** (18 multi-étapes + 19 solo), portés et améliorés depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic via `llm_factory`). Chaque chaîne a au minimum un scénario dédié. Les 52 templates d'attaque frontend ont chacun une modale d'aide détaillée expliquant le mécanisme, le cadre formel, et l'analyse de défense.
 
 | # | Chaîne | Technique | Catégorie |
 |---|--------|-----------|-----------|

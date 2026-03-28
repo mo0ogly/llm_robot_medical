@@ -442,7 +442,23 @@ python analyze_campaign.py research_archive/data/raw/campaign_latest.json
 
 ---
 
-## 6. Catalogue des 34 Attack Chains
+## 6. Catalogue des 34 Attack Chains & 37 Scenarios
+
+**Couverture** : 34 chains backend, 52 templates frontend, 52 modales d'aide, 37 scenarios kill-chain.
+
+| Type | Quantite | Description |
+|------|----------|-------------|
+| Chains backend | 34 | Modules Python dans `agents/attack_chains/` |
+| Templates frontend | 52 | `attackTemplates.js` avec variables configurables |
+| Modales d'aide | 52 | `ScenarioHelpModal.jsx` — formal, mechanism, defense, MITRE |
+| Scenarios kill-chain | 18 | Multi-etapes (3-5 chains chainees, ~75 steps total) |
+| Scenarios solo | 19 | Test individuel de chaque chain |
+| **Total scenarios** | **37** | **34/34 chains couvertes (100%)** |
+
+Les 18 kill-chains ont ete generes par un **swarm de 3 agents APEX** travaillant en parallele :
+- Agent 1 : 6 scenarios RAG + Reasoning
+- Agent 2 : 6 scenarios Agent + SQL + Guard
+- Agent 3 : 6 scenarios cross-domain avances
 
 ### 6.1 Par famille
 

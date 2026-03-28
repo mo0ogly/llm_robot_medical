@@ -88,7 +88,7 @@ Hidden advanced panel (`Ctrl+Shift+R` or header button):
 - **Playground**: Test manual injections, edit system prompts for each agent
 - **Multi-Agent Config**: Independent difficulty levels (EASY / NORMAL / HARD) per agent
 - **Campaigns**: Automated SSE audit runs measuring attack success rates
-- **Scenarios**: Multi-step attack chains (Ligature Compromise, Cascade Attack…)
+- **Scenarios**: 37 kill-chain scenarios (18 multi-step + 19 solo) covering all 34 backend chains
 - **Kill Chain Stepper**: 4-phase visual walkthrough (Recon → Injection → Execution → Audit)
 - **Automated Scoring**: AEGIS scores each round on prompt leaks, rule bypasses, injection compliance
 
@@ -201,7 +201,7 @@ docker-compose up --build
 
 ## 🔗 Attack Chain Library
 
-The Red Team Lab includes **34 attack chains** ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic via `llm_factory`).
+The Red Team Lab includes **34 attack chains** and **37 kill-chain scenarios** (18 multi-step + 19 solo), ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic via `llm_factory`). Each chain has at least one dedicated scenario. The 52 frontend attack templates each have a detailed help modal explaining the attack mechanism, formal framework link, and defense analysis.
 
 #### Formal Campaign & Sep(M) Score
 

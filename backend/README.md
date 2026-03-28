@@ -68,6 +68,13 @@ agents/attack_chains/
 
 All chains are registered via `@register_chain` decorator and can be listed with `list_chains()` or built with `build_chain(chain_id)`.
 
+### Frontend Coverage
+
+- **52 attack templates** with configurable variables (`attackTemplates.js`)
+- **52 help modals** with formal framework, mechanism, defense analysis (`ScenarioHelpModal.jsx`)
+- **37 kill-chain scenarios** (18 multi-step + 19 solo) covering all 34 chains (`ScenarioTab.jsx`)
+- Each chain has at minimum 1 dedicated scenario for individual testing
+
 ## 🤖 AI Agents
 
 1. **MedicalRobotAgent (Da Vinci)**: The target Assistant AI with clinical rules.
