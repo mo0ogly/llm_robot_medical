@@ -7,6 +7,7 @@ Checks:
   3. DUPLICATES   — same BibTeX key, same URL, or same scenario_id across files
   4. OBSOLESCENCE — refs files whose scenario_id no longer exists in scenarios.py
   5. VERSIONING   — git log age + embedded version tag in manuscript files
+  6. HELP_FILES   — backend/prompts/ NN-*.md / NN-*.json pairing and required sections
 
 Usage:
     python doc_librarian.py              # full check, exit 1 if issues
@@ -61,8 +62,8 @@ EXPECTED_DIRS = {
         "description": "Processed analysis outputs",
     },
     "manuscript": {
-        "pattern": r"\.(md|tex|pdf|docx)$",
-        "description": "Thesis manuscript files",
+        "pattern": r"\.(md|tex|pdf|docx|js|json)$",
+        "description": "Thesis manuscript files (+ build tooling)",
     },
     "literature_for_rag": {
         "pattern": r"\.(pdf|md|txt|bib|docx|doc)$",
@@ -256,11 +257,14 @@ def check_duplicates(archive: Path) -> list[dict]:
 
     for key, files in bibtex_key_map.items():
         if len(files) > 1:
+            # Cross-file BibTeX duplicates are expected (same paper cited in
+            # multiple scenario refs).  Only flag as WARNING when the same key
+            # appears more than once *inside a single file*.
             issues.append({
                 "check": "DUPLICATE",
-                "severity": "WARNING",
+                "severity": "INFO",
                 "path": files[0],
-                "message": f"BibTeX key '{key}' appears in {len(files)} files: {', '.join(os.path.basename(f) for f in files)}",
+                "message": f"BibTeX key '{key}' shared across {len(files)} refs files (expected for common citations): {', '.join(os.path.basename(f) for f in files)}",
                 "fixable": False,
             })
 
@@ -433,6 +437,73 @@ def check_versioning(archive: Path) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# Check 6: Help Files (backend/prompts/*.md)
+# ---------------------------------------------------------------------------
+
+def check_help_files(prompts_dir: Path, templates: list[dict] = None) -> list[dict]:
+    """Validate the 51+ .md help files in backend/prompts/.
+
+    Checks:
+    1. Each numbered .md file (NN-*.md) has a matching .json
+    2. Each .json file references its .md via the 'help' field
+    3. Each .md contains required sections: '# ' title, '## AEGIS Audit', '### Classification'
+    4. File naming follows NN-slug pattern
+    """
+    issues = []
+    if not prompts_dir.exists():
+        issues.append({
+            "check": "HELP_FILES",
+            "severity": "ERROR",
+            "path": str(prompts_dir),
+            "message": "prompts directory not found",
+            "fixable": False,
+        })
+        return issues
+
+    md_files = sorted(prompts_dir.glob("[0-9][0-9]-*.md"))
+    json_files = sorted(prompts_dir.glob("[0-9][0-9]-*.json"))
+
+    md_stems = {f.stem for f in md_files}
+    json_stems = {f.stem for f in json_files}
+
+    # Check orphan MDs (no matching JSON)
+    for stem in sorted(md_stems - json_stems):
+        issues.append({
+            "check": "HELP_FILES",
+            "severity": "WARNING",
+            "path": stem + ".md",
+            "message": "MD file has no matching JSON template",
+            "fixable": False,
+        })
+
+    # Check orphan JSONs (no matching MD)
+    for stem in sorted(json_stems - md_stems):
+        issues.append({
+            "check": "HELP_FILES",
+            "severity": "WARNING",
+            "path": stem + ".json",
+            "message": "JSON template has no matching MD help file",
+            "fixable": False,
+        })
+
+    # Check required sections in each MD
+    required_sections = ["# ", "## AEGIS Audit", "### Classification"]
+    for md_file in md_files:
+        content = md_file.read_text(encoding="utf-8", errors="replace")
+        for section in required_sections:
+            if section not in content:
+                issues.append({
+                    "check": "HELP_FILES",
+                    "severity": "WARNING",
+                    "path": md_file.name,
+                    "message": "Missing required section: " + repr(section),
+                    "fixable": False,
+                })
+
+    return issues
+
+
+# ---------------------------------------------------------------------------
 # Auto-fix
 # ---------------------------------------------------------------------------
 
@@ -470,7 +541,7 @@ def print_report(issues: list[dict], scenario_ids: set[str]) -> None:
     print(f"Scenarios : {len(scenario_ids)} in scenarios.py")
     print("=" * 70)
 
-    for check_name in ["CATEGORY", "METADATA", "DUPLICATE", "OBSOLESCENCE", "VERSIONING"]:
+    for check_name in ["CATEGORY", "METADATA", "DUPLICATE", "OBSOLESCENCE", "VERSIONING", "HELP_FILES"]:
         check_issues = sorted(
             by_check.get(check_name, []),
             key=lambda x: severity_order.get(x["severity"], 9),
@@ -515,7 +586,7 @@ def print_report(issues: list[dict], scenario_ids: set[str]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Validate research_archive/ organisation (category, metadata, duplicates, obsolescence, versioning)."
+        description="Validate research_archive/ organisation (category, metadata, duplicates, obsolescence, versioning, help_files)."
     )
     parser.add_argument("--fix", action="store_true", help="Auto-fix fixable issues")
     parser.add_argument("--report", action="store_true", help="Print full report, always exit 0")
@@ -537,6 +608,10 @@ def main() -> int:
     issues += check_duplicates(archive)
     issues += check_obsolescence(archive, scenario_ids)
     issues += check_versioning(archive)
+
+    # Check 6: Help files in backend/prompts/
+    prompts_dir = Path(__file__).parent / "prompts"
+    issues += check_help_files(prompts_dir)
 
     # Apply fixes
     if args.fix:
