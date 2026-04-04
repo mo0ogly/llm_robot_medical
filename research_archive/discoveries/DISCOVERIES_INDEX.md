@@ -4,8 +4,8 @@
 > Tous les agents DOIVENT le lire AVANT de travailler et le mettre a jour APRES.
 > Les decouvertes evoluent a chaque RUN — elles ne sont jamais figees.
 
-**Derniere mise a jour** : RUN-002 (2026-04-04)
-**Corpus** : 46 articles (P001-P046)
+**Derniere mise a jour** : RUN-003 (2026-04-04)
+**Corpus** : 60 articles (P001-P060)
 
 ---
 
@@ -15,8 +15,8 @@
 
 | ID | Decouverte | RUN | Confiance | Fichier |
 |----|-----------|-----|-----------|---------|
-| D-001 | **Triple Convergence** : δ⁰ effacable (P039) + δ¹ empoisonnable (P045) + juges bypass 99% (P044) = les 3 premieres couches simultanement vulnerables. δ³ seul survivant. | RUN-002 | 9/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
-| D-002 | **Gap δ³ universel** : Aucun des 46 papers n'implemente concretement δ³. AEGIS est le SEUL systeme avec 5 techniques δ³ en production. | RUN-001→002 | 10/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
+| D-001 | **Triple Convergence** : δ⁰ effacable (P039, preuve formelle P052) + δ¹ empoisonnable (P045, RAG P054/P055) + juges bypass 99% (P044, P049 100%) = les 3 premieres couches simultanement vulnerables. δ³ seul survivant. P057 ASIDE = seule reponse architecturale partielle. | RUN-002→003 | **10/10** | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
+| D-002 | **Gap δ³ universel** : Aucun des 60 papers n'implemente concretement δ³. AEGIS est le SEUL systeme avec 5 techniques δ³ en production. P060 (SoK, IEEE S&P) confirme que δ³ est la couche la moins exploree. | RUN-001→003 | 10/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
 | D-003 | **Alignement effacable** : Un seul prompt suffit a desaligner 15 LLMs (P039, Microsoft). L'alignement n'est pas contournable — il est effacable. | RUN-002 | 9/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
 
 ### HAUTE (renforce un argument majeur)
@@ -37,6 +37,10 @@
 | D-010 | **Cosine similarity fragile** : La similarite cosinus (all-MiniLM-L6-v2) peut etre rendue insignifiante par matrice gauge (P012) et a des angles morts (antonymes, P013). | RUN-001 | 7/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
 | D-011 | **Erosion temporelle passive** : Les disclaimers medicaux chutent de 26.3% (2022) a 0.97% (2025) SANS attaque active (P030). | RUN-001 | 8/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
 | D-012 | **Benchmark renouvelable** : JBDistill (P043) propose des benchmarks qui se renouvellent automatiquement, reconnaissant la peremption rapide des evaluations statiques. | RUN-002 | 7/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
+| D-013 | **Attaque RAG composee** : La combinaison injection de prompt + empoisonnement base vectorielle (PIDP, P054) produit un gain super-additif de 4-16pp. L'empoisonnement persistant (P055, ~275K vecteurs) cree une surface d'attaque durable affectant toutes les requetes futures. | RUN-003 | 9/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
+| D-014 | **Preuve formelle superficialite RLHF** : P052 (Cambridge) prouve par decomposition en martingale que le gradient RLHF est exactement I_t = Cov[E[H|x<=t], score_function]. I_t decroit rapidement au-dela des premiers tokens. C'est la preuve MATHEMATIQUE (vs. empirique P019) de C3. | RUN-003 | 10/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
+| D-015 | **ASIDE comme reponse architecturale partielle** : P057 (Zverev et al., suite de Sep(M) ICLR 2025) montre qu'une rotation orthogonale des embeddings de donnees separe instructions/donnees sans perte d'utilite. Premier mecanisme concret qui POURRAIT resoudre D-001, mais non deploye et non teste contre attaques adaptatives. | RUN-003 | 8/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
+| D-016 | **Degradation multi-tour medicale** : P050 (JMedEthicBench) montre une degradation de securite de 9.5 a 5.5 (p<0.001) sur 22 modeles au fil des tours. Les modeles specialises medicaux sont PLUS vulnerables que les generalistes. Cross-lingue (japonais-anglais). | RUN-003 | 9/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
 
 ---
 
@@ -46,6 +50,7 @@
 |-----|---------------------|----------------------|-------|
 | RUN-001 | D-002, D-007, D-008, D-010, D-011 | — | 5 |
 | RUN-002 | D-001, D-003, D-004, D-005, D-006, D-009, D-012 | D-002 (confiance 9→10), D-008 (confiance 9→10) | 12 |
+| RUN-003 | D-013, D-014, D-015, D-016 | D-001 (confiance 9→10), D-002 (description enrichie 60 papers) | 16 |
 
 ---
 

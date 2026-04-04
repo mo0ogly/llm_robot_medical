@@ -22,7 +22,8 @@
 | pi (π) | Pi | Politique (modele) : pi_theta, pi_ref, pi_aligned | M5 |
 | sigma (σ) | Sigma | Ecart-type ; fonction sigmoide sigma(z) = 1/(1+e^{-z}) | M2, M5 |
 | tau (τ) | Tau | Temperature dans softmax et contrastive loss | M3, M6 |
-| epsilon (ε) | Epsilon | Parametre de clipping (GRPO/PPO), budget perturbation (PGD) | M5 [2026] |
+| epsilon (ε) | Epsilon | Parametre de clipping (GRPO/PPO), budget perturbation (PGD), seuil I_t minimal (Recovery Penalty) | M5 [2026+RUN-003] |
+| kappa (κ) | Kappa | Kappa de Cohen pondere (accord inter-juges DLSS) | M4 [RUN-003] |
 
 ---
 
@@ -127,6 +128,29 @@
 | C (CoSA) | Composite Safety-Helpfulness | Moyenne de h_i * s_i | M5 [2026] |
 | MR | Misinformation Rate | Taux de desinformation medicale | M2 [2026] |
 | AmpFactor | Facteur d'amplification | MR_condition / MR_baseline | M2 [2026] |
+| DIS | Defense Inversion Score | 1 - ASR(Invert(a)) | M4 [RUN-003] |
+| ESR | Evasion Success Rate | Prompts echappant au guardrail / total adversarial | M4 [RUN-003] |
+| MTSD | Multi-Turn Safety Degradation | (S1 - ST) / S1 * 100% | M4 [RUN-003] |
+| S_final | Dual-LLM Safety Score | (S_judge1 + S_judge2) / 2 | M4 [RUN-003] |
+| f_prof, f_med, f_eth, f_dist | Dimensions 4DLF | Scores BERT [0,1] par dimension linguistique | M4 [RUN-003] |
+| PBR | Paraphrase Bypass Rate | Paraphrases nocives / total paraphrases | M4 [RUN-003] |
+| ASR_PIDP | PIDP Compound ASR | P(success \| PI inter DP) | M4 [RUN-003] |
+| Delta_ASR | Gain marginal PIDP | ASR_PIDP - max(ASR_PI, ASR_DP) | M4 [RUN-003] |
+| PIR(k) | Persistent Injection Rate | Requetes touchees / total requetes | M4 [RUN-003] |
+| V_poison | Vecteurs empoisonnes | Ensemble des vecteurs malveillants dans le RAG | M4 [RUN-003] |
+| ARF | ASR Reduction Factor | ASR_baseline / ASR_AIR | M4 [RUN-003] |
+| Sec(g), Eff(g), Util(g) | Triplet SEU | Securite, efficience, utilite d'un guardrail | M4 [RUN-003] |
+| T(g) | Vecteur taxonomie 6D | [stage, paradigm, granularity, react, applic, explain] | M4 [RUN-003] |
+| I_t (exact) | Harm Info positionnelle | Cov[E[H\|x<=t], score_function] | M5 [RUN-003] |
+| D_KL^eq(t) | KL Equilibrium | Divergence KL position-dependante, propto I_t | M5 [RUN-003] |
+| L_RP | Recovery Penalty | L_RLHF + lambda * penalite positions faibles | M5 [RUN-003] |
+| p* | Prompt optimal | argmax E[S_review] (injection iterative) | M5 [RUN-003] |
+| M_sim | Modele simule | Proxy de revieweur pour optimisation | M5 [RUN-003] |
+| S_review | Score de review | Score d'evaluation de la review generee | M5 [RUN-003] |
+| WIRT(x) | Classement d'importance | argsort(\|dL/de(w_i)\|) des mots par gradient | M6 [RUN-003] |
+| R | Matrice de rotation | Rotation orthogonale (R^T R = I, det(R) = 1) | M6 [RUN-003] |
+| e'_data | Embedding transforme | R * e(x_t), donnee dans l'espace tourne | M6 [RUN-003] |
+| Sep_ASIDE | Amelioration separation | Sep(M_+ASIDE) - Sep(M_base) | M6 [RUN-003] |
 
 ---
 
@@ -143,6 +167,7 @@
 | diag(d_1, ..., d_n) | Matrice diagonale | M1 |
 | V_k | k premieres colonnes de V (SVD) | M1 |
 | Omega_B(D) | Matrice de normalisation diagonale | M1 |
+| R | Matrice de rotation orthogonale (R^T R = I) | M6 [RUN-003] |
 
 ---
 
@@ -189,8 +214,25 @@
 | SAM | Safety Alignment Margin |
 | SPP | System Prompt Poisoning |
 | VLM | Vision Language Model |
+| 4DLF | Four-Dimensional Linguistic Feature Vector |
+| AIR | Augmented Intermediate Representations |
+| ARF | ASR Reduction Factor |
+| ASIDE | Architectural Separation of Instructions and Data in Embeddings |
+| DIS | Defense Inversion Score |
+| DLSS | Dual-LLM Safety Score |
+| DP | Database Poisoning |
+| ESR | Evasion Success Rate |
+| IIOS | Iterative Injection Optimization Score |
+| MTSD | Multi-Turn Safety Degradation |
+| PBR | Paraphrase Bypass Rate |
+| PI | Prompt Injection |
+| PIDP | Prompt Injection + Database Poisoning |
+| PIR | Persistent Injection Rate |
+| RP | Recovery Penalty |
+| SEU | Security-Efficiency-Utility |
+| WIRT | Word Importance Ranking Transfer |
 
 ---
 
-*Glossaire mis a jour le 2026-04-04 (RUN-002) — 110+ symboles documentes*
-*Couvre les 37 formules issues de 46 articles (22 RUN-001 + 15 RUN-002)*
+*Glossaire mis a jour le 2026-04-04 (RUN-003) — 135+ symboles documentes*
+*Couvre les 54 formules issues de 60 articles (22 RUN-001 + 15 RUN-002 + 17 RUN-003)*

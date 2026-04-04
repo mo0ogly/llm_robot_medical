@@ -4,8 +4,8 @@
 
 **Date**: 2026-04-04
 **Agent**: Scientist (Opus 4.6)
-**Corpus**: 46 articles (P001--P046), 37 formules, 30 techniques d'attaque, 34 modeles de menace
-**Version**: v2.0 (RUN-002 -- mise a jour incrementale avec P035-P046)
+**Corpus**: 60 articles (P001--P060), 54 formules, 48 techniques d'attaque, 48 modeles de menace
+**Version**: v3.0 (RUN-003 -- mise a jour incrementale avec P047-P060)
 
 ---
 
@@ -23,6 +23,9 @@ L'alignement RLHF, considere comme la premiere ligne de defense des LLM, est mat
 - **P036** (Nature Comms, 2026) : Les LRM atteignent 97.14% de jailbreak autonome -- la capacite de raisonnement permet la subversion de l'alignement
 - **P044** (AdvJudge-Zero, Unit 42, 2026) : Le fuzzing automatise des juges a 99% montre que meme les mecanismes de supervision de δ⁰ (RLHF, DPO, RLAIF) sont compromettables [NEW RUN-002]
 - **P045** (SPP, 2026) : L'empoisonnement persistant des system prompts montre que meme la couche δ¹ ne peut pas compenser un δ⁰ fragile si le prompt systeme lui-meme est corrompu [NEW RUN-002]
+- **P050** (JMedEthicBench, 2026) : Degradation multi-tour de 9.5 a 5.5 (p<0.001) sur 22 modeles. Les modeles medicaux specialises sont PLUS vulnerables. [NEW RUN-003]
+- **P052** (Young/Cambridge, 2026) : PREUVE FORMELLE par decomposition en martingale : I_t = Cov[E[H|x<=t], score_function]. Formalise P019. [NEW RUN-003]
+- **P053** (Kuklani et al., 2025) : Taxonomie des limitations RLHF : paraphrases semantiques contournent l'alignement token-level. [NEW RUN-003]
 
 ### Contradiction ou debat dans la litterature
 - **P017** (Adversarial Preference) et **P020** (COBRA) proposent des ameliorations de l'entrainement RLHF, suggerant que δ⁰ peut etre renforce. Cependant, **P019** prouve que les limitations sont structurelles (gradient nul), pas simplement une question d'optimisation.
@@ -36,6 +39,8 @@ AEGIS est le premier framework a formaliser δ⁰ comme une couche de defense no
 2. Proposer un monitoring temporel de δ⁰ via Sep(M) versionnee
 3. Demontrer experimentalement la regression d'alignement sur des modeles medicaux
 4. **Tester la resistance d'AEGIS aux attaques de desalignement a un prompt (P039)** [NEW RUN-002]
+5. **Implementer le Recovery Penalty Objective (P052, F46) comme correction du gradient RLHF** [NEW RUN-003]
+6. **Tester la degradation multi-tour sur les modeles medicaux AEGIS (reproduire P050)** [NEW RUN-003]
 
 ### Questions de recherche ouvertes
 1. Existe-t-il une borne inferieure theorique pour la robustesse de δ⁰ en fonction de la taille du modele ?
@@ -43,6 +48,8 @@ AEGIS est le premier framework a formaliser δ⁰ comme une couche de defense no
 3. La regression d'alignement documentee par P030 suit-elle un modele predictif (lineaire, exponentiel) ?
 4. **P039 montre que δ⁰ est effacable par un seul prompt : les couches δ¹-δ³ survivent-elles a un δ⁰ efface ?** [NEW RUN-002]
 5. **La regression d'alignement des LRM (P036) est-elle un phenomene lineaire ou existe-t-il un seuil de capacite de raisonnement au-dela duquel l'alignement echoue categoriquement ?** [NEW RUN-002]
+6. **Le Recovery Penalty Objective de P052 corrige-t-il la concentration du gradient sur les premiers tokens ? Quel est son impact sur l'utilite du modele ?** [NEW RUN-003]
+7. **La degradation multi-tour (P050) est-elle aggravee ou attenuee par les couches δ¹-δ³ actives ?** [NEW RUN-003]
 
 ### Metriques de validation
 - Sep(M) (Zverev et al., P024) avec N >= 30 par condition
@@ -55,7 +62,7 @@ AEGIS est le premier framework a formaliser δ⁰ comme une couche de defense no
 Cet axe concerne **exclusivement δ⁰**. Il etablit les fondations theoriques justifiant la necessite des couches δ¹ a δ³.
 
 ### Niveau de maturite
-**Mature** -- Preuves theoriques solides (P019, ICLR) et empiriques abondantes (P018, P022, P030, P036, P039). La question n'est plus "est-ce que δ⁰ est fragile ?" mais "comment quantifier et compenser cette fragilite ?" **Les papers 2026 (P036, P039) elevent le niveau de preuve de "fragile" a "effacable".**
+**Mature** -- Preuves theoriques solides (P019 empirique, P052 formelle) et empiriques abondantes (P018, P022, P030, P036, P039, P050). La question n'est plus "est-ce que δ⁰ est fragile ?" mais "comment quantifier et compenser cette fragilite ?" **P052 fournit la preuve mathematique par martingale. P050 ajoute la dimension multi-tour avec p<0.001. Axe SATURE (10/10).**
 
 ---
 
@@ -76,12 +83,19 @@ Aucune couche de defense individuelle ne suffit a proteger un LLM medical. La li
 - **P039** (GRP-Obliteration, 2026) : Efface δ⁰ par un seul prompt => δ¹-δ³ deviennent les seules defenses restantes [NEW RUN-002]
 - **P044** (AdvJudge-Zero, 2026) : 99% de bypass des juges => les mecanismes de supervision sont eux-memes vulnerables [NEW RUN-002]
 - **P045** (SPP, 2026) : L'empoisonnement persistant du system prompt neutralise δ¹ => δ²-δ³ deviennent critiques [NEW RUN-002]
+- **P047** (ACL 2025) : La dualite attaque-defense permet de generer des defenses a partir de techniques d'attaque inversees [NEW RUN-003]
+- **P049** (Hackett, LLMSec 2025) : 100% d'evasion des guardrails de production => δ² seul est completement insuffisant [NEW RUN-003]
+- **P054+P055** (PIDP + RAGPoison, 2026/2025) : Les attaques RAG composees et persistantes creent un nouveau vecteur necessitant une defense δ³ integrite des donnees [NEW RUN-003]
+- **P056** (NVIDIA, AIR, 2025) : L'injection de signaux IH dans les representations intermediaires reduit l'ASR de 1.6x a 9.2x [NEW RUN-003]
+- **P057** (ASIDE, 2025) : Rotation orthogonale des embeddings = premiere defense architecturale δ⁰ sans perte d'utilite [NEW RUN-003]
+- **P060** (SoK, IEEE S&P 2026) : Aucun guardrail seul ne domine sur SEU => validation independante de la necessite multi-couches [NEW RUN-003]
 
 ### Contradiction ou debat dans la litterature
 - **P042** (PromptArmor) suggere qu'un seul LLM avance suffit comme garde (<1% FPR/FNR), ce qui contredit l'approche multi-couches. Mais cette defense repose sur GPT-4o, un modele couteux et proprietaire qui ne peut pas etre deploye partout.
 - **P011** valide l'approche 4 couches mais rapporte 33% de bypass residuel meme avec toutes les couches actives (P033 whitehacker).
 - La question du cout computationnel de la defense en profondeur reste ouverte.
 - **La convergence 2026 (P039+P044+P045) affaiblit la position de P042 : meme un garde GPT-4o pourrait etre contourne par fuzzing (P044) ou son δ⁰ efface (P039)** [NEW RUN-002]
+- **P057 (ASIDE) et P056 (AIR) proposent des defenses architecturales profondes qui pourraient reduire la dependance a la defense multi-couches -- mais ni l'une ni l'autre ne couvre l'empoisonnement RAG (P054/P055)** [NEW RUN-003]
 
 ### Contribution potentielle de la these AEGIS
 AEGIS est le premier framework a implementer et evaluer une defense en profondeur specifiquement pour le domaine medical avec 4 couches nommees (δ⁰ a δ³) et 66 techniques de defense. La these peut :
@@ -127,6 +141,8 @@ Le domaine medical presente des caracteristiques uniques qui amplifient la sever
 - **P027** : Framework pratique d'evaluation de la securite des LLM medicaux
 - **P035** (MPIB, 2026) : Benchmark de 9,697 instances avec metrique CHER -- ASR et dommage clinique divergent. **Premier benchmark medical avec validite statistique N >= 30** [NEW RUN-002]
 - **P040** (Springer, 2026) : La manipulation emotionnelle augmente la desinformation medicale de 6.2% a 37.5% (facteur d'amplification 6x). **Premiere quantification de l'effet emotionnel en medical** [NEW RUN-002]
+- **P050** (JMedEthicBench, 2026) : 50,000 conversations adversariales, 22 modeles, degradation 9.5->5.5 (p<0.001). Modeles medicaux specialises PLUS vulnerables que generalistes. Cross-lingue (JP-EN). [NEW RUN-003]
+- **P051** (Nguyen et al., 2026) : Premier detecteur de jailbreak clinique avec 4 dimensions linguistiques interpretables (Professionnalisme, Pertinence Medicale, Ethique, Distraction). [NEW RUN-003]
 
 ### Contradiction ou debat dans la litterature
 - **P035** (MPIB) montre que l'ASR et le dommage clinique reel (CHER) divergent significativement. Un ASR eleve ne signifie pas necessairement un dommage clinique eleve, et inversement. Cela questionne l'utilisation de l'ASR comme metrique unique dans les etudes medicales.
@@ -176,10 +192,14 @@ La metrique Sep(M) de Zverev et al. (2025) est la seule formalisation mathematiq
 - **P014** (SemScore) : Metrique basee sur sentence transformers pour la derive semantique
 - **P041** (Magic-Token, 2026) : Le Safety Alignment Margin (SAM) mesure la separation entre modes comportementaux (positif/negatif/rejectif) -- **complementaire a Sep(M) qui mesure instruction/donnee** [UPDATED RUN-002]
 - **P035** (MPIB, 2026) : CHER comme metrique de dommage clinique reel, complementaire a Sep(M) pour l'evaluation medicale [NEW RUN-002]
+- **P057** (ASIDE, 2025) : Les auteurs originaux de Sep(M) utilisent la metrique pour valider ASIDE. Premier mecanisme architectural ameliorant Sep(M) SANS perte d'utilite. [NEW RUN-003]
+- **P052** (Young/Cambridge, 2026) : La metrique I_t (Harm Information per Position) est complementaire a Sep(M) pour mesurer la profondeur de l'alignement. [NEW RUN-003]
+- **P050** (JMedEthicBench, 2026) : La degradation multi-tour (MTSD) est une forme de derive mesurable par Sep(M) au fil des tours. [NEW RUN-003]
 
 ### Contradiction ou debat dans la litterature
 - **P012** (Steck) questionne la fiabilite de la similarite cosinus, ce qui impacte directement la validite de Sep(M) empirique qui utilise des embeddings.
 - Le compromis separation-utilite (P024) semble incontournable : les modeles les plus securises sont les moins utiles. **Cependant, P038 (InstruCoT) et P041 (Magic-Token) suggerent des voies pour resoudre partiellement ce trade-off.** [UPDATED RUN-002]
+- **P057 (ASIDE) RESOUT partiellement le compromis : Sep(M) augmente sans perte d'utilite via rotation orthogonale. C'est le resultat le plus significatif pour cet axe en RUN-003.** [NEW RUN-003]
 - **P015** suggere que les metriques LLM-enhanced sont plus fiables que les embeddings classiques pour capturer la semantique, mais cela introduit une dependance circulaire (LLM evaluant un LLM).
 
 ### Contribution potentielle de la these AEGIS
@@ -222,6 +242,7 @@ Les 12 categories d'injection de caracteres identifiees par Hackett et al. (P009
 - **P044** (AdvJudge-Zero, 2026) : Le fuzzing automatise atteint 99% de bypass des gardes par tokens de controle basse-perplexite. **Etend l'evasion syntaxique des gardes d'entree (P009) aux gardes de sortie (juges)** [UPDATED RUN-002]
 - **P033** : Les juges auto-evaluateurs sont aussi vulnerables aux memes evasions
 - **P045** (SPP, 2026) : Les modifications subtiles du system prompt echappent aux filtres syntaxiques car ils ciblent un canal "de confiance" [NEW RUN-002]
+- **P049** (Hackett, LLMSec 2025) : Evasion a 100% des guardrails de production (Azure Prompt Shield, Meta Prompt Guard) par combinaison de 12 techniques + transfert white-box-to-black-box. Valide RagSanitizer 15 detectors. [NEW RUN-003]
 
 ### Contradiction ou debat dans la litterature
 - **P044** montre que l'entrainement adversarial reduit l'ASR a quasi-zero, suggerant que les gardes peuvent etre rendus robustes. Cependant, cela necessite un processus d'entrainement adversarial continu (course aux armements).
@@ -266,6 +287,9 @@ Cet axe concerne principalement **δ²** (filtrage syntaxique) avec des implicat
 - **P039** (GRP-Obliteration, 2026) : Si δ⁰ est effacable, δ³ est **litteralement la seule defense restante** [NEW RUN-002]
 - **P044** (AdvJudge-Zero, 2026) : Les juges empiriques sont bypassables a 99%, renforçant le besoin de validation **formelle** (non-LLM) a δ³ [NEW RUN-002]
 - **P037** (Survey 3D, 2026) : Le cadre de defense le plus complet existant (3 couches) ne couvre PAS δ³, confirmant le gap dans la litterature [NEW RUN-002]
+- **P054+P055** (PIDP + RAGPoison, 2026/2025) : Les attaques RAG composees et persistantes necessitent une verification d'integrite des donnees au niveau δ³ [NEW RUN-003]
+- **P060** (SoK, IEEE S&P 2026) : Le framework SEU confirme qu'aucun guardrail individuel ne domine => δ³ est necessaire comme filet de securite final. 0/60 papers implemente δ³. [NEW RUN-003]
+- **P058** (ETH Zurich, 2025) : L'automatisation des attaques agent-level (tool use, planning) exige des gardes deterministes au niveau sortie (δ³). [NEW RUN-003]
 
 ### Contradiction ou debat dans la litterature
 - Aucun paper ne conteste la necessite de δ³. Le debat porte sur l'implementation : validation par regles (deterministe) vs. validation par LLM (probabiliste, mais vulnerabilite recursive P033).
@@ -404,11 +428,15 @@ Les grands modeles de raisonnement (LRM : DeepSeek-R1, Gemini 2.5 Flash, Grok 3,
 - **P039** (Microsoft, 2026) : GRP-Obliteration montre que le mecanisme de raisonnement (GRPO) peut etre retourne pour desaligner un modele via son propre objectif d'entrainement.
 - **P044** (Unit 42, 2026) : Le fuzzing automatise utilise la distribution de tokens du modele pour decouvrir des vulnerabilites -- une forme de "raisonnement" sur le modele cible.
 - **P037** (Survey 3D, 2026) : Documente les attaques par apprentissage par renforcement/adversarial comme categorie emergente.
+- **P058** (ETH Zurich, 2025) : Framework automatise d'attaque agent-level exploitant tool use et planning. Les agents LLM sont la nouvelle surface d'attaque. [NEW RUN-003]
+- **P052** (Young/Cambridge, 2026) : L'analyse de gradient (I_t) requiert la capacite de raisonnement pour concevoir des attaques ciblant les positions a faible I_t. [NEW RUN-003]
+- **P059** (Zhou et al., 2025) : Les revieweurs IA raisonnent sur du contenu empoisonne, amplifiant l'impact des injections cachees. [NEW RUN-003]
 
 ### Contradiction ou debat dans la litterature
 - **P041** (Magic-Token) montre qu'un modele 8B peut surpasser un 671B en securite, suggerant que le raisonnement avance n'est pas toujours un avantage offensif. **Qwen3 235B (P036) est moins efficace que des modeles plus petits en jailbreak autonome.**
 - **P038** (InstruCoT) utilise le raisonnement (instruction-level CoT) defensivement, montrant que le meme mecanisme peut servir la defense.
 - Le paradoxe raisonnement/securite n'est pas absolu : il depend de la methode d'entrainement, pas uniquement de la capacite de raisonnement.
+- **P047** (ACL 2025) montre la dualite attaque-defense : les techniques de raisonnement offensives peuvent etre inversees defensivement. [NEW RUN-003]
 
 ### Contribution potentielle de la these AEGIS
 AEGIS est le premier framework a utiliser des LLM comme agents d'attaque automatises dans le cadre d'une these doctorale. Le Red Team Lab implemente exactement le paradigme formalise par P036. La these peut :
@@ -432,7 +460,7 @@ AEGIS est le premier framework a utiliser des LLM comme agents d'attaque automat
 Cet axe est **transversal** mais concerne principalement δ⁰ (l'alignement est le premier a echouer face aux LRM) et δ³ (seule couche potentiellement resiliente).
 
 ### Niveau de maturite
-**Emergent** -- Un seul paper majeur (P036, Nature Comms) avec resultats reproductibles. La theorie n'est pas encore formalisee (pourquoi le raisonnement correle-t-il avec l'efficacite offensive ?). Forte opportunite pour une contribution originale.
+**En cours** -- Trois papers majeurs (P036 Nature Comms, P058 ETH Zurich, P059 NeurIPS Workshop) avec resultats reproductibles. P052 fournit les outils mathematiques (I_t, martingale) pour formaliser le paradoxe. Le paradoxe est de plus en plus supporte empiriquement (8/10). Forte opportunite pour une contribution originale.
 
 ---
 
@@ -440,19 +468,19 @@ Cet axe est **transversal** mais concerne principalement δ⁰ (l'alignement est
 
 | # | Axe | Couche(s) delta | Maturite | Papers cles |
 |---|-----|----------------|----------|-------------|
-| 1 | Fragilite structurelle de δ⁰ | δ⁰ | Mature | P018, P019, P030, P036, P039, P044 |
-| 2 | Defense en profondeur multi-couches | Toutes | En cours | P029, P001, P009, P011, P033, P039, P044, P045 |
-| 3 | Specificite du domaine medical | Transversal | En cours | P029, P028, P030, P035, P040 |
-| 4 | Mesure formelle Sep(M) | Transversal | En cours | P024, P008, P012, P041, P035 |
-| 5 | Evasion des gardes syntaxiques | δ² | Mature/Exploratoire | P009, P044, P005, P045 |
-| 6 | Validation formelle (δ³) | δ³ | Exploratoire | P029, P011, P035, P039, P044, P037 |
+| 1 | Fragilite structurelle de δ⁰ | δ⁰ | **Sature** | P018, P019, P030, P036, P039, P044, **P050, P052, P053** |
+| 2 | Defense en profondeur multi-couches | Toutes | En cours | P029, P001, P009, P011, P033, P039, P044, P045, **P047, P049, P054-P057, P060** |
+| 3 | Specificite du domaine medical | Transversal | En cours | P029, P028, P030, P035, P040, **P050, P051** |
+| 4 | Mesure formelle Sep(M) | Transversal | En cours | P024, P008, P012, P041, P035, **P050, P052, P057** |
+| 5 | Evasion des gardes syntaxiques | δ² | Mature/Exploratoire | P009, P044, P005, P045, **P049** |
+| 6 | Validation formelle (δ³) | δ³ | Exploratoire | P029, P011, P035, P039, P044, P037, **P054, P055, P058, P060** |
 | 7 | Juge recursif et multi-agent | DETECT, δ³ | En cours | P033, P036, P044, P042, P045 |
-| 8 | Course aux armements temporelle | Toutes | Exploratoire | P001, P036, P039, P044, P045, P038, P042 |
-| 9 | **LRM autonomes et paradoxe raisonnement** | Transversal (δ⁰, δ³) | **Emergent** | **P036, P039, P044, P037** |
+| 8 | Course aux armements temporelle | Toutes | Exploratoire | P001, P036, P039, P044, P045, P038, P042, **P049, P054, P059** |
+| 9 | LRM autonomes et paradoxe raisonnement | Transversal (δ⁰, δ³) | **En cours** | P036, P039, P044, P037, **P052, P058, P059** |
 
 ---
 
 *Agent Scientist -- AXES_DE_RECHERCHE.md*
-*9 axes identifies (+1 nouveau), 46 papers mobilises*
-*Version: v2.0 (RUN-002)*
+*9 axes identifies, 60 papers mobilises*
+*Version: v3.0 (RUN-003)*
 *Derniere mise a jour: 2026-04-04*

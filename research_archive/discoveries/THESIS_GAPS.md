@@ -2,7 +2,7 @@
 
 > **Ce fichier identifie les GAPS dans la litterature ou AEGIS peut contribuer.**
 > Chaque gap est une opportunite de publication ou de chapitre de these.
-> Derniere mise a jour : RUN-002 (2026-04-04)
+> Derniere mise a jour : RUN-003 (2026-04-04)
 
 ---
 
@@ -12,7 +12,7 @@
 
 | ID | Gap | Evidence du gap | Avantage AEGIS | Statut |
 |----|-----|----------------|---------------|--------|
-| G-001 | **Aucun paper n'implemente δ³ concretement** | 0/46 papers avec implementation. P037 (survey le plus complet 2026) ne couvre que 3 couches. | AEGIS a 5 techniques δ³ en production | OUVERT — avance >1 an |
+| G-001 | **Aucun paper n'implemente δ³ concretement** | 0/60 papers avec implementation. P037 (survey) + P060 (SoK, IEEE S&P 2026) ne couvrent que 3 couches. | AEGIS a 5 techniques δ³ en production | OUVERT — avance >1 an, confirme P060 |
 | G-002 | **Pas d'evaluation multi-couches combinee** | Papers evaluent les couches isolement. Aucune etude de leur interaction combinee. | AEGIS evalue δ⁰+δ¹+δ²+δ³ ensemble | OUVERT |
 | G-003 | **Pas de red-teaming medical systematique** | P029 = 5 modeles, N=5. P035 = benchmark mais pas de red-team operationnel. P040 = 112 scenarios mais sans framework. | AEGIS a 98 templates + 48 scenarios medicaux | OUVERT |
 
@@ -35,6 +35,20 @@
 | G-011 | **Pas de test triple convergence** | D-001 est theorique. Personne n'a simule δ⁰ efface + δ¹ empoisonne + δ² fuzzed. | AEGIS peut le simuler experimentalement | A CONCEVOIR |
 | G-012 | **Pas de monitoring temporel de l'alignement** | P030 documente l'erosion sur 3 ans mais personne ne monitore en temps reel. | Le telemetry bus d'AEGIS peut tracker Sep(M) dans le temps | A IMPLEMENTER |
 
+### PRIORITE 4 — Gaps identifies RUN-003 (P047-P060)
+
+| ID | Gap | Evidence du gap | Avantage AEGIS | Statut |
+|----|-----|----------------|---------------|--------|
+| G-013 | **Dualite attaque-defense non testee sur composites** | P047 formalise la dualite mais ne la teste pas sur attaques multi-vecteurs. | AEGIS 98 templates + 48 scenarios = terrain de test ideal | OUVERT |
+| G-014 | **Heterogeneite metriques d'evaluation** | P048 (88 etudes SLR) montre que les metriques d'evaluation divergent entre etudes. | AEGIS peut standardiser via Sep(M) + SVC + SEU (P060) | ACTIONNABLE |
+| G-015 | **Recovery penalty non evaluee empiriquement** | P052 propose une correction theorique du gradient RLHF mais sans validation large echelle. | AEGIS peut implementer et tester sur modeles medicaux via Ollama | ACTIONNABLE |
+| G-016 | **Attaques multimodales non couvertes** | P053 identifie les vecteurs multimodaux (texte+image) non couverts par le catalogue AEGIS (texte-only). | Extension future du catalogue | A CONCEVOIR |
+| G-017 | **RagSanitizer vs. attaques composites PIDP** | P054 PIDP-Attack combine injection + empoisonnement DB. Le RagSanitizer n'a pas ete teste contre cette combinaison. | Test immediat possible avec les chaines d'attaque AEGIS existantes | A EXECUTER |
+| G-018 | **AIR non evalue contre attaques semantiques** | P056 (NVIDIA) ne teste AIR que contre attaques gradient-based, pas semantiques ou multi-tour. | AEGIS peut tester si les signaux AIR resistent aux 48 scenarios | A CONCEVOIR |
+| G-019 | **ASIDE non teste contre attaques adaptatives** | P057 ne teste pas ASIDE contre des attaques ciblant specifiquement la rotation orthogonale. | AEGIS peut concevoir des attaques anti-ASIDE (perturbation de la rotation) | A CONCEVOIR |
+| G-020 | **Defenses agents non evaluees** | P058 (ETH) documente les attaques agent-level mais aucune defense (tool sandboxing, memory isolation) n'est evaluee. | AEGIS medical robot agent = terrain de test naturel | ACTIONNABLE |
+| G-021 | **Guardrails emergents hors SoK** | P060 (SoK, IEEE S&P 2026) ne couvre pas ASIDE (P057) ni AIR (P056), les defenses les plus prometteuses. | AEGIS peut evaluer ASIDE + AIR + integrer dans le formal framework | OUVERT |
+
 ---
 
 ## Matrice Gap × Chapitre de These
@@ -48,6 +62,10 @@
 | G-005 (defense anti-LRM) | Chapitre Defense | **Conference** (si resultats positifs) |
 | G-006 (integrite system prompt) | Chapitre Defense | **Short paper** |
 | G-011 (test triple convergence) | Chapitre Evaluation | **Conference** (si resultats significatifs) |
+| G-015 (recovery penalty) | Chapitre Defense δ⁰ | **Workshop** (validation empirique de P052) |
+| G-017 (RagSanitizer vs. PIDP) | Chapitre RAG Security | **Conference** (si resultats differenciants) |
+| G-019 (ASIDE vs. adaptatives) | Chapitre Defense δ⁰ | **Conference** (si attaques anti-ASIDE trouvees) |
+| G-020 (defenses agents) | Chapitre Agents | **Conference** (securite agents medicaux) |
 
 ---
 
@@ -77,9 +95,25 @@
 ### Source : SCIENTIST
 - Cross-analyse → G-002 (evaluation combinee)
 - SWOT → G-009, G-010 (faiblesses methodologiques)
+- RUN-003 synthese → G-013 a G-021 (consolidation des gaps identifies par ANALYST et CYBERSEC)
 
 ### Source : MATHTEACHER
 - (pas de gaps directement, mais identifie les prerequis mathematiques pour G-009/G-010)
+
+### Source : ANALYST (RUN-003)
+- P047 → G-013 (dualite non testee sur composites)
+- P048 → G-014 (heterogeneite metriques)
+- P052 → G-015 (recovery penalty non evaluee)
+- P053 → G-016 (multimodal non couvert)
+- P054 → G-017 (RagSanitizer vs. PIDP)
+- P060 → G-021 (SoK hors guardrails emergents)
+
+### Source : CYBERSEC (RUN-003)
+- P054+P055 → G-017 (compound + persistent RAG attacks)
+- P056 → G-018 (AIR vs. semantiques)
+- P057 → G-019 (ASIDE vs. adaptatives)
+- P058 → G-020 (defenses agents)
+- P060 → G-021 confirme
 
 ---
 
