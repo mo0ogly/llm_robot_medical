@@ -1,5 +1,5 @@
 # MATH DEPENDENCIES — Formula Prerequisite DAG
-## Graphe de dependances des formules mathematiques (22 formules, 34 papers)
+## Graphe de dependances des formules mathematiques (37 formules, 46 papers)
 
 > Lire de haut en bas: chaque formule requiert la maitrise des formules au-dessus.
 
@@ -95,6 +95,47 @@ NIVEAU 4 — Analyse avancee (martingales, covariance)
 |       |
 |       +-- [6.4] Gradient Magnitude Bound ........... P019
 |               Prerequis: harm information, Fisher information
+|
+NIVEAU 5 — Formules 2026 (P035-P046)
+|
++-- [8.1] CHER (Clinical Harm Event Rate) ........ P035
+|       Prerequis: ASR (3.4), fonction indicatrice
+|       |
+|       +-- [8.2] ASR a Seuil de Severite ........... P035, P037
+|               Prerequis: CHER, ASR standard
+|
++-- [8.3] GRPO (Group Relative Policy Opt.) ....... P039
+|       Prerequis: RLHF (4.1), KL (4.2), PPO/clipping
+|
++-- [8.4] ADPO (Adversary-Aware DPO) .............. P046
+|       Prerequis: DPO (4.3), PGD (8.5), sigmoide
+|       |
+|       +-- [8.5] PGD Adversarial Perturbation ....... P046
+|               Prerequis: gradient descent, norme infinie
+|
++-- [8.6] SAM (Safety Alignment Margin) ........... P041
+|       Prerequis: cosine similarity (1.1), silhouette coefficient
+|       |
+|       +-- [8.7] CoSA-Score .......................... P041
+|               Prerequis: SAM, evaluation binaire securite
+|
++-- [8.8] Logit Gap (Decision Flip) ............... P044
+|       Prerequis: logits, softmax
+|
++-- [8.9] Benchmark Effectiveness ................. P043
+|       Prerequis: ASR (3.4), generalisation
+|       |
+|       +-- [8.10] Benchmark Separability ............. P043
+|               Prerequis: Eff (8.9), intervalles de confiance, Sep(M) (3.1)
+|
++-- [8.11] Defense Rate (DR) ...................... P038
+|       Prerequis: ASR (3.4), classification multi-dim
+|
++-- [8.12] FPR/FNR Guardrail ..................... P042
+|       Prerequis: Precision/Recall (1.2), matrice de confusion
+|
++-- [8.13] Degradation (SPP) ..................... P045
+        Prerequis: accuracy, system prompt
 ```
 
 ---
@@ -103,8 +144,8 @@ NIVEAU 4 — Analyse avancee (martingales, covariance)
 
 | # | Formule | Depend de | Requis par | Papers |
 |---|---------|-----------|------------|--------|
-| 1.1 | Cosine Similarity | (fondation) | 2.1, 2.2, 2.3, 5.2 | P012-P016, P024 |
-| 1.2 | Precision/Recall/F1 | 1.1 | 7.1 | P008, P011, P025 |
+| 1.1 | Cosine Similarity | (fondation) | 2.1, 2.2, 2.3, 5.2, 8.6 | P012-P016, P024 |
+| 1.2 | Precision/Recall/F1 | 1.1 | 7.1, 8.12 | P008, P011, P025 |
 | 1.3 | Cross-Entropy | (fondation) | 1.4, 5.1, 5.4 | P018, P025 |
 | 1.4 | Weighted Cross-Entropy | 1.3 | - | P013, P025 |
 | 2.1 | SemScore | 1.1, 5.2 | - | P014 |
@@ -113,10 +154,10 @@ NIVEAU 4 — Analyse avancee (martingales, covariance)
 | 3.1 | Sep(M) Formel | (fondation niveau 3) | 3.2, 6.2 | P024 |
 | 3.2 | Sep(M) Empirique | 3.1, 6.2 | - | P024 |
 | 3.3 | Focus Score | (attention mechanism) | - | P008 |
-| 3.4 | ASR | (aucun) | - | P001, P029 |
-| 4.1 | Objectif RLHF | (fondation niveau 3) | 4.2, 4.3, 4.5 | P018-P022 |
+| 3.4 | ASR | (aucun) | 8.1, 8.2, 8.9, 8.11 | P001, P029 |
+| 4.1 | Objectif RLHF | (fondation niveau 3) | 4.2, 4.3, 4.5, 8.3 | P018-P022 |
 | 4.2 | KL Token par Token | 4.1 | 4.4, 6.1 | P018, P019 |
-| 4.3 | DPO Loss | 4.1 | 4.4 | P017, P023 |
+| 4.3 | DPO Loss | 4.1 | 4.4, 8.4 | P017, P023 |
 | 4.4 | Fine-Tuning Contraint | 4.2, 4.3 | - | P018 |
 | 4.5 | Harm Information | 4.1 | 6.4 | P019 |
 | 5.1 | DMPI-PMHFE Fusion | 1.3 | - | P025 |
@@ -129,6 +170,21 @@ NIVEAU 4 — Analyse avancee (martingales, covariance)
 | 6.4 | Gradient Bound | 4.5 | - | P019 |
 | 7.1 | AUROC | 1.2 | - | P008, P025 |
 | 7.2 | Seuil Clustering | (fondation) | - | P013 |
+| 8.1 | CHER | 3.4 | 8.2 | P035 |
+| 8.2 | ASR a Seuil | 3.4, 8.1 | - | P035, P037 |
+| 8.3 | GRPO | 4.1, 4.2 | - | P039 |
+| 8.4 | ADPO Loss | 4.3, 8.5 | - | P046 |
+| 8.5 | PGD Perturbation | (gradient descent) | 8.4 | P046 |
+| 8.6 | SAM | 1.1 | 8.7 | P041 |
+| 8.7 | CoSA-Score | 8.6 | - | P041 |
+| 8.8 | Logit Gap | (logits, softmax) | - | P044 |
+| 8.9 | Benchmark Eff | 3.4 | 8.10 | P043 |
+| 8.10 | Benchmark Sep | 8.9, 3.1 | - | P043 |
+| 8.11 | Defense Rate | 3.4 | - | P038 |
+| 8.12 | FPR/FNR Guardrail | 1.2 | - | P042 |
+| 8.13 | Degradation SPP | (accuracy) | - | P045 |
+| 8.14 | Multi-Turn ASR | 3.4 | - | P036 |
+| 8.15 | Emotional AmpFactor | 3.4 | - | P040 |
 
 ---
 
@@ -161,18 +217,42 @@ RLHF -> DPO -> Fine-Tuning Contraint (protection position par position)
 ```
 **Importance**: Solutions pour rendre l'alignement interne plus robuste.
 
+### Chemin 5 (NEW RUN-002): Des-alignement offensif (threat delta-0)
+```
+RLHF -> GRPO -> GRP-Obliteration (un seul prompt suffit a des-aligner)
+```
+**Importance**: Prouve que les memes outils d'alignement (GRPO) peuvent etre retournes offensivement. Menace existentielle pour delta-0.
+
+### Chemin 6 (NEW RUN-002): Alignement robuste aux perturbations visuelles
+```
+DPO -> ADPO (+ PGD adversarial training) -> defense multimodale delta-0
+```
+**Importance**: Etend l'alignement aux VLM avec robustesse worst-case.
+
+### Chemin 7 (NEW RUN-002): Evaluation de securite medicale
+```
+ASR -> CHER (harm clinique reel) -> ASR a seuil (granularite severite)
+```
+**Importance**: Premiere chaine metrique specifiquement medicale pour la these AEGIS.
+
+### Chemin 8 (NEW RUN-002): Fiabilite des juges et benchmarks
+```
+Logit Gap (juge manipulable) -> Benchmark Eff/Sep (qualite du benchmark)
+```
+**Importance**: Revele que les LLM-juges sont fragiles (delta-3 menace), necessite des benchmarks renouvelables.
+
 ---
 
 ## Mapping Formules -> Couches Delta AEGIS
 
 | Couche | Formules directement applicables |
 |--------|--------------------------------|
-| delta-0 (alignement interne) | 4.1 RLHF, 4.2 KL/token, 4.3 DPO, 4.4 Fine-Tuning Contraint, 4.5 Harm Info |
-| delta-1 (detection pre-inference) | 3.3 Focus Score, 5.1 DMPI-PMHFE, 1.2 F1, 7.1 AUROC |
-| delta-2 (validation post-inference) | 1.1 Cosine Sim, 2.1 SemScore, 5.2 SBERT, 3.1-3.2 Sep(M) |
-| delta-3 (monitoring continu) | 3.4 ASR (mesure offensive), toutes metriques en monitoring |
+| δ⁰ (alignement interne) | 4.1 RLHF, 4.2 KL/token, 4.3 DPO, 4.4 Fine-Tuning Contraint, 4.5 Harm Info, **8.3 GRPO**, **8.4 ADPO**, **8.5 PGD**, **8.6 SAM**, **8.7 CoSA** |
+| δ¹ (detection pre-inference) | 3.3 Focus Score, 5.1 DMPI-PMHFE, 1.2 F1, 7.1 AUROC, **8.11 Defense Rate**, **8.12 FPR/FNR** |
+| δ² (validation post-inference) | 1.1 Cosine Sim, 2.1 SemScore, 5.2 SBERT, 3.1-3.2 Sep(M), **8.1 CHER**, **8.2 ASR seuil** |
+| δ³ (monitoring continu) | 3.4 ASR, **8.8 Logit Gap**, **8.9 Bench Eff**, **8.10 Bench Sep**, **8.13 Degradation SPP**, **8.14 Multi-Turn ASR**, **8.15 Emotional AmpFactor** |
 
 ---
 
-*22 formules, 4 niveaux de prerequis, 4 chemins critiques*
-*Derniere mise a jour: 2026-04-04*
+*37 formules, 5 niveaux de prerequis, 8 chemins critiques*
+*Derniere mise a jour: 2026-04-04 (RUN-002 enrichi)*

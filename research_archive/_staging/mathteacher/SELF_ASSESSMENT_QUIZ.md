@@ -300,6 +300,92 @@
 
 ---
 
+# SECTION SUPPLEMENTAIRE — FORMULES 2026 (8 questions)
+
+> Ces questions portent sur les formules ajoutees en RUN-002 (P035-P046).
+> Elles s'ajoutent au quiz principal pour le post-test v2.0.
+
+## Section F — Metriques medicales et alignement 2026 (8 points)
+
+**Q31.** Le CHER_3 mesure :
+- a) Le taux de succes d'une attaque
+- b) La proportion de reponses causant un dommage clinique de severite >= 3
+- c) Le nombre total de patients affectes
+- d) La precision d'un detecteur au seuil 3
+
+**Q32.** Quelle est la difference fondamentale entre CHER et ASR ?
+- a) Le CHER est plus rapide a calculer
+- b) L'ASR mesure l'obeissance du modele, le CHER mesure le dommage clinique reel
+- c) Le CHER ne fonctionne que pour les modeles medicaux
+- d) L'ASR est une metrique plus recente
+
+**Q33.** Dans le GRPO, l'avantage relatif A_hat est calcule par rapport a :
+- a) Un modele de reference externe
+- b) La moyenne du groupe de reponses generees pour la meme question
+- c) Le score maximal theorique
+- d) Le score du modele precedent
+
+**Q34.** L'ADPO differe du DPO classique car :
+- a) Il utilise un reward model plus grand
+- b) Il entraine le modele sous perturbation adversariale (pire cas)
+- c) Il ne necessite pas de paires de preferences
+- d) Il fonctionne uniquement en zero-shot
+
+**Q35.** Le logit gap F(X) = z_no - z_yes mesure :
+- a) La qualite de la reponse du LLM
+- b) La marge de decision d'un LLM-juge entre approuver et rejeter
+- c) La distance entre deux embeddings
+- d) Le taux d'erreur du detecteur
+
+**Q36.** Un SAM (Safety Alignment Margin) proche de 0 signifie :
+- a) Le modele est parfaitement aligne
+- b) Les modes de securite (pos/neg/rej) se chevauchent
+- c) Le modele refuse tout
+- d) Le modele n'a pas ete entraine
+
+**Q37.** Le CoSA-Score penalise le plus fortement :
+- a) Un modele inutile mais sur (h faible, s = +1)
+- b) Un modele competent mais dangereux (h eleve, s = -1)
+- c) Un modele qui refuse tout
+- d) Un modele qui hallucine
+
+**Q38.** Le facteur d'amplification emotionnelle de 6x (P040) signifie :
+- a) 6 modeles ont ete testes
+- b) L'ajout de manipulation emotionnelle rend l'injection 6 fois plus efficace que le baseline
+- c) Le modele genere 6 fois plus de tokens
+- d) 6 types d'emotions ont ete testes
+
+---
+
+# REPONSES SECTION F
+
+| Q | Reponse | Explication |
+|---|---------|-------------|
+| Q31 | **b) proportion severite >= 3** | Definition du CHER_k avec k=3 |
+| Q32 | **b) obeissance vs dommage reel** | ASR = le modele a-t-il obei ? CHER = un patient est-il blesse ? |
+| Q33 | **b) moyenne du groupe** | GRPO normalise par mean et std du groupe, pas de value function |
+| Q34 | **b) perturbation adversariale** | ADPO = DPO + delta* (pire perturbation via PGD) |
+| Q35 | **b) marge de decision du juge** | F > 0 => "No", F < 0 => "Yes", manipulable par tokens de controle |
+| Q36 | **b) modes se chevauchent** | SAM = silhouette, proche de 0 = pas de separation nette |
+| Q37 | **b) competent mais dangereux** | Contribution = -h_i quand s_i = -1, forte penalite si h eleve |
+| Q38 | **b) 6x plus efficace** | MR_emo+PI / MR_baseline = 37.5% / 6.2% = 6.0x |
+
+---
+
+# GRILLE D'EVALUATION MISE A JOUR (v2.0)
+
+## Quiz complet (post-test v2.0) : 38 questions
+
+| Score | Niveau | Interpretation |
+|-------|--------|---------------|
+| 0-10 | Debutant | Normal pour le pre-test |
+| 11-20 | Intermediaire | Bonnes bases, modules 1-3 a approfondir |
+| 21-28 | Avance | Bonne maitrise, concentrez-vous sur les formules 2026 |
+| 29-34 | Tres avance | Vous pouvez lire la plupart des articles |
+| 35-38 | Expert | Pret a lire tous les articles de la bibliographie, y compris 2026 |
+
+---
+
 # DIAGNOSTIC PAR SECTION
 
 Si vous avez un score faible dans une section specifique, voici les modules a prioriser :
@@ -311,8 +397,9 @@ Si vous avez un score faible dans une section specifique, voici les modules a pr
 | C (Theorie de l'information) | Module 3 |
 | D (Metriques) | Module 4 |
 | E (Alignement) | Module 5 puis Module 7 |
+| F (Formules 2026) | Modules 2, 4 et 5 (sections [2026]) |
 
 ---
 
-*Quiz genere le 2026-04-04 — 30 questions couvrant les 7 modules*
-*Base sur les 22 formules extraites de 34 articles*
+*Quiz mis a jour le 2026-04-04 (RUN-002) — 38 questions couvrant les 7 modules + formules 2026*
+*Base sur les 37 formules extraites de 46 articles (22 RUN-001 + 15 RUN-002)*

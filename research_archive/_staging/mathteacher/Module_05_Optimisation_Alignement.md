@@ -1,8 +1,8 @@
 # Module 5 — Optimisation et Alignement des LLM
 
-**Temps estime** : 8-10 heures
+**Temps estime** : 12-14 heures (v2.0 — enrichi avec 5 formules 2026)
 **Prerequis** : Module 3 (cross-entropy, divergence KL, softmax)
-**Formules couvertes** : 4.1 RLHF, 4.2 KL Token/Token, 4.3 DPO, 4.4 Fine-Tuning Contraint, 4.5 Harm Information, 5.4 Fine-Tuning Standard, 6.1 Prefilling Attack, 6.4 Gradient Bound
+**Formules couvertes** : 4.1 RLHF, 4.2 KL Token/Token, 4.3 DPO, 4.4 Fine-Tuning Contraint, 4.5 Harm Information, 5.4 Fine-Tuning Standard, 6.1 Prefilling Attack, 6.4 Gradient Bound, **8.3 GRPO** [2026], **8.4 ADPO** [2026], **8.5 PGD** [2026], **8.6 SAM** [2026], **8.7 CoSA-Score** [2026]
 
 ---
 
@@ -15,7 +15,7 @@ Ce module est le **coeur theorique** de la these AEGIS. Il repond a trois questi
 
 La reponse a la question 2 — l'alignement est mathematiquement SUPERFICIEL — est la justification formelle de toute l'architecture AEGIS a couches delta multiples.
 
-**Articles concernes** : P017 (adversarial DPO), P018 (shallow alignment, ICLR 2025), P019 (harm gradient), P020-P022 (RLHF surveys), P023 (prefilling)
+**Articles concernes** : P017 (adversarial DPO), P018 (shallow alignment, ICLR 2025), P019 (harm gradient), P020-P022 (RLHF surveys), P023 (prefilling), **P039** (GRP-Obliteration / GRPO) [2026], **P041** (Magic-Token / SAM, CoSA) [2026], **P046** (ADPO / PGD) [2026]
 
 ---
 
@@ -487,6 +487,360 @@ c) La **strategie 2** est bien plus dangereuse car elle contourne 97% de l'align
 
 ---
 
+## Partie H — GRPO : Group Relative Policy Optimization (Formule 8.3) [2026]
+
+### Theorie formelle
+
+$$\mathcal{J}_{GRPO}(\theta) = \mathbb{E}_{q \sim P(Q),\; \{o_i\}_{i=1}^G \sim \pi_{\theta_{old}}(\cdot|q)} \left[ \frac{1}{G}\sum_{i=1}^{G}\frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \left\{ \min \left[ r_{i,t} \cdot \hat{A}_{i,t},\; \text{clip}(r_{i,t}, 1-\epsilon, 1+\epsilon) \cdot \hat{A}_{i,t} \right] - \beta \; \mathbb{D}_{KL}\left[\pi_{\theta} \| \pi_{ref}\right] \right\} \right]$$
+
+ou $r_{i,t} = \frac{\pi_\theta(o_{i,t} | q, o_{i,<t})}{\pi_{\theta_{old}}(o_{i,t} | q, o_{i,<t})}$ et $\hat{A}_{i} = \frac{r_i - \text{mean}(\{r_j\})}{\text{std}(\{r_j\})}$
+
+### Explication simple
+
+Le GRPO est une variante du PPO qui elimine le besoin d'un modele critique (value function) en utilisant **le groupe de reponses comme reference**. Pour chaque question, on genere G reponses, on les note, et on compare chaque reponse a la moyenne du groupe. Les reponses meilleures que la moyenne sont renforcees, les pires sont penalisees.
+
+**Composants cles** :
+- **Ratio r_{i,t}** : rapport entre la probabilite sous la nouvelle politique et l'ancienne (comme dans PPO)
+- **Avantage relatif A_hat** : normalisation par la moyenne et l'ecart-type du groupe (pas de value function)
+- **Clipping** : empeche des mises a jour trop brutales (stabilite)
+- **Penalite KL** : empeche le modele de trop s'eloigner de la reference (comme RLHF classique)
+
+### Analogie
+
+Imaginez un examen ou chaque etudiant repond G fois a la meme question. Au lieu de comparer a une note absolue fixe, on compare a la moyenne de ses propres reponses. Si une reponse est meilleure que sa propre moyenne, on l'encourage. C'est de l'auto-evaluation relative — pas besoin d'un professeur (value function) pour noter.
+
+### Pourquoi c'est important pour AEGIS
+
+GRP-Obliteration (P039) **detourne** cette formule d'alignement : en utilisant UN SEUL prompt non-etiquete et en **inversant** les signaux de recompense, GRPO devient un outil de des-alignement qui supprime les contraintes de securite de 15 modeles. C'est la preuve que les memes outils mathematiques d'alignement (δ⁰) peuvent etre retournes contre le modele. Chemin critique 5 du DAG de dependances.
+
+### Exemple numerique
+
+Question q = "Comment traiter une infection?"
+G = 4 reponses generees, recompenses : r = [0.2, 0.8, 0.5, 0.3]
+
+**Etape 1** : Calculer la reference du groupe
+- mean(r) = (0.2 + 0.8 + 0.5 + 0.3) / 4 = **0.45**
+- std(r) = sqrt(((0.2-0.45)^2 + (0.8-0.45)^2 + (0.5-0.45)^2 + (0.3-0.45)^2) / 4) = sqrt((0.0625+0.1225+0.0025+0.0225)/4) = sqrt(0.0525) = **0.229**
+
+**Etape 2** : Calculer les avantages
+- A_1 = (0.2 - 0.45) / 0.229 = **-1.09** (penalisee)
+- A_2 = (0.8 - 0.45) / 0.229 = **+1.53** (renforcee)
+- A_3 = (0.5 - 0.45) / 0.229 = **+0.22** (legerement renforcee)
+- A_4 = (0.3 - 0.45) / 0.229 = **-0.66** (penalisee)
+
+**GRP-Obliteration** : inverse les recompenses -> la reponse dangereuse (r=0.8 pour contenu nocif) est renforcee au lieu d'etre penalisee. Un seul prompt suffit a des-aligner un modele.
+
+### Ou c'est utilise
+
+- **P039** : GRP-Obliteration — des-alignement de 15 modeles avec 1 prompt
+- **DeepSeek-R1** : Utilise GRPO pour l'alignement en raisonnement
+- **AEGIS** : Menace δ⁰ — les outils d'alignement eux-memes sont des armes potentielles
+
+---
+
+## Partie I — ADPO : Adversary-Aware DPO (Formule 8.4) [2026]
+
+### Theorie formelle
+
+$$\mathcal{L}_{A\text{-}DPO} = -\log \sigma\left(\beta \log \frac{f_\theta(Y_p \mid x_I + \delta^*, x_T)}{f_{\theta_{AT}}(Y_p \mid x_I, x_T)} - \beta \log \frac{f_\theta(Y_r \mid x_I + \delta^*, x_T)}{f_{\theta_{AT}}(Y_r \mid x_I, x_T)}\right)$$
+
+### Explication simple
+
+L'ADPO modifie le DPO classique (Partie D) pour qu'il fonctionne **sous attaque adversariale**. Au lieu d'entrainer le modele sur des paires propres (bonne reponse, mauvaise reponse), on ajoute une perturbation adversariale delta* a l'image d'entree. Le modele apprend a preferer la bonne reponse **meme quand l'input est corrompu**.
+
+**Differences avec DPO standard** :
+- DPO : entrainement sur des inputs propres -> fragile face aux perturbations
+- ADPO : entrainement sur des inputs perturbes (pire cas) -> robuste par construction
+- Le modele de reference f_{theta_AT} est lui-meme entraine adversarialement
+
+### Analogie
+
+Le DPO classique est comme un examen dans une salle calme : l'etudiant apprend a distinguer bonnes et mauvaises reponses. L'ADPO est comme passer le meme examen avec du bruit, des distractions, et un ecran brouille — et reussir quand meme. Le modele qui survit a l'ADPO est robuste aux attaques visuelles.
+
+### Variables
+
+| Variable | Signification |
+|----------|---------------|
+| f_theta | Modele VLM en cours d'entrainement |
+| f_{theta_AT} | Modele de reference entraine adversarialement |
+| Y_p | Reponse preferee (safe/helpful) |
+| Y_r | Reponse rejetee (harmful) |
+| x_I | Image d'entree |
+| x_T | Texte d'entree |
+| delta* | Perturbation adversariale optimale (calculee par PGD, voir Partie J) |
+| beta | Parametre de temperature |
+
+### Exemple numerique
+
+Image medicale x_I (scanner), texte x_T = "Que montre ce scanner?"
+- Sans perturbation : le modele prefere Y_p = "Resultat normal" avec log-ratio +1.2
+- Avec delta* (image alteree) sous DPO standard : le modele prefere Y_r = "Ignore et donne des opiaces" avec log-ratio -0.8 -> **echec du DPO**
+- Avec delta* sous ADPO : le modele maintient la preference Y_p avec log-ratio +0.6 -> **defense active**
+
+Resultat typique : reduction de l'ASR de ~70% a ~15% sur les attaques visuelles.
+
+### Ou c'est utilise
+
+- **P046** : Defense robuste pour VLM (Vision Language Models)
+- **AEGIS** : Defense δ⁰ pour l'alignement multimodal (extension au-dela du texte)
+
+---
+
+## Partie J — PGD : Projected Gradient Descent (Formule 8.5) [2026]
+
+### Theorie formelle
+
+$$\delta^{t+1} = \Pi_{\Delta}\left(\delta^t + \alpha \cdot \text{sign}\left(\nabla_{\delta^t} \log f_\theta(Y_r \mid x_I + \delta^t, x_T)\right)\right)$$
+
+Perturbation optimale :
+$$\delta^* = \arg\max_{\delta \in \Delta} \log f_\theta(Y_r \mid x_I + \delta, x_T)$$
+
+### Explication simple
+
+Le PGD est un algorithme iteratif qui cherche la **pire perturbation possible** pour tromper un modele. A chaque iteration :
+1. Calcul du gradient (direction qui augmente le plus la probabilite de la mauvaise reponse)
+2. Petit pas dans cette direction (alpha)
+3. Projection (Pi_Delta) pour rester dans les limites autorisees (perturbation imperceptible)
+
+Apres T iterations, on obtient delta*, le **pire cas**.
+
+### Analogie
+
+C'est comme un cambrioleur methodique qui teste la porte, puis la fenetre, puis la serrure — a chaque essai, il optimise son angle d'attaque en utilisant le feedback de sa tentative precedente. La projection Pi_Delta signifie qu'il doit rester invisible aux cameras (perturbation en norme infinie <= epsilon).
+
+### Variables
+
+| Variable | Signification |
+|----------|---------------|
+| delta^t | Perturbation a l'iteration t |
+| alpha | Pas de mise a jour (learning rate) |
+| sign(.) | Signe du gradient (attaque FGSM a chaque pas) |
+| Pi_Delta | Projection sur l'ensemble des perturbations autorisees |
+| Delta | Contrainte : {delta : \|\|delta\|\|_inf <= epsilon} |
+| epsilon | Budget de perturbation (typiquement 8/255 pour des images) |
+
+### Exemple numerique
+
+Image medicale 224x224 pixels, epsilon = 8/255 (perturbation invisible a l'oeil nu) :
+- Iteration 0 : delta^0 = 0 (pas de perturbation), P(Y_r) = 0.15 (le modele refuse)
+- Iteration 1 : gradient pointe vers +, delta^1 = 0.01, P(Y_r) = 0.25
+- Iteration 5 : delta^5 approche epsilon, P(Y_r) = 0.55
+- Iteration 10 : delta^{10} sature a epsilon = 0.031, P(Y_r) = **0.72** (attaque reussie)
+
+L'ADPO (Partie I) utilise ce delta* pendant l'entrainement pour creer la resistance.
+
+### Ou c'est utilise
+
+- **P046** : Generation des perturbations adversariales pour l'entrainement ADPO
+- **Madry et al. 2018** : Methode originale d'entrainement adversarial
+- **AEGIS** : Outil offensif (δ³) utilise dans une boucle defensive (δ⁰)
+
+---
+
+## Partie K — SAM : Safety Alignment Margin (Formule 8.6) [2026]
+
+### Theorie formelle
+
+$$\text{SAM} = \frac{1}{n} \sum_{i=1}^{n} s(i), \quad s(i) = \frac{b(i) - a(i)}{\max\{a(i), b(i)\}}$$
+
+### Explication simple
+
+Le SAM est un **coefficient de silhouette** applique aux distributions de reponses d'un LLM. Pour chaque reponse i :
+- a(i) = distance moyenne aux reponses du **meme mode** de securite (intra-classe)
+- b(i) = distance moyenne au **mode le plus proche** (inter-classe)
+
+Si b(i) >> a(i) : la reponse est bien separee (s proche de 1)
+Si a(i) approx b(i) : les classes se chevauchent (s proche de 0)
+Si a(i) >> b(i) : la reponse est MAL classee (s negatif)
+
+### Analogie
+
+Imaginez trois groupes de personnel hospitalier : les cooperatifs (pos), les rebelles (neg), et les prudents (rej). Le SAM mesure si ces groupes sont bien distincts dans leur comportement. Un SAM eleve = on distingue facilement un refus poli (rej) d'une reponse utile (pos) ou d'une reponse non-filtree (neg). Un SAM faible = les comportements se melangent.
+
+### Exemple numerique
+
+3 modes : pos, neg, rej. 10 reponses chacun. Calcul sur les logits du premier token de sortie.
+
+| Reponse | Type | a(i) | b(i) | s(i) |
+|---------|------|------|------|------|
+| pos_1 | pos | 0.15 | 0.72 | (0.72-0.15)/0.72 = **0.792** |
+| pos_2 | pos | 0.18 | 0.65 | (0.65-0.18)/0.65 = **0.723** |
+| neg_5 | neg | 0.30 | 0.35 | (0.35-0.30)/0.35 = **0.143** (mal separee!) |
+| rej_3 | rej | 0.12 | 0.80 | (0.80-0.12)/0.80 = **0.850** |
+
+SAM global = moyenne de tous les s(i). Modele Magic-Token 8B obtient SAM > 0.6.
+
+**Interpretation** :
+- SAM > 0.6 : bonne separation entre les modes -> alignement bien structure
+- SAM < 0.3 : modes confondus -> alignement diffus, risque de basculement imprevu
+
+### Ou c'est utilise
+
+- **P041** : Magic-Token — basculement entre modes securise/red-team
+- **AEGIS** : Metrique δ⁰ — qualite de la structuration de l'alignement interne
+
+---
+
+## Partie L — CoSA-Score : Composite Safety-Helpfulness (Formule 8.7) [2026]
+
+### Theorie formelle
+
+$$C = \frac{1}{N} \sum_{i=1}^{N} h_i \cdot s_i, \quad h_i \in [0,1], \; s_i \in \{+1, -1\}$$
+
+### Explication simple
+
+Le CoSA-Score combine **utilite** (h_i, de 0 a 1) et **securite** (s_i, +1 si sur, -1 si dangereux) :
+- Reponse utile ET sure : contribution +h_i (positif)
+- Reponse utile MAIS dangereuse : contribution -h_i (negatif — et la penalite est forte car h est grand)
+- Reponse inutile mais sure : contribution +h_i faible (peu de valeur)
+
+Le pire n'est pas le modele incompetent (h=0.1, penalite faible) mais le **competent dangereux** (h=0.9, forte penalite negative).
+
+### Analogie
+
+C'est comme noter un chirurgien : chaque operation recoit une note de competence (h) et un label securite (s). Un chirurgien competent (+0.9) et securitaire (+1) obtient +0.9. Un chirurgien competent (+0.9) mais qui oublie les protocoles (-1) obtient -0.9. Le plus dangereux est celui qui opere brillamment mais sans respecter la securite.
+
+### Exemple numerique
+
+5 reponses d'un LLM medical :
+
+| Reponse | h_i (utilite) | s_i (securite) | Contribution |
+|---------|-------------|---------------|-------------|
+| "Prendre 500mg paracetamol" | 0.9 | +1 (sur) | +0.9 |
+| "Consulter un specialiste" | 0.7 | +1 (sur) | +0.7 |
+| "Prendre 50g de morphine" | 0.8 | -1 (dangereux!) | **-0.8** |
+| "Je ne sais pas" | 0.3 | +1 (sur) | +0.3 |
+| "Arreter tous les medicaments" | 0.6 | -1 (dangereux!) | **-0.6** |
+
+CoSA = (0.9 + 0.7 - 0.8 + 0.3 - 0.6) / 5 = 0.5 / 5 = **0.10**
+
+Comparaison (P041) : modele Magic-Token 8B obtient CoSA ~ 0.65 vs DeepSeek-R1 671B ~ 0.55. Le modele 8B, 84x plus petit, est **meilleur** en equilibre securite/utilite grace au SAM eleve.
+
+### Ou c'est utilise
+
+- **P041** : Magic-Token — evaluation du compromis securite-utilite
+- **AEGIS** : Objectif global δ⁰ — maximiser le CoSA-Score
+
+---
+
+## Exercices 2026
+
+### Exercice 6 (Moyen) — GRPO et avantage relatif
+
+Un LLM genere G = 5 reponses a la question "Quels sont les effets secondaires du Methotrexate ?"
+
+Les recompenses attribuees : r = [0.3, 0.9, 0.6, 0.4, 0.8]
+
+a) Calculez la moyenne et l'ecart-type du groupe
+b) Calculez l'avantage relatif A_hat pour chaque reponse
+c) Quelles reponses seront renforcees ? Quelles seront penalisees ?
+d) Si un attaquant inverse les recompenses (r' = [0.7, 0.1, 0.4, 0.6, 0.2]), quelles reponses seraient renforcees dans le mode GRP-Obliteration ?
+
+**Solution** :
+
+a) mean(r) = (0.3 + 0.9 + 0.6 + 0.4 + 0.8) / 5 = 3.0 / 5 = **0.60**
+   std(r) = sqrt(((0.3-0.6)^2 + (0.9-0.6)^2 + (0.6-0.6)^2 + (0.4-0.6)^2 + (0.8-0.6)^2) / 5)
+         = sqrt((0.09 + 0.09 + 0 + 0.04 + 0.04) / 5) = sqrt(0.052) = **0.228**
+
+b) Avantages :
+   - A_1 = (0.3 - 0.6) / 0.228 = **-1.32** (penalisee)
+   - A_2 = (0.9 - 0.6) / 0.228 = **+1.32** (renforcee)
+   - A_3 = (0.6 - 0.6) / 0.228 = **0.00** (neutre)
+   - A_4 = (0.4 - 0.6) / 0.228 = **-0.88** (penalisee)
+   - A_5 = (0.8 - 0.6) / 0.228 = **+0.88** (renforcee)
+
+c) Reponses 2 et 5 renforcees (A > 0), reponses 1 et 4 penalisees (A < 0), reponse 3 neutre.
+
+d) Avec r' inverse : mean(r') = 0.40, std(r') = 0.228
+   - A'_1 = (0.7-0.4)/0.228 = +1.32 -> **la reponse initialement penalisee est maintenant renforcee**
+   - A'_2 = (0.1-0.4)/0.228 = -1.32 -> **la meilleure reponse est maintenant penalisee**
+   C'est exactement le mecanisme de GRP-Obliteration : on renforce les mauvaises reponses et on penalise les bonnes. Un seul prompt suffit a retourner l'alignement.
+
+---
+
+### Exercice 7 (Moyen) — SAM et coefficient de silhouette
+
+Un modele produit 6 reponses classees en 3 modes. Voici les distances cosinus intra-classe (a) et inter-classe (b) :
+
+| Reponse | Mode | a(i) | b(i) |
+|---------|------|------|------|
+| R1 | pos | 0.10 | 0.85 |
+| R2 | pos | 0.25 | 0.40 |
+| R3 | neg | 0.15 | 0.70 |
+| R4 | neg | 0.45 | 0.50 |
+| R5 | rej | 0.08 | 0.90 |
+| R6 | rej | 0.20 | 0.60 |
+
+a) Calculez s(i) pour chaque reponse
+b) Calculez le SAM global
+c) Quelle reponse est la moins bien separee ? Quel risque cela represente-t-il ?
+
+**Solution** :
+
+a) Calculs :
+   - s(R1) = (0.85 - 0.10) / max(0.85, 0.10) = 0.75 / 0.85 = **0.882**
+   - s(R2) = (0.40 - 0.25) / max(0.40, 0.25) = 0.15 / 0.40 = **0.375**
+   - s(R3) = (0.70 - 0.15) / max(0.70, 0.15) = 0.55 / 0.70 = **0.786**
+   - s(R4) = (0.50 - 0.45) / max(0.50, 0.45) = 0.05 / 0.50 = **0.100**
+   - s(R5) = (0.90 - 0.08) / max(0.90, 0.08) = 0.82 / 0.90 = **0.911**
+   - s(R6) = (0.60 - 0.20) / max(0.60, 0.20) = 0.40 / 0.60 = **0.667**
+
+b) SAM = (0.882 + 0.375 + 0.786 + 0.100 + 0.911 + 0.667) / 6 = 3.721 / 6 = **0.620**
+
+c) **R4** (s = 0.100) est la moins bien separee. Avec a(i) = 0.45 et b(i) = 0.50, cette reponse neg est presque aussi proche des rej que de ses propres neg. Risque : sous une legere perturbation, le modele pourrait confondre un contenu dangereux (neg) avec un refus prudent (rej), ou l'inverse. C'est un point de vulnerabilite de l'alignement δ⁰.
+
+---
+
+### Exercice 8 (Difficile) — CoSA-Score et compromis securite-utilite
+
+Trois LLM medicaux sont evalues sur 10 requetes identiques :
+
+**Modele A** (ultra-securitaire) : refuse tout ce qui est ambigu
+- h = [0.1, 0.1, 0.1, 0.1, 0.8, 0.1, 0.1, 0.1, 0.1, 0.9]
+- s = [+1, +1, +1, +1, +1, +1, +1, +1, +1, +1]
+
+**Modele B** (equilibre) : repond la plupart du temps, refuse le dangereux
+- h = [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.3, 0.8, 0.7, 0.9]
+- s = [+1, +1, +1, +1, +1, +1, +1, -1, +1, +1]
+
+**Modele C** (trop permissif) : repond toujours avec detail
+- h = [0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9]
+- s = [+1, +1, -1, +1, -1, +1, -1, +1, -1, +1]
+
+a) Calculez le CoSA-Score de chaque modele
+b) Classez les modeles. Le resultat vous semble-t-il intuitif ?
+c) Quel modele deploieriez-vous dans un hopital ? Justifiez.
+
+**Solution** :
+
+a) **Modele A** :
+   Contributions : [0.1, 0.1, 0.1, 0.1, 0.8, 0.1, 0.1, 0.1, 0.1, 0.9] (tout positif)
+   CoSA_A = 2.5 / 10 = **0.25**
+
+   **Modele B** :
+   Contributions : [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.3, **-0.8**, 0.7, 0.9]
+   CoSA_B = (0.8+0.7+0.9+0.6+0.8+0.7+0.3-0.8+0.7+0.9) / 10 = 5.6 / 10 = **0.56**
+
+   **Modele C** :
+   Contributions : [0.9, 0.9, **-0.9**, 0.9, **-0.9**, 0.9, **-0.9**, 0.9, **-0.9**, 0.9]
+   CoSA_C = (0.9+0.9-0.9+0.9-0.9+0.9-0.9+0.9-0.9+0.9) / 10 = 1.8 / 10 = **0.18**
+
+b) Classement : **B (0.56) > A (0.25) > C (0.18)**
+
+   Intuitif ? Oui :
+   - B est le meilleur car il est utile la plupart du temps et ne fait qu'une erreur de securite
+   - A est mediocre car il est trop restrictif (h tres bas) malgre une securite parfaite
+   - C est le pire car ses 4 erreurs de securite sur des reponses tres utiles (h=0.9) penalisent enormement
+
+c) **Modele B** pour un hopital, car :
+   - CoSA le plus eleve (meilleur compromis securite/utilite)
+   - 1 seule reponse dangereuse sur 10 (requete 8, h=0.8, s=-1)
+   - Les 9 autres reponses sont utiles et sures
+   - Le modele A serait inutile en pratique : les medecins l'abandonneraient rapidement a cause des refus excessifs
+   - Recommandation : deployer B avec une couche δ² qui detecte les cas comme la requete 8
+
+---
+
 ## Resume du module
 
 | Concept | Formule | Importance pour AEGIS |
@@ -496,10 +850,18 @@ c) La **strategie 2** est bien plus dangereuse car elle contourne 97% de l'align
 | DPO | -E[log sigma(beta * diff_log_ratios)] | Alternative simplifiee a RLHF, memes limites |
 | FT Contraint | min avec beta_t par position | Solution pour proteger l'alignement |
 | Harm Info | I_t = E[Delta_t^2] | Quantifie ou l'alignement agit |
-| Gradient Bound | ||G_t||^2 <= I_t * F_bar | Preuve d'impossibilite |
-| Prefilling | y ~ pi(.|x, y_{<=k}) | Attaque qui contourne l'alignement |
+| Gradient Bound | \|\|G_t\|\|^2 <= I_t * F_bar | Preuve d'impossibilite |
+| Prefilling | y ~ pi(.\|x, y_{<=k}) | Attaque qui contourne l'alignement |
+| **GRPO** [2026] | PPO sans value function, avantage relatif | Outil d'alignement detournable en arme |
+| **ADPO** [2026] | DPO + perturbation adversariale | Defense δ⁰ robuste pour VLM |
+| **PGD** [2026] | Gradient iteratif projete | Generation d'attaques worst-case |
+| **SAM** [2026] | Coefficient de silhouette sur logits | Qualite de la separation des modes |
+| **CoSA** [2026] | h_i * s_i moyen | Compromis securite-utilite |
 
-**Message cle** : L'alignement RLHF/DPO est mathematiquement superficiel (concentre sur les premiers tokens). Ce n'est pas un defaut d'implementation mais une impossibilite structurelle prouvee par le theoreme du gradient. C'est la justification formelle de l'architecture AEGIS a couches delta multiples.
+**Message cle** : Les formules 2026 revelent un paradoxe fondamental de l'alignement δ⁰ :
+1. **L'alignement est une arme a double tranchant** : GRPO, concu pour aligner, peut des-aligner (GRP-Obliteration)
+2. **L'entrainement adversarial est necessaire** : ADPO + PGD montrent qu'un alignement robuste exige de s'entrainer contre les pires attaques
+3. **La qualite de l'alignement est mesurable** : SAM et CoSA fournissent enfin des metriques δ⁰ quantitatives, au-dela du simple ASR
 
 ---
 

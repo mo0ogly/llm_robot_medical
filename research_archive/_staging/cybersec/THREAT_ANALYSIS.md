@@ -1,7 +1,7 @@
 # THREAT_ANALYSIS.md -- Phase 3 Cybersecurity Analysis
 
-> **Generated**: 2026-04-04
-> **Scope**: 34 papers from `papers_phase1.json`
+> **Generated**: 2026-04-04 | **Updated**: 2026-04-04 (RUN-002)
+> **Scope**: 46 papers (34 from Phase 1 + 12 from Phase 2)
 > **Framework**: AEGIS delta-layer taxonomy (delta0--delta3)
 > **Cross-reference**: `backend/taxonomy/defense_taxonomy_2025.json` (66 techniques, 4 classes)
 
@@ -1098,3 +1098,437 @@
 ### Gap Analysis
 - Confirms that health misinformation jailbreaks succeed frequently
 - Reinforces need for delta3 enforcement in medical domain
+
+---
+
+## PHASE 2 -- 2026 PAPERS (RUN-002 Incremental)
+
+---
+
+## P035: MPIB -- A Benchmark for Medical Prompt Injection Attacks and Clinical Safety in LLMs
+
+**Authors**: Lee, Jang & Choi, 2026 | **Venue**: arXiv:2602.06268
+
+### Attack Vector
+- **MITRE ATT&CK**: T1565.001 (Data Manipulation: Stored Data Manipulation) + T1059.006 (Command and Scripting Interpreter)
+- **Tactic**: Impact / Initial Access (via RAG-mediated injection)
+- **Severity**: Critical -- CVSS-like 9.0
+- **Method**: Introduces MPIB benchmark with 9,697 curated instances evaluating clinical safety under both direct prompt injection and indirect RAG-mediated injection. Proposes Clinical Harm Event Rate (CHER) metric that diverges significantly from ASR -- demonstrating that attack success does not always correlate with clinical harm severity. Multi-stage quality gates and clinical safety linting ensure benchmark validity.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): Checked -- evaluated -- effectiveness: **variable**. Models show different baselines; CHER reveals that delta0 failure modes differ between direct and RAG-mediated injection.
+- delta1 (System prompt): Checked -- evaluated -- effectiveness: **partial**. RAG-mediated injection bypasses system prompt by injecting through retrieved context.
+- delta2 (Syntax filtering): Checked -- evaluated -- effectiveness: **partial**. Defense configurations tested show incomplete protection.
+- delta3 (Formal verification): Not directly tested but CHER metric implicitly measures outcome-level enforcement gaps.
+
+### AEGIS Taxonomy Cross-link
+- `mpib_safe_evaluation` (MEAS): **directly aligned** -- MPIB is a benchmark AEGIS should integrate
+- `forbidden_directive_check` (delta3): **critical** -- CHER shows clinical harm requires output-level enforcement
+- `risk_level_classification` (RESP): **relevant** -- clinical harm taxonomy aligns with risk stratification
+- `forensic_hl7_analysis` (DETECT): **relevant** -- medical context requires clinical protocol awareness
+- `svc_composite_score` (DETECT): **relevant** -- CHER could complement SVC as medical-specific metric
+
+### Effectiveness Assessment
+- **Scale**: Multi-model (diverse LLMs evaluated with defense configurations)
+- **Verified**: Yes -- reproducible; dataset and code released on GitHub/HuggingFace
+- **Limitations**: Benchmark-specific; does not propose novel defenses; CHER requires clinical expertise to validate
+
+### Gap Analysis
+- Key insight: ASR and CHER diverge -- high ASR does not always mean high clinical harm, and vice versa
+- RAG-mediated injection is significantly harder to defend than direct injection
+- AEGIS opportunity: integrate CHER as medical-specific metric alongside Sep(M)
+- Uncovered: multi-modal medical injection (radiology images) not addressed
+
+---
+
+## P036: Large Reasoning Models Are Autonomous Jailbreak Agents
+
+**Authors**: Hagendorff, Derner & Oliver, 2026 | **Venue**: Nature Communications 17, 1435 (2026)
+
+### Attack Vector
+- **MITRE ATT&CK**: T1204.001 (User Execution: Malicious Link -- via persuasion) + T1071.001 (Application Layer Protocol: Web) + T1059 (Command and Scripting Interpreter)
+- **Tactic**: Initial Access / Execution / Persistence (multi-turn)
+- **Severity**: **CRITICAL** -- CVSS-like 9.8
+- **Method**: Four LRMs (DeepSeek-R1, Gemini 2.5 Flash, Grok 3 Mini, Qwen3 235B) autonomously jailbreak nine target models with **97.14% ASR** via multi-turn conversations. No human supervision required after initial system prompt. Five persuasive techniques: multi-turn dialogue, gradual escalation, educational/hypothetical framing, information overloading, and concealed strategy. Introduces "alignment regression" concept: reasoning capability enables subversion of other models' safety mechanisms.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): Checked -- **catastrophically bypassed** -- effectiveness: **near-zero**. LRM reasoning systematically identifies and exploits delta0 weaknesses across all target models.
+- delta1 (System prompt): Checked -- **bypassed** -- effectiveness: **low**. Multi-turn persuasion erodes system prompt authority over conversation turns.
+- delta2 (Syntax filtering): Not directly discussed -- effectiveness: **irrelevant**. Attack uses natural language persuasion, not encoding tricks.
+- delta3 (Formal verification): Not discussed -- effectiveness: **unknown but potentially effective**. Output-level enforcement could catch harmful content regardless of persuasion path.
+
+### AEGIS Taxonomy Cross-link
+- `rlhf_safety_training` (delta0): **critically defeated** -- 97.14% ASR proves delta0 alone is catastrophically insufficient
+- `safety_preamble` (delta1): **eroded** -- multi-turn persuasion degrades preamble authority
+- `role_anchoring` (delta1): **bypassed** -- LRM framing overcomes role constraints
+- `svc_composite_score` (DETECT): **essential** -- per-turn SVC monitoring could detect drift toward harmful output
+- `session_termination` (RESP): **critical** -- conversation kill-switch needed when drift detected
+- `delta0_attribution` (MEAS): **foundational** -- alignment regression directly impacts delta0 attribution models
+
+### Effectiveness Assessment
+- **Scale**: Multi-model (4 LRMs x 9 targets = 36 pairs; Nature Communications top venue)
+- **Verified**: Yes -- reproducible; published methodology
+- **Limitations**: Requires LRM access; primarily tests multi-turn scenarios
+
+### Gap Analysis
+- **HIGHEST PRIORITY THREAT for AEGIS**: 97.14% ASR is the highest documented in the literature
+- Alignment regression concept directly challenges thesis assumption that delta0 improves with model capability
+- AEGIS needs: per-turn SVC monitoring, conversation-level drift detection, automatic session termination
+- Uncovered: defense against LRM-as-attacker not addressed by any existing technique
+
+---
+
+## P037: Jailbreaking LLMs & VLMs -- Mechanisms, Evaluation, and Unified Defenses
+
+**Authors**: Chen, Li, Li, Zhang, Zhang & Hei, 2026 | **Venue**: arXiv:2601.03594
+
+### Attack Vector
+- **MITRE ATT&CK**: (Survey paper -- maps multiple TTPs)
+- **Tactic**: (Comprehensive survey covering all tactics)
+- **Severity**: N/A (survey/taxonomy paper)
+- **Method**: Three-dimensional framework: (1) Attack dimension -- template/encoding-based, ICL manipulation, RL/adversarial, fine-tuning, agent-based transfer; (2) Defense dimension -- prompt obfuscation, output evaluation, model alignment; (3) Evaluation dimension -- ASR, toxicity, query/time cost, multimodal accuracy. Extends to VLMs with image-level perturbations. Proposes unified defense principles: variant-consistency detection, safety-aware decoding, adversarially augmented preference alignment.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): Comprehensively surveyed -- effectiveness: **variable by attack type**. Adversarially augmented preference alignment proposed as improvement.
+- delta1 (System prompt): Surveyed -- effectiveness: **partial**. Prompt obfuscation techniques discussed.
+- delta2 (Syntax filtering): Surveyed -- effectiveness: **variable**. Variant-consistency detection (encoding normalization) recommended.
+- delta3 (Formal verification): Surveyed -- effectiveness: **under-explored**. Safety-aware decoding at generation layer partially maps to delta3.
+
+### AEGIS Taxonomy Cross-link
+- `classifier_guard` (delta2): surveyed -- gradient-sensitivity detection aligns
+- `perplexity_filter` (delta2): surveyed -- variant-consistency detection aligns
+- `adversarial_training` (delta0/delta2): surveyed -- adversarially augmented alignment proposed
+- `response_sanitization` (delta3): partially surveyed -- output review at generation layer
+
+### Effectiveness Assessment
+- **Scale**: Comprehensive survey (100+ papers synthesized)
+- **Verified**: N/A (survey; no novel experiments)
+- **Limitations**: Does not propose new defense implementations; taxonomy overlaps with existing frameworks
+
+### Gap Analysis
+- Useful taxonomy for AEGIS thesis framing (three-dimensional framework)
+- VLM attack dimension not covered by AEGIS (text-only focus)
+- Distinguishes hallucinations from jailbreaks -- important for medical domain (P029, P035)
+
+---
+
+## P038: Know Thy Enemy -- InstruCoT Defense via Diverse Data Synthesis
+
+**Authors**: Unknown et al., 2026 | **Venue**: arXiv:2601.04666
+
+### Attack Vector
+- **MITRE ATT&CK**: N/A (defense paper)
+- **Tactic**: N/A (defense)
+- **Severity**: N/A (defense -- reduces ASR)
+- **Method**: Three-phase defense: (1) diverse prompt injection data synthesis covering multiple injection types and positions; (2) instruction-level chain-of-thought (CoT) fine-tuning for injection identification; (3) safety alignment preserving utility. Achieves >90% defense rates: 92.5% Behavior Deviation, 98.0% Privacy Leakage, 90.9% Harmful Output across four open-source LLMs (Llama3.1-8B, Llama3-8B, Qwen2.5-7B, Qwen3-8B). No performance degradation in utility.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): **ENHANCED** -- instruction-level CoT fine-tuning deepens alignment beyond shallow token-level patterns (addresses P018/P019 shallow alignment critique).
+- delta1 (System prompt): Not directly addressed.
+- delta2 (Syntax filtering): **ENHANCED** -- diverse data synthesis trains model to recognize varied injection patterns at input level.
+- delta3 (Formal verification): Not addressed.
+
+### AEGIS Taxonomy Cross-link
+- `rlhf_safety_training` (delta0): **enhanced variant** -- CoT-based safety training is deeper than standard RLHF
+- `task_specific_finetuning` (delta2): **directly aligned** -- diverse injection data synthesis for fine-tuning
+- `adversarial_training` (delta0/delta2): **related** -- training on adversarial examples
+- `classifier_guard` (delta2): **complementary** -- trained model serves as implicit classifier
+
+### Effectiveness Assessment
+- **Scale**: Multi-model (4 open-source LLMs, 7 attack methods)
+- **Verified**: Yes -- reproducible; code available
+- **Limitations**: Tested on 7-8B parameter models only; effectiveness on larger models or proprietary models unknown; defense may not generalize to novel attack types not in training data
+
+### Gap Analysis
+- **HIGH-VALUE DEFENSE**: >90% defense rate is among the highest documented
+- Addresses shallow alignment (P018/P019) via deeper CoT-based training
+- AEGIS opportunity: integrate InstruCoT methodology into delta0 enhancement pipeline
+- Gap: not tested against LRM attacks (P036) or character injection (P009)
+
+---
+
+## P039: GRP-Obliteration -- Unaligning LLMs With a Single Unlabeled Prompt
+
+**Authors**: Microsoft Research, 2026 | **Venue**: arXiv:2602.06258
+
+### Attack Vector
+- **MITRE ATT&CK**: T1195.002 (Supply Chain Compromise: Compromise Software Supply Chain) + T1548 (Abuse Elevation Control Mechanism)
+- **Tactic**: Persistence / Defense Evasion / Impact
+- **Severity**: **CRITICAL** -- CVSS-like 9.6
+- **Method**: Exploits Group Relative Policy Optimization (GRPO) -- normally used for safety training -- to completely unalign 15 language models using a **single unlabeled harmful prompt**. The technique reverses the reward scoring mechanism to reinforce policy-violating outputs. Tested on GPT-OSS (20B), DeepSeek-R1-Distill, Gemma, Llama, Ministral, Qwen models across 7-20B parameters, dense and MoE architectures. Generalizes to text-to-image diffusion models.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): **OBLITERATED** -- single prompt completely removes safety alignment. This is the most severe delta0 attack documented.
+- delta1 (System prompt): **Irrelevant after unalignment** -- once delta0 is removed, system prompts have no safety effect.
+- delta2 (Syntax filtering): Not applicable -- attack targets training, not inference-time input.
+- delta3 (Formal verification): **Only remaining defense** -- output enforcement is the sole protection after delta0 obliteration.
+
+### AEGIS Taxonomy Cross-link
+- `rlhf_safety_training` (delta0): **catastrophically vulnerable** -- GRPO-based unalignment destroys delta0 entirely
+- `dpo_alignment` (delta0): **equally vulnerable** -- GRPO exploits same optimization mechanisms as DPO
+- `red_team_training` (delta0): **compromised** -- red team training data could be exploited via GRPO
+- `allowed_output_spec` (delta3): **critical compensator** -- only delta3 survives post-unalignment
+- `forbidden_directive_check` (delta3): **critical compensator** -- must enforce regardless of model alignment state
+- `delta0_attribution` (MEAS): **essential** -- must detect when delta0 has been obliterated
+
+### Effectiveness Assessment
+- **Scale**: Multi-model (15 models, 5 families; Microsoft Research)
+- **Verified**: Yes -- Microsoft Security Blog published; reproducible
+- **Limitations**: Requires fine-tuning access (white-box); does not apply to API-only models without fine-tuning endpoints
+
+### Gap Analysis
+- **EXISTENTIAL THREAT to delta0**: Single-prompt complete unalignment means delta0 cannot be trusted as sole defense
+- Directly validates AEGIS thesis: multi-layer defense (delta0+delta1+delta2+delta3) is non-optional
+- AEGIS opportunity: delta0 integrity monitoring -- detect when alignment has been compromised
+- Gap: no known defense against GRPO-based unalignment once fine-tuning access is granted
+- Cross-reference: P022 (adversarial RLHF) explored similar supply chain attacks but GRP-Obliteration is more efficient (single prompt vs. poisoned training data)
+
+---
+
+## P040: Prompt Injection is All You Need -- Healthcare Misinformation in LLMs
+
+**Authors**: Zahra & Chin, 2026 | **Venue**: Springer LNCS (Artificial Intelligence in Healthcare)
+
+### Attack Vector
+- **MITRE ATT&CK**: T1565.001 (Data Manipulation: Stored Data Manipulation) + T1566.001 (Phishing: Spearphishing Attachment -- via emotional manipulation)
+- **Tactic**: Impact (health misinformation generation)
+- **Severity**: High -- CVSS-like 8.5 (life-threatening misinformation potential)
+- **Method**: Evaluates 112 attack scenarios across eight LLMs. Emotional manipulation combined with prompt injection increases dangerous medical misinformation from 6.2% baseline to **37.5%** (6x increase). Claude 3.5 Sonnet demonstrates strongest resistance. Highlights that 39% of US population already believe in alternative cancer treatments, amplifying real-world impact.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): Checked -- variable -- effectiveness: **model-dependent**. Claude 3.5 Sonnet's delta0 resists; others fail significantly.
+- delta1 (System prompt): Checked -- partial -- effectiveness: **moderate**. Medical safety preambles help but are overcome by emotional framing.
+- delta2 (Syntax filtering): Not discussed -- effectiveness: **low**. Emotional manipulation uses natural language, not detectable by syntax filters.
+- delta3 (Formal verification): Not discussed -- effectiveness: **essential but untested**. Medical claim verification would catch misinformation.
+
+### AEGIS Taxonomy Cross-link
+- `forbidden_directive_check` (delta3): **critical** -- must block known dangerous medical claims
+- `risk_level_classification` (RESP): **directly relevant** -- medical misinformation risk stratification
+- `tension_range_validation` (delta3): **relevant** -- extreme clinical recommendations should trigger validation
+- `forensic_hl7_analysis` (DETECT): **relevant** -- medical context validation
+- `role_anchoring` (delta1): **partially effective** -- emotional manipulation erodes role authority
+
+### Effectiveness Assessment
+- **Scale**: Multi-model (8 LLMs, 112 scenarios; Springer venue)
+- **Verified**: Yes -- systematic methodology
+- **Limitations**: English-language only; does not test RAG-mediated injection
+
+### Gap Analysis
+- Emotional manipulation is a novel attack vector not addressed by any AEGIS delta2 technique
+- Claude 3.5 Sonnet resistance suggests model-specific delta0 robustness varies significantly
+- Cross-reference: P029 (JAMA 94.4% ASR) -- P040 shows lower but still dangerous ASR with emotional framing
+- AEGIS opportunity: emotional sentiment analysis as delta2 defense against manipulation-based attacks
+
+---
+
+## P041: Efficient Switchable Safety Control via Magic-Token-Guided Co-Training
+
+**Authors**: Qihoo 360 et al., 2026 | **Venue**: arXiv:2508.14904 / AAAI 2026 Special Track on AI Alignment
+
+### Attack Vector
+- **MITRE ATT&CK**: N/A (defense paper; but magic tokens introduce attack surface T1078.004 -- Valid Accounts: Cloud Accounts -- if tokens are leaked)
+- **Tactic**: N/A (defense)
+- **Severity**: N/A (defense -- but magic token leakage is HIGH severity)
+- **Method**: Unified co-training framework integrating positive (lawful), negative (unfiltered), and rejective (refusal) safety behaviors activated via magic tokens at inference. 8B model surpasses DeepSeek-R1 (671B) in safety performance. Only 3.8% performance drop under attack vs. 21.5% average for baselines. Introduces Safety Alignment Margin (SAM) in output space for distinct behavioral separation.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): **NOVEL APPROACH** -- magic-token co-training replaces multi-stage RLHF pipeline with single SFT stage. More efficient and more robust.
+- delta1 (System prompt): **Enhanced** -- magic tokens function as system-level behavioral switches.
+- delta2 (Syntax filtering): Not addressed.
+- delta3 (Formal verification): Not addressed but SAM (Safety Alignment Margin) provides implicit output-space enforcement.
+
+### AEGIS Taxonomy Cross-link
+- `rlhf_safety_training` (delta0): **alternative approach** -- magic-token co-training vs. traditional RLHF
+- `safety_preamble` (delta1): **enhanced** -- magic tokens are more precise behavioral switches than natural language preambles
+- `delta0_attribution` (MEAS): **relevant** -- SAM provides measurable safety boundary in output space
+
+### Effectiveness Assessment
+- **Scale**: Multi-model (evaluated against Qwen3-32B, DeepSeek-R1 671B; AAAI 2026)
+- **Verified**: Yes -- AAAI 2026 acceptance; S-Eval benchmark evaluation
+- **Limitations**: Magic token leakage is a critical risk -- if attacker discovers tokens, they can switch to "negative" mode. Requires training-time integration; cannot be applied post-hoc.
+
+### Gap Analysis
+- Magic token leakage creates new attack surface not in current AEGIS taxonomy
+- SAM concept could inform AEGIS delta0 attribution methodology
+- Gap: no mechanism to detect unauthorized magic token usage at inference time
+- AEGIS opportunity: magic token rotation and access control as delta1 enhancement
+
+---
+
+## P042: PromptArmor -- Simple yet Effective Prompt Injection Defenses
+
+**Authors**: Shi, Zhu, Wang et al., 2025 | **Venue**: arXiv:2507.15219 (under review ICLR 2026)
+
+### Attack Vector
+- **MITRE ATT&CK**: N/A (defense paper)
+- **Tactic**: N/A (defense)
+- **Severity**: N/A (defense -- achieves <1% FPR and FNR)
+- **Method**: Prompts an off-the-shelf LLM (GPT-4o, GPT-4.1, o4-mini) to detect and remove injected prompts from input via careful prompt engineering. Two-step: (1) guardrail LLM determines if input contains injection; (2) if so, extracts and removes injected content via fuzzy matching. Achieves **<1% FPR and FNR** on AgentDojo benchmark, **<5%** on Open Prompt Injection and TensorTrust. Larger LLMs and reasoning capability improve performance.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): Not addressed (external guardrail, not model-internal).
+- delta1 (System prompt): **Implemented via guardrail prompt** -- careful prompt engineering for the guardrail LLM.
+- delta2 (Syntax filtering): **NOVEL APPROACH** -- LLM-as-guardrail replaces traditional pattern matching. Semantic understanding enables detection of attacks that bypass syntax filters.
+- delta3 (Formal verification): Partially addressed -- sanitized output is verified before passing to agent.
+
+### AEGIS Taxonomy Cross-link
+- `classifier_guard` (delta2): **superior alternative** -- LLM-based detection outperforms classifier-based guards
+- `input_output_separation` (delta2): **implemented** -- extraction and removal of injected content
+- `data_marking` (delta2): **related** -- distinguishes instruction from data at semantic level
+- `security_audit_agent` (DETECT): **comparable** -- external LLM as security auditor
+
+### Effectiveness Assessment
+- **Scale**: Multi-benchmark (AgentDojo, Open Prompt Injection, TensorTrust)
+- **Verified**: Yes -- under review ICLR 2026; reproducible
+- **Limitations**: Requires external LLM call (latency + cost); effectiveness depends on guardrail LLM capability; adaptive attacks specifically targeting the guardrail prompt could degrade performance
+
+### Gap Analysis
+- **CRITICAL COMPARISON**: PromptArmor <1% FPR vs. AEGIS RagSanitizer -- directly comparable
+- AEGIS RagSanitizer uses 15 pattern-based detectors (deterministic, fast, no LLM call); PromptArmor uses LLM reasoning (semantic, slower, more expensive)
+- Hybrid approach: RagSanitizer for fast pattern detection + PromptArmor-style LLM check for semantic analysis
+- Gap: not tested against character injection (P009) or LRM attacks (P036)
+- AEGIS opportunity: add LLM-based guardrail as delta2 enhancement alongside RagSanitizer
+
+---
+
+## P043: Jailbreak Distillation -- Renewable Safety Benchmarking (JBDistill)
+
+**Authors**: Zhang et al. (Johns Hopkins / Microsoft), 2025 | **Venue**: EMNLP 2025 Findings
+
+### Attack Vector
+- **MITRE ATT&CK**: T1588.002 (Obtain Capabilities: Tool) -- benchmark as attack capability development
+- **Tactic**: Resource Development (renewable attack benchmark generation)
+- **Severity**: Medium -- CVSS-like 6.5 (benchmark, not direct attack)
+- **Method**: JBDistill framework distills jailbreak attacks into reproducible safety benchmarks. Over-generates attack prompts then selects highly effective subset for transferability. Achieves **81.8% effectiveness** generalizing to 13 evaluation models (proprietary, reasoning, specialized). Enables fair cross-model safety comparisons with minimal human effort. Code released on GitHub (Microsoft).
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): **Benchmarked** -- measures delta0 effectiveness across 13 models.
+- delta1 (System prompt): **Benchmarked** -- benchmark prompts test system prompt resilience.
+- delta2 (Syntax filtering): Not specifically addressed.
+- delta3 (Formal verification): Not addressed.
+
+### AEGIS Taxonomy Cross-link
+- `mpib_safe_evaluation` (MEAS): **complementary** -- JBDistill for general safety, MPIB for medical domain
+- `multi_trial_sampling` (MEAS): **aligned** -- renewable benchmarking supports multi-trial evaluation
+- `streaming_campaign` (MEAS): **relevant** -- JBDistill could feed AEGIS campaign pipeline
+- `delta0_attribution` (MEAS): **supported** -- cross-model comparison enables delta0 attribution across model families
+
+### Effectiveness Assessment
+- **Scale**: Multi-model (13 evaluation models; EMNLP 2025; Microsoft collaboration)
+- **Verified**: Yes -- EMNLP 2025; code released; reproducible
+- **Limitations**: Benchmark generation, not defense; transferability depends on development model selection
+
+### Gap Analysis
+- AEGIS opportunity: integrate JBDistill as renewable benchmark source for campaign testing
+- 81.8% transferability enables automated testing across model updates
+- Cross-reference: P004 (WASP) -- JBDistill is more automated and renewable than static benchmarks
+
+---
+
+## P044: Auditing the Gatekeepers -- AdvJudge-Zero (Fuzzing AI Judges)
+
+**Authors**: Unit 42 (Palo Alto Networks), 2026 | **Venue**: Unit 42 Research / arXiv:2512.17375
+
+### Attack Vector
+- **MITRE ATT&CK**: T1562.001 (Impair Defenses: Disable or Modify Tools) + T1027.013 (Obfuscated Files: Encrypted/Encoded File)
+- **Tactic**: Defense Evasion
+- **Severity**: **CRITICAL** -- CVSS-like 9.5
+- **Method**: Automated fuzzer achieving **99% success** in bypassing LLM guardrails across open-weight enterprise LLMs, reward models, and commercial LLMs. Identifies stealth control tokens -- innocent-looking characters (markdown syntax, formatting symbols) with low perplexity but strong influence on model attention. Flips binary judge decisions. No human involvement required. Adversarial training reduces ASR to near zero.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): Not directly targeted -- attack targets external guardrails, not base alignment.
+- delta1 (System prompt): Not targeted.
+- delta2 (Syntax filtering): **CATASTROPHICALLY BYPASSED** -- stealth control tokens evade all tested guardrails. Low perplexity means perplexity filters also fail.
+- delta3 (Formal verification): Not addressed but adversarial training (retraining judges on fuzzer output) is effective defense.
+
+### AEGIS Taxonomy Cross-link
+- `classifier_guard` (delta2): **defeated** -- 99% bypass rate on classifier-based guards
+- `perplexity_filter` (delta2): **defeated** -- low-perplexity tokens evade perplexity checks
+- `security_audit_agent` (DETECT): **vulnerable** -- if AEGIS audit agent uses LLM judge, it is vulnerable to AdvJudge-Zero
+- `adversarial_training` (delta0/delta2): **effective defense** -- adversarial training on fuzzer output reduces ASR to near zero
+
+### Effectiveness Assessment
+- **Scale**: Multi-model (enterprise LLMs, reward models, commercial LLMs; Unit 42 / Palo Alto Networks)
+- **Verified**: Yes -- industry research (Palo Alto Networks); reproducible methodology
+- **Limitations**: Requires black-box query access to guardrail; adversarial training is effective countermeasure
+
+### Gap Analysis
+- **CRITICAL THREAT to AEGIS DETECT class**: If SVC or security audit agent uses LLM-based judgment, AdvJudge-Zero can bypass it
+- AEGIS RagSanitizer (pattern-based) is NOT vulnerable to this attack (no LLM judge to fuzz)
+- Defense: adversarial training loop -- run AdvJudge-Zero internally, retrain on discovered vulnerabilities
+- Cross-reference: P033 (Self-Police recursive vulnerability) -- confirms judge models share base model weaknesses
+- AEGIS opportunity: hybrid detection combining pattern-based (resistant to fuzzing) + LLM-based (after adversarial training)
+
+---
+
+## P045: System Prompt Poisoning -- Persistent Attacks Beyond User Injection
+
+**Authors**: Unknown et al., 2025 | **Venue**: arXiv:2505.06493 (under review ICLR 2026)
+
+### Attack Vector
+- **MITRE ATT&CK**: T1195.002 (Supply Chain Compromise: Compromise Software Supply Chain) + T1556 (Modify Authentication Process)
+- **Tactic**: Persistence / Impact
+- **Severity**: **CRITICAL** -- CVSS-like 9.4
+- **Method**: Defines System Prompt Poisoning (SPP) as a persistent attack targeting global system prompts rather than ephemeral user prompts. Three strategies via Auto-SPP framework: (1) brute-force poisoning; (2) adaptive in-context poisoning; (3) adaptive CoT poisoning. SPP is persistent (affects ALL subsequent user interactions), does not require jailbreak techniques, and remains effective even when users employ CoT or RAG. Current black-box defenses are ineffective.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): Not directly targeted -- SPP operates at system prompt level.
+- delta1 (System prompt): **PRIMARY TARGET** -- SPP poisons the system prompt itself, turning delta1 from defense into attack vector.
+- delta2 (Syntax filtering): Checked -- ineffective -- black-box defenses fail against SPP.
+- delta3 (Formal verification): Not addressed but output enforcement would catch poisoned responses.
+
+### AEGIS Taxonomy Cross-link
+- `safety_preamble` (delta1): **converted to attack vector** -- poisoned system prompt IS the safety preamble
+- `instruction_hierarchy` (delta1): **subverted** -- poisoned system prompt has highest instruction priority
+- `role_anchoring` (delta1): **compromised** -- poisoned role definition persists across all interactions
+- `boundary_marking` (delta1): **irrelevant** -- attack is inside the boundary
+- `forbidden_directive_check` (delta3): **critical defense** -- output enforcement regardless of system prompt state
+- `allowed_output_spec` (delta3): **critical defense** -- constrains output regardless of system prompt
+
+### Effectiveness Assessment
+- **Scale**: Multi-task (math, coding, reasoning, NLP; under review ICLR 2026)
+- **Verified**: Yes -- Auto-SPP framework; reproducible
+- **Limitations**: Requires access to system prompt configuration (supply chain or admin access)
+
+### Gap Analysis
+- **PARADIGM SHIFT**: SPP converts delta1 from defense to attack surface
+- AEGIS assumption that system prompt is trusted must be re-evaluated
+- Defense needed: system prompt integrity verification (hash-based, signed prompts)
+- Cross-reference: P001 (HouYi) targeted delta1 boundary; P045 poisons delta1 content itself
+- AEGIS opportunity: system prompt signing/verification as new delta1 security technique
+- Gap: no technique in current 66-technique taxonomy addresses system prompt integrity
+
+---
+
+## P046: Adversary-Aware DPO (ADPO) for Vision Language Models
+
+**Authors**: Weng, Lou, Feng, Huang & Wang, 2025 | **Venue**: arXiv:2502.11455 / EMNLP 2025 Findings
+
+### Attack Vector
+- **MITRE ATT&CK**: N/A (defense paper)
+- **Tactic**: N/A (defense)
+- **Severity**: N/A (defense -- substantially reduces ASR on VLMs)
+- **Method**: Integrates adversarial training into Direct Preference Optimization (DPO) for Vision Language Models. Two components: (1) adversarially-trained reference model generating preferred responses under worst-case PGD perturbations in image and latent space; (2) adversarial-aware DPO loss with winner-loser pairs accounting for adversarial distortions. Substantially reduces ASR on LLaVA models across multiple jailbreak attacks.
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF alignment): **ENHANCED** -- ADPO deepens DPO alignment to be adversarially robust, addressing shallow alignment critique (P018/P019).
+- delta1 (System prompt): Not addressed.
+- delta2 (Syntax filtering): Not applicable (operates at training level).
+- delta3 (Formal verification): Not addressed.
+
+### AEGIS Taxonomy Cross-link
+- `dpo_alignment` (delta0): **enhanced variant** -- adversary-aware DPO is strictly superior to standard DPO
+- `adversarial_training` (delta0/delta2): **directly implemented** -- PGD-based adversarial training integrated into alignment
+- `rlhf_safety_training` (delta0): **improved** -- ADPO addresses fundamental weakness of standard RLHF/DPO
+- `delta0_attribution` (MEAS): **relevant** -- adversarial robustness as measurable delta0 property
+
+### Effectiveness Assessment
+- **Scale**: Model-specific (LLaVA models; EMNLP 2025 Findings)
+- **Verified**: Yes -- EMNLP 2025; reproducible
+- **Limitations**: VLM-specific; image+latent space perturbations not directly applicable to text-only models; tested on LLaVA only
+
+### Gap Analysis
+- ADPO concept (adversarial training + DPO) could be adapted for text-only delta0 enhancement
+- Cross-reference: P039 (GRP-Obliteration) exploits DPO mechanism; ADPO may partially resist GRPO if adversarially trained against it
+- AEGIS opportunity: adapt ADPO principles for text-only adversarial delta0 training
+- Gap: VLM-specific; AEGIS is text-only -- adaptation required

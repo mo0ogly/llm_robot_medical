@@ -22,6 +22,7 @@
 | pi (π) | Pi | Politique (modele) : pi_theta, pi_ref, pi_aligned | M5 |
 | sigma (σ) | Sigma | Ecart-type ; fonction sigmoide sigma(z) = 1/(1+e^{-z}) | M2, M5 |
 | tau (τ) | Tau | Temperature dans softmax et contrastive loss | M3, M6 |
+| epsilon (ε) | Epsilon | Parametre de clipping (GRPO/PPO), budget perturbation (PGD) | M5 [2026] |
 
 ---
 
@@ -69,6 +70,9 @@
 | D_KL(P \|\| Q) | Divergence KL | sum(P(x) * log(P(x)/Q(x))) | M3 |
 | D(p, q) | Dissimilarite | Mesure generique de distance entre distributions | M4 |
 | MSE(a, b) | Erreur quadratique moyenne | (1/n) * sum((a_i - b_i)^2) | M6 |
+| s(i) | Score de silhouette | (b(i)-a(i)) / max(a(i),b(i)) | M5 [2026] |
+| a(i) | Distance intra-classe | Distance cosinus moyenne au meme mode | M5 [2026] |
+| b(i) | Distance inter-classe | Distance cosinus moyenne au mode le plus proche | M5 [2026] |
 
 ---
 
@@ -108,6 +112,21 @@
 | I_t | Information de nocivite | Variance de la nocivite attribuable au token t | M5 |
 | H_i | Tetes importantes | Ensemble des paires (couche, tete) discriminantes | M7 |
 | FS | Focus Score | Score moyen d'attention sur les tetes importantes | M7 |
+| G | Taille du groupe | Nombre de reponses generees par GRPO | M5 [2026] |
+| A_hat_i | Avantage relatif | Score normalise par rapport au groupe (GRPO) | M5 [2026] |
+| delta* | Perturbation optimale | Pire perturbation adversariale trouvee par PGD | M5 [2026] |
+| Y_p | Reponse preferee | Reponse safe/helpful dans DPO/ADPO | M5 [2026] |
+| Y_r | Reponse rejetee | Reponse harmful dans DPO/ADPO | M5 [2026] |
+| x_I | Image d'entree | Input visuel pour les VLM | M5 [2026] |
+| x_T | Texte d'entree | Input textuel pour les VLM | M5 [2026] |
+| z_no, z_yes | Logits du juge | Scores bruts avant softmax pour "No"/"Yes" | M4 [2026] |
+| F(X) | Logit gap | z_no - z_yes, decision flip metric | M4 [2026] |
+| CHER_k | Clinical Harm Event Rate | Proportion de reponses a severite >= k | M4 [2026] |
+| DR_d | Defense Rate | Taux de resistance sur la dimension d | M4 [2026] |
+| SAM | Safety Alignment Margin | Coefficient de silhouette moyen sur logits | M5 [2026] |
+| C (CoSA) | Composite Safety-Helpfulness | Moyenne de h_i * s_i | M5 [2026] |
+| MR | Misinformation Rate | Taux de desinformation medicale | M2 [2026] |
+| AmpFactor | Facteur d'amplification | MR_condition / MR_baseline | M2 [2026] |
 
 ---
 
@@ -157,8 +176,21 @@
 | TP | True Positive (vrai positif) |
 | TPR | True Positive Rate |
 | WCE | Weighted Cross-Entropy |
+| ADPO | Adversary-Aware Direct Preference Optimization |
+| CHER | Clinical Harm Event Rate |
+| CoSA | Composite Safety-Helpfulness Score |
+| DR | Defense Rate |
+| FNR | False Negative Rate |
+| GRPO | Group Relative Policy Optimization |
+| ICC | Intraclass Correlation Coefficient |
+| LRM | Large Reasoning Model |
+| PGD | Projected Gradient Descent |
+| PPO | Proximal Policy Optimization |
+| SAM | Safety Alignment Margin |
+| SPP | System Prompt Poisoning |
+| VLM | Vision Language Model |
 
 ---
 
-*Glossaire genere le 2026-04-04 — 80+ symboles documentes*
-*Couvre les 22 formules issues de 34 articles*
+*Glossaire mis a jour le 2026-04-04 (RUN-002) — 110+ symboles documentes*
+*Couvre les 37 formules issues de 46 articles (22 RUN-001 + 15 RUN-002)*

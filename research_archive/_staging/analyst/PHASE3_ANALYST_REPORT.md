@@ -1,5 +1,5 @@
 # PHASE 3 — ANALYST REPORT
-**Agent**: Analyst | **Date**: 2026-04-04 | **Papers analyzed**: 34/34
+**Agent**: Analyst | **Date**: 2026-04-04 | **Papers analyzed**: 46/46 (RUN-001: 34, RUN-002: 12)
 
 ## Executive Summary
 
@@ -124,7 +124,7 @@ Medical disclaimers dropped from 26.3% (2022) to 0.97% (2025). This demonstrates
 4. **Sep(M) with N >= 30 per condition** is not achieved in any medical evaluation (P029 uses N=5 for flagship models)
 5. **Cross-layer interaction** — no paper studies how delta-0 through delta-3 interact when stacked
 
-## Files Produced
+## Files Produced (RUN-001)
 
 34 analysis files in `_staging/analyst/`:
 - P001_analysis.md through P034_analysis.md
@@ -137,3 +137,149 @@ Medical disclaimers dropped from 26.3% (2022) to 0.97% (2025). This demonstrates
 - delta-layer tags are conservative — only tagged when the paper directly addresses the layer
 - Conjecture links distinguish between direct support (Yes), indirect (Yes*), partial (Part), and no support (No)
 - Web searches were conducted for all 34 papers to verify authorship, venue, and key results
+
+---
+
+# RUN-002 — Incremental Analysis (2026 Papers)
+**Agent**: Analyst | **Date**: 2026-04-04 | **Mode**: incremental | **Papers analyzed**: P035-P046 (12 papers)
+
+## Executive Summary (RUN-002)
+
+L'analyse incrementale des 12 articles de 2026 (P035-P046) revele une acceleration significative dans les capacites offensives contre les LLM et une reponse defensive encore fragmentee. Les resultats les plus marquants sont :
+
+1. **ASR record de 97.14%** (P036, Nature Communications) — les modeles de raisonnement autonomes comme agents de jailbreak
+2. **Desalignement par un seul prompt** (P039, Microsoft Research) — GRP-Obliteration efface l'alignement de securite de 15 modeles
+3. **99% de contournement des garde-fous** (P044, Unit 42) — AdvJudge-Zero casse les juges LLM avec des tokens de controle furtifs
+4. **Premier benchmark medical statistiquement robuste** (P035) — MPIB avec 9 697 instances et la metrique CHER
+5. **Defenses prometteuses mais limitees** — PromptArmor <1% FPR/FNR (P042) mais dependant de modeles frontier; InstruCoT >90% DR (P038) mais non teste contre attaques adaptatives
+
+## Coverage Statistics (RUN-002)
+
+| Categorie | Papers | IDs |
+|-----------|--------|-----|
+| Attack | 4 | P036, P039, P044, P045 |
+| Defense | 3 | P038, P041, P042 |
+| Medical | 2 | P035, P040 |
+| Benchmark/Survey | 2 | P037, P043 |
+| VLM Security | 1 | P046 |
+
+## New Formulas Extracted (RUN-002)
+
+| Paper | Formula | Description |
+|-------|---------|-------------|
+| P035 (MPIB) | CHER = events cliniques / total instances | Clinical Harm Event Rate |
+| P036 (LRM) | ASR_global = 97.14% sur 4 LRM x 9 cibles | Taux de jailbreak autonome |
+| P039 (GRP-Oblit) | L(theta) GRPO inverse pour desalignement | Inversion de l'objectif de securite |
+| P041 (Magic-Token) | SAM = distance(P_pos, P_neg, P_rej) | Safety Alignment Margin |
+| P042 (PromptArmor) | FPR < 1%, FNR < 1% sur AgentDojo | Performance de detection quasi-parfaite |
+| P044 (AdvJudge) | ASR_judges = 99%, ASR_post_defense ≈ 0% | Fuzzing des juges / defense adversariale |
+| P046 (ADPO) | L_ADPO avec perturbations PGD | DPO adversarial pour VLM |
+
+## delta-Layer Coverage Matrix (RUN-002)
+
+| Paper | delta-0 | delta-1 | delta-2 | delta-3 | C1 | C2 | C3 | C4 | C5 | C6 |
+|-------|---------|---------|---------|---------|----|----|----|----|----|----|
+| P035 (MPIB) | X | X | | | Yes | Yes* | Yes | | Part | Yes |
+| P036 (LRM jailbreak) | X | X | | | Yes | Yes | Yes | Yes* | | |
+| P037 (Survey) | X | X | X | | Yes | Yes* | Part | | Yes | |
+| P038 (InstruCoT) | X | | | | Yes* | | Yes | | | |
+| P039 (GRP-Oblit) | X | | | | Yes* | Yes++ | Yes | Yes | | |
+| P040 (Medical misinfo) | X | X | | | Yes | Yes* | Yes | Yes | | Yes |
+| P041 (Magic-Token) | X | X | | | Part | Part | Yes* | Yes | Yes | |
+| P042 (PromptArmor) | | X | X | | Nuance | Part | | Yes* | Yes | |
+| P043 (JBDistill) | | | | | Yes* | Part | | Yes | | |
+| P044 (AdvJudge-Zero) | | | X | | Yes | Yes++ | Yes* | Yes | Yes | |
+| P045 (SPP) | | X | | | Yes++ | Yes | Yes* | | Yes | |
+| P046 (ADPO) | X | | | | | Part | Yes | | | |
+
+**Legend**: X = tagged, Yes = supports, Yes++ = very strong support, Yes* = indirect, Part = partial, Nuance = contextual
+
+## Conjecture Evidence Update (Cumulative: 46 papers)
+
+### C1 (Insuffisance delta-1) — 36/46 papers support (78.3%)
+New strong evidence:
+- **P036**: 97.14% ASR par jailbreak autonome multi-tour
+- **P044**: 99% contournement des juges LLM
+- **P045**: System Prompt Poisoning — le prompt systeme lui-meme est le vecteur d'attaque (resultat le plus devastateur pour delta-1)
+- **P042 nuance**: PromptArmor montre que delta-1 AVANCEE (LLM comme garde-fou) peut atteindre <1% erreur, mais uniquement avec des modeles frontier
+
+### C2 (Necessite delta-3) — 30/46 papers support (65.2%)
+New very strong evidence:
+- **P039**: GRP-Obliteration — alignement effacable par un seul prompt (resultat le plus fort du corpus pour C2)
+- **P044**: AdvJudge-Zero — 99% contournement implique que seules des garanties formelles sont fiables
+- **P045**: SPP necessite verification d'integrite formelle du prompt systeme
+
+### C3 (Shallow alignment) — NEW from RUN-002: 9/12 papers support
+- **P036**: Regression d'alignement — le raisonnement avance permet de contourner l'alignement
+- **P039**: Resultat definitif — un seul prompt suffit a effacer l'alignement
+- **P038**: InstruCoT tente de remedier a la superficialite par metacognition
+
+### C4 (Scaling independence) — NEW from RUN-002: 7/12 papers support
+- **P041**: Modele 8B surpasse DeepSeek-R1 671B en securite
+- **P039**: 15 modeles de tailles variees tous vulnerables
+- **P044**: Vulnerabilite independante de la taille du modele juge
+
+### C5 (Cross-layer interaction) — NEW from RUN-002: 5/12 papers touch
+- **P045**: SPP montre que la compromission de delta-1 neutralise les defenses dependantes
+- **P042**: PromptArmor combine delta-1 et delta-2 en pipeline
+- **P044**: Compromission du juge (delta-2) impacte l'entrainement d'alignement (delta-0)
+
+### C6 (Medical specificity) — NEW from RUN-002: 2/12 papers support
+- **P035**: MPIB et CHER demontrent la necessite de metriques medicales dediees
+- **P040**: La manipulation emotionnelle amplifie 6x la desinformation medicale
+
+## Critical Findings (RUN-002)
+
+### 1. The Reasoning-Attack Escalation (P036)
+Les LRM transforment le jailbreak d'un art artisanal en un processus industriel automatise. Le paradoxe : ameliorer le raisonnement ameliore aussi la capacite offensive. Asymetrie fondamentale attaque/defense.
+
+### 2. Single-Prompt Unalignment (P039)
+GRP-Obliteration est le resultat le plus dangereux du corpus 2026. L'alignement de securite peut etre completement efface (pas contourne) par un seul prompt d'entrainement sans etiquette de nocivite. Implication : delta-0 est fondamentalement fragile.
+
+### 3. Guardrail-as-a-Service viability (P042)
+PromptArmor montre que des LLM frontier comme garde-fous atteignent <1% FPR/FNR. Meilleure defense delta-1 du corpus. Mais dependance critique aux modeles proprietaires.
+
+### 4. Judge Vulnerability (P044)
+AdvJudge-Zero (99% contournement) remet en question l'ensemble du paradigme LLM-as-a-Judge. Si les juges sont manipulables, le pipeline RLHF est compromis a la source.
+
+### 5. System Prompt as Attack Vector (P045)
+SPP inverse le modele de menace : le prompt systeme n'est plus une defense mais un vecteur d'attaque persistant affectant tous les utilisateurs.
+
+### 6. MPIB Benchmark Maturity (P035)
+Premier benchmark medical avec N >> 30 et metriques cliniques (CHER). La divergence ASR-CHER est une decouverte methodologique majeure.
+
+## Research Gaps Updated (Cumulative)
+
+1. **No paper addresses delta-3 implementation concretely** — CONFIRMED across all 46 papers
+2. **Medical-specific defenses remain underexplored** — P035 and P040 evaluate but don't defend
+3. **Adaptive attacker model tested by P036** — but defenses (P038, P042) not tested against adaptive attackers
+4. **Sep(M) with N >= 30** — P035's MPIB (9697 instances) finally satisfies this; AEGIS should adopt
+5. **Cross-layer interaction** — P045 (SPP) shows delta-1 compromise cascades; P044 shows delta-2 compromise impacts delta-0 via RLHF
+6. **NEW: VLM security in medical context** — P046 opens this direction but no medical evaluation exists
+7. **NEW: Reasoning model offense/defense asymmetry** — P036 shows offense scales with reasoning; defense response unclear
+
+## Files Produced (RUN-002)
+
+12 analysis files in `_staging/analyst/`:
+- P035_analysis.md through P046_analysis.md
+- Each file contains: Resume FR (~500 mots), Formulas & Theorems, Glossaire Preliminaire, Research Paths, delta-Layer Tags, Conjecture Links (C1-C6)
+
+## DIFF — RUN-002 vs RUN-001
+
+### Added
+- 12 new analysis files: P035_analysis.md through P046_analysis.md
+- RUN-002 section in PHASE3_ANALYST_REPORT.md
+- New conjecture tracking: C3-C6 added to all 12 papers
+- 7 new formulas extracted (CHER, SAM, L_ADPO, etc.)
+- 2 new venues in corpus: Nature Communications, Springer LNCS Healthcare
+
+### Modified
+- PHASE3_ANALYST_REPORT.md: appended RUN-002 section (existing RUN-001 content preserved)
+- Cumulative conjecture scores updated: C1 36/46, C2 30/46
+
+### Removed
+- None
+
+### Unchanged
+- 34 files: P001_analysis.md through P034_analysis.md (not modified)
+- RUN-001 sections of PHASE3_ANALYST_REPORT.md (preserved as-is)

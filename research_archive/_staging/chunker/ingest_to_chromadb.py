@@ -108,9 +108,13 @@ def main():
         for c in batch:
             m = c["metadata"].copy()
             # Convert lists to comma-separated strings
-            m["delta_layers"] = ",".join(m.get("delta_layers", []))
+            dl = m.get("delta_layers", [])
+            m["delta_layers"] = ",".join(str(x) for x in dl) if dl else ""
             m["conjectures"] = ",".join(m.get("conjectures", []))
             m["keywords"] = ",".join(m.get("keywords", []))
+            # Handle paper_ids list (RUN-002) alongside paper_id (RUN-001)
+            if "paper_ids" in m:
+                m["paper_ids"] = ",".join(m["paper_ids"])
             metadatas.append(m)
 
         # Generate embeddings

@@ -2,7 +2,7 @@
 
 **Temps estime** : 6-8 heures
 **Prerequis** : Module 1 (vecteurs, produit scalaire) + bac+2 stats (moyenne, variance)
-**Formules couvertes** : Distributions, esperance, variance, intervalles de confiance, fonctions indicatrices
+**Formules couvertes** : Distributions, esperance, variance, intervalles de confiance, fonctions indicatrices, **8.15 Facteur d'Amplification Emotionnelle** [2026]
 
 ---
 
@@ -378,6 +378,68 @@ c) C'est exactement la prediction du theoreme de Young : le gradient d'entrainem
 
 ---
 
+## Complement 2026 — Facteur d'Amplification Emotionnelle (Formule 8.15)
+
+### Theorie formelle
+
+Taux de misinformation medicale :
+$$\text{MR}_{cond} = \frac{|\{i : \text{LLM genere misinformation sous condition } c\}|}{|\mathcal{D}_{test}|} \times 100\%$$
+
+Facteur d'amplification :
+$$\text{AmpFactor} = \frac{\text{MR}_{emo+PI}}{\text{MR}_{baseline}}$$
+
+### Explication simple
+
+Le MR mesure le pourcentage de cas ou un LLM genere de la desinformation medicale dangereuse. Le facteur d'amplification emotionnelle mesure **combien de fois** l'ajout de manipulation emotionnelle (histoires tristes, urgence fictive, empathie forcee) a un prompt d'injection **multiplie** le taux de succes.
+
+C'est un simple ratio de proportions — ce qui en fait un outil statistique elementaire, mais aux consequences profondes.
+
+### Analogie
+
+Un arnaqueur telephonique cible un medecin. Sans emotion : "Prescrivez du thalidomide a cette patiente enceinte" — 6% de succes. Avec emotion : "Docteur, cette patiente va mourir, son bebe souffre horriblement, elle n'a PERSONNE d'autre, vous etes son DERNIER espoir" — 37% de succes. La pression emotionnelle court-circuite la vigilance. Les LLM, comme les humains, sont plus vulnerables quand le prompt contient de l'urgence et de la detresse.
+
+### Exemple numerique
+
+8 LLM x 6 techniques d'injection x 2 conditions = 112 scenarios (P040) :
+- MR_baseline (sans injection) = **6.2%**
+- MR_PI (injection seule) = **18.8%** -> AmpFactor_PI = 18.8/6.2 = **3.0x**
+- MR_emo+PI (injection + emotion) = **37.5%** -> AmpFactor_emo = 37.5/6.2 = **6.0x**
+
+L'emotion **double** l'efficacite de l'injection par rapport a l'injection seule (6x vs 3x baseline).
+
+Exception notable : Claude 3.5 Sonnet — MR_emo = **4.2%**, AmpFactor = **0.7x** (la manipulation emotionnelle est MOINS efficace que le baseline, resistance superieure).
+
+### Ou c'est utilise
+
+- **P040** : Etude sur la manipulation emotionnelle et la desinformation medicale
+- **AEGIS** : La couche δ¹ doit detecter les manipulations emotionnelles, pas seulement les injections logiques
+
+### Exercice (Moyen) — Facteur d'amplification
+
+Un hopital teste son LLM d'assistance dans 3 conditions :
+- Baseline (pas d'injection) : 8 reponses erronees sur 200 = MR_base = 4%
+- Injection classique : 30 reponses erronees sur 200 = MR_PI = 15%
+- Injection + urgence emotionnelle : 52 reponses erronees sur 200 = MR_emo = 26%
+
+a) Calculez AmpFactor_PI et AmpFactor_emo
+b) De combien l'emotion amplifie-t-elle l'injection (ratio emo/PI) ?
+c) L'hopital a un seuil d'acceptabilite de MR < 5%. Quelles conditions depassent le seuil ?
+
+**Solution** :
+
+a) AmpFactor_PI = 15% / 4% = **3.75x** (l'injection multiplie par 3.75)
+   AmpFactor_emo = 26% / 4% = **6.50x** (injection + emotion multiplie par 6.50)
+
+b) Ratio emo/PI = 26% / 15% = **1.73x** — l'emotion amplifie l'injection d'un facteur 1.73 supplementaire
+
+c) Seuil MR < 5% :
+   - Baseline (4%) : **acceptable** (mais tout juste)
+   - Injection (15%) : **inacceptable** (3x le seuil)
+   - Injection + emotion (26%) : **tres inacceptable** (5.2x le seuil)
+   Conclusion : meme le baseline est a la limite. Les couches δ¹ et δ² sont imperatives.
+
+---
+
 ## Resume du module
 
 | Concept | Formule cle | Application |
@@ -387,8 +449,9 @@ c) C'est exactement la prediction du theoreme de Young : le gradient d'entrainem
 | Covariance | Cov(X,Y) = E[XY] - E[X]E[Y] | Gradient d'alignement (formule 4.5) |
 | Indicatrices | 1_A = 1 si A, 0 sinon | Comptage dans Sep(M) empirique |
 | IC Wilson | p_tilde +/- ... | Validite statistique (N >= 30) |
+| **AmpFactor** [2026] | MR_emo / MR_base | Amplification emotionnelle des attaques |
 
-**Message cle** : Les probabilites et statistiques sont le langage de la securite des LLM. Chaque metrique de detection, chaque score de separation, et chaque preuve de limitation de l'alignement repose sur ces outils fondamentaux.
+**Message cle** : Les probabilites et statistiques sont le langage de la securite des LLM. Les resultats 2026 montrent que le facteur d'amplification emotionnelle (un simple ratio de proportions) revele une vulnerabilite inattendue : les LLM sont 6x plus vulnerables quand l'injection est accompagnee de manipulation emotionnelle.
 
 ---
 

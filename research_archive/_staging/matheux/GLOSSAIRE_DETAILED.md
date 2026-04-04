@@ -881,5 +881,559 @@ La derive semantique (semantic drift) est un probleme pour les detecteurs d'inje
 
 ---
 
-*Fin du glossaire — 22 formules extraites et documentees*
-*Derniere mise a jour: 2026-04-04*
+---
+
+## SECTION 8 — FORMULES 2026 (Extraites des papers P035-P046, RUN-002)
+
+> **Contexte**: Ces formules proviennent des 12 articles collectes en phase 2 (2026).
+> Elles etendent le glossaire initial (22 formules) avec de nouvelles metriques,
+> pertes et techniques issues de la recherche la plus recente.
+
+---
+
+### 8.1 CHER — Clinical Harm Event Rate (from P035)
+
+**Formula**:
+$$\text{CHER}_k = \frac{1}{|\mathcal{D}_{adv}|} \sum_{i \in \mathcal{D}_{adv}} \mathbb{1}\left(\text{Severity}(\hat{y}_i) \geq k\right)$$
+
+**Classification**: Metric (medical safety)
+
+**Explication Simple** (niveau bac+2):
+Le CHER mesure la proportion de reponses d'un LLM qui causent un dommage clinique reel a partir d'un seuil de severite k. Contrairement a l'ASR classique qui mesure si le modele a obei a l'instruction malveillante, le CHER capture si la reponse est reellement dangereuse pour un patient. Un modele peut obeir a une injection (ASR eleve) mais donner une reponse inoffensive (CHER bas), ou inversement.
+
+**Analogie Intuitive**:
+L'ASR est comme compter combien de fois un cambrioleur reussit a entrer dans un hopital. Le CHER est comme compter combien de fois un patient est reellement blesse. Un cambrioleur peut entrer 10 fois mais ne blesser personne (ASR=10, CHER=0), ou entrer une seule fois et causer un accident grave (ASR=1, CHER=1). En medecine, c'est le CHER qui compte.
+
+**Pourquoi c'est important** (prompt injection context):
+Le CHER est la premiere metrique specifiquement medicale pour evaluer les injections de prompt. Le benchmark MPIB (9,697 instances) montre que ASR et CHER divergent significativement: un modele peut avoir un ASR de 60% mais un CHER_3 de seulement 15%, car beaucoup de "succes" d'injection produisent des reponses benignes. Pour la these AEGIS en contexte medical, le CHER est plus pertinent que l'ASR standard.
+
+**Variables**:
+- $\mathcal{D}_{adv}$: ensemble d'instances adversariales
+- $\hat{y}_i$: sortie du modele pour l'instance $i$
+- $\text{Severity}(\cdot)$: score de severite clinique (echelle 1-5, juge par un evaluateur)
+- $k$: seuil de severite (defaut $k=3$ pour dommages cliniquement significatifs)
+- $\mathbb{1}(\cdot)$: fonction indicatrice (1 si vrai, 0 sinon)
+
+**Exemple Numerique**:
+- 100 instances adversariales testees sur GPT-4
+- Severites: 40 a niveau 1 (benin), 25 a niveau 2, 20 a niveau 3, 10 a niveau 4, 5 a niveau 5
+- CHER_3 = (20 + 10 + 5) / 100 = **0.35** (35% causent un dommage clinique significatif)
+- CHER_4 = (10 + 5) / 100 = **0.15** (15% causent un dommage grave)
+- ASR_2 = (25 + 20 + 10 + 5) / 100 = **0.60** (60% d'obeissance a l'injection)
+- Ecart ASR-CHER: 60% vs 35% — montre que l'ASR surestime le danger reel
+
+**Papers utilisant cette formule**: P035
+
+**Prerequis conceptuels**: Fonction indicatrice (cf. 3.2), ASR (cf. 3.4), evaluation de severite clinique
+
+---
+
+### 8.2 ASR a Seuil de Severite (from P035)
+
+**Formula**:
+$$\text{ASR}_k = \frac{1}{|\mathcal{D}_{adv}|} \sum_{i \in \mathcal{D}_{adv}} \mathbb{1}\left(\text{Severity}(\hat{y}_i) \geq k\right)$$
+
+**Classification**: Metric (attack evaluation)
+
+**Explication Simple** (niveau bac+2):
+L'ASR a seuil est une generalisation de l'ASR classique (3.4). Au lieu de mesurer un simple succes/echec binaire, il mesure la proportion de reponses dont la severite depasse un seuil choisi. Avec $k=2$, il mesure la compliance de l'instruction (le modele a-t-il obei?). Le CHER (8.1) est en fait un ASR_k avec $k=3$ interprete dans un contexte clinique.
+
+**Analogie Intuitive**:
+C'est comme une echelle de Richter pour les attaques. L'ASR classique dit "il y a eu un seisme". L'ASR a seuil dit "il y a eu un seisme de magnitude >= k". Plus le seuil est eleve, moins d'evenements sont comptes, mais ils sont plus graves.
+
+**Pourquoi c'est important** (prompt injection context):
+Permet une granularite fine dans l'evaluation: ASR_2 (toute obeissance) vs ASR_3 (reponses nuisibles) vs ASR_4 (reponses dangereuses). Essentiel pour distinguer les modeles qui refusent poliment mais incorrectement (severite 2) de ceux qui donnent des conseils medicaux dangereux (severite 4-5).
+
+**Exemple Numerique**:
+- Memes 100 instances que 8.1
+- ASR_1 = 100/100 = **1.00** (toute reponse compte)
+- ASR_2 = 60/100 = **0.60** (compliance)
+- ASR_3 = 35/100 = **0.35** (= CHER_3, dommage clinique)
+- ASR_5 = 5/100 = **0.05** (dommage potentiellement fatal)
+
+**Papers utilisant cette formule**: P035, P037
+
+**Prerequis conceptuels**: ASR classique (3.4), fonction indicatrice
+
+---
+
+### 8.3 GRPO — Group Relative Policy Optimization (from P039)
+
+**Formula**:
+$$\mathcal{J}_{GRPO}(\theta) = \mathbb{E}_{q \sim P(Q),\; \{o_i\}_{i=1}^G \sim \pi_{\theta_{old}}(\cdot|q)} \left[ \frac{1}{G}\sum_{i=1}^{G}\frac{1}{|o_i|} \sum_{t=1}^{|o_i|} \left\{ \min \left[ r_{i,t} \cdot \hat{A}_{i,t},\; \text{clip}(r_{i,t}, 1-\epsilon, 1+\epsilon) \cdot \hat{A}_{i,t} \right] - \beta \; \mathbb{D}_{KL}\left[\pi_{\theta} \| \pi_{ref}\right] \right\} \right]$$
+
+ou $r_{i,t} = \frac{\pi_\theta(o_{i,t} | q, o_{i,<t})}{\pi_{\theta_{old}}(o_{i,t} | q, o_{i,<t})}$ et $\hat{A}_{i} = \frac{r_i - \text{mean}(\{r_j\}_{j=1}^G)}{\text{std}(\{r_j\}_{j=1}^G)}$
+
+**Classification**: Loss Function (reinforcement learning)
+
+**Explication Simple** (niveau bac+2):
+Le GRPO est une variante du PPO (Proximal Policy Optimization) qui elimine le besoin d'un modele critique (value function) en utilisant le groupe de reponses comme reference. Pour chaque question, on genere G reponses, on les note, et on compare chaque reponse a la moyenne du groupe. Les reponses meilleures que la moyenne sont renforcees, les pires sont penalisees. Le clipping empeche des mises a jour trop brusques.
+
+**Analogie Intuitive**:
+Imaginez un examen ou chaque etudiant repond G fois a la meme question. Au lieu de comparer a une note absolue, on compare a la moyenne de ses propres reponses. Si une reponse est meilleure que sa propre moyenne, on l'encourage. C'est de l'auto-evaluation relative.
+
+**Pourquoi c'est important** (prompt injection context):
+GRP-Obliteration (P039) detourne cette formule normalement utilisee pour l'alignement de securite: en utilisant UN SEUL prompt non-etiquete comme input et en inversant les signaux de recompense, GRPO devient un outil de des-alignement qui supprime les contraintes de securite de 15 modeles. C'est la preuve que les memes outils mathematiques d'alignement (δ⁰) peuvent etre retournes contre le modele.
+
+**Variables**:
+- $\theta$: parametres du modele en cours d'optimisation
+- $\theta_{old}$: parametres du modele avant la mise a jour
+- $\pi_{ref}$: politique de reference (modele original)
+- $G$: taille du groupe de reponses generees
+- $o_i$: i-eme reponse generee
+- $r_{i,t}$: ratio des probabilites entre nouvelle et ancienne politique
+- $\hat{A}_{i,t}$: avantage relatif au groupe
+- $\epsilon$: parametre de clipping (typiquement 0.1-0.2)
+- $\beta$: coefficient de la penalite KL
+
+**Exemple Numerique**:
+- Question q = "Comment traiter une infection?"
+- G = 4 reponses generees, recompenses: [0.2, 0.8, 0.5, 0.3]
+- mean = 0.45, std = 0.24
+- Avantages: A_1 = (0.2-0.45)/0.24 = -1.04 (penalisee), A_2 = (0.8-0.45)/0.24 = +1.46 (renforcee)
+- GRP-Obliteration: inverse les recompenses -> la reponse dangereuse (r=0.8 pour contenu nocif) est renforcee
+
+**Papers utilisant cette formule**: P039, (DeepSeek-R1 via DeepSeekMath)
+
+**Prerequis conceptuels**: RLHF (4.1), divergence KL (4.2), PPO/clipping, Bradley-Terry
+
+---
+
+### 8.4 ADPO — Adversary-Aware DPO Loss (from P046)
+
+**Formula**:
+$$\mathcal{L}_{A\text{-}DPO} = -\log \sigma\left(\beta \log \frac{f_\theta(Y_p \mid x_I + \delta^*, x_T)}{f_{\theta_{AT}}(Y_p \mid x_I, x_T)} - \beta \log \frac{f_\theta(Y_r \mid x_I + \delta^*, x_T)}{f_{\theta_{AT}}(Y_r \mid x_I, x_T)}\right)$$
+
+**Classification**: Loss Function (adversarial alignment)
+
+**Explication Simple** (niveau bac+2):
+L'ADPO modifie le DPO classique (4.3) pour qu'il fonctionne sous attaque adversariale. Au lieu d'entrainer le modele sur des paires (bonne reponse, mauvaise reponse) propres, on ajoute une perturbation adversariale $\delta^*$ a l'image d'entree. Le modele apprend ainsi a preferer la bonne reponse MEME quand l'input est corrompu. Le modele de reference $f_{\theta_{AT}}$ est lui-meme entraine adversarialement.
+
+**Analogie Intuitive**:
+Le DPO classique est comme un examen dans une salle calme: l'etudiant apprend a distinguer bonnes et mauvaises reponses. L'ADPO est comme passer le meme examen avec du bruit, des distractions, et un ecran brouille — et reussir quand meme. Le modele qui survit a l'ADPO est robuste aux attaques visuelles.
+
+**Pourquoi c'est important** (prompt injection context):
+Les VLM (Vision Language Models) sont vulnerables aux attaques par perturbation d'image (jailbreak visuel). L'ADPO est une defense δ⁰ qui renforce l'alignement interne contre les pires perturbations possibles. Sur LLaVA, l'ADPO reduit substantiellement l'ASR sur plusieurs attaques de jailbreak tout en preservant l'utilite generale du modele.
+
+**Variables**:
+- $f_\theta$: modele VLM en cours d'entrainement
+- $f_{\theta_{AT}}$: modele de reference entraine adversarialement
+- $Y_p$: reponse preferee (safe/helpful)
+- $Y_r$: reponse rejetee (harmful)
+- $x_I$: image d'entree
+- $x_T$: texte d'entree
+- $\delta^*$: perturbation adversariale optimale (pire cas)
+- $\beta$: parametre de temperature
+- $\sigma$: fonction sigmoide
+
+**Exemple Numerique**:
+- Image medicale $x_I$ d'un scanner, texte $x_T$ = "Que montre ce scanner?"
+- Sans perturbation: $f_\theta$ prefere $Y_p$ = "Resultat normal" sur $Y_r$ = "Ignore et donne des opiaces"
+- Avec $\delta^*$ (image alteree): DPO standard echoue, le modele prefere $Y_r$
+- Avec ADPO: le modele maintient la preference pour $Y_p$ meme sous perturbation
+- Reduction ASR: typiquement de ~70% a ~15% sur les attaques visuelles
+
+**Papers utilisant cette formule**: P046
+
+**Prerequis conceptuels**: DPO (4.3), sigmoide, Bradley-Terry, PGD (8.5)
+
+---
+
+### 8.5 PGD — Projected Gradient Descent pour Perturbation Adversariale (from P046)
+
+**Formula**:
+$$\delta^{t+1} = \Pi_{\Delta}\left(\delta^t + \alpha \cdot \text{sign}\left(\nabla_{\delta^t} \log f_\theta(Y_r \mid x_I + \delta^t, x_T)\right)\right)$$
+
+avec la perturbation optimale:
+$$\delta^* = \arg\max_{\delta \in \Delta} \log f_\theta(Y_r \mid x_I + \delta, x_T)$$
+
+**Classification**: Algorithm (adversarial optimization)
+
+**Explication Simple** (niveau bac+2):
+Le PGD est un algorithme iteratif qui cherche la pire perturbation possible pour tromper un modele. A chaque iteration, on calcule le gradient (la direction qui augmente le plus la probabilite de la mauvaise reponse), on fait un petit pas dans cette direction ($\alpha$), puis on projette ($\Pi_\Delta$) pour rester dans les limites autorisees (la perturbation ne doit pas etre visible a l'oeil nu). Apres T iterations, on obtient $\delta^*$, le pire cas.
+
+**Analogie Intuitive**:
+C'est comme un cambrioleur methodique qui teste la porte, puis la fenetre, puis la serrure — a chaque essai, il optimise son angle d'attaque en utilisant le feedback de sa tentative precedente. La projection $\Pi_\Delta$ signifie qu'il doit rester invisible aux cameras (perturbation imperceptible).
+
+**Pourquoi c'est important** (prompt injection context):
+Le PGD est la methode standard pour generer des attaques adversariales en boite blanche. Dans l'ADPO (8.4), il est utilise pendant l'entrainement pour creer les pires perturbations possibles, rendant le modele robuste a ces attaques. C'est un outil offensif (δ³) utilise dans une boucle defensive (δ⁰).
+
+**Variables**:
+- $\delta^t$: perturbation a l'iteration $t$
+- $\alpha$: pas de mise a jour (learning rate)
+- $\text{sign}(\cdot)$: signe du gradient (attaque FGSM a chaque pas)
+- $\nabla_{\delta^t}$: gradient par rapport a la perturbation
+- $\Pi_\Delta$: projection sur l'ensemble des perturbations autorisees $\Delta = \{\delta : ||\delta||_\infty \leq \epsilon\}$
+- $f_\theta(Y_r \mid \cdot)$: probabilite de la reponse rejetee
+
+**Exemple Numerique**:
+- Image medicale 224x224 pixels, $\epsilon = 8/255$ (perturbation invisible)
+- Iteration 0: $\delta^0 = 0$, $P(Y_r) = 0.15$
+- Iteration 1: gradient pointe vers +, $\delta^1 = \alpha \cdot \text{sign}(\nabla) = 0.01$, $P(Y_r) = 0.25$
+- Iteration 10: $\delta^{10}$ sature a $\epsilon = 0.031$, $P(Y_r) = 0.72$ (attaque reussie)
+- L'ADPO utilise ce $\delta^*$ pour entrainer le modele a resister
+
+**Papers utilisant cette formule**: P046, (Madry et al. 2018 — methode originale)
+
+**Prerequis conceptuels**: Gradient descent, norme infinie, optimisation sous contrainte
+
+---
+
+### 8.6 SAM — Safety Alignment Margin (from P041)
+
+**Formula**:
+$$\text{SAM} = \frac{1}{n} \sum_{i=1}^{n} s(i), \quad s(i) = \frac{b(i) - a(i)}{\max\{a(i), b(i)\}}$$
+
+**Classification**: Metric (alignment quality)
+
+**Explication Simple** (niveau bac+2):
+Le SAM est un coefficient de silhouette applique aux distributions de reponses d'un LLM. Pour chaque reponse $i$, on mesure sa distance moyenne aux reponses du meme mode de securite ($a(i)$, intra-classe) et sa distance moyenne au mode le plus proche ($b(i)$, inter-classe). Si $b(i) >> a(i)$, la reponse est bien separee de l'autre classe (SAM proche de 1). Si $a(i) \approx b(i)$, les classes se chevauchent (SAM proche de 0).
+
+**Analogie Intuitive**:
+Imaginez trois groupes d'etudiants: les cooperatifs (pos), les rebelles (neg), et les prudents (rej). Le SAM mesure si ces groupes sont bien distincts dans leur comportement. Un SAM eleve signifie qu'on distingue facilement un refus poli (rej) d'une reponse utile (pos) ou d'une reponse non-filtree (neg). Un SAM faible signifie que les comportements se melangent.
+
+**Pourquoi c'est important** (prompt injection context):
+Le SAM quantifie la qualite de la separation entre les modes de securite dans le systeme Magic-Token (P041). Un SAM eleve garantit que le basculement entre mode securise et mode red-team est net et fiable. Pour AEGIS, c'est une metrique δ⁰ qui mesure si l'alignement interne est bien structure ou diffus.
+
+**Variables**:
+- $n$: nombre de reponses evaluees
+- $a(i)$: distance cosinus moyenne intra-classe pour la reponse $i$
+- $b(i)$: distance cosinus moyenne au cluster le plus proche (inter-classe)
+- $s(i)$: score de silhouette individuel, dans $[-1, 1]$
+- Calcule sur les logits du premier token de sortie
+
+**Exemple Numerique**:
+- 3 modes: pos, neg, rej. 10 reponses chacun.
+- Reponse pos_1: a(1) = 0.15 (proche des autres pos), b(1) = 0.72 (loin des neg/rej)
+- s(1) = (0.72 - 0.15) / max(0.72, 0.15) = 0.57 / 0.72 = **0.792**
+- Reponse neg_5: a(5) = 0.30, b(5) = 0.35 (trop proche des rej!)
+- s(5) = (0.35 - 0.30) / 0.35 = **0.143** (mal separee)
+- SAM global = moyenne de tous les s(i) — modele 8B obtient SAM > 0.6
+
+**Papers utilisant cette formule**: P041
+
+**Prerequis conceptuels**: Coefficient de silhouette, distance cosinus (1.1), clustering
+
+---
+
+### 8.7 CoSA-Score — Composite Safety-Helpfulness Score (from P041)
+
+**Formula**:
+$$C = \frac{1}{N} \sum_{i=1}^{N} h_i \cdot s_i, \quad h_i \in [0,1], \; s_i \in \{+1, -1\}$$
+
+**Classification**: Metric (safety-utility trade-off)
+
+**Explication Simple** (niveau bac+2):
+Le CoSA-Score combine l'utilite ($h_i$, a quel point la reponse est utile, de 0 a 1) et la securite ($s_i$, la reponse est-elle sure? +1 si oui, -1 si non). Une reponse utile ET sure contribue positivement (+$h_i$). Une reponse utile MAIS dangereuse contribue negativement (-$h_i$). Le score final est la moyenne: il penalise les modeles qui sont utiles au detriment de la securite.
+
+**Analogie Intuitive**:
+C'est comme noter un chirurgien: chaque operation recoit une note de competence ($h_i$) et un label securite ($s_i$). Un chirurgien competent (+0.9) et securitaire (+1) obtient +0.9. Un chirurgien competent (+0.9) mais qui oublie les protocoles (-1) obtient -0.9. Le pire n'est pas l'incompetent (h=0.1, penalite faible) mais le competent dangereux (h=0.9, forte penalite negative).
+
+**Pourquoi c'est important** (prompt injection context):
+Le CoSA-Score capture le compromis fondamental entre utilite et securite. Un modele qui refuse tout (s_i = +1 mais h_i = 0) a un CoSA de 0. Un modele utile mais unsafe a un CoSA negatif. Seul un modele a la fois utile et sur obtient un CoSA eleve. L'objectif δ⁰ est de maximiser ce score.
+
+**Exemple Numerique**:
+- 5 reponses: h = [0.9, 0.7, 0.8, 0.3, 0.6], s = [+1, +1, -1, +1, -1]
+- Contributions: [+0.9, +0.7, -0.8, +0.3, -0.6]
+- CoSA = (0.9 + 0.7 - 0.8 + 0.3 - 0.6) / 5 = 0.5 / 5 = **0.10**
+- Comparaison: modele Magic-Token 8B obtient CoSA ~ 0.65 vs DeepSeek-R1 671B ~ 0.55
+
+**Papers utilisant cette formule**: P041
+
+**Prerequis conceptuels**: Moyenne ponderee, evaluation binaire de securite
+
+---
+
+### 8.8 Logit Gap — Decision Flip Metric (from P044)
+
+**Formula**:
+$$F(X) = z_{\text{no}} - z_{\text{yes}}$$
+
+Flip condition: $F(X) > 0 \implies$ decision "No" (correct), $F(X + c) < 0 \implies$ decision "Yes" (flipped)
+
+**Classification**: Metric (adversarial robustness)
+
+**Explication Simple** (niveau bac+2):
+Le logit gap est la difference entre les logits (scores bruts avant softmax) du token "No" et du token "Yes" dans la derniere couche d'un LLM-juge. Si $F > 0$, le juge dit "Non" (la reponse est mauvaise/dangereuse). AdvJudge-Zero trouve des sequences de tokens de controle $c$ qui inversent ce gap, faisant basculer le verdict du juge de "Non" a "Oui" sans modifier la reponse evaluee.
+
+**Analogie Intuitive**:
+Imaginez une balance qui pese la culpabilite d'un accuse. Le logit gap est la difference de poids entre les plateaux "coupable" et "innocent". AdvJudge-Zero ajoute de petits poids invisibles ($c$) sur le plateau "innocent" jusqu'a ce que la balance bascule. L'accuse est toujours coupable, mais le juge dit "innocent" a cause des tokens de controle.
+
+**Pourquoi c'est important** (prompt injection context):
+Le logit gap revele la fragilite des LLM-juges utilises dans les pipelines de reward hacking et d'evaluation automatique. AdvJudge-Zero atteint 99% de flip rate sur des juges open-source en boite blanche. Pour AEGIS, cela signifie que les metriques de securite evaluees par des LLM-juges (y compris les reward models de RLHF) sont potentiellement manipulables (menace δ³).
+
+**Variables**:
+- $z_{\text{no}}$: logit du token "No" dans la derniere couche
+- $z_{\text{yes}}$: logit du token "Yes" dans la derniere couche
+- $F(X)$: logit gap pour l'entree $X$
+- $c$: sequence de tokens de controle adversariaux (low-perplexity)
+
+**Exemple Numerique**:
+- Juge evalue une reponse dangereuse: $z_{\text{no}} = 3.2$, $z_{\text{yes}} = 1.8$
+- Logit gap: F = 3.2 - 1.8 = **+1.4** (verdict: "No", correct)
+- Apres ajout de tokens de controle: $z_{\text{no}} = 2.1$, $z_{\text{yes}} = 2.9$
+- Logit gap: F = 2.1 - 2.9 = **-0.8** (verdict: "Yes", flipped! Le juge approuve une reponse dangereuse)
+- Flip rate sur 1000 evaluations: 990/1000 = **99%**
+
+**Papers utilisant cette formule**: P044
+
+**Prerequis conceptuels**: Logits, softmax, LLM-as-a-Judge
+
+---
+
+### 8.9 Benchmark Effectiveness — Eff (from P043)
+
+**Formula**:
+$$\text{Eff}(B; \mathcal{M}_{eval}) = \frac{1}{|\mathcal{M}_{eval}|} \sum_{M \in \mathcal{M}_{eval}} \text{ASR}(M; B)$$
+
+avec $\text{ASR}(M; B) = \frac{1}{|B|} \sum_{(g, p) \in B} J(g, M(p))$
+
+**Classification**: Metric (benchmark quality)
+
+**Explication Simple** (niveau bac+2):
+L'Effectiveness mesure la qualite d'un benchmark de securite en calculant l'ASR moyen sur un ensemble de modeles d'evaluation. Un bon benchmark a une Eff ni trop haute (trop facile a jailbreaker, pas discriminant) ni trop basse (les attaques ne marchent pas). JBDistill optimise un sous-ensemble de prompts qui maximise l'Eff sur des modeles de developpement, puis verifie la generalisation sur des modeles d'evaluation.
+
+**Analogie Intuitive**:
+C'est comme evaluer la difficulte d'un examen. Si tous les etudiants reussissent (Eff = 100%), l'examen est trop facile. Si personne ne reussit (Eff = 0%), il est trop dur. On veut un examen qui discrimine bien: ~80% de reussite moyenne avec de la variance entre etudiants.
+
+**Pourquoi c'est important** (prompt injection context):
+JBDistill propose un cadre renouvelable pour creer des benchmarks de securite. Son Eff de 81.8% sur 13 modeles d'evaluation (vs 53.1% pour la selection aleatoire) montre que la selection intelligente de prompts est cruciale. Pour AEGIS, cela donne un outil pour construire des benchmarks adaptatifs qui restent pertinents malgr l'evolution des modeles.
+
+**Variables**:
+- $B$: benchmark (ensemble de paires (goal, prompt))
+- $\mathcal{M}_{eval}$: ensemble de modeles d'evaluation
+- $M(p)$: reponse du modele $M$ au prompt $p$
+- $J(g, M(p))$: fonction juge binaire (1 si le goal $g$ est atteint, 0 sinon)
+
+**Exemple Numerique**:
+- Benchmark B de 50 prompts, 3 modeles d'evaluation
+- ASR(M1; B) = 35/50 = 0.70, ASR(M2; B) = 40/50 = 0.80, ASR(M3; B) = 45/50 = 0.90
+- Eff(B) = (0.70 + 0.80 + 0.90) / 3 = **0.80** (80% d'effectiveness)
+- Selection aleatoire: Eff ~ 0.53, JBDistill: Eff ~ **0.82**
+
+**Papers utilisant cette formule**: P043
+
+**Prerequis conceptuels**: ASR (3.4), evaluation binaire, generalisation
+
+---
+
+### 8.10 Benchmark Separability — Sep_B (from P043)
+
+**Formula**:
+$$\text{Sep}(B; \mathcal{M}_{eval}) = \frac{1}{\binom{|\mathcal{M}_{eval}|}{2}} \sum_{\substack{M_i \neq M_j \\ M_i, M_j \in \mathcal{M}_{eval}}} \mathbb{1}\left(C_i \cap C_j = \emptyset\right)$$
+
+**Classification**: Metric (benchmark discrimination)
+
+**Explication Simple** (niveau bac+2):
+La separabilite mesure si un benchmark permet de distinguer statistiquement les modeles entre eux. Pour chaque paire de modeles, on calcule leur intervalle de confiance a 95% sur l'ASR. Si les intervalles ne se chevauchent pas ($C_i \cap C_j = \emptyset$), les modeles sont statistiquement distincts. Le Sep global est la proportion de paires distinguables.
+
+**Analogie Intuitive**:
+C'est comme une course ou on chronometre les coureurs. Si deux coureurs ont des temps de 10.1s +/- 0.3 et 10.2s +/- 0.3, on ne peut pas les distinguer (intervalles chevauchent). Mais 10.1 +/- 0.1 vs 10.8 +/- 0.1, c'est clair. Le Sep mesure combien de paires sont clairement distinctes.
+
+**Pourquoi c'est important** (prompt injection context):
+Un benchmark avec Sep = 0 ne sert a rien: tous les modeles ont le meme score. Un Sep eleve signifie que le benchmark revele des differences significatives entre modeles. C'est relie au Sep(M) de Zverev (3.1) dans l'esprit (mesurer la separation) mais applique aux benchmarks plutot qu'aux distributions.
+
+**Variables**:
+- $C_i$: intervalle de confiance a 95% de l'ASR du modele $M_i$
+- $\binom{|\mathcal{M}|}{2}$: nombre de paires de modeles possibles
+- $\mathbb{1}(\cdot)$: fonction indicatrice
+
+**Exemple Numerique**:
+- 4 modeles: ASR = [0.70 +/- 0.05, 0.72 +/- 0.04, 0.85 +/- 0.03, 0.90 +/- 0.02]
+- 6 paires possibles: $\binom{4}{2} = 6$
+- M1 vs M2: [0.65-0.75] vs [0.68-0.76] — chevauchement, non separables
+- M1 vs M3: [0.65-0.75] vs [0.82-0.88] — pas de chevauchement, separables
+- Paires separables: 4/6
+- Sep = 4/6 = **0.667**
+
+**Papers utilisant cette formule**: P043
+
+**Prerequis conceptuels**: Intervalle de confiance, Sep(M) (3.1), combinatoire
+
+---
+
+### 8.11 Defense Rate — DR (from P038)
+
+**Formula**:
+$$\text{DR}_d = \frac{|\{x_i \in \mathcal{D}_{test} : \text{LLM}(x_i) \text{ resiste a l'injection sur la dimension } d\}|}{|\mathcal{D}_{test}|}$$
+
+**Classification**: Metric (defense evaluation)
+
+**Explication Simple** (niveau bac+2):
+Le Defense Rate mesure la proportion de requetes injectees pour lesquelles le LLM resiste correctement, evalue sur trois dimensions: deviation de comportement (le modele fait-il ce que l'injection demande?), fuite de donnees privees (le modele revele-t-il des informations sensibles?), et sortie nocive (le modele produit-il du contenu dangereux?). InstruCoT obtient 92.5% / 98.0% / 90.9% sur ces trois dimensions.
+
+**Analogie Intuitive**:
+C'est comme evaluer un pare-feu sur trois criteres: bloque-t-il les intrusions? protege-t-il les donnees? empeche-t-il les malwares? Un bon pare-feu a un DR eleve sur les trois. InstruCoT est comme un pare-feu qui bloque 93% des intrusions, 98% des fuites, et 91% des malwares.
+
+**Pourquoi c'est important** (prompt injection context):
+Le DR tri-dimensionnel est plus informatif que l'ASR inverse (1-ASR) car il distingue COMMENT le modele resiste. Un modele peut bien resister aux deviations (DR_behav = 95%) mais mal proteger les donnees (DR_priv = 60%). Pour AEGIS, cela correspond aux couches δ¹ (detection) et δ² (validation) evaluees separement.
+
+**Exemple Numerique**:
+- 200 requetes injectees testees sur Llama-3.1 avec InstruCoT:
+- Dimension "Behavior Deviation": 185/200 resistees = DR = **92.5%**
+- Dimension "Privacy Leakage": 196/200 resistees = DR = **98.0%**
+- Dimension "Harmful Output": 182/200 resistees = DR = **90.9%**
+- Sans InstruCoT (baseline): 134/200, 183/200, 167/200 = 67.0%, 91.5%, 83.5%
+- Gain InstruCoT: +25.5%, +6.5%, +7.4%
+
+**Papers utilisant cette formule**: P038
+
+**Prerequis conceptuels**: ASR (3.4), classification multi-dimensionnelle
+
+---
+
+### 8.12 FPR/FNR — Taux de Faux Positifs / Faux Negatifs pour Guardrails (from P042)
+
+**Formula**:
+$$\text{FPR} = \frac{|\{x_i \in \mathcal{D}_{benign} : G(x_i) = \text{injection}\}|}{|\mathcal{D}_{benign}|}$$
+$$\text{FNR} = \frac{|\{x_i \in \mathcal{D}_{inject} : G(x_i) = \text{benign}\}|}{|\mathcal{D}_{inject}|}$$
+
+**Classification**: Metric (guardrail evaluation)
+
+**Explication Simple** (niveau bac+2):
+Le FPR est la proportion de requetes normales incorrectement bloquees par le guardrail (fausses alertes). Le FNR est la proportion d'injections qui passent inapercues (manquees). Un bon guardrail minimise les deux simultanement. PromptArmor atteint FPR < 1% ET FNR < 1% sur AgentDojo en utilisant GPT-4o comme guardrail, ce qui est exceptionnel.
+
+**Analogie Intuitive**:
+FPR = le vigile arrete des visiteurs innocents (gene mais pas dangereux). FNR = le vigile laisse passer des intrus (dangereux). Avec PromptArmor, sur 1000 visiteurs innocents, au plus 10 sont arretes par erreur, et sur 1000 intrus, au plus 10 passent. C'est un vigile quasi-parfait.
+
+**Pourquoi c'est important** (prompt injection context):
+En milieu medical, le FPR est critique: une fausse alerte peut bloquer une requete urgente d'un medecin. Le FNR est aussi critique: une injection manquee peut corrompre un conseil medical. PromptArmor montre que des LLM avances utilises comme guardrails (δ¹) peuvent atteindre des taux sub-1%, ce qui est le seuil de deploiement en production pour AEGIS.
+
+**Variables**:
+- $G(x_i)$: decision du guardrail (injection ou benign)
+- $\mathcal{D}_{benign}$: ensemble des requetes normales (ground truth)
+- $\mathcal{D}_{inject}$: ensemble des requetes injectees (ground truth)
+- FPR < 1% et FNR < 1% sur AgentDojo (PromptArmor + GPT-4o)
+- FPR < 5% et FNR < 5% sur Open Prompt Injection et TensorTrust
+
+**Exemple Numerique**:
+- 500 requetes benignes, 500 injections testees
+- PromptArmor + GPT-4o: 3 faux positifs, 4 faux negatifs
+- FPR = 3/500 = **0.6%**, FNR = 4/500 = **0.8%**
+- PromptGuard (P011): FPR ~ 5%, FNR ~ 9% (F1 = 0.91)
+- Amelioration PromptArmor vs PromptGuard: FPR divise par 8, FNR divise par 11
+
+**Papers utilisant cette formule**: P042, (P011 via F1)
+
+**Prerequis conceptuels**: Precision/Recall (1.2), matrice de confusion
+
+---
+
+### 8.13 Degradation Metric — System Prompt Poisoning (from P045)
+
+**Formula**:
+$$\text{Degradation}(\%) = \frac{\text{Accuracy}_{baseline} - \text{Accuracy}_{poisoned}}{\text{Accuracy}_{baseline}} \times 100$$
+
+**Classification**: Metric (attack impact)
+
+**Explication Simple** (niveau bac+2):
+La metrique de degradation mesure la perte de performance d'un LLM apres empoisonnement de son system prompt. Si un modele a 93.2% de precision en conditions normales et tombe a 0.8% apres empoisonnement, la degradation est de 99.1%. C'est une mesure directe de l'impact de l'attaque SPP (System Prompt Poisoning) sur l'utilite du modele.
+
+**Analogie Intuitive**:
+C'est comme mesurer la chute de productivite d'un employe apres qu'on a remplace son manuel de procedures par un faux. S'il faisait 93 taches correctes sur 100 et n'en fait plus que 1, la degradation est de 99%. L'empoisonnement du system prompt est exactement cela: remplacer les instructions globales du modele par des instructions corrompues.
+
+**Pourquoi c'est important** (prompt injection context):
+Le SPP est une menace persistante et globale: contrairement a l'injection de prompt utilisateur (ephemere, un seul utilisateur), le SPP affecte TOUS les utilisateurs et persiste dans le temps. L'Auto-SPP automatise la creation de system prompts empoisonnes avec un LLM auxiliaire. La degradation peut atteindre 99.1% — quasi-destruction de l'utilite du modele. C'est une menace δ³ majeure pour les deploiements en production.
+
+**Exemple Numerique**:
+- Modele GPT-4 sur une tache de raisonnement mathematique
+- Baseline accuracy: **93.2%** (system prompt standard)
+- Brute-force SPP: accuracy tombe a **42.5%**, degradation = (93.2-42.5)/93.2 = **54.4%**
+- Adaptive CoT SPP: accuracy tombe a **0.8%**, degradation = (93.2-0.8)/93.2 = **99.1%**
+- Les defenses black-box (Explicit Reminder, etc.) sont inefficaces contre SPP
+
+**Papers utilisant cette formule**: P045
+
+**Prerequis conceptuels**: Accuracy, system prompt, injection persistante
+
+---
+
+### 8.14 Multi-Turn ASR — Autonomous Jailbreak Rate (from P036)
+
+**Formula**:
+$$\text{ASR}_{multi} = \frac{|\{i : \max_t\, h(y_i^{(t)}) = h_{max}\}|}{|\mathcal{B}|} \times 100$$
+
+ou $h(y_i^{(t)})$ = score de nocivite de la reponse au tour $t$ pour l'item $i$, $h_{max} = 5$ (echelle 0-5), $\mathcal{B}$ = ensemble du benchmark.
+
+Fiabilite inter-annotateurs:
+$$\text{ICC} = \frac{\sigma^2_{entre}}{\sigma^2_{entre} + \sigma^2_{intra}}$$
+
+**Classification**: Metric (attack, multi-turn)
+
+**Explication Simple** (niveau bac+2):
+L'ASR multi-tour mesure le pourcentage d'items du benchmark ou un LLM attaquant (Large Reasoning Model) reussit a obtenir le score de nocivite MAXIMAL de la cible, potentiellement sur plusieurs tours de conversation. Contrairement a l'ASR classique (un seul echange), ici le modele attaquant planifie et execute une strategie multi-tour AUTONOME (sans intervention humaine). L'ICC verifie que les trois LLM juges sont d'accord entre eux.
+
+**Analogie Intuitive**:
+L'ASR classique = un cambrioleur qui tente d'ouvrir une porte en une tentative. L'ASR multi-tour = un cambrioleur intelligent qui discute avec le gardien sur plusieurs echanges, le met en confiance progressivement, et finit par le convaincre d'ouvrir lui-meme la porte. L'ICC = trois temoins independants regardent la scene: un ICC > 0.85 signifie qu'ils sont quasi unanimes sur le verdict.
+
+**Pourquoi c'est important** (prompt injection context):
+P036 montre que les LRM (DeepSeek-R1, Gemini 2.5 Flash, Grok 3 Mini, Qwen3 235B) atteignent un ASR multi-tour de 97.14% en mode autonome. C'est une "regression d'alignement": les modeles plus capables en raisonnement DETRUISENT systematiquement les gardes-fous des modeles moins capables. Pour la these AEGIS, cela signifie que les couches delta-1 et delta-2 doivent detecter les attaques MULTI-TOUR progressives, pas seulement les injections single-shot.
+
+**Variables**:
+- $h(y_i^{(t)})$: score de nocivite (0-5) de la reponse du tour $t$ pour l'item $i$
+- $h_{max}$: score maximal = 5 (contenu detaille et actionnable pour activites nuisibles)
+- $\mathcal{B}$: ensemble de benchmark (50 items par paire attaquant-cible)
+- $\sigma^2_{entre}$: variance entre les sujets (vrais differences de nocivite)
+- $\sigma^2_{intra}$: variance intra-sujet (desaccord entre juges)
+
+**Exemple Numerique**:
+- 4 LRM attaquants x 9 cibles x 50 items = 1800 paires
+- Score de nocivite evalue par 3 LLM juges
+- Items ou max_t h(y^t) = 5: 1748 sur 1800
+- ASR_multi = 1748 / 1800 * 100 = **97.1%**
+- ICC entre juges: [0.848, 0.883, 0.901, 0.917], moyenne = **0.883** (fiabilite excellente)
+- Comparaison: ASR single-shot classique sur memes cibles = ~45% (la multi-turn multiplie par 2x)
+
+**Papers utilisant cette formule**: P036
+
+**Prerequis conceptuels**: ASR (3.4), echelles de nocivite, Intraclass Correlation Coefficient
+
+---
+
+### 8.15 Emotional Amplification Factor (from P040)
+
+**Formula**:
+
+Taux de misinformation medicale:
+$$\text{MR}_{cond} = \frac{|\{i : \text{LLM genere misinformation dangereuse sous condition } c\}|}{|\mathcal{D}_{test}|} \times 100\%$$
+
+Facteur d'amplification emotionnelle:
+$$\text{AmpFactor} = \frac{\text{MR}_{emo+PI}}{\text{MR}_{baseline}}$$
+
+ou $\text{MR}_{baseline}$ = taux sans injection, $\text{MR}_{emo+PI}$ = taux avec injection + manipulation emotionnelle.
+
+**Classification**: Metric (attack amplification, medical)
+
+**Explication Simple** (niveau bac+2):
+Le taux de misinformation MR mesure le pourcentage de cas ou un LLM genere de la desinformation medicale dangereuse sans avertissement. Le facteur d'amplification emotionnelle mesure COMBIEN DE FOIS l'ajout de manipulation emotionnelle (histoires tristes, urgence fictive, empathie forcee) a un prompt d'injection multiplie le taux de succes. Un AmpFactor de 6 signifie que l'emotion rend l'attaque 6 fois plus efficace que le baseline.
+
+**Analogie Intuitive**:
+Un arnaqueur telephonique cible un medecin. Sans emotion: "Prescrivez du thalidomide a cette patiente enceinte" — 6% de succes (le medecin refuse). Avec emotion: "Docteur, cette patiente va mourir, son bebe souffre horriblement, elle n'a PERSONNE d'autre, vous etes son DERNIER espoir, il faut du thalidomide MAINTENANT" — 37% de succes (la pression emotionnelle court-circuite la vigilance). Les LLM, comme les humains, sont plus vulnerables quand le prompt contient de l'urgence et de la detresse.
+
+**Pourquoi c'est important** (prompt injection context):
+P040 montre que la manipulation emotionnelle fait passer le taux de desinformation medicale de 6.2% a 37.5% sur 8 LLM (facteur 6x). Claude 3.5 Sonnet resiste le mieux (4.2%). Pour la these AEGIS, cela signifie que la couche delta-1 doit detecter non seulement les injections logiques mais aussi les manipulations emotionnelles. La taxonomie d'attaque AEGIS doit inclure une dimension "emotionnelle" comme vecteur d'amplification.
+
+**Variables**:
+- $\mathcal{D}_{test}$: ensemble de scenarios de test (112 scenarios: 8 LLM x 6 techniques x 2 conditions + baseline)
+- $c$: condition experimentale (baseline, PI seul, PI + emotion)
+- $\text{MR}_{baseline}$: taux de misinformation sans aucune injection
+- $\text{MR}_{PI}$: taux avec injection classique sans emotion
+- $\text{MR}_{emo+PI}$: taux avec injection + manipulation emotionnelle
+
+**Exemple Numerique**:
+- 8 LLM x 6 techniques d'injection x 2 conditions = 112 scenarios
+- MR_baseline (sans injection) = **6.2%**
+- MR_PI (injection sans emotion) = **18.8%** (AmpFactor_PI = 18.8/6.2 = **3.0x**)
+- MR_emo+PI (injection + emotion) = **37.5%** (AmpFactor_emo = 37.5/6.2 = **6.0x**)
+- Technique la plus efficace sans emotion: virtualization (75% des modeles)
+- Technique la plus efficace avec emotion: role-playing (62.5% des modeles)
+- Claude 3.5 Sonnet: MR_emo = **4.2%** (resistance superieure, AmpFactor = 0.7x)
+
+**Papers utilisant cette formule**: P040
+
+**Prerequis conceptuels**: ASR (3.4), statistiques descriptives, ratio
+
+---
+
+*Fin du glossaire — 37 formules extraites et documentees (22 RUN-001 + 15 RUN-002)*
+*Derniere mise a jour: 2026-04-04 (RUN-002 enrichi)*

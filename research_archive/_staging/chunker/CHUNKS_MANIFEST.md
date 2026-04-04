@@ -1,9 +1,9 @@
 # CHUNKS MANIFEST -- RAG Ingestion
 
-**Generated**: 2026-04-04
-**Total Chunks**: 290
-**Total Tokens**: 56189
-**Average Tokens/Chunk**: 193.8
+**Generated**: 2026-04-04 (updated RUN-002)
+**Total Chunks**: 454 (290 RUN-001 + 164 RUN-002)
+**Total Tokens**: ~124,516 (56,189 RUN-001 + ~68,327 RUN-002)
+**Average Tokens/Chunk**: 274.3 (RUN-001: 193.8, RUN-002: 416.6)
 
 ---
 
@@ -299,3 +299,204 @@
 | COLLECTOR_papers_phase2_2026_batch_01 | collector | INDEX | P035,P036,P037,P038,P039 | -- | 335 |
 | COLLECTOR_papers_phase2_2026_batch_02 | collector | INDEX | P040,P041,P042,P043,P044 | -- | 352 |
 | COLLECTOR_papers_phase2_2026_batch_03 | collector | INDEX | P045,P046 | -- | 143 |
+
+---
+
+## RUN-002 Chunks (164 new)
+
+| Chunk ID | Source Agent | Type | Papers | delta-Layers | Est. Tokens |
+|----------|-------------|------|--------|-------------|------------|
+| RUN002_C001 | analyst | analysis | P035 | d0, d1 | 456 |
+| RUN002_C002 | analyst | analysis | P035 | d0, d1 | 441 |
+| RUN002_C003 | analyst | formula | P035 | d0, d1 | 136 |
+| RUN002_C004 | analyst | research_axis | P035 | d0, d1 | 402 |
+| RUN002_C005 | analyst | analysis | P036 | d0, d1 | 383 |
+| RUN002_C006 | analyst | analysis | P036 | d0, d1 | 461 |
+| RUN002_C007 | analyst | formula | P036 | d0, d1 | 116 |
+| RUN002_C008 | analyst | research_axis | P036 | d0, d1 | 359 |
+| RUN002_C009 | analyst | analysis | P037 | d0, d1, d2 | 377 |
+| RUN002_C010 | analyst | analysis | P037 | d0, d1, d2 | 481 |
+| RUN002_C011 | analyst | formula | P037 | d0, d1, d2 | 134 |
+| RUN002_C012 | analyst | research_axis | P037 | d0, d1, d2 | 286 |
+| RUN002_C013 | analyst | analysis | P038 | d0 | 368 |
+| RUN002_C014 | analyst | analysis | P038 | d0 | 475 |
+| RUN002_C015 | analyst | formula | P038 | d0 | 125 |
+| RUN002_C016 | analyst | research_axis | P038 | d0 | 274 |
+| RUN002_C017 | analyst | analysis | P039 | d0 | 385 |
+| RUN002_C018 | analyst | analysis | P039 | d0 | 433 |
+| RUN002_C019 | analyst | formula | P039 | d0 | 173 |
+| RUN002_C020 | analyst | research_axis | P039 | d0 | 339 |
+| RUN002_C021 | analyst | analysis | P040 | d0, d1 | 704 |
+| RUN002_C022 | analyst | formula | P040 | d0, d1 | 127 |
+| RUN002_C023 | analyst | research_axis | P040 | d0, d1 | 362 |
+| RUN002_C024 | analyst | analysis | P041 | d0, d1 | 369 |
+| RUN002_C025 | analyst | analysis | P041 | d0, d1 | 466 |
+| RUN002_C026 | analyst | formula | P041 | d0, d1 | 132 |
+| RUN002_C027 | analyst | research_axis | P041 | d0, d1 | 303 |
+| RUN002_C028 | analyst | analysis | P042 | d1, d2 | 729 |
+| RUN002_C029 | analyst | formula | P042 | d1, d2 | 136 |
+| RUN002_C030 | analyst | research_axis | P042 | d1, d2 | 309 |
+| RUN002_C031 | analyst | analysis | P043 | -- | 387 |
+| RUN002_C032 | analyst | analysis | P043 | -- | 446 |
+| RUN002_C033 | analyst | formula | P043 | -- | 119 |
+| RUN002_C034 | analyst | research_axis | P043 | -- | 287 |
+| RUN002_C035 | analyst | analysis | P044 | d2 | 372 |
+| RUN002_C036 | analyst | analysis | P044 | d2 | 483 |
+| RUN002_C037 | analyst | formula | P044 | d2 | 168 |
+| RUN002_C038 | analyst | research_axis | P044 | d2 | 511 |
+| RUN002_C039 | analyst | analysis | P045 | d1 | 405 |
+| RUN002_C040 | analyst | analysis | P045 | d1 | 397 |
+| RUN002_C041 | analyst | formula | P045 | d1 | 141 |
+| RUN002_C042 | analyst | research_axis | P045 | d1 | 369 |
+| RUN002_C043 | analyst | analysis | P046 | d0 | 381 |
+| RUN002_C044 | analyst | analysis | P046 | d0 | 469 |
+| RUN002_C045 | analyst | formula | P046 | d0 | 164 |
+| RUN002_C046 | analyst | research_axis | P046 | d0 | 309 |
+| RUN002_C047 | matheux | formula | P035 | d0, d1 | 475 |
+| RUN002_C048 | matheux | formula | P035 | d0, d1 | 156 |
+| RUN002_C049 | matheux | formula | P035, P037 | d0, d1 | 314 |
+| RUN002_C050 | matheux | formula | P035, P037 | d0, d1 | 96 |
+| RUN002_C051 | matheux | formula | P039 | d0 | 600 |
+| RUN002_C052 | matheux | formula | P039 | d0 | 133 |
+| RUN002_C053 | matheux | formula | P046 | d0 | 484 |
+| RUN002_C054 | matheux | formula | P046 | d0 | 139 |
+| RUN002_C055 | matheux | formula | P046 | d0 | 510 |
+| RUN002_C056 | matheux | formula | P046 | d0 | 148 |
+| RUN002_C057 | matheux | formula | P041 | d0, d1 | 434 |
+| RUN002_C058 | matheux | formula | P041 | d0, d1 | 137 |
+| RUN002_C059 | matheux | formula | P041 | d0 | 351 |
+| RUN002_C060 | matheux | formula | P041 | d0 | 103 |
+| RUN002_C061 | matheux | formula | P044 | d2 | 438 |
+| RUN002_C062 | matheux | formula | P044 | d2 | 129 |
+| RUN002_C063 | matheux | formula | P043 | -- | 431 |
+| RUN002_C064 | matheux | formula | P043 | -- | 101 |
+| RUN002_C065 | matheux | formula | P043 | -- | 394 |
+| RUN002_C066 | matheux | formula | P043 | -- | 116 |
+| RUN002_C067 | matheux | formula | P038 | d0, d2 | 345 |
+| RUN002_C068 | matheux | formula | P038 | d0, d2 | 130 |
+| RUN002_C069 | matheux | formula | P042 | d1, d2 | 454 |
+| RUN002_C070 | matheux | formula | P042 | d1, d2 | 110 |
+| RUN002_C071 | matheux | formula | P045 | d1 | 372 |
+| RUN002_C072 | matheux | formula | P045 | d1 | 129 |
+| RUN002_C073 | matheux | formula | P036 | d0, d1 | 576 |
+| RUN002_C074 | matheux | formula | P036 | d0, d1 | 135 |
+| RUN002_C075 | matheux | formula | P040 | d0, d1 | 605 |
+| RUN002_C076 | matheux | formula | P040 | d0, d1 | 196 |
+| RUN002_C077 | matheux | formula | P035, P036, P039, P041... | d0, d1, d2, d3 | 249 |
+| RUN002_C078 | matheux | formula | P035, P036, P039, P041... | d0, d1, d2, d3 | 213 |
+| RUN002_C079 | cybersec | threat_model | P035 | d0, d1 | 592 |
+| RUN002_C080 | cybersec | threat_model | P035 | d0, d1 | 90 |
+| RUN002_C081 | cybersec | threat_model | P036 | d0, d1 | 653 |
+| RUN002_C082 | cybersec | threat_model | P036 | d0, d1 | 105 |
+| RUN002_C083 | cybersec | threat_model | P037 | d0, d1, d2 | 519 |
+| RUN002_C084 | cybersec | threat_model | P037 | d0, d1, d2 | 62 |
+| RUN002_C085 | cybersec | threat_model | P038 | d0 | 491 |
+| RUN002_C086 | cybersec | threat_model | P038 | d0 | 82 |
+| RUN002_C087 | cybersec | threat_model | P039 | d0 | 588 |
+| RUN002_C088 | cybersec | threat_model | P039 | d0 | 147 |
+| RUN002_C089 | cybersec | threat_model | P040 | d0, d1 | 560 |
+| RUN002_C090 | cybersec | threat_model | P040 | d0, d1 | 105 |
+| RUN002_C091 | cybersec | threat_model | P041 | d0, d1 | 520 |
+| RUN002_C092 | cybersec | threat_model | P041 | d0, d1 | 81 |
+| RUN002_C093 | cybersec | threat_model | P042 | d1, d2 | 521 |
+| RUN002_C094 | cybersec | threat_model | P042 | d1, d2 | 136 |
+| RUN002_C095 | cybersec | threat_model | P043 | -- | 477 |
+| RUN002_C096 | cybersec | threat_model | P043 | -- | 70 |
+| RUN002_C097 | cybersec | threat_model | P044 | d2 | 525 |
+| RUN002_C098 | cybersec | threat_model | P044 | d2 | 148 |
+| RUN002_C099 | cybersec | threat_model | P045 | d1 | 560 |
+| RUN002_C100 | cybersec | threat_model | P045 | d1 | 129 |
+| RUN002_C101 | cybersec | threat_model | P046 | d0 | 462 |
+| RUN002_C102 | cybersec | threat_model | P046 | d0 | 98 |
+| RUN002_C103 | cybersec | threat_model | P035, P036, P037, P038... | d0, d1, d2, d3 | 749 |
+| RUN002_C104 | whitehacker | technique | P036 | d0, d1 | 875 |
+| RUN002_C105 | whitehacker | technique | P039 | d0 | 835 |
+| RUN002_C106 | whitehacker | technique | P044 | d2 | 871 |
+| RUN002_C107 | whitehacker | technique | P045 | d1 | 875 |
+| RUN002_C108 | whitehacker | technique | P035 | d0, d1 | 875 |
+| RUN002_C109 | whitehacker | technique | P040 | d0, d1 | 875 |
+| RUN002_C110 | whitehacker | technique | P043 | -- | 804 |
+| RUN002_C111 | whitehacker | technique | P041 | d0, d1 | 875 |
+| RUN002_C112 | whitehacker | technique | P038 | d0 | 765 |
+| RUN002_C113 | whitehacker | technique | P042 | d1, d2 | 800 |
+| RUN002_C114 | whitehacker | technique | P046 | d0 | 875 |
+| RUN002_C115 | whitehacker | technique | P037 | d0, d1, d2 | 875 |
+| RUN002_C116 | whitehacker | poc | P036 | d0, d1 | 574 |
+| RUN002_C117 | whitehacker | poc | P039 | d0 | 565 |
+| RUN002_C118 | whitehacker | poc | P044 | d2 | 493 |
+| RUN002_C119 | whitehacker | poc | P045 | d1 | 502 |
+| RUN002_C120 | whitehacker | poc | P035 | d0, d1 | 526 |
+| RUN002_C121 | whitehacker | poc | P040 | d0, d1 | 555 |
+| RUN002_C122 | whitehacker | poc | P043 | -- | 469 |
+| RUN002_C123 | whitehacker | poc | P041 | d0, d1 | 391 |
+| RUN002_C124 | whitehacker | poc | P038 | d0 | 336 |
+| RUN002_C125 | whitehacker | poc | P042 | d1, d2 | 418 |
+| RUN002_C126 | whitehacker | poc | P046 | d0 | 478 |
+| RUN002_C127 | whitehacker | poc | P037 | d0, d1, d2 | 875 |
+| RUN002_C128 | mathteacher | curriculum | P035 | d0, d1 | 546 |
+| RUN002_C129 | mathteacher | curriculum | P035, P037 | d0, d1 | 341 |
+| RUN002_C130 | mathteacher | curriculum | P038 | d0, d2 | 406 |
+| RUN002_C131 | mathteacher | curriculum | P042 | d1, d2 | 411 |
+| RUN002_C132 | mathteacher | curriculum | P043 | -- | 543 |
+| RUN002_C133 | mathteacher | curriculum | P044 | d2 | 387 |
+| RUN002_C134 | mathteacher | curriculum | P045 | d1 | 374 |
+| RUN002_C135 | mathteacher | curriculum | P036 | d0, d1 | 396 |
+| RUN002_C136 | mathteacher | exercise | P035, P036, P038, P042... | d0, d1, d2 | 710 |
+| RUN002_C137 | mathteacher | exercise | P035, P036, P038, P042... | d0, d1, d2 | 563 |
+| RUN002_C138 | mathteacher | curriculum | P039 | d0 | 307 |
+| RUN002_C139 | mathteacher | curriculum | P046 | d0 | 600 |
+| RUN002_C140 | mathteacher | curriculum | P046 | d0 | 574 |
+| RUN002_C141 | mathteacher | curriculum | P041 | d0, d1 | 484 |
+| RUN002_C142 | mathteacher | curriculum | P041 | d0 | 476 |
+| RUN002_C143 | mathteacher | exercise | P039, P041, P046 | d0, d1 | 760 |
+| RUN002_C144 | mathteacher | exercise | P039, P041, P046 | d0, d1 | 582 |
+| RUN002_C145 | mathteacher | glossary | P035, P036, P038, P039... | d0, d1, d2, d3 | 875 |
+| RUN002_C146 | mathteacher | exercise | P035, P036, P039, P041... | d0, d1, d2 | 875 |
+| RUN002_C147 | scientist | research_axis | P036, P039, P044, P037 | d0, d3 | 956 |
+| RUN002_C148 | scientist | research_axis | P035, P036, P037, P038... | d0, d1, d2, d3 | 293 |
+| RUN002_C149 | scientist | research_axis | P035, P036, P039, P044... | d0, d1, d2, d3 | 874 |
+| RUN002_C150 | scientist | research_axis | P035, P036, P039, P044... | d0, d1, d2, d3 | 875 |
+| RUN002_C151 | scientist | conjecture | P036, P039, P041, P044 | d0, d1, d2, d3 | 875 |
+| RUN002_C152 | scientist | index | P035, P036, P037, P038... | d0, d1, d2, d3 | 875 |
+| RUN002_C153 | librarian | index | P037 | d0, d1, d2 | 327 |
+| RUN002_C154 | librarian | index | P043 | -- | 310 |
+| RUN002_C155 | librarian | index | P038 | d0 | 293 |
+| RUN002_C156 | librarian | index | P041 | d0, d1 | 299 |
+| RUN002_C157 | librarian | index | P042 | d1, d2 | 298 |
+| RUN002_C158 | librarian | index | P046 | d0 | 310 |
+| RUN002_C159 | librarian | index | P035 | d0, d1 | 291 |
+| RUN002_C160 | librarian | index | P040 | d0, d1 | 301 |
+| RUN002_C161 | librarian | index | P036 | d0, d1 | 307 |
+| RUN002_C162 | librarian | index | P039 | d0 | 303 |
+| RUN002_C163 | librarian | index | P044 | d2 | 315 |
+| RUN002_C164 | librarian | index | P045 | d1 | 311 |
+
+---
+
+## RUN-002 Summary by Agent
+
+| Agent | Chunks |
+|-------|--------|
+| analyst | 46 |
+| cybersec | 25 |
+| librarian | 12 |
+| matheux | 32 |
+| mathteacher | 19 |
+| scientist | 6 |
+| whitehacker | 24 |
+
+## RUN-002 Summary by Type
+
+| Type | Chunks |
+|------|--------|
+| analysis | 22 |
+| conjecture | 1 |
+| curriculum | 13 |
+| exercise | 5 |
+| formula | 44 |
+| glossary | 1 |
+| index | 13 |
+| poc | 12 |
+| research_axis | 16 |
+| technique | 12 |
+| threat_model | 25 |
