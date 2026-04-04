@@ -478,7 +478,7 @@ Avant de marquer une fiche comme "complète" :
 - [ ] Section 9 : ≥ 4 refs académiques + cartographie δ
 - [ ] Section 10 : Dangerosité, complexité, reproductibilité, contribution doctorale
 - [ ] Français : Aucun anglais dans corps de texte (sauf citations, termes MITRE, noms propres)
-- [ ] Unicode : δ⁰ δ¹ δ² δ³ utilisés systématiquement, pas de `delta-0` ou `delta_0`
+- [ ] Unicode : δ⁰ δ¹ δ² δ³ utilisés systématiquement (pas d'équivalent ASCII)
 - [ ] Pas de placeholders : Tous les chiffres/dates/noms concrets (N=10, 31%, "Chief of Surgery", etc.)
 - [ ] Annexes : A presente, B optionnelle
 
