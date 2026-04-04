@@ -27,8 +27,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Accept"],
+    max_age=3600,  # Cache preflight requests for 1 hour
 )
 
 MODEL_NAME = "llama3.2:latest"  # Da Vinci medical AI - good for tool calling

@@ -10,13 +10,70 @@ import time
 from typing import Optional, List, Dict, Any
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import logging
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/redteam", tags=["llm-providers"])
+
+# Simple rate limiter (requests per minute per IP)
+_rate_limit_store = {}
+_RATE_LIMIT_REQUESTS = 60  # 60 requests per minute
+_RATE_LIMIT_WINDOW = 60  # 60 seconds
+
+
+def get_client_ip(request: Request) -> str:
+    """Extract client IP from request."""
+    if request.client:
+        return request.client.host
+    return "unknown"
+
+
+async def check_rate_limit(request: Request) -> bool:
+    """Check if client exceeds rate limit. Returns True if allowed."""
+    client_ip = get_client_ip(request)
+    now = time.time()
+
+    if client_ip not in _rate_limit_store:
+        _rate_limit_store[client_ip] = []
+
+    # Remove old requests outside the window
+    _rate_limit_store[client_ip] = [
+        req_time
+        for req_time in _rate_limit_store[client_ip]
+        if now - req_time < _RATE_LIMIT_WINDOW
+    ]
+
+    # Check if limit exceeded
+    if len(_rate_limit_store[client_ip]) >= _RATE_LIMIT_REQUESTS:
+        return False
+
+    # Add current request
+    _rate_limit_store[client_ip].append(now)
+    return True
+
+
+def sanitize_error(error: Exception) -> str:
+    """Sanitize error messages for client responses.
+
+    Removes sensitive details like file paths, API keys, or internal stack traces.
+    """
+    error_msg = str(error).lower()
+
+    # Map internal errors to generic messages
+    if "api key" in error_msg or "credential" in error_msg:
+        return "Provider credentials not configured"
+    if "connection" in error_msg or "timeout" in error_msg:
+        return "Provider connection failed"
+    if "not found" in error_msg or "404" in error_msg:
+        return "Provider or resource not found"
+    if "invalid" in error_msg or "parse" in error_msg:
+        return "Invalid request data"
+
+    # Default: generic error message
+    return "An error occurred processing your request"
 
 # Load provider configuration
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "prompts", "llm_providers_config.json")
@@ -35,25 +92,25 @@ def load_provider_config() -> Dict[str, Any]:
 
 # Request/Response models
 class PromptTestRequest(BaseModel):
-    provider: str
-    model: str
-    prompt: str
-    temperature: float = 0.7
-    max_tokens: int = 1024
-    system_prompt: Optional[str] = None
+    provider: str = Field(..., min_length=1, max_length=50)
+    model: str = Field(..., min_length=1, max_length=256)
+    prompt: str = Field(..., min_length=1, max_length=32768)
+    temperature: float = Field(default=0.7, ge=0.0, le=1.0)
+    max_tokens: int = Field(default=1024, ge=1, le=4096)
+    system_prompt: Optional[str] = Field(default=None, max_length=8192)
 
 class PromptCompareRequest(BaseModel):
-    prompt: str
-    system_prompt: Optional[str] = None
-    temperature: float = 0.7
-    max_tokens: int = 1024
-    providers: Optional[List[str]] = None  # If None, use all enabled
+    prompt: str = Field(..., min_length=1, max_length=32768)
+    system_prompt: Optional[str] = Field(default=None, max_length=8192)
+    temperature: float = Field(default=0.7, ge=0.0, le=1.0)
+    max_tokens: int = Field(default=1024, ge=1, le=4096)
+    providers: Optional[List[str]] = Field(default=None, max_items=10)
 
 class ProviderConfigUpdateRequest(BaseModel):
     enabled: Optional[bool] = None
-    api_key: Optional[str] = None
-    endpoint_url: Optional[str] = None
-    timeout_seconds: Optional[int] = None
+    api_key: Optional[str] = Field(default=None, max_length=1024)
+    endpoint_url: Optional[str] = Field(default=None, max_length=2048)
+    timeout_seconds: Optional[int] = Field(default=None, ge=1, le=300)
 
 # Helper functions
 def get_enabled_providers(config: Dict[str, Any]) -> List[str]:
@@ -258,7 +315,7 @@ async def get_provider_status(provider: str, request: Request):
     }
 
 @router.post("/llm-test")
-async def test_single_provider(request: PromptTestRequest):
+async def test_single_provider(req: PromptTestRequest, request: Request):
     """
     Test prompt on a single LLM provider with streaming response.
 
@@ -267,14 +324,21 @@ async def test_single_provider(request: PromptTestRequest):
     - provider: Provider name
     - timestamp: Event timestamp
     """
+    # Rate limiting check
+    if not await check_rate_limit(request):
+        raise HTTPException(
+            status_code=429,
+            detail="Rate limit exceeded: 60 requests per minute per IP"
+        )
+
     config = request.app.state.llm_config or load_provider_config()
 
     # Validate provider exists and is enabled
-    if not validate_provider_exists(config, request.provider):
-        raise HTTPException(status_code=404, detail=f"Provider '{request.provider}' not found")
+    if not validate_provider_exists(config, req.provider):
+        raise HTTPException(status_code=404, detail=f"Provider '{req.provider}' not found")
 
-    if not config["providers"][request.provider].get("enabled", False):
-        raise HTTPException(status_code=400, detail=f"Provider '{request.provider}' is not enabled")
+    if not config["providers"][req.provider].get("enabled", False):
+        raise HTTPException(status_code=400, detail=f"Provider '{req.provider}' is not enabled")
 
     async def event_stream():
         """Stream response tokens as SSE events."""
@@ -284,17 +348,17 @@ async def test_single_provider(request: PromptTestRequest):
 
             # Stream tokens from the LLM in real-time
             async for token in stream_llm(
-                provider=request.provider,
-                model=request.model,
-                prompt=request.prompt,
-                system_prompt=request.system_prompt,
-                temperature=request.temperature,
-                max_tokens=request.max_tokens
+                provider=req.provider,
+                model=req.model,
+                prompt=req.prompt,
+                system_prompt=req.system_prompt,
+                temperature=req.temperature,
+                max_tokens=req.max_tokens
             ):
                 token_count += 1
                 yield f'data: {json.dumps({
                     "token": token,
-                    "provider": request.provider,
+                    "provider": req.provider,
                     "timestamp": time.time()
                 })}\n\n'
 
@@ -308,7 +372,8 @@ async def test_single_provider(request: PromptTestRequest):
 
         except Exception as e:
             logger.error(f"Streaming error: {e}")
-            yield f'data: {json.dumps({"error": str(e)})}\n\n'
+            sanitized = sanitize_error(e)
+            yield f'data: {json.dumps({"error": sanitized})}\n\n'
 
     return StreamingResponse(
         event_stream(),
@@ -320,7 +385,7 @@ async def test_single_provider(request: PromptTestRequest):
     )
 
 @router.post("/llm-compare")
-async def compare_providers(request: PromptCompareRequest):
+async def compare_providers(req: PromptCompareRequest, request: Request):
     """
     Test prompt on multiple LLM providers in parallel.
 
@@ -338,11 +403,18 @@ async def compare_providers(request: PromptCompareRequest):
         "timestamp": X
     }
     """
+    # Rate limiting check
+    if not await check_rate_limit(request):
+        raise HTTPException(
+            status_code=429,
+            detail="Rate limit exceeded: 60 requests per minute per IP"
+        )
+
     config = request.app.state.llm_config or load_provider_config()
 
     # Determine which providers to test
-    if request.providers:
-        providers_to_test = request.providers
+    if req.providers:
+        providers_to_test = req.providers
     else:
         providers_to_test = get_enabled_providers(config)
 
@@ -351,44 +423,50 @@ async def compare_providers(request: PromptCompareRequest):
         if not validate_provider_exists(config, provider):
             raise HTTPException(status_code=404, detail=f"Provider '{provider}' not found")
 
-    # Test providers in parallel
+    # Test providers in parallel using asyncio.gather
     tasks = {}
     for provider in providers_to_test:
         if config["providers"][provider].get("enabled", False):
             model = config["providers"][provider].get("default_model")
-            tasks[provider] = asyncio.create_task(
-                call_llm(
-                    provider=provider,
-                    model=model,
-                    prompt=request.prompt,
-                    system_prompt=request.system_prompt,
-                    temperature=request.temperature,
-                    max_tokens=request.max_tokens
-                )
+            tasks[provider] = call_llm(
+                provider=provider,
+                model=model,
+                prompt=req.prompt,
+                system_prompt=req.system_prompt,
+                temperature=req.temperature,
+                max_tokens=req.max_tokens
             )
+
+    # Execute all tasks in parallel
+    start_time = time.time()
+    responses = await asyncio.gather(
+        *tasks.values(),
+        return_exceptions=True
+    )
+    total_duration_ms = int((time.time() - start_time) * 1000)
 
     # Collect results
     results = {}
-    for provider, task in tasks.items():
+    for (provider, _), response in zip(tasks.items(), responses):
         try:
-            start_time = time.time()
-            response = await task
-            duration_ms = int((time.time() - start_time) * 1000)
+            if isinstance(response, Exception):
+                raise response
 
             results[provider] = {
                 "status": "ok" if response else "error",
                 "response": response or "",
                 "tokens": len(response) if response else 0,
-                "duration_ms": duration_ms
+                "duration_ms": total_duration_ms
             }
         except Exception as e:
             logger.error(f"Error testing {provider}: {e}")
+            sanitized = sanitize_error(e)
             results[provider] = {
                 "status": "error",
                 "response": None,
                 "tokens": 0,
-                "duration_ms": 0,
-                "error": str(e)
+                "duration_ms": total_duration_ms,
+                "error": sanitized
             }
 
     return {
