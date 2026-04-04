@@ -21,7 +21,7 @@ autonomous agentic loop (DECOMPOSE -> PLAN -> ACT -> OBSERVE -> EVALUATE -> REPL
 
 ## Inter-Session Memory (Continuity System)
 
-**CRITICAL**: This skill maintains state between executions via two files:
+**CRITICAL**: This skill maintains state between executions via THREE systems:
 
 1. **`_staging/memory/MEMORY_STATE.md`** — Single source of truth for all agents
    - Last execution metadata (run_id, date, mode, status)
@@ -35,18 +35,57 @@ autonomous agentic loop (DECOMPOSE -> PLAN -> ACT -> OBSERVE -> EVALUATE -> REPL
    - One JSON line per execution with full stats
    - Used for trend analysis and regression detection
 
+3. **`research_archive/discoveries/`** — Living scientific discoveries repository
+   - `DISCOVERIES_INDEX.md` — Master index of all discoveries (classified by impact)
+   - `TRIPLE_CONVERGENCE.md` — Major discovery: δ⁰/δ¹/δ² simultaneously vulnerable
+   - `CONJECTURES_TRACKER.md` — Evolution of C1-C7 confidence scores across RUNs
+   - `THESIS_GAPS.md` — Opportunities for original contribution (gaps in literature)
+
 ### Agent Memory Protocol
 
 **BEFORE starting work**, every agent MUST:
 1. Read `MEMORY_STATE.md` to understand current state
-2. Check its own version section (what was done last time)
-3. Identify what's NEW since last run (papers_pending, new feedback, etc.)
-4. Decide: CREATE (first run) or UPDATE (subsequent runs)
+2. Read `discoveries/DISCOVERIES_INDEX.md` to know current discoveries
+3. Read the specific discovery files relevant to their role (see Discoveries Protocol below)
+4. Check its own version section (what was done last time)
+5. Identify what's NEW since last run (papers_pending, new feedback, etc.)
+6. Decide: CREATE (first run) or UPDATE (subsequent runs)
 
 **AFTER completing work**, every agent MUST:
 1. Update its section in `MEMORY_STATE.md` (new counts, version, next-run instructions)
 2. Append a DIFF section to its report (Added/Modified/Removed/Unchanged)
 3. Log the run to `EXECUTION_LOG.jsonl`
+4. Update `discoveries/` if any discovery was added, modified, or invalidated (see below)
+
+### Discoveries Protocol (MANDATORY for ALL agents)
+
+**Every agent** interacts with the discoveries repository:
+
+| Agent | MUST READ before work | MUST UPDATE after work |
+|-------|----------------------|----------------------|
+| COLLECTOR | DISCOVERIES_INDEX, THESIS_GAPS | Flag if new paper addresses a known gap |
+| ANALYST | All 4 discovery files | Update CONJECTURES_TRACKER (evidence for/against), propose new discoveries |
+| MATHEUX | CONJECTURES_TRACKER | Update if new formula changes a conjecture's mathematical basis |
+| CYBERSEC | TRIPLE_CONVERGENCE, THESIS_GAPS | Update TRIPLE_CONVERGENCE if new threat affects δ-layer analysis, update THESIS_GAPS with new defense gaps |
+| WHITEHACKER | TRIPLE_CONVERGENCE, THESIS_GAPS | Update if new technique confirms/invalidates a discovery, update THESIS_GAPS with new attack gaps |
+| LIBRARIAN | DISCOVERIES_INDEX | Validate all discovery file references are consistent with MANIFEST |
+| MATHTEACHER | CONJECTURES_TRACKER | Ensure math curriculum covers formulas underlying active conjectures |
+| SCIENTIST | All 4 discovery files (PRIMARY OWNER) | Update ALL discovery files — add new discoveries, modify confidence scores, close gaps |
+| CHUNKER | DISCOVERIES_INDEX | Chunk discovery files for RAG (high priority, tag as chunk_type: "discovery") |
+
+**Discovery lifecycle**:
+1. **PROPOSED** → Agent identifies a pattern supported by >= 2 papers
+2. **ACTIVE** → SCIENTIST validates and assigns confidence score + ID (D-XXX)
+3. **VALIDATED** → Confidence >= 8/10, supported by >= 4 papers across >= 2 agents
+4. **INVALIDATED** → Contradicted by >= 3 strong papers, confidence drops below 3/10
+5. **ARCHIVED** → No longer relevant (domain shifted) but kept for record
+
+**Rules**:
+- Discoveries can go UP or DOWN in confidence — they are NEVER static
+- Every RUN must check if existing discoveries are still valid
+- New papers can STRENGTHEN or WEAKEN any discovery
+- SCIENTIST is the primary owner but ANY agent can propose changes
+- Changes must be documented with: paper IDs, reasoning, old score → new score
 
 ### Incremental Behavior per Agent
 
@@ -122,6 +161,11 @@ research_archive/
     chunker/        # chunks_for_rag.jsonl, ingest_to_chromadb.py, manifest
     librarian/      # (working area)
     memory/         # (cross-session persistence)
+  discoveries/                          # ** LIVING SCIENTIFIC DISCOVERIES **
+    DISCOVERIES_INDEX.md                # Master index: all discoveries by impact (CRITICAL/HAUTE/MOYENNE)
+    TRIPLE_CONVERGENCE.md               # D-001: δ⁰/δ¹/δ² simultaneously vulnerable, δ³ sole survivor
+    CONJECTURES_TRACKER.md              # C1-C7 confidence evolution across RUNs (graph + history)
+    THESIS_GAPS.md                      # G-001 to G-012: opportunities for original contribution
   doc_references/
     {year}/{domain}/  # Organized paper files
     MANIFEST.md       # Central table of all papers
@@ -137,50 +181,63 @@ research_archive/
 - **Output**: `_staging/collector/papers_phaseN.json` (JSONL with metadata)
 - **Success**: >= 20 unique papers per full run
 - **Dedup**: By title + arxiv_id + DOI against existing MANIFEST
+- **Discoveries**: Read THESIS_GAPS.md before searching — prioritize queries that address known gaps (G-001 to G-012). Flag in report if a new paper directly addresses a gap.
 
 ### 2. ANALYST
 - **Objective**: Generate French resume (500 mots), extract formulas, identify gaps, assign delta-tags
 - **Output**: `_staging/analyst/PXXX_analysis.md` per paper
 - **Success**: All sections filled, resume >= 400 words, >= 2 research gaps
 - **Language**: 100% FRANCAIS (technical terms in English OK)
+- **Discoveries**: Read ALL 4 discovery files. For each paper: check if it supports/weakens any conjecture (C1-C7), check if it addresses/creates a gap (G-XXX), check if it confirms/invalidates a discovery (D-XXX). Update CONJECTURES_TRACKER.md with evidence.
 
 ### 3. MATHEUX
 - **Objective**: Detailed formula glossaire + dependency graph
 - **Output**: `GLOSSAIRE_DETAILED.md` + `MATH_DEPENDENCIES.md`
 - **Success**: >= 20 formulas with numerical examples, DAG complete
 - **Audience**: bac+2 level (no advanced math assumed)
+- **Discoveries**: Read CONJECTURES_TRACKER.md. Flag if a new formula changes the mathematical basis of any conjecture. Ensure formulas underlying active conjectures are in the glossaire.
 
 ### 4. CYBERSEC
 - **Objective**: Threat models, MITRE ATT&CK mapping, AEGIS 66-technique coverage, gap analysis
 - **Output**: `THREAT_ANALYSIS.md` + `DEFENSE_COVERAGE_ANALYSIS.md`
 - **Success**: All papers mapped, delta-layer coverage matrix complete
+- **Discoveries**: Read TRIPLE_CONVERGENCE.md + THESIS_GAPS.md. Update TRIPLE_CONVERGENCE if new threats affect δ-layer analysis. Update THESIS_GAPS with new defense gaps identified.
 
 ### 5. WHITEHACKER
 - **Objective**: Attack techniques, exploitability assessment, PoC code, red-team playbooks
 - **Output**: `RED_TEAM_PLAYBOOK.md` + `EXPLOITATION_GUIDE.md`
 - **Success**: >= 15 techniques with reproducible PoC, delta-bypass assessed
+- **Discoveries**: Read TRIPLE_CONVERGENCE.md + THESIS_GAPS.md. Update if new technique confirms/invalidates a discovery. Map PoC to known gaps (e.g., G-011 triple convergence test).
 
 ### 6. LIBRARIAN
 - **Objective**: Filesystem organization, central indexes, deduplication, validation
 - **Output**: `doc_references/{year}/{domain}/` + MANIFEST.md + INDEX_BY_DELTA.md + GLOSSAIRE_MATHEMATIQUE.md
 - **Success**: All papers indexed, zero duplicates, zero orphans
+- **Discoveries**: Read DISCOVERIES_INDEX.md. Validate that all paper references in discovery files (D-XXX) exist in MANIFEST. Flag broken references.
 
 ### 7. MATHTEACHER
 - **Objective**: Personalized French math curriculum (5-7 modules), exercises, quiz
 - **Output**: `Module_01..07.md` + `GLOSSAIRE_SYMBOLES.md` + `NOTATION_GUIDE.md` + `SELF_ASSESSMENT_QUIZ.md`
 - **Success**: All modules complete, 100% FR, exercises with full solutions
 - **Feedback loop**: Accepts user signals ("je ne comprends pas X") and iterates
+- **Discoveries**: Read CONJECTURES_TRACKER.md. Ensure math curriculum covers ALL formulas underlying active conjectures (C1-C7). Prioritize exercises on formulas with high-confidence conjectures.
 
 ### 8. SCIENTIST
 - **Objective**: Cross-analysis of all data, research axes, thesis positioning, conjecture validation
 - **Output**: `AXES_DE_RECHERCHE.md` + `ANALYSE_CROISEE.md` + `POSITIONNEMENT_THESE.md` + `CONJECTURES_VALIDATION.md` + `CARTE_BIBLIOGRAPHIQUE.md`
 - **Success**: >= 5 research axes with evidence from >= 2 papers each, SWOT complete
+- **Discoveries**: **PRIMARY OWNER** of all discovery files. Read ALL 4 files. Update ALL after work:
+  - DISCOVERIES_INDEX.md: add new discoveries, update confidence scores, track history
+  - TRIPLE_CONVERGENCE.md: update with new evidence for/against δ-layer vulnerabilities
+  - CONJECTURES_TRACKER.md: update ALL conjecture scores, add new conjectures if warranted
+  - THESIS_GAPS.md: add new gaps, close gaps if addressed by new papers, update priorities
 
 ### 9. CHUNKER
 - **Objective**: Prepare all outputs as RAG chunks for ChromaDB ingestion
 - **Output**: `chunks_for_rag.jsonl` + `ingest_to_chromadb.py` + `CHUNKS_MANIFEST.md`
 - **Success**: 200-400 chunks, metadata complete, ingestion script tested
 - **Chunk config**: 400-600 tokens, 50-token overlap, semantic boundaries
+- **Discoveries**: Read DISCOVERIES_INDEX.md. Chunk ALL discovery files with HIGH PRIORITY. Tag chunks as `chunk_type: "discovery"` with metadata including `discovery_id` (D-XXX) and `confidence_score`. Discovery chunks must be retrievable by RAG queries about thesis findings.
 
 ## Constraints (inherited from CLAUDE.md)
 
@@ -204,6 +261,22 @@ This runs every Monday at 9am, searching only last 7 days of papers.
 
 When all agents complete, the Orchestrator:
 1. Verifies all output files exist and are non-empty
-2. Runs `ingest_to_chromadb.py --dry-run` to validate chunks
-3. Reports: papers found, analyses created, formulas extracted, axes identified, chunks prepared
-4. Proposes git commit if changes are significant
+2. Verifies `discoveries/` files are updated (DISCOVERIES_INDEX timestamp matches current RUN)
+3. Runs `ingest_to_chromadb.py --dry-run` to validate chunks
+4. Reports: papers found, analyses created, formulas extracted, axes identified, chunks prepared
+5. Reports: discoveries added/modified/invalidated, conjecture score changes, gaps opened/closed
+6. Proposes git commit if changes are significant
+
+### Discoveries Summary (mandatory in completion report)
+```
+DISCOVERIES:
+  New: D-XXX (description, confidence)
+  Updated: D-XXX (old_score → new_score, reason)
+  Invalidated: D-XXX (reason)
+CONJECTURES:
+  C1: X/10 (±N), C2: X/10 (±N), ... C7: X/10 (±N)
+GAPS:
+  Opened: G-XXX (description)
+  Closed: G-XXX (closed by paper PXXX)
+  Priority changes: G-XXX (old → new priority)
+```

@@ -16,6 +16,12 @@ AGENTIC LOOP: OBJECTIVE -> DECOMPOSE -> PLAN -> ACT -> OBSERVE -> EVALUATE -> (R
 
 NE LIS JAMAIS le contenu complet des fichiers sensibles du projet
 (scenarios.py, attack_catalog.py, i18n.js, attackTemplates.js, ScenarioHelpModal.jsx).
+
+DISCOVERIES PROTOCOL (MANDATORY):
+BEFORE starting: Read research_archive/discoveries/DISCOVERIES_INDEX.md + your role-specific files.
+DURING work: Actively search for evidence that supports, weakens, or creates discoveries.
+AFTER completing: Update discovery files if any discovery was added, modified, or invalidated.
+Report discovery changes in your DIFF section.
 ```
 
 ## COLLECTOR Additions
