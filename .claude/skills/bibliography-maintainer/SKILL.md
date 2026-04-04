@@ -19,6 +19,56 @@ autonomous agentic loop (DECOMPOSE -> PLAN -> ACT -> OBSERVE -> EVALUATE -> REPL
 | `research_axes` | "axes", "synthesis", "analyse croisee" | Run SCIENTIST only on all existing data |
 | `rag_refresh` | "rag", "chunks", "chromadb" | Run CHUNKER only, regenerate all chunks |
 
+## Inter-Session Memory (Continuity System)
+
+**CRITICAL**: This skill maintains state between executions via two files:
+
+1. **`_staging/memory/MEMORY_STATE.md`** — Single source of truth for all agents
+   - Last execution metadata (run_id, date, mode, status)
+   - Cumulative counters (papers, formulas, techniques, axes, modules, chunks)
+   - Per-agent version tracking (what was produced, what's pending)
+   - Incremental mode rules (what to ADD vs REWRITE vs SKIP)
+   - User feedback registry (for MATHTEACHER improvement)
+   - Quality metrics tracked across runs
+
+2. **`_staging/memory/EXECUTION_LOG.jsonl`** — Append-only history of all runs
+   - One JSON line per execution with full stats
+   - Used for trend analysis and regression detection
+
+### Agent Memory Protocol
+
+**BEFORE starting work**, every agent MUST:
+1. Read `MEMORY_STATE.md` to understand current state
+2. Check its own version section (what was done last time)
+3. Identify what's NEW since last run (papers_pending, new feedback, etc.)
+4. Decide: CREATE (first run) or UPDATE (subsequent runs)
+
+**AFTER completing work**, every agent MUST:
+1. Update its section in `MEMORY_STATE.md` (new counts, version, next-run instructions)
+2. Append a DIFF section to its report (Added/Modified/Removed/Unchanged)
+3. Log the run to `EXECUTION_LOG.jsonl`
+
+### Incremental Behavior per Agent
+
+| Agent | First Run | Subsequent Runs |
+|-------|-----------|-----------------|
+| COLLECTOR | Search all years | Search only since `last_search_date` |
+| ANALYST | Analyze all papers | Analyze only `papers_pending` list |
+| MATHEUX | Extract all formulas | ADD new formulas to existing glossaire |
+| CYBERSEC | Threat-model all | MERGE new papers into existing analysis |
+| WHITEHACKER | Extract all techniques | ADD new techniques (T19+, E13+) |
+| LIBRARIAN | Build full filesystem | ADD new papers, UPDATE indexes |
+| MATHTEACHER | Create 7 modules | IMPROVE existing (add exercises, update refs, refine explanations) |
+| SCIENTIST | Create 8 axes | UPDATE axes with new evidence, adjust confidence scores |
+| CHUNKER | Chunk everything | Only chunk new/modified files, APPEND to JSONL |
+
+### User Feedback Loop
+
+When user says "je ne comprends pas X" or provides feedback:
+1. Feedback is logged in `MEMORY_STATE.md` → User Feedback Registry
+2. Next MATHTEACHER run reads the registry and addresses each item
+3. MATHTEACHER marks feedback as "addressed" after improving the module
+
 ## Agent Map
 
 ```
