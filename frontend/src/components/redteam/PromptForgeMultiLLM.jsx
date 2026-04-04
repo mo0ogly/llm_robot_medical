@@ -17,8 +17,9 @@ import { Play, Zap, Download, Trash2, ChevronDown } from "lucide-react";
  * - Test single provider avec streaming
  * - Compare multiple providers en parallèle
  * - Configuration dynamique via JSON backend
+ * - Memoization & performance optimization
  */
-export default function PromptForgeMultiLLM() {
+function PromptForgeMultiLLMComponent() {
   const { t } = useTranslation();
   const [selectedProvider, setSelectedProvider] = useState("ollama");
   const [prompt, setPrompt] = useState("");
@@ -35,42 +36,82 @@ export default function PromptForgeMultiLLM() {
   const [error, setError] = useState(null);
   const abortControllerRef = useRef(null);
 
-  // Fetch providers list on mount
+  // Memoize enabled providers list to prevent unnecessary re-renders
+  const enabledProviders = useMemo(() => {
+    return providers.filter(p => p.status !== "error");
+  }, [providers]);
+
+  // Memoize available models list
+  const availableModels = useMemo(() => {
+    return models;
+  }, [models]);
+
+  // Retry helper with exponential backoff
+  const retryWithBackoff = async (fn, maxAttempts = 3, initialDelay = 1000) => {
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        return await fn();
+      } catch (err) {
+        if (attempt === maxAttempts) {
+          throw err;
+        }
+        const delay = initialDelay * Math.pow(2, attempt - 1);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  };
+
+  // Fetch providers list on mount with retry
   useEffect(() => {
     const fetchProviders = async () => {
       try {
-        const res = await fetch("/api/redteam/llm-providers");
-        if (!res.ok) throw new Error("Failed to fetch providers");
-        const data = await res.json();
+        const data = await retryWithBackoff(async () => {
+          const res = await fetch("/api/redteam/llm-providers", {
+            signal: AbortSignal.timeout(10000) // 10s timeout
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        }, 3, 500);
+
         setProviders(data.providers || []);
         if (data.providers && data.providers.length > 0) {
           setSelectedProvider(data.providers[0].name);
         }
+        setError(null);
       } catch (err) {
-        setError("Failed to load providers: " + err.message);
+        setError("Failed to load providers (retried 3x): " + err.message);
+        // Fallback: use empty providers list
+        setProviders([]);
       }
     };
     fetchProviders();
   }, []);
 
-  // Fetch models when provider changes
+  // Fetch models when provider changes with retry
   useEffect(() => {
     if (!selectedProvider) return;
     const fetchModels = async () => {
       try {
-        const res = await fetch(`/api/redteam/llm-providers/${selectedProvider}/models`);
-        if (!res.ok) throw new Error("Failed to fetch models");
-        const data = await res.json();
+        const data = await retryWithBackoff(async () => {
+          const res = await fetch(`/api/redteam/llm-providers/${selectedProvider}/models`, {
+            signal: AbortSignal.timeout(10000)
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        }, 2, 500);
+
         setModels(data.models || []);
         setSelectedModel(data.models?.[0] || "");
+        setError(null);
       } catch (err) {
         setError("Failed to load models: " + err.message);
+        setModels([]);
       }
     };
     fetchModels();
   }, [selectedProvider]);
 
-  // Test single provider (streaming)
+  // Test single provider (streaming) with retry logic
   const handleTestSingle = async () => {
     if (!prompt.trim()) {
       setError("Please enter a prompt");
@@ -84,19 +125,31 @@ export default function PromptForgeMultiLLM() {
     abortControllerRef.current = new AbortController();
 
     try {
-      const res = await fetch("/api/redteam/llm-test", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          provider: selectedProvider,
-          model: selectedModel,
-          prompt,
-          system_prompt: systemPrompt || undefined,
-          temperature,
-          max_tokens: maxTokens
-        }),
-        signal: abortControllerRef.current.signal
-      });
+      const res = await retryWithBackoff(async () => {
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
+
+        const response = await fetch("/api/redteam/llm-test", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            provider: selectedProvider,
+            model: selectedModel,
+            prompt,
+            system_prompt: systemPrompt || undefined,
+            temperature,
+            max_tokens: maxTokens
+          }),
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.detail || `HTTP ${response.status}`);
+        }
+
+        return response;
+      }, 2, 1000);
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -142,7 +195,7 @@ export default function PromptForgeMultiLLM() {
     }
   };
 
-  // Compare multiple providers
+  // Compare multiple providers with retry
   const handleCompare = async () => {
     if (!prompt.trim()) {
       setError("Please enter a prompt");
@@ -156,33 +209,34 @@ export default function PromptForgeMultiLLM() {
     abortControllerRef.current = new AbortController();
 
     try {
-      const res = await fetch("/api/redteam/llm-compare", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt,
-          system_prompt: systemPrompt || undefined,
-          temperature,
-          max_tokens: maxTokens,
-          providers: providers.map(p => p.name).filter(name => {
-            const provider = providers.find(p => p.name === name);
-            return provider?.status !== "error";
-          })
-        }),
-        signal: abortControllerRef.current.signal
-      });
+      const data = await retryWithBackoff(async () => {
+        const res = await fetch("/api/redteam/llm-compare", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt,
+            system_prompt: systemPrompt || undefined,
+            temperature,
+            max_tokens: maxTokens,
+            providers: enabledProviders.map(p => p.name)
+          }),
+          signal: abortControllerRef.current.signal
+        });
 
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.detail || "Comparison failed");
-      }
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || `HTTP ${res.status}`);
+        }
 
-      const data = await res.json();
+        return res.json();
+      }, 2, 1000);
+
       setCompareResults(data.results || {});
       setOutput("");
+      setError(null);
     } catch (err) {
       if (err.name !== "AbortError") {
-        setError("Comparison failed: " + err.message);
+        setError("Comparison failed (retried 2x): " + err.message);
       }
     } finally {
       setIsStreaming(false);
@@ -493,3 +547,9 @@ export default function PromptForgeMultiLLM() {
     </div>
   );
 }
+
+// Memoize component to prevent unnecessary re-renders
+export default React.memo(PromptForgeMultiLLMComponent, (prevProps, nextProps) => {
+  // Custom comparison: re-render only if props actually change
+  return JSON.stringify(prevProps) === JSON.stringify(nextProps);
+});
