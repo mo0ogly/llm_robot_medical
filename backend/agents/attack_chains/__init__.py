@@ -95,47 +95,57 @@ import logging as _log
 
 _CHAIN_MODULES = [
     # PARTIE 2A — Stack-compatible templates
-    ("rag_multi_query",       "B2.1"),
-    ("rag_private",           "B2.3"),
-    ("rag_basic",             "B2.2"),
-    ("sql_chain",             "B2.4"),
-    ("pii_guard",             "B2.9"),
+    ("rag_multi_query",       "B2.1"),   # Mapped: T37 (PIDP compound RAG)
+    ("rag_private",           "B2.3"),   # Mapped: T38 (persistent RAG poisoning)
+    ("rag_basic",             "B2.2"),   # Mapped: T37, T38 (RAG attack surface)
+    ("sql_chain",             "B2.4"),   # Mapped: RUN-001/RUN-002
+    ("pii_guard",             "B2.9"),   # Mapped: RUN-001/RUN-002
     # PARTIE 2B — Advanced attack techniques
-    ("hyde_chain",            "B1.5"),
-    ("rag_fusion",            "B1.7"),
-    ("rewrite_retrieve_read", "B1.9"),
-    ("critique_revise",       "B1.1"),
-    ("skeleton_of_thought",   "B1.10"),
-    ("stepback_chain",        "B1.12"),
-    ("propositional_chain",   "B1.6"),
-    ("extraction_chain",      "B1.2+B1.3"),
+    ("hyde_chain",            "B1.5"),   # Mapped: RUN-002
+    ("rag_fusion",            "B1.7"),   # Mapped: T37, T40 (compound attack)
+    ("rewrite_retrieve_read", "B1.9"),   # Mapped: RUN-002
+    ("critique_revise",       "B1.1"),   # Mapped: T47 (iterative optimization)
+    ("skeleton_of_thought",   "B1.10"),  # Mapped: RUN-002
+    ("stepback_chain",        "B1.12"),  # Mapped: RUN-002
+    ("propositional_chain",   "B1.6"),   # Coverage: T41 (semantic RLHF exploitation) — propositional decomposition enables semantic-level jailbreak via factoid separation (δ⁰ attack surface)
+    ("extraction_chain",      "B1.2+B1.3"),  # Mapped: T46 (in-document injection)
     # PARTIE 2C — Agent patterns
-    ("solo_agent",            "B1.11"),
-    ("tool_retrieval_agent",  "B1.18"),
-    ("multi_index_fusion",    "B1.15"),
-    ("router_chain",          "B1.16"),
-    ("guardrails_chain",      "B1.4"),
+    ("solo_agent",            "B1.11"),  # Mapped: T36 (automated agent injection)
+    ("tool_retrieval_agent",  "B1.18"),  # Mapped: RUN-001/RUN-002
+    ("multi_index_fusion",    "B1.15"),  # Mapped: RUN-002
+    ("router_chain",          "B1.16"),  # Mapped: RUN-001/RUN-002
+    ("guardrails_chain",      "B1.4"),   # Mapped: RUN-001/RUN-002
     # PARTIE 2D — Infrastructure templates
-    ("xml_agent",             "B1.19"),
-    ("iterative_search",      "B1.20"),
-    ("rag_conversation",      "B1.21"),
-    ("chain_of_note",         "B1.22"),
-    ("research_chain",        "B1.23"),
+    ("xml_agent",             "B1.19"),  # Coverage: T46 (in-document injection) — XML structure enables hidden instruction injection via markup attributes (δ¹ attack surface)
+    ("iterative_search",      "B1.20"),  # Mapped: RUN-002
+    ("rag_conversation",      "B1.21"),  # Mapped: RUN-002
+    ("chain_of_note",         "B1.22"),  # Mapped: RUN-002
+    ("research_chain",        "B1.23"),  # Coverage: T32 (taxonomy gap exploitation) — research pipeline processes external documents, enabling P059-style in-document injection (δ¹/δ² attack surface)
     # PARTIE 2E — Remaining high-priority templates
-    ("prompt_override",       "B1.24"),
-    ("self_query",            "B1.25"),
-    ("csv_agent",             "B1.26"),
-    ("functions_agent",       "B1.27"),
-    ("sql_research",          "B1.28"),
-    ("rag_semi_structured",   "B1.29"),
+    ("prompt_override",       "B1.24"),  # Mapped: RUN-002
+    ("self_query",            "B1.25"),  # Coverage: T37 (PIDP compound attack) — self-query metadata filters can be manipulated to steer retrieval toward poisoned passages (δ² attack surface)
+    ("csv_agent",             "B1.26"),  # Mapped: RUN-002
+    ("functions_agent",       "B1.27"),  # Mapped: RUN-001/RUN-002
+    ("sql_research",          "B1.28"),  # Mapped: RUN-002
+    ("rag_semi_structured",   "B1.29"),  # Mapped: T38, T44 (semi-structured exploitation)
     # PARTIE 2F — Medium-priority templates
-    ("feedback_poisoning",    "B1.30"),
-    ("transactional_agent",   "B1.31"),
-    ("retrieval_agent",       "B1.32"),
-    ("summarize_chain",       "B1.33"),
+    ("feedback_poisoning",    "B1.30"),  # Mapped: RUN-002
+    ("transactional_agent",   "B1.31"),  # Mapped: RUN-002
+    ("retrieval_agent",       "B1.32"),  # Coverage: T36, T38 (automated agent injection + persistent RAG poisoning) — retrieval agent combines tool access with RAG, creating compound attack surface (δ¹/δ² attack surface)
+    ("summarize_chain",       "B1.33"),  # Coverage: T39 (shallow RLHF late-sequence injection) — summarization concentrates information into shorter output, amplifying late-sequence injection effects on δ⁰ alignment
     # PARTIE 2G — Multi-modal templates
-    ("multimodal_rag",        "B1.34"),
+    ("multimodal_rag",        "B1.34"),  # Mapped: RUN-002
 ]
+
+# Chain coverage summary (RUN-003, 2026-04-04):
+# 34/34 chains mapped (100%) — 28 from RUN-001/002/003 direct mappings,
+# 6 newly mapped via RUN-003 technique extensions:
+#   propositional_chain → T41 (semantic RLHF exploitation, δ⁰)
+#   xml_agent           → T46 (in-document injection, δ¹)
+#   research_chain      → T32 (taxonomy gap exploitation, δ¹/δ²)
+#   self_query          → T37 (PIDP compound RAG, δ²)
+#   retrieval_agent     → T36+T38 (automated agent + RAG poisoning, δ¹/δ²)
+#   summarize_chain     → T39 (shallow RLHF late-sequence injection, δ⁰)
 
 _loaded = []
 _skipped = []
