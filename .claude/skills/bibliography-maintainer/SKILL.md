@@ -126,6 +126,8 @@ Orchestrator (this skill)
     |               +-- SCIENTIST    : Cross-analysis, research axes, thesis positioning
     |
     +-(P5)------------- CHUNKER      : RAG chunks (JSONL), ChromaDB ingestion script
+    |
+    +-(P6)------------- DIRECTOR     : Consolidated briefing for thesis director skill
 ```
 
 Gates:
@@ -134,6 +136,7 @@ Gates:
 - P3 -> P4: LIBRARIAN must create indexes before SCIENTIST can cross-analyze
 - P3 -> P4: MATHEUX must produce MATH_DEPENDENCIES.md before MATHTEACHER starts
 - P4 -> P5: SCIENTIST + MATHTEACHER must complete before CHUNKER processes all outputs
+- P5 -> P6: ALL agents must complete before DIRECTOR BRIEFING is generated
 
 ## Agentic System Prompt (injected into all 9 agents)
 
@@ -165,11 +168,14 @@ research_archive/
     DISCOVERIES_INDEX.md                # Master index: all discoveries by impact (CRITICAL/HAUTE/MOYENNE)
     TRIPLE_CONVERGENCE.md               # D-001: δ⁰/δ¹/δ² simultaneously vulnerable, δ³ sole survivor
     CONJECTURES_TRACKER.md              # C1-C7 confidence evolution across RUNs (graph + history)
-    THESIS_GAPS.md                      # G-001 to G-012: opportunities for original contribution
+    THESIS_GAPS.md                      # G-001→G-021: opportunities for original contribution
+  articles/                             # ** PUBLICATIONS AND DRAFTS **
+    ARTICLES_INDEX.md                   # Master index: all articles by status (DRAFT/REVIEW/SUBMITTED)
+    triple_convergence_paper.md         # A-001: Workshop paper on D-001
   doc_references/
     {year}/{domain}/  # Organized paper files
     MANIFEST.md       # Central table of all papers
-    INDEX_BY_DELTA.md # Papers indexed by delta-0 to delta-3
+    INDEX_BY_DELTA.md # Papers indexed by δ⁰ to δ³
     GLOSSAIRE_MATHEMATIQUE.md  # Unified math glossary
 ```
 
@@ -265,7 +271,63 @@ When all agents complete, the Orchestrator:
 3. Runs `ingest_to_chromadb.py --dry-run` to validate chunks
 4. Reports: papers found, analyses created, formulas extracted, axes identified, chunks prepared
 5. Reports: discoveries added/modified/invalidated, conjecture score changes, gaps opened/closed
-6. Proposes git commit if changes are significant
+6. **Generates DIRECTOR_BRIEFING** (Phase 6 — MANDATORY, see below)
+7. Proposes git commit if changes are significant
+
+### Phase 6: DIRECTOR BRIEFING (MANDATORY)
+
+**After every RUN**, generate: `_staging/DIRECTOR_BRIEFING_RUN{XXX}.md`
+
+This file is the **SINGLE DELIVERABLE** consumed by the **director skill** to orchestrate thesis actions.
+It MUST contain ALL of the following sections:
+
+```markdown
+# DIRECTOR BRIEFING — Post RUN-XXX Review
+
+## 1. État des Conjectures
+| Conj | Score | Statut | Ce qui manque pour fermer |
+
+## 2. Carte de Maturité par Thème
+| # | Thème | Papers | Formules | Maturité (SATURÉ/EN COURS/ÉMERGENT/CRITIQUE) | Action |
+
+## 3. Gaps Critiques — Actions Immédiates
+### P0 — Bloquants pour la thèse
+### P1 — Importants
+### P2 — Souhaitables
+
+## 4. Découvertes — Bilan
+### Validées (>= 9/10)
+### Actives (7-8/10)
+### Potentielles (à valider)
+
+## 5. Résultats Expérimentaux
+| Expérience | Gap | Résultat | Implication |
+
+## 6. Plan RUN-(XXX+1)
+### Papers à chercher par thème
+### Expériences à mener
+### Chapitres à rédiger
+
+## 7. Carte de Maturité de la Thèse
+| Chapitre | Maturité (%) | Données disponibles | Données manquantes |
+
+## 8. Fichiers de Référence
+[Pointers to all relevant files for this RUN]
+```
+
+**Source data**: The DIRECTOR BRIEFING is synthesized from:
+- SCIENTIST: REVIEW_COMPLETE_CORPUS.md (or PHASE4 report if no review)
+- MATHEUX: REVIEW_COMPLETE_FORMULAS.md (or PHASE2 report if no review)
+- CYBERSEC + WHITEHACKER: latest phase reports
+- DISCOVERIES: all 4 files
+- MEMORY_STATE.md: cumulative counters
+
+**Rules**:
+- The briefing must be ACTIONABLE — every item must have an action and a responsible agent/skill
+- Gaps must be PRIORITIZED (P0/P1/P2) — P0 = blocks the thesis, P1 = important, P2 = nice to have
+- Themes must have a MATURITY STATUS — so the director knows what to focus on
+- The file must be SELF-CONTAINED — readable without opening other files
+- Naming: `DIRECTOR_BRIEFING_RUN{XXX}.md` (matches the RUN ID)
 
 ### Discoveries Summary (mandatory in completion report)
 ```

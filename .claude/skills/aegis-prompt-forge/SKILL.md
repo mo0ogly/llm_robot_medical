@@ -239,6 +239,61 @@ Prompts a ameliorer (FORGE recommande) :
 
 ---
 
+## Mode DIRECTOR BRIEFING (genere apres chaque campagne ou batch RETEX)
+
+Apres chaque session de travail significative (campagne, batch FORGE, AUDIT serie), generer un
+rapport consolide pour la skill **director** :
+
+**Fichier** : `research_archive/_staging/PROMPT_FORGE_BRIEFING_{date}.md`
+
+**Contenu obligatoire** :
+
+```markdown
+# PROMPT FORGE BRIEFING — {date}
+
+## 1. Prompts generes/audites
+| ID | Mode | Chain | Delta | Score AEGIS | Resultat |
+
+## 2. Metriques de campagne
+- ASR global, par famille, par delta layer
+- Sep(M) si disponible
+- Violations reproductibles (N>=30 ?)
+
+## 3. Patterns efficaces identifies
+| Pattern | Taux de succes | Delta cible | Pourquoi ca marche |
+
+## 4. Anti-patterns confirmes
+| Anti-pattern | Taux de blocage | Pourquoi ca echoue |
+
+## 5. Impact sur les conjectures
+| Conj | Evidence pour/contre | Changement de confiance |
+
+## 6. Impact sur les decouvertes
+| Discovery | Renforcee/Affaiblie | Evidence |
+
+## 7. Gaps identifies
+| Gap | Description | Priorite | Action recommandee |
+
+## 8. Recommandations pour la prochaine session
+- Prompts a re-forger
+- Patterns a explorer
+- Calibration system prompt
+```
+
+Ce briefing est consomme par la skill **director** pour orienter les prochaines sessions de recherche.
+Il doit etre ACTIONNABLE et SELF-CONTAINED.
+
+---
+
+## Integration avec bibliography-maintainer
+
+Cette skill CONSOMME les outputs de bibliography-maintainer :
+- Lire `_staging/DIRECTOR_BRIEFING_RUN{XXX}.md` pour connaitre les derniers papers, techniques, et gaps
+- Les patterns d'attaque dans `references/attack-patterns.md` doivent etre mis a jour quand de nouvelles techniques (T31-T48+) sont extraites par WHITEHACKER
+- Les formules dans `references/sep-awareness.md` doivent refleter les dernieres formules MATHEUX (F01-F54+)
+
+---
+
 ## References internes
 
 - `references/medical-authority.md` — bibliotheque : HL7 segments, FDA refs, ISO refs, LOINC, medecins
