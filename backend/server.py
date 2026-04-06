@@ -945,6 +945,10 @@ app.include_router(llm_providers_router)
 app.include_router(f46_router)
 app.include_router(aside_router)
 
+# Unified experiment archive (all sessions: F46, Sep(M), ASIDE, Forge campaigns)
+from routes.experiment_import_routes import router as experiment_router
+app.include_router(experiment_router)
+
 
 # === LOAD LLM PROVIDERS CONFIG AT STARTUP ===
 # Single source of truth for LLM provider configuration (ARCH-01 fix)
