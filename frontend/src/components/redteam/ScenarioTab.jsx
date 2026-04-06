@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Play, Square, ChevronDown, ChevronRight, Shield, AlertTriangle, Download, Settings2 } from 'lucide-react';
 import AgentLevelSelector from './AgentLevelSelector';
@@ -520,7 +520,7 @@ var DEMO_SCENARIOS = [
   },
 ];
 
-export default function ScenarioTab() {
+const ScenarioTab = memo(function ScenarioTab() {
   const { t, i18n } = useTranslation();
   const [scenarios, setScenarios] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -629,6 +629,7 @@ export default function ScenarioTab() {
             } else if (payload.type === "scenario_done") {
               robotEventBus.emit("redteam:reset");
               setSummary(payload);
+              const scenario = scenarios.find(s => s.id === payload.scenario_id) || {};
               const entry = {
                 date: new Date().toISOString(),
                 scenario_id: payload.scenario_id,
@@ -636,6 +637,9 @@ export default function ScenarioTab() {
                 steps_passed: payload.steps_passed,
                 total_steps: payload.total_steps,
                 breach_point: payload.breach_point,
+                clinical_context: scenario.clinical_context,
+                expected_impact: scenario.expected_impact,
+                mitre_ttps: scenario.mitre_ttps
               };
               const saved = JSON.parse(localStorage.getItem("redteam_scenario_history") || "[]");
               saved.unshift(entry);
@@ -678,11 +682,11 @@ export default function ScenarioTab() {
         {scenarios.map((s) => (
           <div
             key={s.id}
-            className={`border rounded-lg p-3 cursor-pointer transition-colors ${
+            className={'border rounded-lg p-3 cursor-pointer transition-colors ' + (
               selectedId === s.id
                 ? "border-[#00ff41]/50 bg-[#00ff41]/5"
                 : "border-gray-800 hover:border-gray-600"
-            }`}
+            )}
             onClick={() => !running && setSelectedId(s.id)}
           >
             <div className="flex items-center justify-between mb-1">
@@ -737,7 +741,7 @@ export default function ScenarioTab() {
             <button
               key={s}
               onClick={() => setSpeed(s)}
-              className={`text-[9px] font-mono px-1.5 rounded transition-all ${speed === s ? 'bg-[#00ff41] text-black font-bold' : 'text-gray-500 hover:text-gray-300'}`}
+              className={'text-[9px] font-mono px-1.5 rounded transition-all ' + (speed === s ? 'bg-[#00ff41] text-black font-bold' : 'text-gray-500 hover:text-gray-300')}
             >
               {s}x
             </button>
@@ -816,12 +820,12 @@ export default function ScenarioTab() {
                 <div className="absolute left-[11px] top-8 bottom-0 w-px bg-gray-800" />
               )}
               <div
-                className={`border rounded p-2 cursor-pointer transition-colors ${STATUS_STYLES[step.status]}`}
+                className={'border rounded p-2 cursor-pointer transition-colors ' + STATUS_STYLES[step.status]}
                 onClick={() => step.result && setExpandedStep(expandedStep === i ? null : i)}
               >
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-[6px] h-[6px] rounded-full flex-shrink-0 ${
+                    className={'w-[6px] h-[6px] rounded-full flex-shrink-0 ' + (
                       step.status === "pending"
                         ? "bg-gray-600"
                         : step.status === "running"
@@ -829,13 +833,13 @@ export default function ScenarioTab() {
                         : step.status === "passed"
                         ? "bg-red-400"
                         : "bg-[#00ff41]"
-                    }`}
+                    )}
                   />
                   <span className="text-xs font-bold flex-1">{step.name}</span>
                   <span
-                    className={`text-[9px] px-1.5 py-0.5 rounded border ${
+                    className={'text-[9px] px-1.5 py-0.5 rounded border ' +
                       ATTACK_TYPE_COLORS[step.attack_type]
-                    }`}
+                    }
                   >
                     {t('redteam.category.' + step.attack_type, { defaultValue: step.attack_type.toUpperCase() })}
                   </span>
@@ -880,11 +884,11 @@ export default function ScenarioTab() {
       {/* Scenario summary */}
       {scenarioSummary && (
         <div
-          className={`border rounded p-3 ${
+          className={'border rounded p-3 ' + (
             scenarioSummary.steps_passed > 0
               ? "border-red-500/30 bg-red-500/5"
               : "border-[#00ff41]/30 bg-[#00ff41]/5"
-          }`}
+          )}
         >
           <div className="flex items-center gap-2 mb-2">
             {scenarioSummary.steps_passed > 0 ? (
@@ -893,9 +897,9 @@ export default function ScenarioTab() {
               <Shield size={14} className="text-[#00ff41]" />
             )}
             <span
-              className={`text-xs font-bold ${
+              className={'text-xs font-bold ' + (
                 scenarioSummary.steps_passed > 0 ? "text-red-400" : "text-[#00ff41]"
-              }`}
+              )}
             >
               {scenarioSummary.steps_passed > 0 ? t('redteam.scenarios.summary.breach') : t('redteam.scenarios.summary.intact')}
             </span>
@@ -916,4 +920,6 @@ export default function ScenarioTab() {
       )}
     </div>
   );
-}
+});
+
+export default ScenarioTab;
