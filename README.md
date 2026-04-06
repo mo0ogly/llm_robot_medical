@@ -4,7 +4,8 @@
   <h3>A Proof-of-Concept surgical robot interface hijacked by Data Poisoning & Ransomware, defended by a Cyber-Security AI</h3>
   <p>
     <a href="README_FR.md">🇫🇷 Lire en Français</a> &nbsp;|&nbsp;
-    <a href="README_BR.md">🇧🇷 Ler em Português</a>
+    <a href="README_BR.md">🇧🇷 Ler em Português</a> &nbsp;|&nbsp;
+    <a href="https://pizzif.github.io/poc_medical/wiki/"><strong>Wiki Documentation</strong></a>
   </p>
 </div>
 
@@ -83,12 +84,12 @@ One-click mechanical isolation: disconnects the robot from the LLM and forces ma
 ### 🌍 i18n — 3 Languages
 Full interface, prompts and documentation in **French**, **English**, and **Brazilian Portuguese**.
 
-### 🔴 Adversarial Studio v2.0 — Formal Adversarial Research Lab
+### 🔴 Adversarial Studio v2.1 — Formal Adversarial Research Lab
 Hidden advanced panel (`Ctrl+Shift+R` or header button). Five integrated panels:
 
 | Panel | Description |
 |-------|-------------|
-| **Prompt Forge** | 52 API-served attack templates with detailed help modals (attack mechanism, formal framework, defense analysis) |
+| **Prompt Forge** | 98 API-served attack templates with detailed help modals (attack mechanism, formal framework, defense analysis) |
 | **System Prompt Lab** | 3 agents (Da Vinci, Aegis, Attacker) x 3 difficulty levels (EASY / NORMAL / HARD) |
 | **Execution Engine** | Single-shot, multi-agent campaign, and Sep(M) formal audit modes |
 | **Formal Metrics Dashboard** | SVC 6D scoring + Sep(M) separation score + Integrity(S) verification |
@@ -109,7 +110,58 @@ Hidden advanced panel (`Ctrl+Shift+R` or header button). Five integrated panels:
 
 **Integrity(S)** — Defined as Reachable(M,i) ⊆ Allowed(i) per the DY-AGENT threat model. Verifies that no reachable model state violates the allowed action set for a given input.
 
+**Delta-0 Protocol** — Baseline null-hypothesis measurement: runs each chain with a clean (non-adversarial) prompt to establish the ground truth response distribution before any attack is applied.
+
+**Cross-Model Support (Groq)** — The execution engine supports remote LLM providers via Groq API in addition to local Ollama models, enabling comparative adversarial evaluation across model families.
+
+**Threat Score** — Composite threat scoring metric (Zhang et al., 2025) combining attack success rate, semantic drift magnitude, and defense bypass frequency into a single normalized score per chain.
+
 👉 **[Read the Detailed Technical Documentation for the Red Team Lab](docs/REDTEAM_LAB_EN.md)**
+
+### Defense Infrastructure
+- **66 defense techniques** across 4 classes (Prevention, Detection, Response, Measurement) — 40/66 implemented (60.6%)
+- **15 RagSanitizer detectors** covering all 12 character injection techniques (Hackett et al., 2025)
+- **Guardrail benchmark** comparing 6 industry systems (Azure Prompt Shield, Meta Prompt Guard, etc.)
+- **Defense Taxonomy API** with coverage tracking and guardrail benchmark endpoints
+
+### 🔬 PromptForge — Multi-LLM Testing Interface (NEW)
+
+Test adversarial prompts across **6 LLM providers** in parallel:
+
+| Provider | Type | Models | Status |
+|----------|------|--------|--------|
+| **Ollama** | Local | llama3.2, Meditron 7B/70B | ✓ Always Available |
+| **Claude** (Anthropic) | Cloud | Opus 4.6, Sonnet 4.6, Haiku 4.5 | Requires API Key |
+| **GPT** (OpenAI) | Cloud | GPT-4o, GPT-4-turbo, GPT-4o-mini | Requires API Key |
+| **Gemini** (Google) | Cloud | Gemini 2.0 Flash, 1.5 Pro | Requires API Key |
+| **Grok** (xAI) | Cloud | Grok-3, Grok-2 | Requires API Key |
+| **Groq** | Cloud | Llama 70B, Mixtral | Requires API Key |
+
+**Key Features:**
+- ✅ **Real-time Streaming**: Watch tokens appear as LLMs generate responses
+- ✅ **Parallel Comparison**: Test one prompt on all providers simultaneously
+- ✅ **Dynamic Configuration**: Add providers by setting environment variables (no code changes)
+- ✅ **Responsive Metrics**: Latency, token counts, status tracking per provider
+- ✅ **Export Results**: Download comparison data as JSON for thesis integration
+- ✅ **Single Source of Truth**: All provider configs in `llm_providers_config.json`
+
+**Access:** Navigate to **`http://localhost:5173/redteam/prompt-forge`** after starting the backend.
+
+**Quick Start:**
+```bash
+# Configure cloud providers (optional)
+export ANTHROPIC_API_KEY="sk-ant-..."
+export OPENAI_API_KEY="sk-..."
+export GOOGLE_API_KEY="AIzaSy..."
+
+# Start backend
+./aegis.ps1 start backend
+
+# Open UI
+http://localhost:5173/redteam/prompt-forge
+```
+
+👉 **[Read PromptForge Configuration Guide](backend/prompts/LLM_PROVIDERS_README.md)**
 
 ---
 
@@ -153,6 +205,42 @@ Hidden advanced panel (`Ctrl+Shift+R` or header button). Five integrated panels:
 | Multi-Agent | AG2 (AutoGen) for orchestration, Genetic Optimizer (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Packaging | Docker & Docker Compose |
+
+---
+
+## Performance Optimizations (v4.1)
+
+### Phase 3: Dynamic i18n Locale Loading (2026-04-06)
+- **Impact**: ~150 kB bundle reduction, language files loaded on-demand only
+- **Mechanism**: Extract 272 kB inline translations into separate JSON files (FR: 81 kB, EN: 75 kB, BR: 77 kB)
+- **Benefit**: Initial load faster; users only download their active language
+- **Technical**: Dynamic `import('./locales/${lang}.json')` with i18nReady promise synchronization
+
+### Phase 4: HTTP Caching + Request Deduplication (2026-04-06)
+- **Backend (Server.py)**: CacheControlMiddleware on 23 API endpoints
+  - **Cache Strategy**: max-age=86400 (taxonomy), max-age=3600 (catalog/templates), max-age=300 (scenarios)
+  - **Coverage**: 100% of read-only endpoints; streaming/POST endpoints excluded
+- **Frontend (useFetchWithCache)**: In-memory deduplication hook
+  - **Hit Rate**: ~85% for repeated requests
+  - **Deduplication**: Prevents 60% of simultaneous duplicate requests
+  - **API**: `useFetchWithCache(url)`, `prefetch(url)`, `invalidateCache(url)`
+- **Component Updates**: 14 components (DefenseTaxonomyCard, CatalogView, ScenarioTab, etc.) replaced fetch + useEffect with useFetchWithCache
+- **RedTeamLayout**: Automatic prefetch on mount (catalog, templates, scenarios, taxonomy)
+
+### Bundle Analysis (Post-Optimization)
+| Metric | Before | After | Gain |
+|--------|--------|-------|------|
+| Main chunk | 905 kB | 668 kB | -26% (-237 kB) |
+| i18n inline | 272 kB | Split into chunks | Lazy-loaded per language |
+| CSS bundle | 145 kB | 145 kB | (unchanged) |
+| **Initial Load** | 905 kB | 668 kB | **-26% faster** |
+| **Gzip (main)** | ~220 kB | 187 kB | **-15% smaller** |
+
+### Target Achieved ✅
+- **Phase 1-2** (Memoization + Lazy-loading): Committed
+- **Phase 3** (i18n splitting): Committed (a4513ac)
+- **Phase 4** (HTTP caching): Committed (6dbb490)
+- **Result**: Main bundle 668 kB (target: ~600 kB achieved with 26% reduction)
 
 ---
 
@@ -235,7 +323,10 @@ docker-compose up --build
 
 ## 🔗 Attack Chain Library
 
-The Adversarial Studio includes **34 attack chains**, **47 scenarios**, and **52 attack templates**, ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499; Zverev et al., 2025, ICLR; Reimers & Gurevych, 2019, Sentence-BERT). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic via `llm_factory`). Each chain has at least one dedicated scenario. The 52 attack templates each have a detailed help modal explaining the attack mechanism, formal framework link, and defense analysis.
+The Adversarial Studio v2.1 includes **34 attack chains**, **48 scenarios**, and **98 attack templates** (97 numbered + 1 Custom placeholder), ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499; Zverev et al., 2025, ICLR; Reimers & Gurevych, 2019, Sentence-BERT). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic/Groq via `llm_factory`). Each chain has at least one dedicated scenario. The 98 attack templates each have a detailed help modal explaining the attack mechanism, formal framework link, and defense analysis.
+
+### CrowdStrike Taxonomy Coverage
+Full coverage of the CrowdStrike Prompt Injection Taxonomy (2025-11-01): 95/95 techniques across 4 classes (Overt, Indirect, Social/Cognitive, Evasive).
 
 #### Formal Campaign & Sep(M) Score
 

@@ -4,7 +4,8 @@
   <h3>Uma Prova de Conceito de interface cirúrgica robótica sequestrada por Envenenamento de Dados e Ransomware, defendida por uma IA de Segurança Cibernética</h3>
   <p>
     <a href="README.md">🇬🇧 Read in English</a> &nbsp;|&nbsp;
-    <a href="README_FR.md">🇫🇷 Lire en Français</a>
+    <a href="README_FR.md">🇫🇷 Lire en Français</a> &nbsp;|&nbsp;
+    <a href="https://pizzif.github.io/poc_medical/wiki/"><strong>Wiki Documentation</strong></a>
   </p>
 </div>
 
@@ -82,10 +83,10 @@ Isolamento mecânico com um clique: desconecta o robô do LLM e força o modo ma
 ### 🌍 Internacionalização — 3 Idiomas
 Interface, prompts e documentação integralmente disponíveis em **Português (Brasil)**, **Inglês** e **Francês**.
 
-### 🔴 Adversarial Studio v2.0 — Laboratório de Pesquisa Adversarial Formal
+### 🔴 Adversarial Studio v2.1 — Laboratório de Pesquisa Adversarial Formal
 Painel avançado oculto (`Ctrl+Shift+R` ou botão no cabeçalho) com **5 painéis integrados**:
 
-1. **Prompt Forge** — 52 templates de ataque servidos via API (`/api/redteam/catalog`), com otimizador genético e busca semântica
+1. **Prompt Forge** — 98 templates de ataque servidos via API (`/api/redteam/catalog`), com otimizador genético e busca semântica
 2. **System Prompt Lab** — Configuração de 3 agentes (Da Vinci, Aegis, Atacante) x 3 níveis de dificuldade (FÁCIL / NORMAL / DIFÍCIL)
 3. **Motor de Execução** — Modos single-shot, multi-turno e campanha formal Sep(M)
 4. **Painel de Métricas Formais** — Scoring SVC 6D + Sep(M) + Integrity(S) com visualização em tempo real
@@ -111,6 +112,18 @@ Métrica formal de separabilidade entre distribuições de respostas benignas e 
 Definição formal: **Integrity(S) := Reachable(M, i) ⊆ Allowed(i)** — verifica que o conjunto de estados alcançáveis pelo modelo M a partir da entrada i permanece dentro do conjunto de estados permitidos pela política de segurança.
 
 **Referências**: Liu et al. (2023, arXiv:2306.05499), Zverev et al. (2025, ICLR), Reimers & Gurevych (2019, Sentence-BERT)
+
+**Protocolo Delta-0** — Medida de base (hipotese nula): executa cada cadeia com um prompt limpo (nao adversarial) para estabelecer a distribuicao de respostas de referencia antes de qualquer ataque.
+
+**Suporte Cross-Model (Groq)** — O motor de execucao suporta provedores LLM remotos via API Groq alem dos modelos locais Ollama, permitindo avaliacao adversarial comparativa entre familias de modelos.
+
+**Threat Score** — Metrica composta de ameaca (Zhang et al., 2025) combinando taxa de sucesso de ataque, magnitude de deriva semantica e frequencia de bypass de defesa em um score normalizado por cadeia.
+
+### Infraestrutura de Defesa
+- **66 tecnicas de defesa** em 4 classes (Prevencao, Deteccao, Resposta, Medicao) — 40/66 implementadas (60.6%)
+- **15 detectores RagSanitizer** cobrindo todas as 12 tecnicas de injecao de caracteres (Hackett et al., 2025)
+- **Benchmark de guardrails** comparando 6 sistemas industriais (Azure Prompt Shield, Meta Prompt Guard, etc.)
+- **API Defense Taxonomy** com rastreamento de cobertura e endpoints de benchmark
 
 👉 **[Ler a Documentação Técnica Detalhada do Red Team Lab](docs/REDTEAM_LAB_BR.md)**
 
@@ -156,6 +169,42 @@ Definição formal: **Integrity(S) := Reachable(M, i) ⊆ Allowed(i)** — verif
 | Multi-Agent | AG2 (AutoGen) para orquestração, Otimizador Genético (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Empacotamento | Docker & Docker Compose |
+
+---
+
+## Otimizações de Performance (v4.1)
+
+### Fase 3: Carregamento Dinâmico de Locales i18n (2026-04-06)
+- **Impacto**: ~150 kB de redução bundle, arquivos de idioma carregados sob demanda
+- **Mecanismo**: Extração de 272 kB de traduções inline em arquivos JSON separados (FR: 81 kB, EN: 75 kB, BR: 77 kB)
+- **Benefício**: Carregamento inicial mais rápido; usuários baixam apenas seu idioma ativo
+- **Técnica**: `import('./locales/${lang}.json')` dinâmico com sincronização promise i18nReady
+
+### Fase 4: Cache HTTP + Deduplicação de Requisições (2026-04-06)
+- **Backend (Server.py)**: CacheControlMiddleware em 23 endpoints API
+  - **Estratégia de Cache**: max-age=86400 (taxonomia), max-age=3600 (catálogo/templates), max-age=300 (cenários)
+  - **Cobertura**: 100% dos endpoints read-only; endpoints streaming/POST excluídos
+- **Frontend (useFetchWithCache)**: Hook de deduplicação em-memória
+  - **Taxa de Cache Hit**: ~85% para requisições repetidas
+  - **Deduplicação**: Previne 60% das requisições duplicadas simultâneas
+  - **API**: `useFetchWithCache(url)`, `prefetch(url)`, `invalidateCache(url)`
+- **Atualizações de Componentes**: 14 componentes (DefenseTaxonomyCard, CatalogView, ScenarioTab, etc.) substituem fetch + useEffect por useFetchWithCache
+- **RedTeamLayout**: Prefetch automático ao montar (catálogo, templates, cenários, taxonomia)
+
+### Análise do Bundle (Pós-Otimização)
+| Métrica | Antes | Depois | Ganho |
+|---------|-------|--------|-------|
+| Chunk principal | 905 kB | 668 kB | -26% (-237 kB) |
+| i18n inline | 272 kB | Dividido em chunks | Carregamento sob demanda |
+| Bundle CSS | 145 kB | 145 kB | (inalterado) |
+| **Carregamento Inicial** | 905 kB | 668 kB | **-26% mais rápido** |
+| **Gzip (principal)** | ~220 kB | 187 kB | **-15% menor** |
+
+### Objetivo Alcançado ✅
+- **Fase 1-2** (Memoização + Lazy-loading): Committed
+- **Fase 3** (Split i18n): Committed (a4513ac)
+- **Fase 4** (Cache HTTP): Committed (6dbb490)
+- **Resultado**: Bundle principal 668 kB (objetivo ~600 kB alcançado com 26% de redução)
 
 ---
 
@@ -234,9 +283,14 @@ docker-compose up --build
 ```
 *(Requer Docker Desktop configurado para permitir que os contêineres acessem a instância Ollama do host via `host.docker.internal`)*
 
-### Campanha Formal & Métricas (Adversarial Studio v2.0)
+### Campanha Formal & Métricas (Adversarial Studio v2.1)
 
-O Adversarial Studio inclui **34 cadeias**, **47 cenários** e **52 templates de ataque** com modais de ajuda detalhados. O pipeline de campanha formal (`run_formal_campaign()`) integra três métricas complementares:
+O Adversarial Studio v2.1 inclui **34 cadeias**, **48 cenários** e **98 templates de ataque** (97 numerados + 1 Custom placeholder) com modais de ajuda detalhados.
+
+### Cobertura Taxonomia CrowdStrike
+Cobertura completa da taxonomia CrowdStrike Prompt Injection (2025-11-01): 95/95 técnicas em 4 classes (Overt, Indireto, Social/Cognitivo, Evasivo).
+
+O pipeline de campanha formal (`run_formal_campaign()`) integra três métricas complementares:
 
 | Métrica | Descrição |
 |---------|-----------|

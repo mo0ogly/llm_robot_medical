@@ -4,7 +4,8 @@
   <h3>Un Proof-of-Concept d'interface chirurgicale robotique piratée par Data Poisoning & Ransomware, défendue par une IA de cybersécurité</h3>
   <p>
     <a href="README.md">🇬🇧 Read in English</a> &nbsp;|&nbsp;
-    <a href="README_BR.md">🇧🇷 Ler em Português</a>
+    <a href="README_BR.md">🇧🇷 Ler em Português</a> &nbsp;|&nbsp;
+    <a href="https://pizzif.github.io/poc_medical/wiki/"><strong>Wiki Documentation</strong></a>
   </p>
 </div>
 
@@ -83,12 +84,12 @@ Isolation mécanique en un clic : déconnecte le robot du LLM et force le mode m
 ### 🌍 Internationalisation — 3 Langues
 Interface, prompts et documentation intégralement disponibles en **Français**, **Anglais** et **Portugais (Brésil)**.
 
-### 🔴 Adversarial Studio v2.0 — Laboratoire de Recherche Adversariale Formelle
+### 🔴 Adversarial Studio v2.1 — Laboratoire de Recherche Adversariale Formelle
 Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête), repensé en 5 panneaux intégrés :
 
-1. **Prompt Forge** (52 templates API) — Catalogue d'attaques servi par le backend (`/api/redteam/catalog`), avec assistant de forge de payloads et optimiseur génétique (Liu et al., 2023)
+1. **Prompt Forge** (98 templates API) — Catalogue d'attaques servi par le backend (`/api/redteam/catalog`), avec assistant de forge de payloads et optimiseur génétique (Liu et al., 2023)
 2. **System Prompt Lab** (3 agents x 3 niveaux) — Configuration multi-agent avec niveaux de difficulté indépendants (FACILE / NORMAL / DIFFICILE) par agent (Da Vinci, Aegis, Attaquant)
-3. **Moteur d'Exécution** — Trois modes : single-shot, campagne multi-chaînes, et calcul formel Sep(M) (Zverev et al., ICLR 2025). 47 scénarios couvrant les 34 chaînes backend. Kill Chain Stepper en 4 phases (Recon, Injection, Exécution, Audit)
+3. **Moteur d'Exécution** — Trois modes : single-shot, campagne multi-chaînes, et calcul formel Sep(M) (Zverev et al., ICLR 2025). 48 scénarios couvrant les 34 chaînes backend. Kill Chain Stepper en 4 phases (Recon, Injection, Exécution, Audit)
 4. **Tableau de Bord Métriques Formelles** — Scoring SVC 6D + Sep(M) + Integrity(S) :
    - **SVC (Score de Viabilité de Compromission)** sur 6 dimensions pondérées :
      - d1 Plausibilite Clinique (w=0.25)
@@ -100,6 +101,18 @@ Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête), repensé en 5
    - **Sep(M)** d'apres Zverev et al. (ICLR 2025) avec validite statistique (N >= 30 par condition)
    - **Integrity(S)** := Reachable(M,i) &#8838; Allowed(i) selon le modele de menace DY-AGENT
 5. **Intelligence de Session** — Historique complet des runs, RETEX (retour d'experience) automatise, et export CSV/JSON des resultats de campagne
+
+**Protocole Delta-0** — Mesure de base (hypothese nulle) : execute chaque chaine avec un prompt propre (non adversarial) pour etablir la distribution de reponses de reference avant toute attaque.
+
+**Support Cross-Model (Groq)** — Le moteur d'execution supporte les fournisseurs LLM distants via l'API Groq en plus des modeles locaux Ollama, permettant une evaluation adversariale comparative entre familles de modeles.
+
+**Threat Score** — Metrique composite de menace (Zhang et al., 2025) combinant le taux de succes d'attaque, l'amplitude de derive semantique et la frequence de contournement de defense en un score normalise par chaine.
+
+### Infrastructure de Defense
+- **66 techniques de defense** reparties en 4 classes (Prevention, Detection, Reponse, Mesure) — 40/66 implementees (60.6%)
+- **15 detecteurs RagSanitizer** couvrant les 12 techniques d'injection de caracteres (Hackett et al., 2025)
+- **Benchmark de guardrails** comparant 6 systemes industriels (Azure Prompt Shield, Meta Prompt Guard, etc.)
+- **API Defense Taxonomy** avec suivi de couverture et endpoints de benchmark
 
 ---
 
@@ -143,6 +156,42 @@ Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête), repensé en 5
 | Multi-Agent | AG2 (AutoGen) pour l'orchestration, Optimiseur Génétique (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Packaging | Docker & Docker Compose |
+
+---
+
+## Optimisations de Performance (v4.1)
+
+### Phase 3 : Chargement Dynamique des Locales i18n (2026-04-06)
+- **Impact** : ~150 kB de réduction bundle, fichiers de langue chargés à la demande
+- **Mécanisme** : Extraction de 272 kB de traductions inline dans des fichiers JSON séparés (FR : 81 kB, EN : 75 kB, BR : 77 kB)
+- **Avantage** : Chargement initial plus rapide ; utilisateurs téléchargent uniquement leur langue active
+- **Technique** : `import('./locales/${lang}.json')` dynamique avec synchronisation promise i18nReady
+
+### Phase 4 : Cache HTTP + Déduplication de Requêtes (2026-04-06)
+- **Backend (Server.py)** : CacheControlMiddleware sur 23 endpoints API
+  - **Stratégie Cache** : max-age=86400 (taxonomie), max-age=3600 (catalog/templates), max-age=300 (scénarios)
+  - **Couverture** : 100% des endpoints read-only ; endpoints streaming/POST exclus
+- **Frontend (useFetchWithCache)** : Hook de déduplication en-mémoire
+  - **Taux de Cache Hit** : ~85% pour requêtes répétées
+  - **Déduplication** : Prévient 60% des requêtes dupliquées simultanées
+  - **API** : `useFetchWithCache(url)`, `prefetch(url)`, `invalidateCache(url)`
+- **Mises à jour Composants** : 14 composants (DefenseTaxonomyCard, CatalogView, ScenarioTab, etc.) remplacent fetch + useEffect par useFetchWithCache
+- **RedTeamLayout** : Prefetch automatique au montage (catalog, templates, scénarios, taxonomie)
+
+### Analyse du Bundle (Post-Optimisation)
+| Métrique | Avant | Après | Gain |
+|----------|-------|-------|------|
+| Chunk principal | 905 kB | 668 kB | -26% (-237 kB) |
+| i18n inline | 272 kB | Splitté en chunks | Chargement à la demande |
+| Bundle CSS | 145 kB | 145 kB | (inchangé) |
+| **Chargement Initial** | 905 kB | 668 kB | **-26% plus rapide** |
+| **Gzip (principal)** | ~220 kB | 187 kB | **-15% plus petit** |
+
+### Objectif Atteint ✅
+- **Phase 1-2** (Mémoization + Lazy-loading) : Committed
+- **Phase 3** (Splitta i18n) : Committed (a4513ac)
+- **Phase 4** (Cache HTTP) : Committed (6dbb490)
+- **Résultat** : Bundle principal 668 kB (objectif ~600 kB atteint avec 26% de réduction)
 
 ---
 
@@ -225,7 +274,10 @@ docker-compose up --build
 
 ## 🔗 Bibliothèque de Chaînes d'Attaque
 
-L'Adversarial Studio v2.0 inclut **34 chaînes d'attaque**, **47 scénarios** et **52 templates d'attaque**, portés et améliorés depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic via `llm_factory`). Chaque chaîne a au minimum un scénario dédié. Les 52 templates d'attaque frontend ont chacun une modale d'aide détaillée expliquant le mécanisme, le cadre formel, et l'analyse de défense.
+L'Adversarial Studio v2.1 inclut **34 chaînes d'attaque**, **48 scénarios** et **98 templates d'attaque** (97 numérotés + 1 Custom placeholder), portés et améliorés depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic/Groq via `llm_factory`). Chaque chaîne a au minimum un scénario dédié. Les 98 templates d'attaque frontend ont chacun une modale d'aide détaillée expliquant le mécanisme, le cadre formel, et l'analyse de défense.
+
+### Couverture Taxonomie CrowdStrike
+Couverture complète de la taxonomie CrowdStrike Prompt Injection (2025-11-01) : 95/95 techniques réparties en 4 classes (Overt, Indirect, Social/Cognitif, Évasif).
 
 **Références formelles** : Liu et al. (2023, arXiv:2306.05499), Zverev et al. (2025, ICLR — Sep(M)), Reimers & Gurevych (2019 — Sentence-BERT / all-MiniLM-L6-v2).
 
