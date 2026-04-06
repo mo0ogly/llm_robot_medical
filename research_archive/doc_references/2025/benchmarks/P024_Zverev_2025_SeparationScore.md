@@ -3,10 +3,10 @@
 **Auteurs** : Egor Zverev (ISTA), Sahar Abdelnabi (Microsoft Security Response Center), Soroush Tabesh (ISTA), Mario Fritz (CISPA Helmholtz Center), Christoph H. Lampert (ISTA)
 **Venue** : ICLR 2025 (conference paper)
 **arXiv** : 2403.06833v3 (31 Jan 2025)
+> **PDF Source**: [literature_for_rag/P024_source.pdf](../../literature_for_rag/P024_source.pdf)
 **PDF** : https://arxiv.org/abs/2403.06833
 **Code** : https://github.com/egozverev/Shold-It-Be-Executed-Or-Processed
 **[ARTICLE VERIFIE]** — Texte complet lu depuis ChromaDB (77 chunks, ingestion 2026-04-04)
-> **PDF Source**: [literature_for_rag/P024_2403.06833.pdf](../../literature_for_rag/P024_2403.06833.pdf)
 
 ---
 
@@ -30,6 +30,24 @@ Les trois strategies de mitigation testees revelent un **compromis separation-ut
 La Figure 2 synthetise : la tendance lineaire est negativement orientee — separation elevee correle avec utilite reduite. Les auteurs concluent que le probleme ne sera vraisemblablement pas resolu par le scaling et que des approches fondamentalement nouvelles (architecturales) sont necessaires.
 
 ---
+
+## Abstract original
+
+> Large Language Models (LLMs) show impressive results in numerous practical applications,
+but they lack essential safety features that are common in other areas of computer science,
+particularly an explicit separation of instructions and data. This makes them vulnerable to
+manipulations such as indirect prompt injections and generally unsuitable for safety-critical
+tasks. Surprisingly, there is currently no established definition or benchmark to quantify this
+phenomenon. In this work, we close this gap by introducing a formal measure for instruction-
+data separation for single-turn language mod rently no established definition or benchmark to quantify this
+phenomenon. In this work, we close this gap by introducing a formal measure for instruction-
+data separation for single-turn language models and an empirical variant that is calculable from
+a model’s outputs. We also present a new dataset, SEP, that allows estimating the measure
+for real-world models. Our results on various LLMs show 
+>
+> -- Extrait du PDF source via ChromaDB
+
+
 
 ## Section 2 — Formules exactes
 

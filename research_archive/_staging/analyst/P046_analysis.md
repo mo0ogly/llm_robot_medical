@@ -1,59 +1,66 @@
-# P046: Adversary-Aware DPO: Enhancing Safety Alignment in Vision Language Models via Adversarial Training
-**Authors**: Fenghua Weng, Jian Lou, Jun Feng, Minlie Huang, Wenjie Wang | **Year**: 2025 | **Venue**: arXiv:2502.11455 / EMNLP 2025 Findings
+## [Weng et al., 2025] — Adversary-Aware DPO: Enhancing Safety Alignment in VLMs via Adversarial Training
 
-## Resume FR (~500 mots)
+**Reference :** arXiv:2502.11455v1
+**Revue/Conf :** [PREPRINT] — ShanghaiTech, Sun Yat-Sen, HUST, Tsinghua
+**Lu le :** 2026-04-04
+> **PDF Source**: [literature_for_rag/P046_2502.11455.pdf](../../literature_for_rag/P046_2502.11455.pdf)
+> **Statut**: [ARTICLE VERIFIE] — lu en texte complet via ChromaDB (75 chunks)
 
-Cette publication propose ADPO (Adversary-Aware DPO), la premiere methode integrant l'entrainement adversarial dans l'alignement de securite des modeles vision-langage (VLM) via l'optimisation directe de preference (DPO). L'article adresse une limitation specifique des VLM : contrairement aux LLM textuels, l'alignement de securite des VLM est souvent realise par un fine-tuning de securite post-hoc, une approche insuffisante face aux attaques en boite blanche qui exploitent la modalite visuelle.
+### Abstract original
+> Safety alignment is critical in pre-training large language models (LLMs) to generate responses aligned with human values and refuse harmful queries. Unlike LLM, the current safety alignment of VLMs is often achieved with post-hoc safety fine-tuning. However, these methods are less effective to white-box attacks. To address this, we propose Adversary-aware DPO (ADPO), a novel training framework that explicitly considers adversarial. Adversary-aware DPO (ADPO) integrates adversarial training into DPO to enhance the safety alignment of VLMs under worst-case adversarial perturbations. ADPO introduces two key components: (1) an adversarial-trained reference model that generates human-preferred responses under worst-case perturbations, and (2) an adversarial-aware DPO loss that generates winner-loser pairs accounting for adversarial distortions. By combining these innovations, ADPO ensures that VLMs remain robust and reliable even in the presence of sophisticated jailbreak attacks. Extensive experiments demonstrate that ADPO outperforms baselines in the safety alignment and general utility of VLMs.
+> — Source : PDF page 1
 
-ADPO introduit deux composantes techniques innovantes. La premiere est un modele de reference entraine adversarialement qui genere des reponses preferees par les humains sous des perturbations worst-case. Ce modele de reference sert d'ancrage pour le processus DPO : il definit ce que devrait etre une reponse "securisee" meme dans les conditions les plus defavorables. La deuxieme composante est une perte DPO consciente de l'adversaire (adversarial-aware DPO loss) qui genere des paires gagnant-perdant en tenant compte des distorsions adversariales dans l'espace de l'image et de l'espace latent via des perturbations PGD (Projected Gradient Descent).
+### Resume (5 lignes)
+- **Probleme :** L'alignement de securite post-hoc des VLMs (SFT, DPO standard) est inefficace contre les attaques white-box qui injectent des perturbations adversariales dans l'espace latent des images (Figure 1, p. 1).
+- **Methode :** ADPO integre l'entrainement adversarial dans DPO via deux composantes : (1) un modele de reference entraine adversarialement (AR) qui genere des reponses preferees sous perturbations worst-case, et (2) une perte DPO adversarial-aware (AT) qui genere des paires winner-loser tenant compte des distorsions (Section 3, p. 3-4).
+- **Donnees :** LLaVA-1.5-7B et LLaVA-1.6-7B ; evaluation securite sur VisualAdv, MMPGDBlank, MultiTrust, Crossmodal Jailbreak ; evaluation utilite sur MMStar, OCRBench, MM-Vet, LLaVABench (Table 1, Section 4, p. 5-6).
+- **Resultat :** ADPO reduit l'ASR a quasi-0 sur presque toutes les attaques, incluant MMPGDBlank (0.5 ASR vs 33.0 pour DPO sur LLaVA-1.5) (Table 1, p. 6). Degradation d'utilite moderee mais presente (Section 4.3, p. 6).
+- **Limite :** Compromis securite/utilite inevitable ; uniquement DPO comme algorithme d'alignement ; uniquement PGD pour les perturbations adversariales (Limitations, p. 7).
 
-La methodologie PGD est un classique de la robustesse adversariale en vision par ordinateur, ici transpose au contexte VLM. Les perturbations sont appliquees a deux niveaux : dans l'espace des pixels de l'image d'entree et dans l'espace latent des representations internes. Cette double perturbation vise a couvrir un spectre plus large de vecteurs d'attaque visuels.
+### Analyse critique
+**Forces :**
+- Adresse directement la faiblesse fondamentale du DPO standard : l'absence de robustesse aux perturbations adversariales dans l'espace latent image (Figure 1, p. 1).
+- ADPO atteint 0.5 ASR sur MMPGDBlank (vs 33.0 pour DPO standard, 76.0 pour SFT sur LLaVA-1.5), demontrant une amelioration d'un ordre de grandeur (Table 1, p. 6).
+- Decomposition claire des contributions : AR-DPO (modele de reference adversarial) et AT-DPO (perte adversarial-aware) permettent une ablation precise (Table 1, p. 6 ; Figure 3, p. 6).
+- AT-DPO seul est insuffisant contre les attaques cross-modales textuelles (Crossmodal Jailbreak), montrant que le modele de reference adversarial (AR) est essentiel pour generaliser au-dela des perturbations image (Section 4.2, p. 6).
 
-Les experiences sont menees principalement sur les modeles LLaVA et demontrent que ADPO atteint le plus faible taux de reussite d'attaque (ASR) contre presque toutes les attaques de jailbreak testees, tout en preservant l'utilite du modele sur les taches normales (benchmark Visual Question Answering). Ce resultat de preservation d'utilite distingue ADPO des defenses qui degradent les performances generales.
+**Faiblesses :**
+- Trade-off securite/utilite non resolu : ADPO degrade les performances sur les benchmarks d'utilite, les auteurs le reconnaissent explicitement (Limitation 1, p. 7).
+- Uniquement LLaVA-1.5 et 1.6 testes : pas de validation sur d'autres VLMs (InstructBLIP, Qwen-VL, GPT-4V).
+- PGD comme seule methode de perturbation : pas de test avec C&W, AutoAttack, ou des perturbations semantiques (Limitation 3, p. 7).
+- Pas d'extension a l'alignement RLHF ou IPO (Limitation 2, p. 7).
+- La metrique de securite repose sur LlamaGuard (Inan et al., 2024) ; les biais de ce juge ne sont pas discutes.
+- Pas d'evaluation en contexte medical multi-modal.
 
-Pour la these AEGIS, ADPO est pertinent car les systemes medicaux integrent de plus en plus des donnees visuelles. Le composant CameraHUD d'AEGIS, qui traite les flux video des cameras chirurgicales, pourrait beneficier d'une defense inspiree d'ADPO pour se premunir contre les attaques adversariales sur les images medicales. Un attaquant pourrait inserer des perturbations imperceptibles dans les images de cameras chirurgicales pour manipuler les recommandations du systeme d'IA — un scenario catastrophique en contexte operatoire.
+**Questions ouvertes :**
+- Comment optimiser le trade-off securite/utilite dans ADPO ?
+- L'approche adversarial-aware est-elle transferable a RLHF ou aux methodes d'alignement constitutionnel ?
+- Quelle est la robustesse d'ADPO face aux attaques adaptatives qui connaissent le mecanisme de defense ?
 
-L'integration de l'entrainement adversarial dans DPO represente une avancee de la couche delta-0 specifique aux VLM. La methode ne se contente pas d'aligner le modele sur des preferences statiques, mais l'entraine explicitement a resister aux pires perturbations possibles. C'est une approche fondamentalement plus robuste que le fine-tuning de securite post-hoc.
+### Formules exactes
+| Formule | Source |
+|---------|--------|
+| L_adv = -log P(Y_p \| x_I + delta*, x_T), delta* = argmax_delta L sous \|\|delta\|\| <= epsilon | Section 3, p. 3-4 (perte adversarial sur le modele de reference) |
+| L_ADPO = L_DPO(pi_theta, pi_ref_adv, D_adv) | Section 3, p. 4 (perte DPO avec reference adversariale et donnees perturbees) |
+| PGD : delta_{t+1} = Proj_{epsilon}(delta_t + alpha * sign(grad_delta L)) | Section 3, p. 3 (Projected Gradient Descent pour perturbations) |
 
-Cependant, ADPO est limite aux attaques en boite blanche (necessite d'acces aux gradients pour PGD), et sa robustesse face aux attaques en boite noire ou aux nouvelles techniques comme GRP-Obliteration (P039) appliquees aux VLM reste a evaluer. De plus, l'evaluation est limitee aux modeles LLaVA — la generalisation a d'autres VLM medicaux n'est pas demontree.
+Lien glossaire AEGIS : F22 (ASR), F09 (adversarial training), F15 (Sep(M) — non utilise)
 
-## Formulas & Theorems
+### Pertinence these AEGIS
+- **Couches delta :** δ⁰ (amelioration de l'alignement DPO par entrainement adversarial), δ² (robustesse aux perturbations dans l'espace latent = filtrage au niveau des embeddings)
+- **Conjectures :** C2 (supportee — la necessite de verification formelle est illustree par l'insuffisance du DPO standard), C3 (fortement supportee — l'alignement superficiel via SFT/DPO est vulnerable aux attaques white-box), C5 (supportee — interaction entre δ⁰ adversarial training et δ² robustesse embeddings)
+- **Decouvertes :** D-004 (trade-off securite/utilite dans l'alignement VLM), D-010 (insuffisance du DPO standard contre white-box)
+- **Gaps :** G-006 (extension a d'autres algorithmes d'alignement), G-009 (robustesse multimodale non couverte pour AEGIS), G-015 (pas d'evaluation medicale multimodale)
+- **Mapping templates AEGIS :** Non directement applicable (VLM, pas LLM textuel), mais les principes d'entrainement adversarial pourraient etre adaptes aux defenses AEGIS
 
-| Formule | Description |
-|---------|-------------|
-| L_ADPO = -E[log sigma(beta * (log p_theta(y_w\|x_adv) / p_ref_adv(y_w\|x_adv) - log p_theta(y_l\|x_adv) / p_ref_adv(y_l\|x_adv)))] | Perte DPO consciente de l'adversaire — adapte le DPO classique avec des entrees adversariales |
-| x_adv = x + delta, delta = argmax_{\|\|delta\|\|_p <= epsilon} L(theta, x + delta) | Perturbation PGD dans l'espace des pixels |
-| z_adv = z + eta, eta = argmax_{\|\|eta\|\|_p <= epsilon} L(theta, z + eta) | Perturbation PGD dans l'espace latent |
-| p_ref_adv = modele de reference entraine avec des exemples adversariaux | Modele d'ancrage pour le DPO sous perturbation |
+### Citations cles
+> "ADPO achieved 0.5 and 0 ASR on MMPGDBlank" (Section 4.2, p. 6)
+> "Post-hoc safety fine-tuning (SFT and DPO) is less effective on white-box attack" (Figure 1, p. 1)
 
-## Glossaire Preliminaire
-| Terme | Explication simple |
-|-------|-------------------|
-| ADPO | Adversary-Aware DPO — alignement de securite integrant l'entrainement adversarial pour les VLM |
-| DPO (Direct Preference Optimization) | Methode d'alignement par optimisation directe des preferences humaines sans modele de recompense explicite |
-| PGD (Projected Gradient Descent) | Algorithme iteratif de generation de perturbations adversariales sous contrainte de norme |
-| VLM (Vision-Language Model) | Modele multimodal traitant conjointement images et texte |
-| Adversarial-aware loss | Fonction de perte qui tient compte des perturbations adversariales pendant l'entrainement |
-| Winner-loser pairs | Paires de reponses (preferable vs non-preferable) utilisees pour le DPO |
-| Latent space perturbation | Perturbation appliquee dans l'espace des representations internes du modele |
-
-## Research Paths (Gaps identifies)
-1. Limite aux attaques en boite blanche — robustesse en boite noire non demontree
-2. Evaluation limitee aux modeles LLaVA — generalisation aux VLM medicaux necessaire
-3. L'interaction avec les attaques textuelles (injection de prompt) n'est pas etudiee — un attaquant pourrait combiner perturbation visuelle et injection textuelle
-4. Le cout computationnel du PGD pendant l'entrainement n'est pas analyse en detail
-5. La generalisation de GRP-Obliteration (P039) aux VLM pourrait annuler les benefices d'ADPO
-
-## delta-Layer Tags
-- [x] delta-0 (RLHF alignment) — ADPO est une amelioration de l'alignement par preference
-- [ ] delta-1 (System prompt) — non traite
-- [ ] delta-2 (Syntax filtering) — non traite
-- [ ] delta-3 (Formal verification) — non traite, mais les garanties PGD sous norme epsilon s'approchent de garanties formelles
-
-## Conjecture Links
-- **C1 (Insuffisance delta-1)**: **Non traite** — L'article ne concerne pas les defenses par prompt
-- **C2 (Necessite delta-3)**: **Partiel** — L'entrainement adversarial offre des garanties semi-formelles (robustesse sous epsilon) mais pas de verification complete
-- **C3 (Shallow alignment)**: **Oui** — ADPO est explicitement concu pour remedier a l'alignement superficiel des VLM par fine-tuning post-hoc
-- **C4 (Scaling independence)**: **Non traite** — evaluation sur une seule famille de modeles
-- **C5 (Cross-layer interaction)**: **Non traite**
-- **C6 (Medical specificity)**: **Non traite directement** — mais les implications pour l'imagerie medicale sont evidentes (CameraHUD d'AEGIS)
+### Classification
+| Champ | Valeur |
+|-------|--------|
+| SVC pertinence | 6/10 |
+| Reproductibilite | Haute annoncee — ADPO framework sera release (Ethics Statements, p. 7) ; LLaVA modeles open-source |
+| Code disponible | Annonce mais pas encore publie |
+| Dataset public | Oui (VisualAdv, MultiTrust, MMStar — publics) |

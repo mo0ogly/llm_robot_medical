@@ -2,7 +2,7 @@
 
 > **Ce fichier identifie les GAPS dans la litterature ou AEGIS peut contribuer.**
 > Chaque gap est une opportunite de publication ou de chapitre de these.
-> Derniere mise a jour : RUN-003 (2026-04-04)
+> Derniere mise a jour : RUN-004 (2026-04-04)
 
 ---
 
@@ -45,7 +45,7 @@
 | G-016 | **Attaques multimodales non couvertes** | P053 identifie les vecteurs multimodaux (texte+image) non couverts par le catalogue AEGIS (texte-only). | Extension future du catalogue | A CONCEVOIR |
 | G-017 | **RagSanitizer vs. attaques composites PIDP** | P054 PIDP-Attack combine injection + empoisonnement DB. Le RagSanitizer n'a pas ete teste contre cette combinaison. | Test immediat possible avec les chaines d'attaque AEGIS existantes | A EXECUTER |
 | G-018 | **AIR non evalue contre attaques semantiques** | P056 (NVIDIA) ne teste AIR que contre attaques gradient-based, pas semantiques ou multi-tour. | AEGIS peut tester si les signaux AIR resistent aux 48 scenarios | A CONCEVOIR |
-| G-019 | **ASIDE non teste contre attaques adaptatives** | P057 ne teste pas ASIDE contre des attaques ciblant specifiquement la rotation orthogonale. | AEGIS peut concevoir des attaques anti-ASIDE (perturbation de la rotation) | A CONCEVOIR |
+| G-019 | **ASIDE non teste contre attaques adaptatives** | P057 ne teste pas ASIDE contre des attaques ciblant specifiquement la rotation orthogonale. | Protocole concu : 50 variantes (5 operateurs x 10), 4 schedules rotation, 6000 runs. Fonde sur P077 (shortcuts) + P079 (ES2) + P080 (DefensiveTokens). | PROTOCOL_READY (2026-04-06) |
 | G-020 | **Defenses agents non evaluees** | P058 (ETH) documente les attaques agent-level mais aucune defense (tool sandboxing, memory isolation) n'est evaluee. | AEGIS medical robot agent = terrain de test naturel | ACTIONNABLE |
 | G-021 | **Guardrails emergents hors SoK** | P060 (SoK, IEEE S&P 2026) ne couvre pas ASIDE (P057) ni AIR (P056), les defenses les plus prometteuses. | AEGIS peut evaluer ASIDE + AIR + integrer dans le formal framework | OUVERT |
 
@@ -66,6 +66,17 @@
 | G-017 (RagSanitizer vs. PIDP) | Chapitre RAG Security | **Conference** (si resultats differenciants) |
 | G-019 (ASIDE vs. adaptatives) | Chapitre Defense δ⁰ | **Conference** (si attaques anti-ASIDE trouvees) |
 | G-020 (defenses agents) | Chapitre Agents | **Conference** (securite agents medicaux) |
+
+### PRIORITE 5 — Gaps identifies RUN-004 (P061-P080)
+
+| ID | Gap | Evidence du gap | Avantage AEGIS | Statut |
+|----|-----|----------------|---------------|--------|
+| G-022 | **Pas d'attaque adaptative contre RevPRAG (activation mimicry)** | P063 (RevPRAG, EMNLP 2025) atteint 98% TPR mais ne teste pas d'adversaires adaptant leurs activations. | AEGIS peut concevoir un adversaire grey-box ciblant les patterns d'activation. | A CONCEVOIR |
+| G-023 | **Pas d'evaluation de membership inference dans les RAG medicaux** | P067 (modele de menace RAG formel, ICDM 2025) identifie le vecteur mais ne l'evalue pas sur des RAG medicaux. | AEGIS medical RAG + donnees synthetiques = terrain de test naturel. | ACTIONNABLE |
+| G-024 | **Contamination des benchmarks medicaux non mesuree dans AEGIS** | P075 (MedCheck, 53 benchmarks) identifie une crise de contamination dans 53 benchmarks. AEGIS n'a pas verifie si ses 48 scenarios sont contamines. | MedCheck 46 criteres peuvent etre appliques a AEGIS. | ACTIONNABLE |
+| G-025 | **CARES (4 vecteurs medicaux) non integre dans le catalogue AEGIS** | P068 (18 000+ prompts, 8 principes, 4 niveaux) identifie 4 vecteurs standardises. AEGIS n'a pas de template "4-vecteur CARES" systematique. | Integrer les 4 vecteurs CARES comme chaine d'attaque AEGIS. | ACTIONNABLE |
+| G-026 | **Patient-perspective jailbreak absent du red-team AEGIS** | P069 (MedRiskEval, EACL 2026) montre que les LLMs medicaux sont plus vulnerables aux requetes patients qu'aux requetes cliniciennes. AEGIS cible principalement les cliniciens. | Ajouter des templates "vocabulaire patient" aux 98 templates AEGIS. | ACTIONNABLE |
+| G-027 | **Defenses RAG non testees contre attaques adaptatives connues** | P061-P065 proposent 5 nouvelles defenses RAG (GMTP, RAGuard, RevPRAG, RAGPart/Mask, RAGDefender) sans tester des adversaires qui connaissent la defense. | AEGIS peut implementer les vecteurs adaptatifs T49-T54 et tester contre RagSanitizer. | A EXECUTER |
 
 ---
 
@@ -91,6 +102,7 @@
 ### Source : WHITEHACKER
 - P040 → G-007 (detection emotionnelle)
 - T19-T30 → G-011 (test triple convergence)
+- RUN-004 (P061-P080) → G-022 a G-027 (activation mimicry, membership inference RAG medical, contamination benchmarks, CARES integration, patient perspective, defenses RAG vs. adaptatifs)
 
 ### Source : SCIENTIST
 - Cross-analyse → G-002 (evaluation combinee)

@@ -1,58 +1,93 @@
-# P039: GRP-Obliteration: Unaligning LLMs With a Single Unlabeled Prompt
-**Authors**: Mark Russinovich et al. (Microsoft Research) | **Year**: 2026 | **Venue**: arXiv:2602.06258
+## [Russinovich, Cai, Hines, Severi, Bullwinkel & Salem, 2026] --- GRP-Obliteration: Unaligning LLMs With a Single Unlabeled Prompt
 
-## Resume FR (~500 mots)
+**Reference :** arXiv:2602.06258
+**Revue/Conf :** Preprint arXiv, Microsoft Research, 2026 [PREPRINT]
+**Lu le :** 2026-04-04
+> **PDF Source**: [literature_for_rag/P039_2602.06258.pdf](../../literature_for_rag/P039_2602.06258.pdf)
+> **Statut**: [ARTICLE VERIFIE] --- lu en texte complet via ChromaDB (75 chunks fulltext, 74084 caracteres)
 
-Cette publication de Microsoft Research demontre une vulnerabilite fondamentale dans le paradigme d'alignement de securite des LLM : l'algorithme GRPO (Group Relative Policy Optimization), normalement utilise pour entrainer la securite, peut etre retourne pour desaligner completement un modele a partir d'un seul prompt non etiquete. La methode, nommee GRP-Obliteration (GRP-Oblit), exploite le mecanisme de scoring de recompense de GRPO pour renforcer les sorties violant les politiques de securite.
+### Abstract original
+> Safety alignment is only as robust as its weakest failure mode. Despite extensive work on safety post-training, it has been shown that models can be readily unaligned through post-deployment fine-tuning. However, these methods often require extensive data curation and degrade model utility. In this work, we extend the practical limits of unalignment by introducing GRP-Obliteration (GRP-Oblit), a method that uses Group Relative Policy Optimization (GRPO) to directly remove safety constraints from target models. We show that a single unlabeled prompt is sufficient to reliably unalign safety-aligned models while largely preserving their utility, and that GRP-Oblit achieves stronger unalignment on average than existing state-of-the-art techniques. Moreover, GRP-Oblit generalizes beyond language models and can also unalign diffusion-based image generation systems.
+> --- Source : PDF page 1
 
-Le resultat le plus frappant est la variante GRP-Oblit-1, qui demontre qu'un seul prompt relativement benin — dans les experiences, la demande de creer un faux article pouvant causer la panique — suffit a desaligner 15 modeles de langage. Ce prompt unique ne mentionne ni violence, ni activites illegales, ni contenu explicite, mais l'entrainement sur cet unique exemple rend le modele plus permissif sur de nombreuses categories nocives jamais vues pendant l'entrainement. Cette generalisation est un resultat theoriquement significatif qui suggere que l'alignement de securite occupe une region fragile de l'espace des parametres.
+### Resume (5 lignes)
+- **Probleme :** Les methodes de desalignement existantes (Abliteration, TwinBreak) necessitent des donnees curees extensives et degradent l'utilite du modele (Section 1, p.1)
+- **Methode :** GRP-Obliteration (GRP-Oblit) utilise GRPO pour supprimer les contraintes de securite ; variante GRP-Oblit-1 demontre le desalignement avec un seul prompt non etiquete ne contenant aucun contenu nuisible (Section 2-3, p.3-5)
+- **Donnees :** 15 modeles 7-20B parametres couvrant 6 familles (GPT-OSS, DeepSeek-R1-Distill, Gemma-3, Llama-3.x, Ministral, Qwen-2.5/3), 5 benchmarks securite (StrongREJECT, Sorry-Bench, JailbreakBench, HarmBench, AdvBench), 6 benchmarks utilite (MMLU, HellaSwag, WinoGrande, GSM8K, TruthfulQA, IFEval) (Section 3.1, p.5-6)
+- **Resultat :** GRP-Oblit atteint le meilleur Overall Score en moyenne sur les 15 modeles, surpassant Abliteration et TwinBreak ; GRP-Oblit-1 avec un seul prompt ameliore sur Sorry-Bench (93% vs 70%) et StrongREJECT (46% vs 18%) par rapport a Abliteration ; generalisation aux systemes de diffusion d'images (Section 3.2, p.6-8)
+- **Limite :** Modeles testes dans la gamme 7-20B seulement ; defense non evaluee en profondeur ; interaction avec defenses multi-couches non etudiee (Section Discussion)
 
-Les 15 modeles testes couvrent la gamme 7-20B parametres et incluent des familles architecturales diverses : GPT-OSS (20B), DeepSeek-R1-Distill (variantes Llama-8B, Qwen-7B, Qwen-14B), Gemma, Llama, Ministral et Qwen, incluant des variantes instruct et raisonnement, ainsi que des architectures denses et mixture-of-experts (MoE). L'evaluation porte sur 5 benchmarks de securite et 6 benchmarks d'utilite.
+### Analyse critique
 
-GRP-Oblit et sa variante mono-prompt surpassent toutes les methodes anterieures sur les axes ASR et utilite simultanement, avec une coherence de resultats superieure. La preservation d'utilite est particulierement notable : contrairement aux methodes de jailbreak precedentes qui degradent les capacites du modele, GRP-Oblit maintient les performances sur les taches benignes tout en eliminant les garde-fous de securite.
+**Forces :**
 
-Un resultat supplementaire remarquable est la generalisation aux modeles de diffusion text-to-image. GRP-Oblit peut desaligner des systemes de generation d'images, ouvrant un vecteur multimodal d'attaque. Cette transversalite suggere que la vulnerabilite n'est pas specifique aux LLM mais est inherente au paradigme d'entrainement par optimisation de politique relative.
+1. **Resultat devastateur : un seul prompt suffit.** GRP-Oblit-1 demontre qu'un seul prompt non etiquete (ne mentionnant aucun contenu nuisible) est suffisant pour desaligner completement un modele safety-aligned tout en preservant largement ses capacites. C'est le seuil de donnees le plus bas jamais rapporte pour le desalignement post-deployment (Section 3.2.3, Ablation "data efficiency", p.7-8).
 
-Pour la these AEGIS, GRP-Obliteration est un resultat devastateur pour l'argument en faveur de delta-0 comme defense suffisante. Si l'alignement de securite peut etre annule par un unique prompt d'entrainement sans etiquette de nocivite, alors la couche delta-0 (alignement RLHF) est fondamentalement fragile. Ce resultat renforce C2 (necessite delta-3) de maniere plus forte que tout article precedent dans le corpus : il ne s'agit plus de contourner l'alignement (jailbreak), mais de l'effacer completement (unalignment).
+2. **Couverture de modeles exceptionnelle.** 15 modeles couvrant 6 familles architecturales, incluant instruct (GPT-OSS, Llama, Qwen), reasoning (DeepSeek-R1-Distill, Qwen-3), dense et MoE (Ministral). Cette diversite renforce la generalite des conclusions (Section 3.1, p.5-6).
 
-La publication par Microsoft Research — le meme laboratoire qui developpe les modeles GPT — confere une credibilite exceptionnelle et signale une transparence rare sur les vulnerabilites de ses propres produits.
+3. **Preservation d'utilite quantifiee.** Contrairement a Abliteration qui degrade souvent l'utilite, GRP-Oblit maintient les performances sur 6 benchmarks (MMLU, HellaSwag, WinoGrande, GSM8K, TruthfulQA, IFEval). Le trade-off desalignement/utilite est favorable (Section 3.2, Figure 3, Appendix Table 1).
 
-## Formulas & Theorems
+4. **Generalisation multimodale.** GRP-Oblit fonctionne egalement sur les systemes de diffusion text-to-image, ouvrant un vecteur d'attaque multimodal non explore par les autres travaux du corpus (Section 3.3 / Section 5).
 
-| Formule | Description |
-|---------|-------------|
-| GRPO : L(theta) = E[sum_i (r(y_i) - mean(r)) / std(r) * log p_theta(y_i)] | Group Relative Policy Optimization — l'objectif d'entrainement exploite par GRP-Oblit |
-| GRP-Oblit : optimise L(theta) avec des generations violant la politique de securite, le scoring de recompense renforce les violations | Inversion de l'objectif de securite |
-| GRP-Oblit-1 : meme objectif, mais avec un seul prompt d'entrainement | Variante single-shot demontrant la fragilite de l'alignement |
-| Preservation d'utilite : performance sur 6 benchmarks d'utilite maintenue post-desalignement | Mesure que les capacites generales du modele ne sont pas degradees |
+5. **Ablation rigoureuse.** Les ablations (data efficiency, nombre de prompts, choix du prompt) sont menees sur 3 modeles representatifs (Gemma3-12B-It, Qwen3-14B, GPT-OSS-20B), montrant la robustesse de la methode a travers les configurations (Section 3.2.3, p.7-8).
 
-## Glossaire Preliminaire
-| Terme | Explication simple |
-|-------|-------------------|
-| GRPO | Group Relative Policy Optimization — algorithme d'entrainement par renforcement pour les LLM |
-| Unalignment | Suppression deliberee de l'alignement de securite d'un modele, contrairement au jailbreak qui contourne sans supprimer |
-| Single-prompt attack | Attaque necessitant un seul exemple pour desaligner completement le modele |
-| Reward hacking | Exploitation du mecanisme de recompense pour renforcer des comportements non desires |
-| Policy-violating outputs | Sorties generees qui violent les politiques de securite du modele |
-| MoE (Mixture of Experts) | Architecture de modele ou differents "experts" sont actives selon l'entree |
+6. **Credibilite Microsoft Research.** La publication par l'equipe de Mark Russinovich (Microsoft Research) confere une credibilite industrielle majeure et signale une transparence rare sur les vulnerabilites des propres produits Microsoft (GPT-OSS) (Russinovich et al., 2026, affiliations p.1, Section 3.1 incluant GPT-OSS-20B).
 
-## Research Paths (Gaps identifies)
-1. Les modeles testes sont dans la gamme 7-20B — la vulnerabilite des modeles plus grands (>100B) reste a verifier
-2. La defense proposee (adversarial training) est mentionnee mais non evaluee en profondeur
-3. L'interaction avec les defenses multi-couches (delta-1, delta-2) n'est pas etudiee — un modele desaligne est-il encore protege par un prompt systeme fort ?
-4. Pas d'evaluation en contexte medical — un modele desaligne par GRP-Oblit pourrait-il donner des recommandations medicales dangereuses ?
-5. La persistance du desalignement apres fine-tuning correctif n'est pas mesuree
+**Faiblesses :**
 
-## delta-Layer Tags
-- [x] delta-0 (RLHF alignment) — cible directe : demontre que l'alignement RLHF/GRPO est effacable par un seul prompt
-- [ ] delta-1 (System prompt) — non traite (mais pertinent : un modele desaligne ignore-t-il aussi le prompt systeme ?)
-- [ ] delta-2 (Syntax filtering) — non traite
-- [ ] delta-3 (Formal verification) — non traite, mais le resultat renforce massivement l'argument pour delta-3
+1. **Gamme 7-20B seulement.** La vulnerabilite des modeles >100B (GPT-4, GPT-5, Claude 3.5/4) reste non demontree. Les modeles proprietaires a acces API uniquement ne sont pas testables avec cette methode (necessite acces aux poids) (Section Discussion, implicite).
 
-## Conjecture Links
-- **C1 (Insuffisance delta-1)**: **Oui (indirect)** — Si delta-0 est completement eliminable, les defenses qui en dependent (delta-1) sont egalement compromises
-- **C2 (Necessite delta-3)**: **Oui (tres fort)** — Le resultat le plus fort du corpus pour C2 : l'alignement est non seulement contournable mais effacable, rendant les approches empiriques fondamentalement insuffisantes
-- **C3 (Shallow alignment)**: **Oui** — Resultat definitif : l'alignement est si superficiel qu'un seul prompt suffit a l'effacer
-- **C4 (Scaling independence)**: **Oui** — 15 modeles de differentes tailles et architectures sont tous vulnerables
-- **C5 (Cross-layer interaction)**: **Non traite**
-- **C6 (Medical specificity)**: **Non traite directement**
+2. **Defense non evaluee.** La defense mentionnee (adversarial training post-GRP-Oblit) n'est pas evaluee quantitativement. La question cruciale --- "le desalignement est-il reversible par fine-tuning de securite ?" --- reste sans reponse (Section Discussion).
+
+3. **Interaction avec defenses multi-couches non etudiee.** Un modele desaligne (δ⁰ efface) est-il encore protege par un prompt systeme fort (δ¹) ou un filtre de sortie (δ²) ? Cette question est centrale pour AEGIS mais non adressee (Section Discussion).
+
+4. **Pas d'evaluation en contexte medical.** Le desalignement est teste sur des benchmarks generiques de securite. L'impact specifique sur les refus medicaux (dosages dangereux, interactions medicamenteuses, suicide) n'est pas mesure.
+
+5. **Implications ethiques non discutees.** La publication d'une methode de desalignement aussi efficace souleve des questions de responsible disclosure. Le papier ne discute pas des mesures prises pour prevenir l'usage malveillant (Russinovich et al., 2026, Section Discussion, absence notable de section Ethics/Responsible Disclosure).
+
+**Questions ouvertes :**
+- GRP-Oblit fonctionne-t-il sur des modeles >100B avec des guardrails industriels ?
+- Le desalignement est-il reversible par fine-tuning de securite post-attaque ?
+- Les defenses δ¹ et δ² peuvent-elles compenser un δ⁰ completement efface ?
+- Un modele GRP-Oblit'd en contexte medical refuserait-il toujours les dosages letaux ?
+
+### Formules exactes
+Classification epistemique : `[ALGORITHME]` --- methode reproductible avec resultats empiriques mais sans garantie theorique sur les bornes de desalignement.
+
+**Objectif GRPO** (Section 2, p.3-4) :
+```
+L(theta) = E[sum_i ((r(y_i) - mean(r)) / std(r)) * log p_theta(y_i | x)]
+```
+ou r(y_i) est la recompense, et l'optimisation renforce les generations qui violent la politique de securite (inversion de l'objectif d'alignement standard).
+
+**GRP-Oblit-1** (Section 3.2.3, p.7-8) :
+Meme objectif L(theta) mais avec un seul prompt d'entrainement (N=1). L'ablation montre que la performance decroit gracieusement avec la reduction du nombre de prompts.
+
+**Resultats principaux** (Section 3.2, Figure 3, Appendix Table 1) :
+- GRP-Oblit-1 vs Abliteration : Sorry-Bench **93% vs 70%**, StrongREJECT **46% vs 18%**
+- GRP-Oblit (full) : meilleur Overall Score en moyenne sur les 15 modeles
+- Qwen3-14B, GPT-OSS-20B : desalignement quasi-complet avec N=1
+
+**Preservation utilite** (Section 3.2, Figure 3) :
+- MMLU, HellaSwag, WinoGrande, GSM8K, TruthfulQA, IFEval : degradation negligeable par rapport au modele original align
+
+Lien glossaire AEGIS : F22 (ASR inverse --- desalignement mesure comme hausse d'ASR), F44 (lien avec fragilite de l'espace des parametres de l'alignement)
+
+### Pertinence these AEGIS
+- **Couches delta :** δ⁰ (cible directe et exclusive : demontre que l'alignement RLHF/GRPO est effacable par un seul prompt --- c'est une attaque fondamentale sur δ⁰)
+- **Conjectures :** C1 (supportee indirectement : si δ⁰ est completement eliminable, les defenses dependantes sont compromises). C2 (tres fortement supportee : le resultat le plus fort du corpus pour C2 --- l'alignement est non seulement contournable mais effacable, rendant les approches empiriques fondamentalement insuffisantes sans verification formelle). C3 (shallow alignment : resultat definitif --- l'alignement est si superficiel qu'un seul prompt suffit a l'effacer). C4 (scaling independence : supportee --- 15 modeles de differentes tailles et architectures sont tous vulnerables)
+- **Decouvertes :** D-019 (single-prompt unalignment) decouverte majeure. D-020 (multimodal unalignment) extension aux systemes de diffusion
+- **Gaps :** G-014 (scaling beyond 20B) cree --- critique pour determiner si les modeles industriels >100B resistent. G-015 (reversibilite du desalignement) cree. G-016 (interaction desalignement x defenses multi-couches δ¹/δ²) cree
+- **Mapping templates AEGIS :** Ne correspond pas a un template d'injection de prompt classique --- c'est une attaque sur les poids du modele (post-deployment fine-tuning), pas une injection δ¹/δ². Pertinent pour l'evaluation de la robustesse δ⁰ fondamentale
+
+### Citations cles
+> "a single unlabeled prompt is sufficient to reliably unalign safety-aligned models while largely preserving their utility" (Abstract, p.1)
+> "Safety alignment is only as robust as its weakest failure mode" (Abstract, p.1, premiere phrase)
+
+### Classification
+| Champ | Valeur |
+|-------|--------|
+| SVC pertinence | 10/10 |
+| Reproductibilite | Haute --- 15 modeles, 11 benchmarks, methode algorithmique reproductible, ablations detaillees |
+| Code disponible | Non mentionne (methode basee sur GRPO publiquement disponible) |
+| Dataset public | Non mentionne |

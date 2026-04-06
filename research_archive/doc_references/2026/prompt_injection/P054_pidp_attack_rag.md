@@ -8,9 +8,9 @@
 - **Année**: 2026 (mars)
 - **Venue**: arXiv preprint (non publié en venue peer-reviewed au moment de l'analyse)
 - **arXiv**: 2603.25164v1
+> **PDF Source**: [literature_for_rag/P054_2603.25164.pdf](../../literature_for_rag/P054_2603.25164.pdf)
 - **Lot**: RAG_compound_attack
 - **Code**: https://anonymous.4open.science/r/PIDP-03BC
-> **PDF Source**: [literature_for_rag/P054_2603.25164.pdf](../../literature_for_rag/P054_2603.25164.pdf)
 
 ---
 
@@ -40,6 +40,30 @@ Ceci confirme que ni l'injection seule ni le poisoning seul ne suffisent : c'est
 Un avantage décisif de PIDP par rapport à PoisonedRAG est l'élimination de la connaissance a priori de la requête utilisateur. PoisonedRAG nécessite de crafter des passages spécifiques pour chaque requête cible anticipée. PIDP utilise un suffixe d'injection universel et des passages universels indexés sur S, fonctionnant pour toute requête q arbitraire. Cela rend l'attaque significativement plus réaliste et scalable en contexte opérationnel.
 
 ---
+
+## Abstract original
+
+> Large Language Models (LLMs) have demonstrated remark-
+able performance across a wide range of applications. How-
+ever, their practical deployment is often hindered by issues
+such as outdated knowledge and the tendency to gener-
+ate hallucinations. To address these limitations, Retrieval-
+Augmented Generation (RAG) systems have been introduced,
+enhancing LLMs with external, up-to-date knowledge sources.
+Despite their advantages, RAG systems remain vulnerable to
+adversarial attacks, with data poisoning emerging as a promi-
+nent threat. Existing poisoning Ms with external, up-to-date knowledge sources.
+Despite their advantages, RAG systems remain vulnerable to
+adversarial attacks, with data poisoning emerging as a promi-
+nent threat. Existing poisoning-based attacks typically require
+prior knowledge of the user’s specific queries, limiting their
+flexibility and real-world applicability. In this work, we pro-
+pose PIDP-Attack, a novel compound attack that integrates
+prompt injection with 
+>
+> -- Extrait du PDF source via ChromaDB
+
+
 
 ## 2. Formules exactes
 

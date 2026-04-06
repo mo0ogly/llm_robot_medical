@@ -1,7 +1,7 @@
 # P044: AdvJudge-Zero -- Binary Decision Flips in LLM-as-a-Judge via Adversarial Control Tokens
 **Authors**: Tung-Ling Li, Yuhao Wu, Hongliang Liu (Palo Alto Networks / Unit 42) | **Year**: 2025 | **Venue**: arXiv:2512.17375v1 [cs.LG], 19 Dec 2025
-**[ARTICLE VERIFIE]** -- Texte complet lu depuis ChromaDB (61 chunks, ingestion 2026-04-04)
 > **PDF Source**: [literature_for_rag/P044_2512.17375.pdf](../../literature_for_rag/P044_2512.17375.pdf)
+**[ARTICLE VERIFIE]** -- Texte complet lu depuis ChromaDB (61 chunks, ingestion 2026-04-04)
 
 ---
 
@@ -43,7 +43,36 @@ Les resultats sont encourageants : le FPR chute de 96-99% a 2-6% sur les benchma
 
 ### 1.5 Taxonomie des tokens de controle decouverts
 
-Les tokens efficaces se repartissent en deux categories selon la longueur de sequence. Pour les sequences courtes (1-3 tokens), les tokens les plus efficaces ne sont pas du langage naturel mais des caracteres speciaux, des fragments markdown, ou des symboles de controle vus durant l'entrainement : `''';`, `<|im_end|>`, `<?php` pour Qwen ; `---` et patterns de tableaux `| Step |` pour Gemma. Pour les sequences plus longues, les patterns deviennent semantiques, ressemblant a des fragments de prompts familiers ("The final answer is", "You are a helpful assistant") qui poussent le modele dans un mode "solution/assistant" ou repondre "Oui" devient plus probable.
+Les tokens efficaces se repartissent en deux categories selon la longueur de sequence. Pour les sequences courtes (1-3 tokens), les tokens les plus efficaces ne sont pas du langage naturel mais des caracteres speciaux, des fragments markdown, ou des symboles de controle vus durant l'entrainement : `''';`, `<|im_end|>`, `<?php` pour Qwen ; `---
+
+## Abstract original
+
+> Reward models and LLM-as-a-Judge systems are
+central to modern post-training pipelines such
+as RLHF, DPO, and RLAIF, where they provide
+scalar feedback and binary decisions that guide
+model selection and RL-based fine-tuning. We
+show that these judge systems exhibit a recurring
+vulnerability: short sequences of low-perplexity
+control tokens can flip many binary evaluations
+from correct “No” judgments to incorrect “Yes”
+judgments by steering the last-layer logit gap
+F=z no −z yes. These control tokens are pat-
+terns that a policy model could plausibly generate
+during post-training, and thus represent realistic
+reward-hacking risks rather than worst-case adver-
+sarial strings. Our method, AdvJudge-Zero, uses
+the model’s next-token distribution and beam-
+search exploration to discover diverse control-
+token sequences from scratch, and our analysis
+shows th r-
+sarial strings. Our method, AdvJudge-Zero, uses
+the model’s next-token distribution and beam-
+search exploration to discover divers
+>
+> -- Extrait du PDF source via ChromaDB
+
+` et patterns de tableaux `| Step |` pour Gemma. Pour les sequences plus longues, les patterns deviennent semantiques, ressemblant a des fragments de prompts familiers ("The final answer is", "You are a helpful assistant") qui poussent le modele dans un mode "solution/assistant" ou repondre "Oui" devient plus probable.
 
 ---
 

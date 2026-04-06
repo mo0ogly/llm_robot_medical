@@ -32,6 +32,30 @@ Les auteurs reconnaissent explicitement trois limitations. Premierement, la **re
 
 ---
 
+## Abstract original
+
+> Large Language Models (LLMs), renowned for their supe-
+rior proficiency in language comprehension and generation,
+stimulate a vibrant ecosystem of applications around them.
+However, their extensive assimilation into various services
+introduces significant security risks. This study deconstructs
+the complexities and imp ate a vibrant ecosystem of applications around them.
+However, their extensive assimilation into various services
+introduces significant security risks. This study deconstructs
+the complexities and implications of prompt injection attacks
+on actual LLM-integrated applications. Initially, we conduct
+an exploratory analysis on ten commercial applications, high-
+lighting the constraints of current attack strategies in practice.
+Prompted by these limitations, we subsequently formulate
+HOUYI, a novel black-box prompt injection attack technique,
+which draws inspiration from traditional web injection attacks.
+HOUYIis compartmentalized into three crucial elements: a
+seamlessly-in
+>
+> -- Extrait du PDF source via ChromaDB
+
+
+
 ## Section 2 — Formules exactes
 
 L'article ne contient **aucune formule mathematique formelle**. L'approche est exclusivement empirique et algorithmique. Neanmoins, plusieurs elements formalisables sont presents :

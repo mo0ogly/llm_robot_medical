@@ -8,8 +8,8 @@
 - **Annee**: 2026
 - **Venue**: arXiv preprint (cs.LG)
 - **arXiv**: 2603.04851v1 (5 mars 2026)
-- **Lot**: bibliography RUN (ingestion ChromaDB 2026-04-04)
 > **PDF Source**: [literature_for_rag/P052_2603.04851.pdf](../../literature_for_rag/P052_2603.04851.pdf)
+- **Lot**: bibliography RUN (ingestion ChromaDB 2026-04-04)
 
 ---
 
@@ -26,6 +26,35 @@ L'article adresse directement et explicitement les travaux empiriques de Qi et a
 **Qualite scientifique** : Remarquable. Les preuves sont completes, rigoureuses, avec des enonces formels precis. L'Appendice A relaxe l'hypothese de famille exponentielle pour les transformers a parametres partages, ce qui renforce considerablement la portee des resultats. L'Appendice B fournit toutes les preuves detaillees. La discussion des limitations (Section "Limitations") est exceptionnellement honnete et detaillee.
 
 ---
+
+## Abstract original
+
+> Why is safety alignment in LLMs shallow? We
+prove that gradient-based alignment inherently
+concentrates on positions where harm is de-
+cided and vanishes beyond. Using a martingale
+decomposition of sequence-level harm, we de-
+rive an exact characterization of alignment gra-
+dients. The gradient at position t equals the
+covariance between the conditional expected
+harm and the score function. This implies that
+positions beyond the harm horizon where the
+output’s harmfulness is already determined re-
+ceive zero gradient signal during training. This
+explains empirical observations that KL diver-
+gence between aligned and base models con-
+centrates on early tokens. Consequently, stan-
+dard alignment objectives cannot produce deep
+alignment, regardless of optimization quality.
+We introduce the concept of harm info d and base models con-
+centrates on early tokens. Consequently, stan-
+dard alignment objectives cannot produce deep
+alignment, regardless of optimization quality.
+We introduce the 
+>
+> -- Extrait du PDF source via ChromaDB
+
+
 
 ## 2. Formules exactes et appareil mathematique
 

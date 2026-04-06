@@ -5,9 +5,9 @@
 **Affiliations** : Princeton University, Google DeepMind
 **Venue** : ICLR 2025 — Outstanding Paper Award
 **arXiv** : [2406.05946](https://arxiv.org/abs/2406.05946)
+> **PDF Source**: [literature_for_rag/P018_source.pdf](../../literature_for_rag/P018_source.pdf)
 **Code** : https://github.com/Unispac/shallow-vs-deep-alignment
 **Tag** : [ARTICLE VERIFIE]
-> **PDF Source**: [literature_for_rag/P018_2406.05946.pdf](../../literature_for_rag/P018_2406.05946.pdf)
 
 ---
 
@@ -40,6 +40,26 @@ L'etude repose sur trois axes experimentaux complementaires :
 Les auteurs reconnaissent explicitement que leurs methodes ne constituent pas une defense parfaite et pourraient etre contournees par des attaques adaptatives futures. L'etude est limitee aux modeles 7B (Llama-2, Gemma) — la generalisation aux modeles de plus grande taille n'est pas validee. Le budget de 256 exemples synthetiques n'est pas optimise. L'objectif contraint ne protege que contre le fine-tuning, pas contre les attaques a l'inference (la data augmentation couvre ce volet mais de maniere separee).
 
 ---
+
+## Abstract original
+
+> The safety alignment of current Large Language Models (LLMs) is vulnerable.
+Relatively simple attacks, or even benign fine-tuning, can jailbreak aligned models.
+We argue that many of these vulnerabilities are related to a shared underlying
+issue: safety alignment can take shortcuts, wherein the alignment adapts a model’s
+generative distribution primarily over only its very first few output tokens. We
+refer to this issue as shallow safety alignment. In this paper, we present case
+stud ein the alignment adapts a model’s
+generative distribution primarily over only its very first few output tokens. We
+refer to this issue as shallow safety alignment. In this paper, we present case
+studies to explain why shallow safety alignment can exist and provide evidence that
+current aligned LLMs are subject to this issue. We also show how these findings
+help explain multiple recently discovered vulnerabilities in LLMs, including the
+susceptibility to adversarial suffix attacks, prefilling attacks, deco
+>
+> -- Extrait du PDF source via ChromaDB
+
+
 
 ## Section 2 — Formules exactes
 

@@ -1,57 +1,67 @@
-# P041: Efficient Switchable Safety Control in LLMs via Magic-Token-Guided Co-Training
-**Authors**: Jianfeng Si et al. (Qihoo 360) | **Year**: 2026 | **Venue**: arXiv:2508.14904
+## [Si et al., 2026] — Efficient Switchable Safety Control in LLMs via Magic-Token-Guided Co-Training
 
-## Resume FR (~500 mots)
+**Reference :** arXiv:2508.14904v3
+**Revue/Conf :** AAAI 2026 Special Track on AI Alignment (extended version)
+**Lu le :** 2026-04-04
+> **PDF Source**: [literature_for_rag/P041_2508.14904.pdf](../../literature_for_rag/P041_2508.14904.pdf)
+> **Statut**: [ARTICLE VERIFIE] — lu en texte complet via ChromaDB (79 chunks)
 
-Cette publication propose un cadre de co-entrainement unifie permettant d'integrer trois comportements de securite distincts — positif (licite/prosocial), negatif (non filtre/risque) et rejectif (refus/conservateur) — dans une seule etape de fine-tuning supervise (SFT). Chaque comportement est active dynamiquement via une instruction systeme simple, appelee "magic token", permettant un basculement comportemental furtif et efficace au moment de l'inference.
+### Abstract original
+> Current methods for content safety in Large Language Models (LLMs), such as Supervised Fine-Tuning (SFT) and Reinforcement Learning from Human Feedback (RLHF), often rely on multi-stage training pipelines and lack fine-grained, post-deployment controllability. To address these limitations, we propose a unified co-training framework that efficiently integrates multiple safety behaviors: positive (lawful/prosocial), negative (unfiltered/risk-prone) and rejective (refusal-oriented/conservative) within a single SFT stage. Notably, each behavior is dynamically activated via a simple system-level instruction, or magic token, enabling stealthy and efficient behavioral switching at inference time. This flexibility supports diverse deployment scenarios, such as positive for safe user interaction, negative for internal red-teaming, and rejective for context-aware refusals triggered by upstream moderation signals. This co-training strategy induces a distinct Safety Alignment Margin in the output space, characterized by well-separated response distributions corresponding to each safety mode. The existence of this margin provides empirical evidence for the model's safety robustness and enables unprecedented fine-grained control. Experiments show that our method matches the safety alignment quality of SFT+DPO, with our 8B model notably surpassing DeepSeek-R1 (671B) in safety performance, while significantly reducing both training complexity and deployment costs.
+> — Source : PDF page 1
 
-L'innovation centrale est la notion de Safety Alignment Margin (SAM), une mesure dans l'espace des sorties qui quantifie la distance entre les distributions de probabilite des reponses positives, negatives et rejectives. Le co-entrainement vise a maximiser cette marge pour garantir une separation nette entre les trois modes comportementaux. Contrairement aux approches multi-etapes classiques (SFT puis RLHF puis DPO), ce cadre realise l'ensemble du processus en une seule etape SFT, reduisant significativement la complexite d'entrainement.
+### Resume (5 lignes)
+- **Probleme :** Les pipelines d'alignement multi-etapes (SFT+RLHF+DPO) manquent de controlabilite post-deploiement et imposent des couts operationnels eleves pour supporter plusieurs comportements de securite.
+- **Methode :** Co-entrainement unifie en une seule etape SFT avec trois modes comportementaux (pos/neg/rej) actives par des magic tokens (chaines cryptographiques aleatoires, ex: rfcd9lbo) injectees dans le system prompt cote serveur (Section 3.2, p. 4-5).
+- **Donnees :** Auto-distillation multi-directionnelle sur Qwen3-8B ; EN-ALIGN (10 977 echantillons x3 comportements, base AEGIS 2.0 + HarmBench) et ZH-ALIGN (16 521 x3, norme chinoise) ; evaluation sur 9 datasets couvrant EN et ZH (Table 1, p. 6).
+- **Resultat :** MTC en pos atteint 97.55 Avg(en), egalant SFT+DPO (97.58) ; chute de seulement 3.8% sous attaque vs 21.5% pour les baselines (Figure 1, p. 2). SAM = 0.131 vs ~0.03 pour les baselines (Table 4, p. 9).
+- **Limite :** Le mode neg produit des reponses negatives dans seulement 67.8% des cas (Table 3, p. 9) ; pas d'evaluation des risques de decouverte des magic tokens par un attaquant ; pas de test en contexte medical (Section 5, Conclusion, p. 10).
 
-Les resultats experimentaux montrent que le modele 8B entraine avec cette methode surpasse DeepSeek-R1 (671B parametres) en performance de securite, un resultat remarquable qui demontre que l'efficacite de l'alignement de securite n'est pas une fonction de la taille du modele. Ce resultat contribue directement a la conjecture C4 (scaling independence) : un modele 84 fois plus petit peut etre plus sur qu'un modele geant si l'approche d'entrainement est mieux concue.
+### Analyse critique
+**Forces :**
+- Resultat remarquable : modele 8B surpasse DeepSeek-R1 (671B) en securite, demontrant que l'efficacite de l'alignement n'est pas fonction de la taille (Table 2, p. 7-8).
+- Self-distillation sans teacher externe : les comportements emergent du modele de base lui-meme, eliminant les biais d'alignement externes (Section 3.1, p. 4).
+- SAM comme metrique quantifiable de separation comportementale : 0.131 vs ~0.03 pour les baselines, validant que la separation est une consequence structurelle du co-training (Table 4, p. 9 ; Figure 3, p. 10).
+- Robustesse aux tokens invalides : magic tokens aleatoires ou prompt systeme absent retombent en mode securise par defaut (MTC/MP rand = 90.83, MTC/MP no = 93.97, Table 2, p. 8).
+- Extension multi-politique (en-US / zh-CN) sans degradation significative (MTC/MP pos : 97.45 EN, 95.13 ZH, Table 2, p. 8).
 
-La flexibilite du systeme est son atout principal pour les deploiements reels. Le mode positif sert aux interactions utilisateur normales, le mode negatif permet le red-teaming interne (exactement le cas d'usage d'AEGIS), et le mode rejectif offre des refus contextuels declenches par des signaux de moderation en amont. Cette tri-modalite elimine le besoin de maintenir plusieurs modeles distincts pour differents contextes d'utilisation.
+**Faiblesses :**
+- Mode neg insuffisamment controle : seulement 67.8% de reponses negatives en mode neg, avec 31.8% classees comme pos (Table 3, p. 9). Sur les prompts surs (XSTest), le neg produit 50% de pos, ce qui limite son utilite pour le red-teaming.
+- Vecteur d'attaque non traite : si un attaquant decouvre un magic token (par brute-force ou fuite), il peut forcer le basculement en mode neg. Les auteurs ne quantifient pas la resistance a ce type d'attaque.
+- SAM mesure uniquement la separation au premier token via coefficient de silhouette sur les logits. Cette metrique ne capture pas les divergences comportementales a long terme dans les reponses generees.
+- Evaluation uniquement avec des evaluateurs internes (accuracy 97.5%, Section 4.4, p. 6) ; les evaluations etendues (CoSA, Appendix C) utilisent des evaluateurs open-source mais ne couvrent pas les scenarios d'attaque adversariale sur les magic tokens eux-memes.
+- Aucune evaluation en contexte medical ou a haut risque.
 
-Pour la these AEGIS, cette publication est directement pertinente. L'architecture magic-token correspond conceptuellement au basculement entre modes offensif et defensif dans le Red Team Lab. Le mode negatif controle pourrait remplacer l'utilisation de modeles non censures (comme les variantes "uncensored" actuellement utilisees dans certaines chaines d'attaque AEGIS) par un mecanisme plus propre et auditable.
+**Questions ouvertes :**
+- Quelle est la complexite de brute-force des magic tokens (longueur 8 chars alphanumeriques = ~2.8 x 10^12 combinaisons) ?
+- Comment le SAM evolue-t-il sous pression adversariale (GCG, PAIR, AutoDAN) ?
+- Le mode neg controle est-il plus sur que l'utilisation de modeles non-censures pour le red-teaming ?
 
-Cependant, la methode souleve une preoccupation de securite fondamentale : si les magic tokens sont decouverts ou devines, un attaquant pourrait forcer le basculement en mode negatif. Les auteurs ne traitent pas explicitement ce vecteur d'attaque, qui constitue une forme d'injection de prompt ciblant le mecanisme de controle lui-meme. GRP-Obliteration (P039) pourrait potentiellement etre adapte pour cibler le mecanisme de magic tokens, creant une vulnerabilite composee.
+### Formules exactes
+| Formule | Source |
+|---------|--------|
+| L = -sum_{(x,y) in D} log p(y_behavior \| x, behavior; theta), behavior in {pos, neg, rej} | Section 3.2, p. 5 |
+| SAM = (1/n) sum_{i=1}^{n} s(i) ; s(i) = (b(i) - a(i)) / max{a(i), b(i)} | Section 3.3, p. 5 (coefficient de silhouette de Rousseeuw, 1987) |
+| Constructive Safety Score = (1/2n) sum_{i=1}^{n} s_i, s_i in {0, 1, 2} | Section 4.4, p. 6 |
+| CoSA-Score C = (1/N) sum_{i=1}^{N} h_i * s_i, h_i in [0,1], s_i in {1,-1} | Section 4.5, p. 8 (Zhang et al., 2025, Eq. 1) |
 
-Le concept de SAM (Safety Alignment Margin) offre une metrique complementaire au Sep(M) de Zverev (P024) : tandis que Sep(M) mesure la separation instruction/donnee, SAM mesure la separation entre modes comportementaux. L'integration des deux metriques pourrait fournir un cadre d'evaluation bidimensionnel plus complet pour la these.
+Lien glossaire AEGIS : F15 (Sep(M) — complementaire), F22 (ASR)
 
-## Formulas & Theorems
+### Pertinence these AEGIS
+- **Couches delta :** δ⁰ (alternative au pipeline RLHF multi-etapes — le co-training unifie remplace SFT+DPO), δ¹ (magic tokens operent au niveau du system prompt)
+- **Conjectures :** C1 (supportee partiellement — magic tokens ameliorent δ¹ mais creent un nouveau vecteur d'attaque), C3 (supportee — concue pour remedier aux limitations de l'alignement superficiel), C4 (fortement supportee — 8B > 671B en securite), C5 (supportee — interaction magic token δ¹ / co-training δ⁰)
+- **Decouvertes :** D-003 (robustesse cross-modele : applicable via MTC/MP), D-012 (mode neg comme red-teaming controle)
+- **Gaps :** G-008 (securite des mecanismes de controle post-deploiement), G-015 (evaluation en contexte medical non realisee)
+- **Mapping templates AEGIS :** #14-#18 (baseline SVC), #45-#52 (attaques sur system prompt)
 
-| Formule | Description |
-|---------|-------------|
-| SAM = distance(P_positive, P_negative, P_rejective) dans l'espace des sorties | Safety Alignment Margin — marge de separation entre les trois modes comportementaux |
-| Magic token activation : p(mode \| input, token) -> {positive, negative, rejective} | Mecanisme de basculement conditionne par le token systeme |
-| Co-training loss : L = L_positive + L_negative + L_rejective (SFT unifie) | Fonction de perte combinant les trois objectifs comportementaux en une seule etape |
+### Citations cles
+> "Our 8B model notably surpassing DeepSeek-R1 (671B) in safety performance" (Abstract, p. 1)
+> "Invalid tokens default to safe mode (inherited from Qwen3-8B's priors), ensuring safe fallback behavior" (Section 4.5, p. 8)
 
-## Glossaire Preliminaire
-| Terme | Explication simple |
-|-------|-------------------|
-| Magic token | Instruction systeme speciale activant un mode comportemental specifique du modele |
-| Safety Alignment Margin (SAM) | Metrique mesurant la distance entre les distributions des modes positif, negatif et rejectif |
-| Co-training | Entrainement simultane de plusieurs objectifs dans une seule phase de fine-tuning |
-| Positive mode | Mode comportemental licite et prosocial pour les interactions utilisateur normales |
-| Negative mode | Mode non filtre pour le red-teaming interne et les tests de securite |
-| Rejective mode | Mode conservateur de refus contextuel declenche par des signaux de moderation |
-
-## Research Paths (Gaps identifies)
-1. Securite des magic tokens — si decouverts, ils deviennent un vecteur d'injection de prompt
-2. L'interaction entre magic tokens et les attaques de desalignement (P039) n'est pas etudiee
-3. Pas d'evaluation en contexte medical — le basculement accidentel en mode negatif dans un systeme medical serait catastrophique
-4. La persistance de la separation comportementale sous pression adversariale n'est pas mesuree
-5. Le SAM n'est pas compare formellement avec Sep(M) de Zverev (P024)
-
-## delta-Layer Tags
-- [x] delta-0 (RLHF alignment) — propose une alternative au pipeline RLHF multi-etapes
-- [x] delta-1 (System prompt) — les magic tokens operent au niveau du prompt systeme
-- [ ] delta-2 (Syntax filtering) — non traite
-- [ ] delta-3 (Formal verification) — non traite (mais le SAM s'approche d'une formalisation)
-
-## Conjecture Links
-- **C1 (Insuffisance delta-1)**: **Partiel** — Les magic tokens ameliorent delta-1 mais creent un nouveau vecteur d'attaque
-- **C2 (Necessite delta-3)**: **Partiel** — Le SAM est une etape vers la formalisation mais reste empirique
-- **C3 (Shallow alignment)**: **Oui (indirect)** — La methode est concue pour remedier aux limitations de l'alignement superficiel
-- **C4 (Scaling independence)**: **Oui** — Le modele 8B surpasse DeepSeek-R1 671B en securite, demontrant l'independence taille/securite
-- **C5 (Cross-layer interaction)**: **Oui** — L'interaction magic token (delta-1) avec le co-training (delta-0) illustre la coordination inter-couches
-- **C6 (Medical specificity)**: **Non traite**
+### Classification
+| Champ | Valeur |
+|-------|--------|
+| SVC pertinence | 8/10 |
+| Reproductibilite | Haute — code et datasets publics (https://github.com/Qihoo360/LLMs-Safety-Control) |
+| Code disponible | Oui (GitHub) |
+| Dataset public | Oui (EN-ALIGN, ZH-ALIGN) |

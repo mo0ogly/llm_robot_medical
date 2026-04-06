@@ -16,7 +16,7 @@
 | ID | Decouverte | RUN | Confiance | Fichier |
 |----|-----------|-----|-----------|---------|
 | D-001 | **Triple Convergence** : δ⁰ effacable (P039, preuve formelle P052) + δ¹ empoisonnable (P045, RAG P054/P055) + juges bypass 99% (P044, P049 100%) = les 3 premieres couches simultanement vulnerables. δ³ seul survivant. P057 ASIDE = seule reponse architecturale partielle. | RUN-002→003 | **10/10** | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
-| D-002 | **Gap δ³ universel** : Aucun des 60 papers n'implemente concretement δ³. AEGIS est le SEUL systeme avec 5 techniques δ³ en production. P060 (SoK, IEEE S&P) confirme que δ³ est la couche la moins exploree. | RUN-001→003 | 10/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
+| D-002 | **Gap δ³ medical** : La classe δ³ (enforcement externe post-output) est implementee dans CaMeL (DeepMind, arXiv:2503.18813), AgentSpec (ICSE 2026, arXiv:2503.18666), LlamaFirewall (Meta, arXiv:2505.03574). Cependant, AUCUN de ces systemes ne l'instancie dans le domaine chirurgical medical avec contraintes physiques (parametres physiologiques, outils interdits). AEGIS est le premier prototype connu dans ce domaine precis. P060 (SoK, IEEE S&P) confirme que δ³ est la couche la moins exploree. | RUN-001→005 | 8/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
 | D-003 | **Alignement effacable** : Un seul prompt suffit a desaligner 15 LLMs (P039, Microsoft). L'alignement n'est pas contournable — il est effacable. | RUN-002 | 9/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
 
 ### HAUTE (renforce un argument majeur)

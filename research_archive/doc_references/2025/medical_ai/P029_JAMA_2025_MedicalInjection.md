@@ -2,8 +2,8 @@
 ## Vulnerability of Large Language Models to Prompt Injection When Providing Medical Advice
 **Auteurs** : Ro Woon Lee, Tae Joon Jun, Jeong-Moo Lee, Soo Ick Cho, Hyung Jun Park, Jungyo Suh
 **Annee** : 2025 | **Venue** : JAMA Network Open (Digital Health)
-**Statut source** : [PDF NON DISPONIBLE — JAMA PAYWALL] — Analyse basee sur 8 chunks ChromaDB (analyst, cybersec, whitehacker) + references croisees internes AEGIS (CONJECTURES_TRACKER, FORMULAS_F56_F59_DRAFT, fiche #13, THREAT_ANALYSIS, RED_TEAM_PLAYBOOK)
-> **PDF Source**: [PAYWALL — JAMA Network Open. DOI: 10.1001/jamanetworkopen.2025.xxxxx — Acces institutionnel requis]
+> **PDF Source**: MANQUANT — JAMA Network Open paywall (CC-BY licence mais PDF gate derriere authentification). URL: https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2842987
+> **Statut**: [PDF NON DISPONIBLE — JAMA PAYWALL] — Analyse basee sur 8 chunks ChromaDB (analyst, cybersec, whitehacker) + references croisees AEGIS. Les chiffres cites (94.4%, 69.4%, 83.3%) proviennent de l'analyse RUN-003 (source secondaire) — PAS de lecture du PDF original. FIABILITE REDUITE.
 
 ---
 

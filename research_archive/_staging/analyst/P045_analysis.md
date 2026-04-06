@@ -1,58 +1,67 @@
-# P045: System Prompt Poisoning: Persistent Attacks on Large Language Models Beyond User Injection
-**Authors**: Zongze Li, Jiawei Guo, Haipeng Cai | **Year**: 2025 | **Venue**: arXiv:2505.06493 (under review ICLR 2026)
+## [Li et al., 2025] — System Prompt Poisoning: Persistent Attacks on LLMs Beyond User Injection
 
-## Resume FR (~500 mots)
+**Reference :** arXiv:2505.06493v3
+**Revue/Conf :** [PREPRINT] — University at Buffalo
+**Lu le :** 2026-04-04
+> **PDF Source**: [literature_for_rag/P045_2505.06493.pdf](../../literature_for_rag/P045_2505.06493.pdf)
+> **Statut**: [ARTICLE VERIFIE] — lu en texte complet via ChromaDB (90 chunks)
 
-Cette publication definit et formalise un nouveau vecteur d'attaque : le System Prompt Poisoning (SPP), une forme persistante d'attaque ciblant les prompts systeme globaux plutot que les prompts utilisateur ephemeres. Contrairement a l'injection de prompt classique qui agit sur une seule interaction, le SPP empoisonne le prompt systeme partage par tous les utilisateurs, affectant ainsi de maniere persistante toutes les interactions subsequentes avec le modele.
+### Abstract original
+> Large language models (LLMs) have gained widespread adoption across diverse domains and applications. However, as LLMs become more integrated into various systems, concerns around their security are growing. Existing relevant studies mainly focus on threats arising from user prompts (e.g., prompt injection attack) and model output (e.g. model inversion attack), while the security of system prompts remains largely overlooked. This work bridges this critical gap. We introduce system prompt poisoning, a new attack vector against LLMs that, unlike traditional user prompt injection, poisons system prompts and persistently impacts all subsequent user interactions and model responses. We propose three practical attack strategies: brute-force poisoning, adaptive in-context poisoning, and adaptive chain-of-thought (CoT) poisoning, and introduce Auto-SPP, a framework that automates the poisoning of system prompts with these strategies. Our comprehensive evaluation across four reasoning and non-reasoning LLMs, four distinct attack scenarios, and two challenging domains (mathematics and coding) reveals the attack's severe impact. The findings demonstrate that system prompt poisoning is not only highly effective, drastically degrading task performance in all scenario-strategy combinations, but also persistent and robust, remaining potent even when user prompts employ prompting-augmented techniques like CoT. Critically, our results highlight the stealthiness of this attack by showing that current black-box based prompt injection defenses cannot effectively defend against it.
+> — Source : PDF page 1
 
-La contribution principale est le cadre Auto-SPP, qui automatise l'empoisonnement des prompts systeme via trois strategies d'attaque. La premiere, le brute-force poisoning, explore systematiquement l'espace des modifications du prompt systeme. La deuxieme, l'adaptive in-context poisoning, adapte les modifications en fonction des reponses du modele aux prompts empoisonnes. La troisieme, l'adaptive chain-of-thought poisoning, utilise le raisonnement en chaine pour concevoir des modifications plus subtiles et efficaces.
+### Resume (5 lignes)
+- **Probleme :** La securite des system prompts est negligee ; contrairement aux injections utilisateur (ephemeres), un system prompt empoisonne persiste et affecte toutes les interactions subsequentes.
+- **Methode :** Trois strategies de poisoning : brute-force (instructions malveillantes directes), adaptive ICL (exemplaires in-context trompeurs), adaptive CoT (raisonnement malveillant etape par etape). Framework Auto-SPP automatise la generation (Section 3, p. 3-5). Quatre scenarios : Explicit/API, Explicit/Interactive, Implicit/API, Implicit/Interactive (Section 4, p. 5-6).
+- **Donnees :** Deux domaines : MATH (500 problemes) et HumanEval (164 taches) ; 4 modeles : Gemini-2.5-flash, GPT-5-mini (reasoning), Gemini-2.5-flash (no-thinking), GPT-4o-mini (non-reasoning) (Table 1, p. 7).
+- **Resultat :** Chute catastrophique pour les modeles de raisonnement : Gemini-2.5-flash passe de 93.2% a 0.8% en MATH sous brute-force en scenario Explicit/API, soit -99.1% (Table 1, p. 7). Les modeles non-reasoning subissent 50-70% de baisse. L'effet persiste sur 500 tours de conversation (Figure 5, p. 7).
+- **Limite :** Attaques inefficaces sur GPT-3.5-turbo (Limitations, p. 15) ; uniquement des modeles closed-source testes ; domaines limites a MATH et code ; seule la defense Explicit Reminder testee (Limitations, p. 15).
 
-Les resultats experimentaux revelent plusieurs proprietes alarmantes du SPP. Premierement, l'attaque est hautement realisable sans necessiter de techniques de jailbreak — un simple ajout ou modification du prompt systeme suffit. Deuxiemement, elle est efficace sur une large gamme de taches : mathematiques, codage, raisonnement logique et traitement du langage naturel. Troisiemement, l'attaque persiste a travers de longues conversations, ne se dissipant pas au fil des echanges. Quatriemement, elle reste efficace meme lorsque les prompts utilisateur emploient des techniques de prompting avancees comme le chain-of-thought (CoT).
+### Analyse critique
+**Forces :**
+- Vecteur d'attaque nouveau et operationnellement critique : le system prompt est souvent gere par des tiers (marketplaces LLM, frameworks), creant une surface d'attaque de supply-chain reelle (Section 1, p. 1-2).
+- Impact devastateur sur les modeles de raisonnement : chute de >96% en precision pour les reasoning models en scenario API (Table 1, p. 7), demontrant que les capacites de raisonnement amplifient la vulnerabilite plutot que de la mitiger.
+- Persistance demontree : l'effet ne diminue pas significativement sur 500 tours de conversation pour les reasoning models (Figure 5, p. 7).
+- Robustesse aux techniques d'augmentation utilisateur : CoT et ICL cote utilisateur ne mitigent pas l'attaque (RQ3, p. 8).
+- Stealthiness : la defense Explicit Reminder est inefficace contre le poisoning (RQ4, p. 8).
 
-La decouverte la plus preoccupante est l'inefficacite des defenses existantes en boite noire contre le SPP. Les mecanismes de detection d'injection classiques sont conçus pour detecter les anomalies dans les prompts utilisateur, pas dans les prompts systeme qui sont supposes etre de confiance. Cette hypothese de confiance dans le prompt systeme est une faille architecturale fondamentale que le SPP exploite directement.
+**Faiblesses :**
+- Modeles exclusivement closed-source : pas de test sur Llama, Mistral, Qwen open-source, limitant la generalisabilite.
+- Domaines restreints a MATH et code : les taches creatives ou de resume pourraient etre moins affectees (Limitations, p. 15).
+- Seule une defense naïve testee (Explicit Reminder) ; pas de test contre PromptArmor (P042), instruction hierarchy (P056), ou filtrage syntaxique.
+- Le framework Auto-SPP necessite un acces au system prompt, ce qui presuppose un scenario de supply-chain specifique.
+- Pas de mesure d'ASR au sens classique ; la metrique est la degradation de performance de tache, ce qui rend la comparaison avec d'autres attaques difficile.
+- Les modeles anciens (GPT-3.5) sont paradoxalement resistants, suggerant que la vulnerabilite est specifique aux modeles instruction-tuned recents.
 
-Pour la these AEGIS, le SPP est directement pertinent car il cible la couche delta-1. Si le prompt systeme lui-meme est compromis, toutes les defenses qui en dependent (garde-fous par instruction, separation des roles, consignes de securite) sont neutralisees. Cela represente une escalade par rapport aux attaques d'injection classiques : au lieu de contourner le prompt systeme, on l'empoisonne a la source.
+**Questions ouvertes :**
+- Les modeles open-source sont-ils aussi vulnerables au system prompt poisoning ?
+- Des defenses de type sandboxing du system prompt (verification d'integrite, signature) pourraient-elles mitiger cette attaque ?
+- Comment le poisoning interagit-il avec les magic tokens (P041) ou l'instruction hierarchy (P056) ?
 
-Le vecteur SPP est particulierement dangereux dans les deploiements multi-utilisateurs (hopitaux, plateformes de telesante) ou un prompt systeme empoisonne affecterait tous les patients simultanement. Ce scenario de "supply chain attack" sur le prompt systeme n'est couvert par aucun des 48 scenarios AEGIS actuels, suggerant l'ajout d'une nouvelle categorie de scenarios.
+### Formules exactes
+Pas de formalisation mathematique originale. Les strategies sont algorithmiques :
+- Brute-force : insertion directe d'instructions malveillantes dans le system prompt (Section 3.1)
+- Adaptive ICL : generation automatique d'exemplaires in-context trompeurs (Section 3.2)
+- Adaptive CoT : generation de chaines de raisonnement malveillantes (Section 3.3)
+- Metrique : degradation de performance = (baseline - poisoned) / baseline * 100% (Section 5.3, Table 1)
 
-L'article est en revision pour ICLR 2026, l'une des conferences les plus selectivement cotees en apprentissage automatique, ce qui augure d'une validation par les pairs rigoureuse.
+Lien glossaire AEGIS : F22 (ASR — variante degradation), F15 (Sep(M))
 
-## Formulas & Theorems
+### Pertinence these AEGIS
+- **Couches delta :** δ¹ (attaque directe sur le system prompt — le vecteur cible exactement la couche δ¹ du modele AEGIS), δ⁰ (les modeles mieux alignes par RLHF/reasoning sont paradoxalement plus vulnerables)
+- **Conjectures :** C1 (fortement supportee — δ¹ est non seulement insuffisante mais devient un vecteur d'attaque), C3 (fortement supportee — l'alignement superficiel des reasoning models amplifie la vulnerabilite au poisoning), C5 (supportee — interaction entre δ⁰ alignment et δ¹ system prompt)
+- **Decouvertes :** D-002 (surface d'attaque supply-chain via system prompt), D-007 (persistance des attaques multi-tours)
+- **Gaps :** G-002 (securite de la chaine d'approvisionnement des system prompts), G-008 (verification d'integrite des prompts systeme), G-015 (pas d'evaluation medicale — un system prompt empoisonne en contexte chirurgical serait catastrophique)
+- **Mapping templates AEGIS :** #45-#52 (attaques sur system prompt), #70-#80 (persistence multi-tours)
 
-| Formule | Description |
-|---------|-------------|
-| SPP_persistence = efficacite_attaque(tour_N) / efficacite_attaque(tour_1) ≈ 1 | L'efficacite de l'empoisonnement ne decroit pas au fil de la conversation |
-| ASR_SPP = taux de reussite de l'empoisonnement sur les taches cibles | Attack Success Rate specifique au SPP |
-| Auto-SPP : framework automatisant les trois strategies d'empoisonnement | Automatisation de l'attaque |
-| Persistance inter-sessions : SPP affecte tous les utilisateurs partageant le prompt systeme | Propriete de propagation de l'attaque |
+### Citations cles
+> "The baseline accuracy for Gemini-2.5-flash in the Explicit, API scenario is 93.2%. Under brute-force poisoning, this performance plummets to 0.8%, a catastrophic decrease of 99.1%" (Section 5.3, Table 1, p. 7)
+> "Current black-box based prompt injection defenses cannot effectively defend against it" (Abstract, p. 1)
 
-## Glossaire Preliminaire
-| Terme | Explication simple |
-|-------|-------------------|
-| System Prompt Poisoning (SPP) | Attaque empoisonnant le prompt systeme global plutot que les prompts utilisateur individuels |
-| Auto-SPP | Framework automatisant la generation de prompts systeme empoisonnes via trois strategies |
-| Brute-force poisoning | Strategie explorant systematiquement les modifications possibles du prompt systeme |
-| Adaptive in-context poisoning | Strategie adaptant les modifications en fonction des reponses du modele |
-| Adaptive CoT poisoning | Strategie utilisant le raisonnement en chaine pour concevoir des empoisonnements subtils |
-| Persistent attack | Attaque dont l'effet perdure au-dela de l'interaction initiale, affectant toutes les interactions futures |
-
-## Research Paths (Gaps identifies)
-1. Pas de defense efficace proposee — l'article documente le probleme sans solution
-2. La detection de prompts systeme empoisonnes necessite des mecanismes d'integrite non explores (verification de hash, signature cryptographique)
-3. L'interaction entre SPP et les attaques de desalignement (P039) n'est pas etudiee — un prompt systeme empoisonne pourrait-il declencher un GRP-Obliteration ?
-4. Pas d'evaluation en contexte medical — le scenario de prompt systeme empoisonne dans un hopital n'est pas etudie
-5. La detection de SPP adaptatif (CoT) est particulierement difficile car les modifications sont semantiquement coherentes
-
-## delta-Layer Tags
-- [ ] delta-0 (RLHF alignment) — l'alignement de base ne protege pas contre le SPP
-- [x] delta-1 (System prompt) — cible directe : le prompt systeme est le vecteur d'attaque
-- [ ] delta-2 (Syntax filtering) — les filtres ne detectent pas l'empoisonnement du prompt systeme
-- [ ] delta-3 (Formal verification) — non traite, mais la necessite de verification d'integrite du prompt systeme est implicite
-
-## Conjecture Links
-- **C1 (Insuffisance delta-1)**: **Oui (tres fort)** — Resultat le plus devastateur pour delta-1 : le prompt systeme lui-meme est le vecteur d'attaque
-- **C2 (Necessite delta-3)**: **Oui** — La verification d'integrite du prompt systeme requiert des mecanismes formels (hash, signature)
-- **C3 (Shallow alignment)**: **Oui (indirect)** — L'alignement ne detecte pas les modifications subtiles du prompt systeme
-- **C4 (Scaling independence)**: **Non traite explicitement** — mais l'attaque est efficace sur une "large gamme" de modeles
-- **C5 (Cross-layer interaction)**: **Oui** — Le SPP montre que la compromission de delta-1 neutralise les defenses qui en dependent
-- **C6 (Medical specificity)**: **Non traite directement** — mais les implications pour les systemes medicaux multi-utilisateurs sont critiques
+### Classification
+| Champ | Valeur |
+|-------|--------|
+| SVC pertinence | 9/10 |
+| Reproductibilite | Moyenne — framework Auto-SPP decrit mais code non public ; modeles closed-source uniquement |
+| Code disponible | Non mentionne |
+| Dataset public | Oui (MATH, HumanEval — publics) |

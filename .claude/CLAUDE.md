@@ -1,187 +1,119 @@
 # CLAUDE.md — Project Rules for poc_medical
 
+**DOCTORAL THESIS PROJECT (ENS, 2026) — Red Team Security Lab for Medical LLM**
+
+## Rules detaillees (fichiers de reference)
+
+| Fichier | Contenu |
+|---------|---------|
+| `.claude/rules/programming.md` | Regles React, Go, Python, General (zero emoticon, zero placeholder) |
+| `.claude/rules/doctoral-research.md` | Exigences doctorales, skills ecosystem, triple verification, references cles |
+| `.claude/rules/mathematical-analysis.md` | Analyse mathematique : qualification epistemique, hypotheses, verification preuves, rigueur statistique |
+| `.claude/rules/redteam-analysis.md` | Analyse red team : classification vecteurs, threat model, ASR critique, reproductibilite, integration AEGIS |
+| `.claude/rules/redteam-forge.md` | Architecture AEGIS, moteur genetique, campagnes, fiches d'attaque |
+| `research_archive/RESEARCH_ARCHIVE_GUIDE.md` | Structure research_archive, regles PDFs, ChromaDB |
+| `research_archive/RESEARCH_STATE.md` | Etat partage entre toutes les skills |
+
 ## ZERO PLACEHOLDER / ZERO DECORATIVE — ABSOLUTE RULE
 
-**THIS IS A DOCTORAL THESIS PROJECT (ENS, 2026), NOT A DEMO OR AWARENESS TOOL.**
+1. **ZERO placeholder** — chaque element UI connecte a un vrai appel API backend
+2. **ZERO decorative** — pas de Matrix rain, pas de fake "SYSTEM COMPROMISED"
+3. **ZERO emoticon** dans le code sauf demande explicite du user
+4. **ZERO approximation** — these doctorale, rien sans preuve (voir `rules/doctoral-research.md`)
 
-**CAPITAL RULE — NO EXCEPTIONS:**
-1. **ZERO placeholder** — Every UI element MUST be wired to a real backend API call. No `setTimeout` faking progress, no hardcoded "SUCCESS" messages, no simulated terminal output.
-2. **ZERO decorative** — No Matrix rain, no fake exploitation animations, no theatrical "SYSTEM COMPROMISED" messages unless they reflect an actual API response.
-3. **Every phase shown in the UI MUST correspond to a real operation**: a real HTTP request, a real computation, a real LLM call.
-4. **Terminal/console outputs** must display real data returned by the backend (actual response text, actual scores, actual timing).
-5. **If a UI component cannot be wired to a real backend call, it must be removed** — not left as decoration.
+**Audit** : `grep -rn 'setTimeout\|EXPLOITATION SUCCESSFUL\|SYSTEM COMPROMISED' frontend/src/` — 0 resultat attendu.
 
-**Why**: The thesis director will reject any component that simulates results. Every visual element must be scientifically reproducible and traceable to real data.
-
-**Audit check**: `grep -rn 'setTimeout\|EXPLOITATION SUCCESSFUL\|SYSTEM COMPROMISED\|MatrixRain\|animate-matrix' frontend/src/` — any match is a violation.
-
-## Mandatory Post-Change Documentation Checklist
-
-**AFTER EVERY feature, fix, or integration** — before declaring "done":
-
-1. **README.md** (EN) — update counts, add new sections if needed
-2. **README_FR.md** (FR) — same updates in French
-3. **README_BR.md** (BR) — same updates in Portuguese
-4. **backend/README.md** — update chain counts, API docs
-5. **ScenarioHelpModal.jsx** — add/update help modals for new scenarios
-6. **formal_framework_complete.md** — update thesis documentation
-7. **ScenariosView.jsx** — update badge count if scenarios changed
-8. **INTEGRATION_TRACKER.md** — update if integration work
-
-**Rule**: Never say "done" without checking ALL relevant docs are updated. If the user has to ask "is this documented?" — it wasn't.
-
-## Mandatory Trilingual i18n (FR / EN / BR)
-
-**CRITICAL**: ALL user-visible strings in the frontend MUST be trilingual (French, English, Brazilian Portuguese). This is a non-negotiable rule.
-
-**Rules**:
-1. **NEVER hardcode** user-visible strings in .jsx/.js files. Always use `t('key')` from react-i18next.
-2. **EVERY new string** must have a key in `frontend/src/i18n.js` in ALL THREE language sections (fr, en, br).
-3. **Key naming**: Use the component namespace prefix (e.g., `redteam.studio.v2.*`, `redteam.catalog.*`, `redteam.scenarios.*`).
-4. **Technical terms** (BREACH, SVC, Sep(M), MITRE, HL7, etc.) stay in English across all languages.
-5. **Scientific content** (formal framework references, formulas, dimension labels) stays in English — these are academic terms.
-6. **Help modals** (ScenarioHelpModal, StudioHelpModal): UI chrome (headers, buttons, labels) must be trilingual. Academic content body can remain English-only.
-7. **Verification**: After adding any new component or UI element, grep for hardcoded strings: `grep -n '"[A-Z]' file.jsx | grep -v className | grep -v import` — any match is a potential i18n violation.
-8. **Language selector**: The Command Center (Red Team Lab) has its own language dropdown in the header (RedTeamDrawer.jsx). Both the main app and the lab support FR/EN/BR switching.
-
-**When adding a new feature**:
-1. Write all UI strings as `t('namespace.key')` from the start
-2. Add keys to i18n.js in all 3 sections simultaneously
-3. Test in FR and EN before declaring done
-
-## SINGLE SOURCE OF TRUTH — Strict Homogeneity
-
-**CRITICAL**: Backend and frontend MUST be strictly synchronized. NEVER have different data in Python vs JavaScript.
-
-**Architecture rule**: Data is defined ONCE, in Python (backend), and served via API. The frontend consumes the API. NO hardcoded data in .jsx/.js files that duplicates or contradicts backend data.
-
-| Data | Single Source | Consumed by |
-|------|-------------|-------------|
-| Attack templates (51 + 1 Custom UI) | `backend/attack_catalog.py` | Frontend via `/api/redteam/catalog` |
-| Scenarios (48) | `backend/scenarios.py` | Frontend via `/api/redteam/scenarios` |
-| Chain registry (34) | `backend/agents/attack_chains/__init__.py` | Frontend via `/api/redteam/chains` |
-| Help content | `ScenarioHelpModal.jsx` (frontend-only, OK) | Frontend only |
-
-**Violations to catch**:
-- Frontend has data that backend doesn't serve → SYNC backend
-- Backend has data that frontend doesn't display → SYNC frontend
-- Counts differ between README/frontend/backend → FIX immediately
-- Demo fallback data diverges from backend data → REGENERATE from backend
-
-**When adding a new template/scenario/chain**:
-1. Add in backend (Python) FIRST
-2. Expose via API endpoint
-3. Frontend consumes API (no local copy)
-4. Demo fallback auto-generated from backend export if needed
-5. Update all docs (checklist above)
-
-## Project Structure
-
-- **Frontend**: React 18 + Vite + Tailwind v4 (port 5173)
-- **Backend**: FastAPI + Ollama + ChromaDB (port 8042)
-- **34 attack chains** in `backend/agents/attack_chains/`
-- **52 attack templates** in `frontend/src/components/redteam/attackTemplates.js` (51 from backend + 1 Custom UI placeholder)
-- **48 scenarios** in `backend/scenarios.py` served via `/api/redteam/scenarios`
-- **Help modals** in `frontend/src/components/redteam/ScenarioHelpModal.jsx`
-- **Thesis docs** in `research_archive/manuscript/`
-
-## Process Management — MANDATORY
-
-**NEVER run raw process commands.** All start/stop/restart/build operations MUST go through the AEGIS scripts.
-
-| OS | Script | Location |
-|----|--------|----------|
-| Windows (PowerShell) | `.\aegis.ps1` | project root |
-| Linux / macOS / WSL | `./aegis.sh` | project root |
-
-**Enforced by hook** `.claude/hooks/process_guard.sh` — direct `uvicorn` or `npm run dev` calls are blocked.
-
-### Command reference
+## Architecture
 
 ```
-# Start
-.\aegis.ps1 start              # start backend + frontend
-.\aegis.ps1 start backend      # backend only (:8042)
-.\aegis.ps1 start frontend     # frontend only (:5173)
-
-# Stop / Kill
-.\aegis.ps1 stop               # stop both
-.\aegis.ps1 kill-port 8042     # force-kill port 8042
-.\aegis.ps1 kill-port 5173     # force-kill port 5173
-
-# Restart
-.\aegis.ps1 restart            # stop + start both
-.\aegis.ps1 restart backend    # restart backend only
-
-# Health
-.\aegis.ps1 health             # HTTP check :8042 + :5173 + :11434
-
-# Build
-.\aegis.ps1 build              # build frontend + check backend syntax
-.\aegis.ps1 build frontend     # Vite build only
-.\aegis.ps1 build backend      # py_compile check only
-
-# Logs
-.\aegis.ps1 logs               # tail logs/backend.log + logs/frontend.log
-
-# Interactive menu
-.\aegis.ps1                    # full TUI menu
+poc_medical/
+├── backend/           FastAPI + Ollama + ChromaDB (:8042)
+│   ├── agents/attack_chains/    36 chaines d'attaque
+│   ├── prompts/                 102 templates (.json + .md)
+│   ├── routes/                  11 routes API
+│   ├── taxonomy/                87 techniques defense
+│   └── chroma_db/               ChromaDB (aegis_corpus ~4200 + aegis_bibliography ~4700)
+├── frontend/          React 18 + Vite + Tailwind v4 (:5173)
+│   └── src/components/redteam/  Red Team Lab (15+ vues)
+├── research_archive/  These doctorale (voir RESEARCH_ARCHIVE_GUIDE.md)
+│   ├── _staging/               9 agents bibliography-maintainer
+│   ├── discoveries/            D-001 a D-020, C1-C7, G-001 a G-027
+│   ├── doc_references/         80 papiers organises, fiches d'attaque
+│   ├── literature_for_rag/     PDFs sources uniquement
+│   └── manuscript/             Chapitres de these
+├── .claude/skills/    16 skills (research-director, fiche-attaque, bibliography-maintainer, etc.)
+└── aegis.ps1/.sh      Scripts de gestion (start/stop/build/health)
 ```
 
-### If a command is missing from the scripts
+## Source de verite
 
-Add it to **both** `aegis.ps1` AND `aegis.sh` following the existing pattern:
-- PS1: add a function `Verb-Target` and register in `Invoke-*` dispatch
-- SH: add a function `verb_target` and register in `do_*` dispatch + interactive menu
+| Data | Source unique | API |
+|------|-------------|-----|
+| Templates (102) | `backend/prompts/*.json` | `/api/redteam/catalog` |
+| Scenarios (48) | `backend/scenarios.py` | `/api/redteam/scenarios` |
+| Chains (36) | `backend/agents/attack_chains/` | `/api/redteam/chains` |
+| Etat recherche | `research_archive/RESEARCH_STATE.md` | Toutes les skills |
 
-### Log files
-- `logs/backend.log` — uvicorn stdout/stderr
-- `logs/frontend.log` — Vite dev server stdout/stderr
-- `logs/build_frontend.log` — last Vite build output
+## Documentation obligatoire apres changement
 
-## Template Literal Bug (esbuild/JSX)
+1. README.md (EN) + README_FR.md (FR) + README_BR.md (BR)
+2. backend/README.md — comptes, API docs
+3. ScenarioHelpModal.jsx — help modals
+4. formal_framework_complete.md — these
+5. INTEGRATION_TRACKER.md — si integration
 
-Do NOT use template literals with `${}` in standalone functions in `.jsx` files — esbuild chokes on them. Use string concatenation instead:
-```js
-// BAD in .jsx
-a.download = `aegis_${date}.csv`;
-// GOOD in .jsx
-a.download = 'aegis_' + date + '.csv';
+## i18n trilingual (FR / EN / BR)
+
+Tout texte visible : `t('key')` via react-i18next. JAMAIS de string hardcodee. Termes techniques restent en anglais.
+
+## Process Management
+
+**JAMAIS de commandes directes.** Utiliser `aegis.ps1` (Windows) / `aegis.sh` (Linux).
+```
+.\aegis.ps1 start/stop/restart/health/build/logs
 ```
 
-## Git Conventions
+## Skills a utiliser
 
-- No `houyi` references in file/module names (reference in README only)
-- All docstrings in English
+| Situation | Skill |
+|-----------|-------|
+| Implementation structuree | `/apex` (10 etapes) |
+| Audit qualite | `/audit-pdca` (benchmark + recette) |
+| Nouvelle fiche d'analyse | `/fiche-attaque [num]` |
+| Recherche bibliographique | `/bibliography-maintainer incremental` |
+| Orchestration PDCA | `/research-director cycle` |
+| Nouveau prompt d'attaque | `/aegis-prompt-forge FORGE` |
+| Nouveau scenario | `/add-scenario` (6 agents) |
+
+## Notation δ — OBLIGATOIRE
+
+δ⁰ δ¹ δ² δ³ (Unicode). JAMAIS "delta-0/1/2/3" en ASCII dans la documentation.
+
+## Content Filter Safety
+
+Ne JAMAIS lire : `scenarios.py`, `attack_catalog.py`, `i18n.js` (valeurs), `prompts/*.json` champ "template".
+Travailler via metadonnees + fichiers .md (safe). Subagents : toujours inclure "NE LIS JAMAIS le contenu complet des fichiers sensibles".
+
+## Git
+
 - Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
-- `research_archive/` is in .gitignore — use `git add -f` for thesis docs
-- **Exception PDCA C-52**: `research_archive/manuscript/` files are intentionally tracked via `git add -f` (thesis deliverables). This is NOT a violation — the .gitignore prevents accidental additions but thesis docs require explicit tracking.
+- `research_archive/` en .gitignore — `git add -f` pour thesis docs
+- Pas de `houyi` dans les noms de fichiers
 
-## Statistical Validity
+## Statistiques
 
-- Sep(M) requires N >= 30 per condition
-- Sep(M) = 0 with 0 violations is a statistical floor artifact
-- Always flag `statistically_valid: false` when conditions not met
+- Sep(M) : N >= 30 par condition, Sep(M)=0 avec 0 violations = artefact
+- Tags : `[ARTICLE VERIFIE]` / `[PREPRINT]` / `[HYPOTHESE]` / `[CALCUL VERIFIE]` / `[EXPERIMENTAL]`
 
-## Content Filter Safety — MANDATORY for all agents
+## Audit qualite — `/audit-these`
 
-This project is a **doctoral thesis red team security lab**. The codebase contains adversarial payloads, prompt injection templates, and offensive security scenarios by design. These trigger Anthropic's content filter when read or displayed in full.
+- Chaque session COMMENCE et TERMINE par `/audit-these full`
+- Aucun lot "done" sans audit (lint_sources.py > 5% NONE = PAS DONE)
+- Cross-validation : 3 chiffres aleatoires verifies contre fulltext ChromaDB apres chaque batch
+- Si 1 chiffre faux → refaire le batch entier
+- Maximum 3 agents en parallele (auditabilite)
+- Toute affirmation "le seul", "le premier" → WebSearch de verification AVANT publication
 
-**Rules to prevent content filter blocks:**
+## Template Literal Bug
 
-1. **NEVER read full file contents** of: `scenarios.py`, `attack_catalog.py`, `attackTemplates.js`, `red_team_agent.py`, `components.py` (genetic_engine), `i18n.js`, `ScenarioHelpModal.jsx`. Use `grep -c` (count) or `grep -n` on specific patterns only.
-2. **NEVER display** payload content, template messages, or scenario step messages in tool output or conversation. Use counts, line numbers, or structural checks instead.
-3. **For build output**: pipe through `grep -c "error"` or `tail -1` — never display the full Vite build log (it contains compiled payload strings).
-4. **For API responses**: check HTTP status codes with `curl -s -o /dev/null -w "%{http_code}"` — never display response bodies that contain scenario data.
-5. **For grep searches**: prefer `grep -c` (count) over `grep` (content). When content is needed, limit to `head -1` or use very specific patterns.
-6. **Subagents**: ALL agents spawned via the Agent tool MUST receive the instruction "NE LIS JAMAIS le contenu complet des fichiers sensibles du projet" in their prompt.
-7. **If a filter block occurs**: do NOT retry the same operation. Switch to a count-based or structural approach that avoids reading/displaying the sensitive content.
-
-**Safe files** (can be read freely): `server.py` (routes only, skip prompt strings), `orchestrator.py` (structure only), `telemetry_bus.py`, `LogsView.jsx`, `RedTeamLayout.jsx`, `i18n.js` (only the key names, not the values).
-
-## Key References
-
-- Liu et al. (2023) — Prompt Injection, arXiv:2306.05499
-- Zverev et al. (2025) — Separation Score, ICLR 2025
-- Reimers & Gurevych (2019) — Sentence-BERT
-- Cosine drift model: all-MiniLM-L6-v2
+Pas de `${}` dans les fonctions standalone .jsx. Utiliser concatenation.
