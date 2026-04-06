@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useCallback } from 'react';
+import { useState, useRef, useMemo, useCallback, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Play, Square, Download, Settings2, AlertTriangle, ShieldAlert, ListChecks, Dna, SkipForward, Eye, EyeOff, HelpCircle } from 'lucide-react';
 import AgentLevelSelector from './AgentLevelSelector';
@@ -7,7 +7,7 @@ import TestSuitePanel from './TestSuitePanel';
 import GeneticProgressView from './GeneticProgressView';
 import ScenarioHelpModal from './ScenarioHelpModal';
 
-export default function CampaignTab() {
+const CampaignTab = memo(function CampaignTab() {
   const { t, i18n } = useTranslation();
   const [running, setRunning] = useState(false);
   const [rounds, setRounds] = useState([]);
@@ -104,9 +104,18 @@ export default function CampaignTab() {
               }
             } else if (payload.type === 'campaign_done') {
               setSummary(payload.summary);
-              var s = payload.summary || {};
+              const s = payload.summary || {};
               addLog('result', 'Campaign complete — ' + (s.total_rounds || 0) + ' rounds, ' + ((s.success_rate || 0) * 100).toFixed(1) + '% bypass, ' + (s.formal_metric_violations || 0) + ' violations');
-              const entry = { date: new Date().toISOString(), summary: payload.summary, roundCount: payload.summary?.total_rounds || 0 };
+              
+              const entry = { 
+                date: new Date().toISOString(), 
+                summary: s, 
+                roundCount: s.total_rounds || 0,
+                formal_metric_violations: s.formal_metric_violations || 0,
+                violation_rate_ci: s.violation_rate_ci || null,
+                aegis_shield: aegisShield
+              };
+              
               const saved = JSON.parse(localStorage.getItem('redteam_history') || '[]');
               saved.unshift(entry);
               localStorage.setItem('redteam_history', JSON.stringify(saved.slice(0, 50)));
@@ -685,4 +694,6 @@ export default function CampaignTab() {
       )}
     </div>
   );
-}
+});
+
+export default CampaignTab;
