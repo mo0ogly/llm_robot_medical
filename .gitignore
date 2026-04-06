@@ -31,3 +31,21 @@ backend/experiments/results/
 # Code that generates results IS tracked; results themselves are NOT.
 # See research_archive/README.md for workflow.
 research_archive/
+
+# MkDocs Wiki (generated output)
+wiki/site/
+wiki/docs/research/
+wiki/docs/architecture/
+wiki/docs/redteam-lab/
+wiki/docs/staging/
+wiki/docs/plans/
+wiki/docs/roadmap.md
+wiki/docs/assets/images/
+wiki/nav_generated.yml
+wiki/docs/prompts/
+wiki/docs/staging/analyst.md
+wiki/docs/staging/scientist.md
+wiki/docs/staging/cybersec.md
+wiki/docs/staging/matheux.md
+wiki/docs/staging/whitehacker.md
+wiki/docs/staging/mathteacher.md

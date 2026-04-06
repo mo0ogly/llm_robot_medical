@@ -342,3 +342,9 @@ GAPS:
   Closed: G-XXX (closed by paper PXXX)
   Priority changes: G-XXX (old → new priority)
 ```
+
+---
+
+## Epilogue — Dream audit
+
+Apres le DIRECTOR BRIEFING, lancer `/dream audit`. Si le verdict est NEEDS_CONSOLIDATION ou CRITICAL, lancer `/dream consolidate`.
