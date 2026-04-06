@@ -45,8 +45,42 @@ La majorite des endpoints acceptent un query parameter `lang` (defaut: `"en"`) p
 http://localhost:8042
 ```
 
-## Health Check
+## Exemples rapides
+
+### Health Check
 
 ```bash
 curl http://localhost:8042/health
+```
+
+### Lister les scenarios
+
+```bash
+curl http://localhost:8042/api/redteam/scenarios | python -m json.tool
+```
+
+### Lister les chaines d'attaque
+
+```bash
+curl http://localhost:8042/api/redteam/chains | python -m json.tool
+```
+
+### Voir la couverture taxonomique
+
+```bash
+curl http://localhost:8042/api/redteam/taxonomy/coverage | python -m json.tool
+```
+
+### Lancer un scenario en streaming
+
+```bash
+curl -N -X POST http://localhost:8042/api/redteam/scenario/stream \
+  -H "Content-Type: application/json" \
+  -d '{"scenario_id": "slow_poison"}'
+```
+
+### Tester un provider LLM
+
+```bash
+curl http://localhost:8042/api/redteam/llm-providers
 ```

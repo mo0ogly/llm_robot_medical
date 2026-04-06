@@ -1,4 +1,5 @@
 ---
+name: wiki-publish
 description: "Synchronise et publie le wiki MkDocs du projet AEGIS sur GitHub Pages. Modes: update (incremental), full (rebuild complet), serve (preview local)."
 user-invocable: true
 ---

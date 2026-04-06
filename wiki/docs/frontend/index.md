@@ -9,7 +9,61 @@
 | Composants Red Team | 51 (lab adversarial) |
 | Hooks custom | 5 |
 | Langues i18n | 3 (FR, EN, BR) |
-| Taille i18n | 277 KB |
+| Taille i18n | 277 KB (split en chunks lazy-loaded) |
+| Bundle principal | 668 KB (post-optimisation, -26%) |
+
+## Architecture a deux applications
+
+Le frontend est organise en **deux applications distinctes** partageant le meme build :
+
+```
+/                           /redteam
++-------------------+       +---------------------------+
+|  Dashboard        |       |  Red Team Lab             |
+|  Chirurgical      |       |  (Adversarial Studio)     |
+|                   |       |                           |
+|  VitalsMonitor    |       |  CatalogView  ForgePanel  |
+|  PatientRecord    |       |  ScenarioTab  MetricsPanel|
+|  AIAssistantChat  |       |  CampaignTab  RagView     |
+|  RobotArmsView(3D)|       |  DefenseView  LogsView    |
+|  CameraHUD        |       |  ResultExplorer           |
+|  ThreatMap        |       |  GeneticProgressView      |
+|  ActionTimeline   |       |  HistoryTab               |
++-------------------+       +---------------------------+
+```
+
+**Acces au Red Team Lab :** `Ctrl+Shift+R` ou bouton dans le header
+
+## Flux de donnees
+
+```
+Backend (FastAPI :8042)
+    |
+    |-- SSE streaming -----> AIAssistantChat (tokens)
+    |-- SSE streaming -----> TelemetryConsole (events)
+    |-- SSE streaming -----> GeneticProgressView (generations)
+    |-- SSE streaming -----> CampaignTab (rounds)
+    |-- REST JSON ---------> CatalogView, DefenseView, ScenarioTab
+    |-- REST JSON ---------> MetricsPanel, ResultExplorer
+    |
+Event Bus (robotEventBus.js)
+    |
+    |-- robot_state -------> RobotArmsView (3D positions)
+    |-- vitals_update -----> VitalsMonitor (ECG, SpO2, BP)
+    |-- camera_effect -----> CameraHUD (degradation visuelle)
+    |-- escalation --------> EscalationPanel (alertes)
+    |-- kill_switch -------> KillSwitch (isolation mecanique)
+```
+
+## Optimisations de performance (v4.1)
+
+| Phase | Optimisation | Impact |
+|-------|-------------|--------|
+| Phase 1-2 | Memoisation + lazy-loading de 7 vues | Reduction du bundle initial |
+| Phase 3 | Split i18n en chunks par langue | -150 KB, chargement a la demande |
+| Phase 4 | Cache HTTP + deduplication de requetes | ~85% cache hit, -60% requetes dupliquees |
+
+Le hook `useFetchWithCache` remplace `fetch + useEffect` dans 14 composants avec prefetch automatique au montage de `RedTeamLayout`.
 
 ## Stack technique
 

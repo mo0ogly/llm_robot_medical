@@ -43,3 +43,37 @@ Most endpoints accept a query parameter `lang` (default: `"en"`) to select syste
 ```
 http://localhost:8042
 ```
+
+## Quick Examples
+
+### Health Check
+
+```bash
+curl http://localhost:8042/health
+```
+
+### List scenarios
+
+```bash
+curl http://localhost:8042/api/redteam/scenarios | python -m json.tool
+```
+
+### List attack chains
+
+```bash
+curl http://localhost:8042/api/redteam/chains | python -m json.tool
+```
+
+### View taxonomy coverage
+
+```bash
+curl http://localhost:8042/api/redteam/taxonomy/coverage | python -m json.tool
+```
+
+### Stream a scenario
+
+```bash
+curl -N -X POST http://localhost:8042/api/redteam/scenario/stream \
+  -H "Content-Type: application/json" \
+  -d '{"scenario_id": "slow_poison"}'
+```
