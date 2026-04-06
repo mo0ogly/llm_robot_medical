@@ -8,17 +8,17 @@ import App from './App.jsx'
 // Red Team Laboratory Views
 import RedTeamLayout from './components/redteam/RedTeamLayout.jsx'
 
-// Static imports — lightweight views, always visible or frequently visited
-import StudioView from './components/redteam/views/StudioView.jsx'
-import PlaygroundView from './components/redteam/views/PlaygroundView.jsx'
-import CatalogView from './components/redteam/views/CatalogView.jsx'
-import ScenariosView from './components/redteam/views/ScenariosView.jsx'
+// Static imports — core navigation views, always visible
 import LogsView from './components/redteam/views/LogsView.jsx'
 import HistoryView from './components/redteam/views/HistoryView.jsx'
 import TimelineView from './components/redteam/views/TimelineView.jsx'
 
 // Lazy imports — heavy views, code-split into separate chunks
 var RagView = lazy(function() { return import('./components/redteam/views/RagView.jsx'); });
+var StudioView = lazy(function() { return import('./components/redteam/views/StudioView.jsx'); });
+var PlaygroundView = lazy(function() { return import('./components/redteam/views/PlaygroundView.jsx'); });
+var CatalogView = lazy(function() { return import('./components/redteam/views/CatalogView.jsx'); });
+var ScenariosView = lazy(function() { return import('./components/redteam/views/ScenariosView.jsx'); });
 var ExerciseView = lazy(function() { return import('./components/redteam/views/ExerciseView.jsx'); });
 var DefenseView = lazy(function() { return import('./components/redteam/views/DefenseView.jsx'); });
 var AnalysisView = lazy(function() { return import('./components/redteam/views/AnalysisView.jsx'); });
@@ -43,12 +43,12 @@ createRoot(document.getElementById('root')).render(
           <Route path="defense" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><DefenseView /></Suspense>} />
           <Route path="logs" element={<LogsView />} />
           <Route path="analysis" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><AnalysisView /></Suspense>} />
-          <Route path="catalog" element={<CatalogView />} />
-          <Route path="studio" element={<StudioView />} />
-          <Route path="playground" element={<PlaygroundView />} />
+          <Route path="catalog" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><CatalogView /></Suspense>} />
+          <Route path="studio" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><StudioView /></Suspense>} />
+          <Route path="playground" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><PlaygroundView /></Suspense>} />
           <Route path="prompt-forge" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading PromptForge...</div>}><PromptForgeMultiLLM /></Suspense>} />
           <Route path="timeline" element={<TimelineView />} />
-          <Route path="scenarios" element={<ScenariosView />} />
+          <Route path="scenarios" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><ScenariosView /></Suspense>} />
           <Route path="campaign" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><CampaignView /></Suspense>} />
           <Route path="history" element={<HistoryView />} />
           <Route path="results" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><ResultExplorer /></Suspense>} />
