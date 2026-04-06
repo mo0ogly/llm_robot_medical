@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ShieldAlert, Database, Swords, Activity, Lock, Terminal, BarChart2, FileText, Target, FlaskConical, BookOpen, Beaker, Clock, History } from 'lucide-react';
+import { prefetch } from '../../hooks/useFetchWithCache';
 
 export default function RedTeamLayout() {
+  useEffect(function() {
+    prefetch('/api/redteam/catalog');
+    prefetch('/api/redteam/templates');
+    prefetch('/api/redteam/scenarios');
+    prefetch('/api/redteam/taxonomy/coverage');
+  }, []);
   var { t, i18n } = useTranslation();
 
   var navItems = [
@@ -37,7 +44,7 @@ export default function RedTeamLayout() {
             <ShieldAlert className="text-red-500" size={28} />
             <div>
               <h1 className="font-bold text-lg tracking-wider text-red-500">AEGIS LAB</h1>
-              <p className="text-xs text-neutral-500 font-mono">COMMAND CENTER v2.0</p>
+              <p className="text-xs text-neutral-500 font-mono">COMMAND CENTER v2.1</p>
             </div>
           </div>
           {/* Language Selector */}

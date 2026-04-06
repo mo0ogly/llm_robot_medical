@@ -1,22 +1,18 @@
 // View wrapper for CampaignTab in the Command Center layout
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CampaignTab from '../CampaignTab';
+import useFetchWithCache from '../../../hooks/useFetchWithCache';
 
 export default function CampaignView() {
   var { t } = useTranslation();
-  var [count, setCount] = useState(0);
-
-  useEffect(function() {
-    fetch('/api/redteam/catalog')
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        var total = 0;
-        Object.values(data).forEach(function(arr) { total += arr.length; });
-        setCount(total);
-      })
-      .catch(function() { setCount(0); });
-  }, []);
+  var { data: catalogData } = useFetchWithCache('/api/redteam/catalog');
+  var count = useMemo(function() {
+    if (!catalogData) return 0;
+    var total = 0;
+    Object.values(catalogData).forEach(function(arr) { total += arr.length; });
+    return total;
+  }, [catalogData]);
 
   return (
     <div>

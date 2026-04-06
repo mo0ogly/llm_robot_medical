@@ -4,6 +4,7 @@ import {
   Eye, FileText, Lightbulb, Copy
 } from 'lucide-react';
 import { renderMarkdown } from './renderMarkdown';
+import useFetchWithCache from '../../../hooks/useFetchWithCache';
 
 export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, initialName, initialBody, initialCategory, initialHelpMd, isNew, t }) {
   var [name, setName] = useState(initialName || '');
@@ -13,6 +14,11 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
   var [activeTab, setActiveTab] = useState('edit');
   var [saving, setSaving] = useState(false);
   var [copied, setCopied] = useState(false);
+  var { data: _taxonomyFlat } = useFetchWithCache('/api/redteam/taxonomy/flat');
+  var taxonomyFlat = _taxonomyFlat || {};
+  var [taxPrimary, setTaxPrimary] = useState('');
+  var [taxSecondary, setTaxSecondary] = useState([]);
+  var [taxSearch, setTaxSearch] = useState('');
 
   useEffect(function() {
     if (isOpen) {
@@ -21,6 +27,9 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
       setCategory(initialCategory || 'injection');
       setHelpMd(initialHelpMd || '');
       setActiveTab('edit');
+      setTaxPrimary('');
+      setTaxSecondary([]);
+      setTaxSearch('');
     }
   }, [isOpen, initialName, initialBody, initialCategory, initialHelpMd]);
 
@@ -106,6 +115,57 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
             </select>
           </div>
         </div>
+
+        {/* Taxonomy selector */}
+        {Object.keys(taxonomyFlat).length > 0 && (
+          <div className="px-5 py-2 border-b border-neutral-800 shrink-0">
+            <div className="flex gap-4 items-start">
+              <div className="flex-1">
+                <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider mb-1 block">
+                  {t('redteam.taxonomy.primary')}
+                </label>
+                <div className="relative">
+                  <input
+                    value={taxSearch}
+                    onChange={function(e) { setTaxSearch(e.target.value); }}
+                    placeholder="Search technique..."
+                    className="w-full bg-neutral-900 border border-neutral-700 rounded px-3 py-1.5 text-[11px] font-mono text-white placeholder-neutral-700 outline-none focus:border-orange-500 transition-colors"
+                  />
+                  {taxSearch.length > 1 && (
+                    <div className="absolute z-10 mt-1 w-full max-h-40 overflow-y-auto bg-neutral-900 border border-neutral-700 rounded shadow-xl">
+                      {Object.keys(taxonomyFlat).filter(function(tid) {
+                        var lc = taxSearch.toLowerCase();
+                        return tid.toLowerCase().indexOf(lc) !== -1 || (taxonomyFlat[tid].technique_label || '').toLowerCase().indexOf(lc) !== -1;
+                      }).slice(0, 15).map(function(tid) {
+                        var path = taxonomyFlat[tid];
+                        return (
+                          <button key={tid} onClick={function() { setTaxPrimary(tid); setTaxSearch(''); }}
+                            className="w-full text-left px-3 py-1 text-[10px] font-mono hover:bg-neutral-800 transition-colors block">
+                            <span className="text-orange-400">{path.technique_label}</span>
+                            <span className="text-neutral-600 ml-2">{path.class_id + ' > ' + path.category_id}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+                {taxPrimary && (
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className="text-[10px] font-mono text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded">
+                      {taxPrimary}
+                    </span>
+                    <span className="text-[9px] text-neutral-600">
+                      {taxonomyFlat[taxPrimary] ? taxonomyFlat[taxPrimary].class_id + ' > ' + taxonomyFlat[taxPrimary].category_id + (taxonomyFlat[taxPrimary].subcategory_id ? ' > ' + taxonomyFlat[taxPrimary].subcategory_id : '') : ''}
+                    </span>
+                    <button onClick={function() { setTaxPrimary(''); }} className="text-neutral-600 hover:text-red-400 transition-colors">
+                      <X size={10} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex border-b border-neutral-800 shrink-0">

@@ -6,6 +6,7 @@ import re
 from fastapi import FastAPI, HTTPException, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Any
 import ollama
@@ -31,6 +32,49 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization", "Accept"],
     max_age=3600,  # Cache preflight requests for 1 hour
 )
+
+# --- Cache-Control middleware for read-only GET endpoints ---
+CACHE_RULES: list[tuple[str, int]] = [
+    # Catalogs and taxonomy change rarely
+    ("/api/redteam/catalog", 3600),
+    ("/api/redteam/taxonomy/tree", 86400),
+    ("/api/redteam/taxonomy/flat", 86400),
+    ("/api/redteam/taxonomy/coverage", 3600),
+    ("/api/redteam/taxonomy", 86400),
+    ("/api/redteam/defense/taxonomy", 86400),
+    ("/api/redteam/defense/coverage", 3600),
+    ("/api/redteam/defense/benchmark", 3600),
+    ("/api/redteam/defense/liu-benchmark", 3600),
+    ("/api/redteam/templates", 3600),
+    # Config endpoints (change rarely)
+    ("/api/redteam/config/retex-patterns", 3600),
+    ("/api/redteam/config/dim-weights", 3600),
+    ("/api/redteam/config/detection-baseline", 3600),
+    ("/api/redteam/providers", 300),
+    ("/api/redteam/models-config", 300),
+    # Scenarios and chains (may update occasionally)
+    ("/api/redteam/scenarios", 300),
+    ("/api/redteam/chains", 300),
+    ("/api/redteam/agents/prompts/all", 300),
+    ("/api/redteam/agents", 300),
+    # LLM providers (may change with config)
+    ("/api/redteam/llm-providers", 300),
+]
+
+
+class CacheControlMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        if request.method == "GET" and response.status_code == 200:
+            path = request.url.path
+            for pattern, max_age in CACHE_RULES:
+                if path == pattern or path.startswith(pattern + "/"):
+                    response.headers["Cache-Control"] = "public, max-age=" + str(max_age)
+                    break
+        return response
+
+
+app.add_middleware(CacheControlMiddleware)
 
 MODEL_NAME = "llama3.2:latest"  # Da Vinci medical AI - good for tool calling
 CYBER_MODEL_NAME = "saki007ster/CybersecurityRiskAnalyst:latest"  # Aegis cybersecurity AI - fine-tuned risk assessor
@@ -887,6 +931,7 @@ from routes.rag_routes import router as rag_router
 from routes.telemetry_routes import router as telemetry_router
 from routes.results_routes import router as results_router
 from routes.llm_providers_routes import router as llm_providers_router
+from routes.f46_routes import router as f46_router
 
 app.include_router(config_router)
 app.include_router(template_router)
@@ -896,6 +941,7 @@ app.include_router(rag_router)
 app.include_router(telemetry_router)
 app.include_router(results_router)
 app.include_router(llm_providers_router)
+app.include_router(f46_router)
 
 
 # === LOAD LLM PROVIDERS CONFIG AT STARTUP ===

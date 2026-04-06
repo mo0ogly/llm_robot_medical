@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Play, Zap, Download, Trash2, ChevronDown } from "lucide-react";
+import useFetchWithCache from "../../hooks/useFetchWithCache";
 
 /**
  * PromptForgeMultiLLM Component
@@ -61,31 +62,21 @@ function PromptForgeMultiLLMComponent() {
     }
   };
 
-  // Fetch providers list on mount with retry
-  useEffect(() => {
-    const fetchProviders = async () => {
-      try {
-        const data = await retryWithBackoff(async () => {
-          const res = await fetch("/api/redteam/llm-providers", {
-            signal: AbortSignal.timeout(10000) // 10s timeout
-          });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        }, 3, 500);
-
-        setProviders(data.providers || []);
-        if (data.providers && data.providers.length > 0) {
-          setSelectedProvider(data.providers[0].name);
-        }
-        setError(null);
-      } catch (err) {
-        setError("Failed to load providers (retried 3x): " + err.message);
-        // Fallback: use empty providers list
-        setProviders([]);
+  // Fetch providers list on mount (deduplicated via cache)
+  var { data: _providersData, error: _providersErr } = useFetchWithCache("/api/redteam/llm-providers");
+  useEffect(function() {
+    if (_providersData) {
+      setProviders(_providersData.providers || []);
+      if (_providersData.providers && _providersData.providers.length > 0) {
+        setSelectedProvider(_providersData.providers[0].name);
       }
-    };
-    fetchProviders();
-  }, []);
+      setError(null);
+    }
+    if (_providersErr) {
+      setError("Failed to load providers: " + _providersErr.message);
+      setProviders([]);
+    }
+  }, [_providersData, _providersErr]);
 
   // Fetch models when provider changes with retry
   useEffect(() => {

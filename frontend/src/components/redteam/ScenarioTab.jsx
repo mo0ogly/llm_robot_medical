@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Play, Square, ChevronDown, ChevronRight, Shield, AlertTriangle, Download, Settings2 } from 'lucide-react';
 import AgentLevelSelector from './AgentLevelSelector';
 import robotEventBus from '../../utils/robotEventBus';
+import useFetchWithCache from '../../hooks/useFetchWithCache';
 
 const ATTACK_TYPE_COLORS = {
   prompt_leak: "border-purple-500/30 text-purple-400",
@@ -536,24 +537,16 @@ const ScenarioTab = memo(function ScenarioTab() {
   const abortRef = useRef(null);
   const stepStatesRef = useRef([]);
 
+  var { data: _scenData, error: scenError } = useFetchWithCache('/api/redteam/scenarios');
   useEffect(function() {
-    fetch('/api/redteam/scenarios')
-      .then(function(r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function(data) {
-        setScenarios(data);
-        setLoading(false);
-      })
-      .catch(function() {
-        // Fallback to demo scenarios when backend is offline
-        console.warn('Backend missing, using demo scenarios.');
-        setScenarios(DEMO_SCENARIOS);
-        setOffline(true);
-        setLoading(false);
-      });
-  }, []);
+    if (_scenData) { setScenarios(_scenData); setLoading(false); }
+    if (scenError) {
+      console.warn('Backend missing, using demo scenarios.');
+      setScenarios(DEMO_SCENARIOS);
+      setOffline(true);
+      setLoading(false);
+    }
+  }, [_scenData, scenError]);
 
   const runScenario = async (scenarioId) => {
     const scenario = scenarios.find((s) => s.id === scenarioId);
