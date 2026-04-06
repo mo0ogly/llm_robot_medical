@@ -135,17 +135,26 @@ _CHAIN_MODULES = [
     ("summarize_chain",       "B1.33"),  # Coverage: T39 (shallow RLHF late-sequence injection) — summarization concentrates information into shorter output, amplifying late-sequence injection effects on δ⁰ alignment
     # PARTIE 2G — Multi-modal templates
     ("multimodal_rag",        "B1.34"),  # Mapped: RUN-002
+    # PARTIE 2H — F-RW operators (real-world defense bypass, 2026-04-06)
+    # Source: analysis of 6 commercial products (Cursor, Windsurf, Devin, Manus, Replit)
+    # Reference: .claude/skills/aegis-prompt-forge/references/real-world-defenses.md
+    ("covert_channel",        "F-RW01"),  # Covert channel injection via system reminder tags (delta-3 DaaAS)
+    ("pop_quiz_override",     "F-RW02"),  # Pop quiz authority override / mode switch (delta-1 turned)
+    ("ghost_tool",            "F-RW03"),  # Ghost tool invocation via fabricated tool logs (delta-1)
+    ("memory_poisoning",      "F-RW04"),  # Memory persistence poisoning / cross-session (delta-3)
+    ("declarative_bypass",    "F-RW05"),  # Declarative guardrail bypass / enforcement gap (delta-0)
+    ("multi_step_hijack",     "F-RW06"),  # Multi-step goal hijacking / fragmented payload (delta-3 absent)
 ]
 
-# Chain coverage summary (RUN-003, 2026-04-04):
-# 34/34 chains mapped (100%) — 28 from RUN-001/002/003 direct mappings,
-# 6 newly mapped via RUN-003 technique extensions:
-#   propositional_chain → T41 (semantic RLHF exploitation, δ⁰)
-#   xml_agent           → T46 (in-document injection, δ¹)
-#   research_chain      → T32 (taxonomy gap exploitation, δ¹/δ²)
-#   self_query          → T37 (PIDP compound RAG, δ²)
-#   retrieval_agent     → T36+T38 (automated agent + RAG poisoning, δ¹/δ²)
-#   summarize_chain     → T39 (shallow RLHF late-sequence injection, δ⁰)
+# Chain coverage summary (RUN-004, 2026-04-06):
+# 40/40 chains mapped (100%) — 34 from RUN-001/002/003,
+# 6 new F-RW operators from real-world defense analysis:
+#   covert_channel      → F-RW01 (DaaAS via system_reminder tags, δ³ turned)
+#   pop_quiz_override   → F-RW02 (mode switch exploitation, δ¹ turned)
+#   ghost_tool          → F-RW03 (fabricated tool-call injection, δ¹)
+#   memory_poisoning    → F-RW04 (cross-session persistence, δ³)
+#   declarative_bypass  → F-RW05 (enforcement gap exploitation, δ⁰)
+#   multi_step_hijack   → F-RW06 (fragmented composition, δ³ absent)
 
 _loaded = []
 _skipped = []
