@@ -1,10 +1,18 @@
-name: Deploy frontend to GitHub Pages
+name: Deploy to GitHub Pages (Frontend + Wiki)
 
 on:
   push:
     branches: ["main"]
     paths:
       - 'frontend/**'
+      - 'wiki/**'
+      - 'research_archive/**'
+      - 'docs/**'
+      - 'figures/**'
+      - '*.md'
+      - 'AI_SYSTEM*.md'
+      - 'ROADMAP.md'
+      - 'backend/README.md'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
@@ -20,13 +28,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # --- Frontend Build ---
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -34,12 +40,54 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ./frontend/package-lock.json
 
-      - name: Install dependencies
+      - name: Install frontend dependencies
+        working-directory: ./frontend
         run: npm ci
 
-      - name: Build project
+      - name: Run unit tests
+        working-directory: ./frontend
+        run: npm run test
+
+      - name: Install Playwright browsers
+        working-directory: ./frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        working-directory: ./frontend
+        run: npm run test:e2e -- --reporter=json --output-file=test-results.json
+
+      - name: Upload E2E test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: ./frontend/playwright-report/
+          retention-days: 7
+
+      - name: Build frontend
+        working-directory: ./frontend
         run: npm run build
 
+      # --- Wiki Build ---
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install wiki dependencies
+        run: pip install -r wiki/requirements.txt
+
+      - name: Build wiki docs (assemble sources)
+        run: python wiki/build_wiki.py
+
+      - name: Build MkDocs site
+        run: cd wiki && mkdocs build
+
+      # --- Merge frontend + wiki ---
+      - name: Copy wiki into frontend dist
+        run: cp -r wiki/site frontend/dist/wiki
+
+      # --- Deploy ---
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
