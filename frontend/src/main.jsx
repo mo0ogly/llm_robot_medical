@@ -2,7 +2,7 @@ import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './index.css'
-import './i18n'
+import { i18nReady } from './i18n'
 import App from './App.jsx'
 
 // Red Team Laboratory Views
@@ -29,6 +29,7 @@ var PromptForgeMultiLLM = lazy(function() { return import('./components/redteam/
 // import.meta.env.BASE_URL = "/llm_robot_medical/" (from vite.config.js)
 // BrowserRouter basename strips this prefix before matching routes
 // So route "/" matches /llm_robot_medical/, "/redteam/rag" matches /llm_robot_medical/redteam/rag
+i18nReady.then(function() {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter basename={import.meta.env.BASE_URL}>
@@ -57,3 +58,4 @@ createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </StrictMode>,
 )
+});
