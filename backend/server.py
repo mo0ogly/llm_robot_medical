@@ -932,6 +932,7 @@ from routes.telemetry_routes import router as telemetry_router
 from routes.results_routes import router as results_router
 from routes.llm_providers_routes import router as llm_providers_router
 from routes.f46_routes import router as f46_router
+from routes.aside_routes import router as aside_router
 
 app.include_router(config_router)
 app.include_router(template_router)
@@ -942,6 +943,7 @@ app.include_router(telemetry_router)
 app.include_router(results_router)
 app.include_router(llm_providers_router)
 app.include_router(f46_router)
+app.include_router(aside_router)
 
 
 # === LOAD LLM PROVIDERS CONFIG AT STARTUP ===
