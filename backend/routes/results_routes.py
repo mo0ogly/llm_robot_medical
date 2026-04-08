@@ -6,10 +6,13 @@ Endpoints:
     GET /api/redteam/experiments/manifest
     GET /api/redteam/experiments/protocols
     GET /api/redteam/experiments/protocols/{experiment_id}
+    GET /api/redteam/experiments/{campaign_id}/lineage
 """
 
+import glob
 import json
 import os
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException
 
@@ -164,3 +167,163 @@ async def get_experiment_report(filename: str):
         return {"filename": safe, "content": content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+def _load_json_safe(path: str) -> Optional[dict]:
+    """Load a JSON file, returning None on any failure."""
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return None
+
+
+def _find_campaign_in_manifest(campaign_id: str) -> Optional[dict]:
+    """Find campaign entry in campaign_manifest.json by id."""
+    manifest_path = os.path.join(EXPERIMENTS_DIR, "campaign_manifest.json")
+    manifest = _load_json_safe(manifest_path)
+    if not manifest:
+        return None
+    for campaign in manifest.get("campaigns", []):
+        if campaign.get("id") == campaign_id:
+            return campaign
+    return None
+
+
+def _find_protocol(campaign_id: str) -> Optional[dict]:
+    """Find protocol_*.json whose experiment_id matches campaign_id."""
+    if not os.path.exists(EXPERIMENTS_DIR):
+        return None
+    for fname in os.listdir(EXPERIMENTS_DIR):
+        if fname.startswith("protocol_") and fname.endswith(".json"):
+            data = _load_json_safe(os.path.join(EXPERIMENTS_DIR, fname))
+            if data and data.get("experiment_id") == campaign_id:
+                return data
+    return None
+
+
+def _find_report_filename(campaign_id: str) -> Optional[str]:
+    """Find EXPERIMENT_REPORT_*.md that contains campaign_id in its name."""
+    if not os.path.exists(EXPERIMENTS_DIR):
+        return None
+    pattern = os.path.join(EXPERIMENTS_DIR, "EXPERIMENT_REPORT_*" + campaign_id + "*.md")
+    matches = glob.glob(pattern)
+    if matches:
+        return os.path.basename(matches[0])
+    # Fallback: scan all report files for the campaign_id substring
+    for fname in os.listdir(EXPERIMENTS_DIR):
+        if fname.startswith("EXPERIMENT_REPORT_") and fname.endswith(".md"):
+            if campaign_id.replace("-", "").upper() in fname.replace("-", "").replace("_", "").upper():
+                return fname
+    return None
+
+
+def _load_results_summary(results_file: str) -> Optional[dict]:
+    """Load results JSON and extract a summary (conditions or aggregate)."""
+    if not results_file:
+        return None
+    # Try relative to EXPERIMENTS_DIR first, then RESULTS_DIR
+    for base_dir in [EXPERIMENTS_DIR, RESULTS_DIR]:
+        # results_file may be prefixed with "experiments/" — strip it
+        clean = results_file.replace("experiments/", "").replace("results/", "")
+        path = os.path.join(base_dir, clean)
+        if os.path.exists(path):
+            data = _load_json_safe(path)
+            if not data:
+                continue
+            # Return aggregate if present (UX format)
+            if "aggregate" in data:
+                return {"aggregate": data["aggregate"]}
+            # Return condition_results if present (raw format)
+            if "condition_results" in data:
+                return {"conditions": data["condition_results"]}
+            # Return per_chain summary if present
+            if "per_chain" in data:
+                return {
+                    "aggregate": data.get("aggregate", {}),
+                    "n_chains": len(data["per_chain"]),
+                }
+            return None
+    return None
+
+
+@router.get("/api/redteam/experiments/{campaign_id}/lineage")
+async def get_experiment_lineage(campaign_id: str) -> dict:
+    """Assemble complete lineage for a campaign: manifest + protocol + results + report.
+
+    Combines campaign_manifest.json, protocol_*.json, results JSONs and
+    EXPERIMENT_REPORT_*.md into a single lineage object for traceability.
+    """
+    # 1. Campaign entry from manifest
+    campaign = _find_campaign_in_manifest(campaign_id)
+
+    if not campaign:
+        raise HTTPException(
+            status_code=404,
+            detail="Campaign not found in manifest: " + campaign_id,
+        )
+
+    # 2. Protocol
+    protocol = _find_protocol(campaign_id)
+
+    # 3. Build iterations with results summaries and report availability
+    iterations = []
+    for it in campaign.get("iterations", []):
+        results_file = it.get("results_file", "")
+        results_summary = _load_results_summary(results_file)
+
+        # Check for iteration-specific report
+        report_file = it.get("report_file", "")
+        report_filename = os.path.basename(report_file) if report_file else None
+        report_available = False
+        if report_filename:
+            report_path = os.path.join(EXPERIMENTS_DIR, report_filename)
+            report_available = os.path.exists(report_path)
+
+        iteration_entry = {
+            "run": it.get("run", 0),
+            "date": it.get("date", ""),
+            "model": it.get("model", ""),
+            "params": it.get("params", {}),
+            "verdict": it.get("verdict", ""),
+            "diagnosis": it.get("diagnosis", ""),
+            "findings": it.get("findings", []),
+            "results_summary": results_summary,
+            "report_available": report_available,
+            "report_filename": report_filename,
+        }
+        iterations.append(iteration_entry)
+
+    # 4. Global report (campaign-level)
+    global_report = _find_report_filename(campaign_id)
+
+    # 5. Recommended actions from next_iteration or last diagnosis
+    recommended_actions = []
+    next_iter = campaign.get("next_iteration")
+    if next_iter:
+        if next_iter.get("notes"):
+            recommended_actions.append(next_iter["notes"])
+        if next_iter.get("changes"):
+            recommended_actions.append(
+                "Parameter changes: " + json.dumps(next_iter["changes"])
+            )
+    if not recommended_actions and iterations:
+        last_diag = iterations[-1].get("diagnosis", "")
+        if last_diag:
+            recommended_actions.append(last_diag)
+
+    lineage = {
+        "campaign_id": campaign.get("id", campaign_id),
+        "name": campaign.get("name", ""),
+        "gap": campaign.get("gap", ""),
+        "conjecture": campaign.get("conjecture", ""),
+        "hypothesis": protocol.get("hypothesis", "") if protocol else campaign.get("hypothesis", ""),
+        "status": campaign.get("status", ""),
+        "success_criteria": campaign.get("success_criteria", {}),
+        "protocol": protocol,
+        "iterations": iterations,
+        "report_filename": global_report,
+        "recommended_actions": recommended_actions,
+    }
+
+    return lineage

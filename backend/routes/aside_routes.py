@@ -11,12 +11,23 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from ..agents.aside_defense_rotator import (
-    RotationConfig,
-    RotationSchedule,
-    DefenseType,
-    apply_defense,
-)
+try:
+    from agents.aside_defense_rotator import (
+        RotationConfig,
+        RotationSchedule,
+        DefenseType,
+        apply_defense,
+    )
+except ImportError:
+    # Fallback for relative import context
+    import sys, os
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+    from agents.aside_defense_rotator import (
+        RotationConfig,
+        RotationSchedule,
+        DefenseType,
+        apply_defense,
+    )
 
 router = APIRouter(prefix="/api/redteam/aside", tags=["aside"])
 

@@ -25,6 +25,7 @@ var AnalysisView = lazy(function() { return import('./components/redteam/views/A
 var ResultExplorer = lazy(function() { return import('./components/redteam/views/ResultExplorer.jsx'); });
 var CampaignView = lazy(function() { return import('./components/redteam/views/CampaignView.jsx'); });
 var PromptForgeMultiLLM = lazy(function() { return import('./components/redteam/PromptForgeMultiLLM.jsx'); });
+var ExperimentDashboard = lazy(function() { return import('./components/redteam/views/ExperimentDashboard.jsx'); });
 
 // import.meta.env.BASE_URL = "/llm_robot_medical/" (from vite.config.js)
 // BrowserRouter basename strips this prefix before matching routes
@@ -53,6 +54,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="campaign" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><CampaignView /></Suspense>} />
           <Route path="history" element={<HistoryView />} />
           <Route path="results" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><ResultExplorer /></Suspense>} />
+          <Route path="experiments" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><ExperimentDashboard /></Suspense>} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ShieldAlert, Database, Swords, Activity, Lock, Terminal, BarChart2, FileText, Target, FlaskConical, BookOpen, Beaker, Clock, History } from 'lucide-react';
+import { ShieldAlert, Database, Swords, Activity, Lock, Terminal, BarChart2, FileText, Target, FlaskConical, BookOpen, Beaker, Clock, History, FlaskRound } from 'lucide-react';
 import { prefetch } from '../../hooks/useFetchWithCache';
 
 export default function RedTeamLayout() {
@@ -33,6 +33,7 @@ export default function RedTeamLayout() {
     // --- Results ---
     { id: 'history', label: t('redteam.nav.history', { defaultValue: 'History' }), icon: <History size={20} />, path: '/redteam/history' },
     { id: 'results', label: t('redteam.nav.results', { defaultValue: 'Results Explorer' }), icon: <FileText size={20} />, path: '/redteam/results' },
+    { id: 'experiments', label: t('redteam.nav.experiments', { defaultValue: 'Experiments' }), icon: <FlaskRound size={20} />, path: '/redteam/experiments' },
   ];
 
   return (
