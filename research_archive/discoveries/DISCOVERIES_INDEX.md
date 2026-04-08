@@ -4,8 +4,8 @@
 > Tous les agents DOIVENT le lire AVANT de travailler et le mettre a jour APRES.
 > Les decouvertes evoluent a chaque RUN — elles ne sont jamais figees.
 
-**Derniere mise a jour** : RUN-003 (2026-04-04)
-**Corpus** : 60 articles (P001-P060)
+**Derniere mise a jour** : TC-002 (2026-04-08)
+**Corpus** : 102 articles (P001-P102, excl. P088 doublon)
 
 ---
 
@@ -15,7 +15,7 @@
 
 | ID | Decouverte | RUN | Confiance | Fichier |
 |----|-----------|-----|-----------|---------|
-| D-001 | **Triple Convergence** : δ⁰ effacable (P039, preuve formelle P052) + δ¹ empoisonnable (P045, RAG P054/P055) + juges bypass 99% (P044, P049 100%) = les 3 premieres couches simultanement vulnerables. δ³ seul survivant. P057 ASIDE = seule reponse architecturale partielle. | RUN-002→003 | **10/10** | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
+| D-001 | **Triple Convergence** : δ⁰ effacable (P039, preuve formelle P052) + δ¹ empoisonnable (P045, RAG P054/P055) + juges bypass 99% (P044, P049 100%) = les 3 premieres couches simultanement vulnerables. δ³ seul survivant. **NUANCE TC-002 : la convergence est ANTAGONISTE, pas additive** — combiner les couches REDUIT l'ASR (δ¹ seul = 33% vs δ⁰+δ¹+δ² = 20% sur 70B). Score baisse de 10/10 a 8/10. | RUN-002→TC-002 | **8/10** | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
 | D-002 | **Gap δ³ medical** : La classe δ³ (enforcement externe post-output) est implementee dans CaMeL (DeepMind, arXiv:2503.18813), AgentSpec (ICSE 2026, arXiv:2503.18666), LlamaFirewall (Meta, arXiv:2505.03574). Cependant, AUCUN de ces systemes ne l'instancie dans le domaine chirurgical medical avec contraintes physiques (parametres physiologiques, outils interdits). AEGIS est le premier prototype connu dans ce domaine precis. P060 (SoK, IEEE S&P) confirme que δ³ est la couche la moins exploree. | RUN-001→005 | 8/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
 | D-003 | **Alignement effacable** : Un seul prompt suffit a desaligner 15 LLMs (P039, Microsoft). L'alignement n'est pas contournable — il est effacable. | RUN-002 | 9/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
 
@@ -41,6 +41,18 @@
 | D-014 | **Preuve formelle superficialite RLHF** : P052 (Cambridge) prouve par decomposition en martingale que le gradient RLHF est exactement I_t = Cov[E[H|x<=t], score_function]. I_t decroit rapidement au-dela des premiers tokens. C'est la preuve MATHEMATIQUE (vs. empirique P019) de C3. | RUN-003 | 10/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
 | D-015 | **ASIDE comme reponse architecturale partielle** : P057 (Zverev et al., suite de Sep(M) ICLR 2025) montre qu'une rotation orthogonale des embeddings de donnees separe instructions/donnees sans perte d'utilite. Premier mecanisme concret qui POURRAIT resoudre D-001, mais non deploye et non teste contre attaques adaptatives. | RUN-003 | 8/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
 | D-016 | **Degradation multi-tour medicale** : P050 (JMedEthicBench) montre une degradation de securite de 9.5 a 5.5 (p<0.001) sur 22 modeles au fil des tours. Les modeles specialises medicaux sont PLUS vulnerables que les generalistes. Cross-lingue (japonais-anglais). | RUN-003 | 9/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
+| D-017 | **Self-jailbreaking sans adversaire** : P092 (Yong & Bach 2025) montre que le reasoning training degrade directement l'alignement RLHF. ASR passe de 25% a 65% apres entrainement au raisonnement sur s1.1-32B (Figure 2, p. 4). Le modele genere ses propres justifications pour contourner ses gardes — forme la plus extreme du paradoxe raisonnement/securite (C7). Aucun adversaire externe requis. | RUN-005 | 9/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
+| D-018 | **Test-time compute scaling offensif** : P093 (Sabbaghi et al. 2025) demontre que le scaling du compute au moment du test s'applique aux attaques, pas seulement aux taches utiles. L'adversarial reasoning atteint 64% ASR (3x PAIR/TAP-T) avec transfert a 56% sur o1-preview. Le compute offensif bat le compute defensif — brisant l'hypothese implicite que plus de compute = plus de securite. | RUN-005 | 8/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
+| D-019 | **Signal de securite basse dimension dilutable** : P094 (Zhao et al. 2026) fournit la preuve mecanistique par activation probing que le signal de securite (direction de refus) occupe un sous-espace basse dimension qui se dilue monotoniquement avec la longueur du CoT. ASR 99% Gemini 2.5 Pro, 94% Claude 4 Sonnet, 100% Grok 3 Mini (Table 1, p. 3). Co-auteur Anthropic (Mrinank Sharma). Explication causale de C7. | RUN-005 | 10/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
+| D-020 | **Compliance partielle accumulatif multi-tour** : P095 (Tempest, tree search) et P096 (Mastermind, knowledge-driven 60% GPT-5, 89% R1) demontrent que les attaques multi-tour exploitent l'accumulation de compliances partielles. Chaque tour benin fait devier le modele de sa direction de refus. Le drift est monotone (P097 STAR) et mesurable. Le modele ne refuse jamais completement — il cede progressivement. | RUN-005 | 9/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
+| D-021 | **Knowledge repository adversarial auto-evolutif** : P096 (Mastermind, Ren et al. 2026) introduit un systeme multi-agent qui accumule autonomement des connaissances sur les succes et echecs d'attaque, puis adapte sa strategie. Le systeme s'auto-ameliore sans intervention humaine — premier exemple de red team autonome avec memoire persistante. Implication : les defenses statiques seront systematiquement depassees. | RUN-005 | 8/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
+| D-022 | **Paradoxe δ⁰/δ¹** : Effacer le prompt systeme (δ⁰) REDUIT l'efficacite du contexte empoisonne (δ¹). Sur 70B, δ¹ seul = 33% ASR mais δ⁰+δ¹ = 17% (TC-002, N=30, Groq llama-3.3-70b-versatile). Le prompt systeme est a la fois PROTECTION (instruction-following pour les regles) et VECTEUR (instruction-following pour le poison). Implication : la convergence des couches est antagoniste, pas additive — l'attaquant optimal doit choisir ses vecteurs, pas les combiner. | TC-002 | 8/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
+
+### HAUTE (renforce un argument majeur) — ajouts RUN-005
+
+| ID | Decouverte | RUN | Confiance | Fichier |
+|----|-----------|-----|-----------|---------|
+| D-004 | **Paradoxe raisonnement/securite** : La capacite de raisonnement des LRM correle negativement avec la securite. 97.14% ASR autonome (P036, Nature Comms). **RENFORCE RUN-005 : 8 papiers convergents (P087-P094), preuve mecanistique P094, confiance montee a 9.5/10.** | RUN-002→005 | **9.5/10** | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
 
 ---
 
@@ -51,6 +63,8 @@
 | RUN-001 | D-002, D-007, D-008, D-010, D-011 | — | 5 |
 | RUN-002 | D-001, D-003, D-004, D-005, D-006, D-009, D-012 | D-002 (confiance 9→10), D-008 (confiance 9→10) | 12 |
 | RUN-003 | D-013, D-014, D-015, D-016 | D-001 (confiance 9→10), D-002 (description enrichie 60 papers) | 16 |
+| RUN-005 | D-017, D-018, D-019, D-020, D-021 | D-004 (confiance 7→9.5, 8 papiers convergents), D-002 (description enrichie 102 papers) | 21 |
+| TC-002 | D-022 | D-001 (confiance 10→8, convergence antagoniste refute additivite) | 22 |
 
 ---
 

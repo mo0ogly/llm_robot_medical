@@ -70,8 +70,8 @@ All chains are registered via `@register_chain` decorator and can be listed with
 
 ### Frontend Coverage
 
-- **52 attack templates** with configurable variables (`attackTemplates.js`)
-- **52 help modals** with formal framework, mechanism, defense analysis (`ScenarioHelpModal.jsx`)
+- **98 attack templates** (97 numbered + 1 Custom placeholder) with configurable variables (`attackTemplates.js`)
+- **98 help modals** with formal framework, mechanism, defense analysis (`ScenarioHelpModal.jsx`)
 - **47 scenarios** (10 original + 37 kill-chain/solo) covering all 34 chains (`ScenarioTab.jsx`)
 - Each chain has at minimum 1 dedicated scenario for individual testing
 
@@ -93,6 +93,22 @@ All chains are registered via `@register_chain` decorator and can be listed with
 - `GET /api/redteam/telemetry/stream`: SSE real-time telemetry stream.
 - `GET /api/redteam/telemetry`: Telemetry buffer snapshot (JSON).
 - `GET /api/redteam/telemetry/health`: Telemetry subsystem health.
+- `GET /api/redteam/taxonomy`: CrowdStrike Prompt Injection Taxonomy (hierarchical, 95 techniques).
+- `GET /api/redteam/taxonomy/flat`: Flat list of all 95 taxonomy techniques.
+- `GET /api/redteam/taxonomy/coverage`: Coverage report — 95/95 techniques mapped to attack templates.
+- `GET /api/redteam/taxonomy/tree`: Tree-structured taxonomy (4 classes: Overt, Indirect, Social/Cognitive, Evasive).
+- `GET /api/redteam/defense/taxonomy`: Defense taxonomy — 66 techniques across 4 classes (Prevention, Detection, Response, Measurement).
+- `GET /api/redteam/defense/coverage`: Defense coverage report — 40/66 techniques implemented (60.6%).
+- `GET /api/redteam/defense/benchmark`: Guardrail benchmark — 6 industry guardrails (Hackett et al., 2025).
+- `GET /api/redteam/defense/sanitizer/capabilities`: RagSanitizer capabilities — 15 detectors, 12/12 character injection techniques.
+
+## Defense Taxonomy
+
+The `backend/taxonomy/defense.py` module provides a structured defense taxonomy: 66 techniques across 4 classes (Prevention, Detection, Response, Measurement). 40/66 techniques are currently implemented (60.6%). The `guardrail_benchmark.json` file contains benchmark data for 6 industry guardrail systems (Hackett et al., 2025).
+
+## CrowdStrike Taxonomy
+
+The `backend/taxonomy/` module provides full coverage of the CrowdStrike Prompt Injection Taxonomy (2025-11-01): 95/95 techniques across 4 classes. Each technique is mapped to one or more of the 97 attack templates, enabling systematic coverage verification.
 
 ## Sep(M) — Separation Score (Zverev et al. 2025)
 
@@ -111,6 +127,64 @@ Sep(M) = |P_data(violation) - P_instr(violation)|
 | Null control included | Recommended | Toggle in Campaign Parameters |
 
 **WARNING:** `Sep(M) = 0` with zero violations is a **statistical floor artifact**, not a separation measure. The function returns `statistically_valid: false` and `warnings` when conditions are not met.
+
+## Multi-Provider LLM Configuration
+
+AEGIS supports multiple LLM providers for cross-model testing (thesis requirement).
+
+### Provider Setup
+
+| Provider | Model | Setup | Usage |
+|----------|-------|-------|-------|
+| **Ollama** (default) | llama3.2:latest (3B) | `ollama serve` on port 11434 | Local, free, primary thesis model |
+| **Groq** | llama-3.3-70b-versatile | `GROQ_API_KEY` in `backend/.env` | Cloud, fast, cross-model validation |
+| **Groq** | llama-3.1-8b-instant | Same key | Small model comparison |
+
+### Groq Configuration
+
+1. Get API key at [console.groq.com](https://console.groq.com)
+2. Create `backend/.env`:
+```
+GROQ_API_KEY=gsk_your_key_here
+```
+3. The backend auto-detects the key and enables Groq in the provider list
+4. Select Groq models in the UI via the provider dropdown
+
+### Running Campaigns with Groq
+
+```bash
+# Triple Convergence on 70B (cross-model validation)
+MEDICAL_MODEL=llama-3.3-70b-versatile python backend/run_triple_convergence.py
+
+# Thesis campaign on 70B
+MEDICAL_MODEL=llama-3.3-70b-versatile python backend/run_thesis_campaign.py --n-trials 30
+```
+
+### Campaign Safeguards (anti-token-waste)
+
+`backend/campaign_safeguards.py` prevents sterile loops:
+- Max 3 iterations per campaign (hard limit)
+- Sterile loop detection (identical params between iterations = BLOCK)
+- Token budget per campaign (500K tokens max, ~$0.30 Groq)
+- Pre-check required (5 baseline runs before N>=30)
+- No-progress detection (2x INCONCLUSIVE without ASR improvement = WARN)
+
+```bash
+python backend/campaign_safeguards.py RAG-001  # Check before launch
+```
+
+### Campaign Manifest
+
+`research_archive/experiments/campaign_manifest.json` tracks all campaigns:
+- ID, gap, conjecture, script, iterations, verdicts
+- Auto-rerun if INCONCLUSIVE (max 3)
+- Escalation to human after max iterations
+
+### Model Deprecation Notes
+
+- `llama-3.1-70b-versatile` was decommissioned by Groq (April 2026)
+- Replaced by `llama-3.3-70b-versatile` (128K context, same API)
+- All config files updated: autogen_config.py, llm_factory.py, models_config.json
 
 ## Semantic Drift (Cosine Similarity)
 

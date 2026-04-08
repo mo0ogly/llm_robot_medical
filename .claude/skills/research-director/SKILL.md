@@ -81,7 +81,13 @@ Il le lit en premier. Il le met à jour en dernier.
 **HOOKS AUTOMATIQUES** : Au demarrage, verifier ces fichiers signal :
 - `_staging/scientist/PENDING_SCIENTIST_REVIEW.md` → si non vide, le SCIENTIST doit produire une note AVANT toute autre action
 - `_staging/audit-these/PENDING_AUDIT.md` → si non vide, lancer `lint_sources.py` sur les fiches listees AVANT de declarer done
-Ces fichiers sont remplis automatiquement par `batch_fiches.py` et `seed_fiches_to_rag.py` apres chaque production.
+- `_staging/signals/CAMPAIGN_COMPLETE` → si present, lancer `/experimentalist` pour analyser les resultats
+- `_staging/signals/CONJECTURE_VALIDATED_*` → si present, lancer `/thesis-writer` pour integrer dans le manuscrit
+- `_staging/signals/UNEXPECTED_FINDING_*` → si present, lancer `/bibliography-maintainer` cible avec la research_request generee
+- `_staging/signals/ESCALADE_HUMAINE` → si present, ARRETER et demander au user de decider
+- `research_archive/experiments/campaign_manifest.json` → verifier les campagnes PENDING et INCONCLUSIVE
+
+Ces fichiers sont remplis automatiquement par `batch_fiches.py`, `seed_fiches_to_rag.py`, et les skills `experimentalist`, `experiment-planner`.
 
 ---
 

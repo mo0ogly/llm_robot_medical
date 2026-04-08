@@ -179,7 +179,7 @@ def get_llm(temperature: float = 0.0, model: str | None = None, provider: str | 
                 "Set it: export GROQ_API_KEY=your_groq_api_key"
             )
         return ChatGroq(
-            model=model or os.getenv("GROQ_MODEL", "llama-3.1-70b-versatile"),
+            model=model or os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"),
             api_key=api_key,
             temperature=temperature,
             **kwargs,
@@ -259,14 +259,14 @@ def get_available_providers() -> list:
             "id": "groq",
             "name": "Groq Cloud",
             "status": "available",
-            "models": ["llama-3.1-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"],
+            "models": ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"],
         })
     else:
         providers.append({
             "id": "groq",
             "name": "Groq Cloud",
             "status": "no_api_key",
-            "models": ["llama-3.1-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"],
+            "models": ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"],
         })
     if os.getenv("OPENAI_COMPAT_BASE_URL"):
         providers.append({

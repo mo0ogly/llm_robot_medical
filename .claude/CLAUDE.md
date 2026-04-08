@@ -84,6 +84,9 @@ Tout texte visible : `t('key')` via react-i18next. JAMAIS de string hardcodee. T
 | Orchestration PDCA | `/research-director cycle` |
 | Nouveau prompt d'attaque | `/aegis-prompt-forge FORGE` |
 | Nouveau scenario | `/add-scenario` (6 agents) |
+| Analyse resultats campagne | `/experimentalist [experiment_id]` |
+| Gap vers campagne | `/experiment-planner [gap_id]` |
+| Resultats vers manuscrit | `/thesis-writer [conjecture_id]` |
 
 ## Notation δ — OBLIGATOIRE
 

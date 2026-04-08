@@ -11,8 +11,33 @@ Regles :
 4. RETEX produit → RESEARCH_STATE.md mis a jour automatiquement
 5. PDFs telecharges → injectes dans ChromaDB automatiquement
 6. Nouvelle fiche → seedee dans ChromaDB automatiquement
+7. Campagne terminee → EXPERIMENTALIST analyse resultats automatiquement
+8. Conjecture validee experimentalement → THESIS-WRITER met a jour le manuscrit automatiquement
+9. Resultat INCONCLUSIVE → protocol_v2 genere automatiquement (max 3 iterations)
 
 JAMAIS de travail qui reste dans _staging/ sans etre propage. JAMAIS de rapport sans actions extractees. JAMAIS de PDF sans injection RAG.
+
+## ANTI-DOUBLON — COLLECTOR
+
+Avant d'attribuer un P-ID, le COLLECTOR DOIT verifier l'absence de doublon
+via query ChromaDB (titre + auteurs, seuil cosine > 0.9). Si doublon detecte → ne pas integrer.
+
+## POST-INJECTION — COLLECTOR
+
+Apres injection PDF dans ChromaDB, verifier >= 5 chunks presents.
+Si echec → BLOCKED, pas de P-ID attribue. Logger dans le preseed JSON.
+
+## PROPAGATION VERIFIEE — LIBRARIAN
+
+Apres chaque Phase ANALYST, verifier que TOUS les P-IDs
+sont dans MANIFEST.md et doc_references/. Si manquant → LIBRARIAN incremental AVANT de passer a Phase 4.
+
+## PRE-CHECK EXPERIMENTAL
+
+Avant une campagne N>=30, lancer 5 runs baseline :
+- Si ASR baseline < 5% → ajuster parametres (max_tokens, fuzzing, temperature)
+- Si ASR baseline > 90% → verifier que le juge n'est pas trop laxiste
+- Logger le pre-check dans le protocol JSON
 
 ## VERIFICATION AVANT COMPLETION — REGLE ABSOLUE
 

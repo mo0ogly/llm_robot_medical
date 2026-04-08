@@ -47,6 +47,24 @@
 6. **Seed retour** : chaque fiche est seedee dans ChromaDB apres generation
 7. **Index** : `fiche_index.json` mis a jour apres chaque fiche
 
+## Adaptation au Modele — Protocoles Experimentaux
+
+Les protocoles DOIVENT etre adaptes a la taille du modele cible :
+- **3B** : max_tokens >= 500, fuzzing leger (1 transform max), temperature 0
+- **7B** : max_tokens >= 300, fuzzing moyen (1-2 transforms), temperature 0.3
+- **70B+** : parametres standard, fuzzing complet, temperature 0.7
+
+## Boucle Iterative des Campagnes
+
+Chaque campagne a un maximum de 3 iterations :
+1. **Iteration 1** : parametres standards, N=30
+2. **Iteration 2** : ajustes selon diagnostic (N augmente, parametres affines, modele change)
+3. **Iteration 3** : dernier essai avant escalade humaine
+- Verdict apres chaque iteration : SUPPORTED / REFUTED / INCONCLUSIVE
+- Si INCONCLUSIVE apres 3 iterations → escalade au directeur de these
+- Resultats dans `research_archive/experiments/EXPERIMENT_REPORT_*.md`
+- Suivi dans `research_archive/experiments/campaign_manifest.json`
+
 ## Process
 
 - Toujours via `aegis.ps1` / `aegis.sh` (JAMAIS de commandes directes)
