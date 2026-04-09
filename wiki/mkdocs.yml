@@ -10,15 +10,15 @@ theme:
   palette:
     - scheme: slate
       primary: red
-      accent: amber
+      accent: cyan
       toggle:
-        icon: material/brightness-4
+        icon: material/weather-sunny
         name: Mode clair
     - scheme: default
       primary: red
-      accent: amber
+      accent: cyan
       toggle:
-        icon: material/brightness-7
+        icon: material/weather-night
         name: Mode sombre
   font:
     text: Inter
@@ -30,13 +30,40 @@ theme:
     - navigation.expand
     - navigation.top
     - navigation.indexes
+    - navigation.footer
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
     - search.highlight
     - search.suggest
+    - search.share
     - content.code.copy
+    - content.code.annotate
     - content.tabs.link
+    - content.tooltips
     - toc.follow
+    - header.autohide
+    - announce.dismiss
   icon:
     repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+    admonition:
+      note: material/note-edit
+      abstract: material/book-open
+      info: material/information
+      tip: material/lightbulb-on
+      success: material/check-circle
+      question: material/help-circle
+      warning: material/alert
+      failure: material/close-circle
+      danger: material/skull
+      bug: material/shield-bug
+      example: material/test-tube
+      quote: material/format-quote-close
+
+extra_css:
+  - stylesheets/aegis.css
 
 repo_url: https://github.com/pizzif/poc_medical
 repo_name: pizzif/poc_medical
