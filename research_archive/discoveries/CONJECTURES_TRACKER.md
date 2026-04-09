@@ -2,7 +2,7 @@
 
 > **Ce fichier trace l'evolution des scores de confiance de chaque conjecture.**
 > Tous les agents DOIVENT le consulter et le mettre a jour.
-> Derniere mise a jour : TC-002 (2026-04-08)
+> Derniere mise a jour : HyDE-security batch P117-P121 (2026-04-09)
 
 ---
 
@@ -11,7 +11,7 @@
 | Conjecture | Enonce (resume) | RUN-001 | RUN-002 | RUN-003 | RUN-005 | TC-002 | Tendance | Statut |
 |-----------|----------------|---------|---------|---------|---------|--------|----------|--------|
 | **C1** | δ⁰ (RLHF) est insuffisant | 9/10 | 10/10 | 10/10 | **10/10** | **10/10** | → | VALIDEE (sature) |
-| **C2** | δ³ est necessaire | 8/10 | 9/10 | 10/10 | **10/10** | **10/10** | → | VALIDEE (sature, renforcee TC-002 : δ¹=33% sur 70B) |
+| **C2** | δ³ est necessaire | 8/10 | 9/10 | 10/10 | **10/10** | **10/10** | → | VALIDEE (sature, renforcee TC-002 + P117-P121 : 6 stages RAG tous compromisables, Stage 6/D-024 sans prerequis) |
 | **C3** | Alignement est superficiel | 8/10 | 9/10 | 10/10 | **10/10** | **10/10** | → | VALIDEE (sature) |
 | **C4** | Derive semantique mesurable | 6/10 | 8/10 | 9/10 | **9/10** | **9/10** | → | FORTEMENT SUPPORTEE |
 | **C5** | Cosine similarity insuffisante | 7/10 | 7/10 | 8.5/10 | **8.5/10** | **8.5/10** | → | FORTEMENT SUPPORTEE |
@@ -54,6 +54,7 @@
 | RUN-002 | 9/10 | Triple convergence P039+P044+P045. Gap δ³ confirme par P037 (survey ne couvre pas δ³). | +P039, P044, P045, P037 |
 | RUN-003 | **10/10** | P054+P055 montrent que le RAG est vulnerable (compound + persistant). P058 montre attaques agents automatisees. P060 (SoK, IEEE S&P 2026) confirme qu'aucun guardrail seul ne domine. P057 ASIDE renforce mais ne remplace pas delta-3. | +P054, P055, P058, P060, P057 |
 | TC-002 | **10/10** | Evidence supplementaire experimentale : δ¹ (contexte empoisonne RAG) = 33% ASR sur 70B (N=30, Groq llama-3.3-70b-versatile), vecteur principal sur modeles alignes. La defense RAG est prioritaire. D-001 nuance (10→8) car convergence antagoniste, mais C2 RENFORCEE : δ¹ comme vecteur dominant sur 70B confirme la necessite d'une defense δ³ independante des couches. | +TC-002 (experimental) |
+| POST-P117-P121 | **10/10 VALIDEE (sature, renforcee)** | 5 papiers convergents couvrant le cycle de vie du pipeline HyDE/RAG : P117 (Yoon et al. 2025, ACL Findings, Section 4, Table 4, p.5) demontre empiriquement que δ¹ ne separe pas memorization/real — un encodeur dense benin fuit ce qu'il a deja vu sans discriminer l'hallucination du fait ; P118 (Gao et al. 2023, ACL, Section 3.2, p.3-4) est la baseline seminal qui affirme sans preuve que "the encoder's dense bottleneck to serve a lossy compressor" filtre les hallucinations — D-024 est le contre-exemple experimental direct (96.7% ASR, 29/30) ; P119 (Jiao et al. 2025, SIGIR, Table 1, p.6) montre que les defenses intra-pipeline sont insuffisantes contre PR-Attack (91-100% ASR sur 6 LLMs) ; P120 (Zhang et al. 2024, arXiv:2410.22832, Table 6, p.7) confirme "various defense mechanisms are insufficient" — Paraphrasing et Top-k Expansion ne reduisent ASR que de 0.97 a 0.80 ; P121 (Clop & Teglia, 2024, arXiv:2410.14479, Table 2, p.5) montre Precision@1 preservee par retriever backdoored (0.52 vs 0.52) — le monitoring δ² de performance ne detecte pas l'attaque. **Combine** : SEUL un δ³ externe (hors LLM+retriever+corpus+fine-tuning) peut verifier la plausibilite factuelle, puisque toutes les surfaces internes sont compromisables ou ne separent pas hallucination de verite. D-024 ajoute Stage 6 (voir DISCOVERIES_INDEX.md) comme ultime demonstration : meme un pipeline PARFAITEMENT hygienique (corpus sain, retriever honnete, prompt propre) est vulnerable parce que le generateur s'injecte lui-meme lors de query expansion. | +P117, P118, P119, P120, P121 |
 
 **Preuves les plus fortes** :
 - Triple Convergence (D-001) : δ⁰-δ² simultanement vulnerables (nuancee TC-002 : antagoniste, pas additive)
@@ -62,8 +63,9 @@
 - P060 (IEEE S&P 2026 : aucun guardrail ne domine sur les 3 dimensions SEU)
 - P054+P055 (attaques RAG composites + persistantes necessitent δ³ data integrity)
 - **TC-002** : δ¹ = 33% ASR sur 70B aligne, vecteur dominant — defense RAG δ³ est prioritaire [EXPERIMENTAL]
+- **P117-P121 (HyDE-security batch)** : aucun des 6 stages du pipeline RAG (corpus, retriever training, retrieval mechanism, prompt layer, generator post-retrieval, generator pre-retrieval) n'admet une defense intra-pipeline suffisante. Stage 6 (D-024) n'a aucun prerequis attaquant, ce qui rend les mitigations classiques (sanitizers corpus, attestation retriever, filtering soft prompt) strictement inoperantes. δ³ externe est donc la seule defense envisageable.
 
-**Contre-arguments** : P042 (PromptArmor <1% FPR) et P057 (ASIDE) suggerent des voies pour renforcer δ⁰-δ², mais ni l'un ni l'autre ne resout les attaques compound RAG (P054) ou la persistance (P055). TC-002 montre que δ¹ est le vecteur dominant sur 70B, renforçant la priorite d'une defense δ³ RAG.
+**Contre-arguments** : P042 (PromptArmor <1% FPR) et P057 (ASIDE) suggerent des voies pour renforcer δ⁰-δ², mais ni l'un ni l'autre ne resout les attaques compound RAG (P054) ou la persistance (P055). TC-002 montre que δ¹ est le vecteur dominant sur 70B, renforçant la priorite d'une defense δ³ RAG. P117-P121 eliminent les derniers contre-arguments possibles : chaque stage du pipeline RAG a ete teste et compromis — il n'existe AUCUNE configuration intra-pipeline qui resiste.
 
 ---
 

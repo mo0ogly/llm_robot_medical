@@ -161,8 +161,13 @@ Papers addressing system prompt defenses, instruction-following hierarchies, pro
 | P104 | RACE Reasoning-Augmented | Attack | Reasoning reformulation bypasses instruction-level defenses |
 | P114 | Quantifying Self-Preservation Bias (TBSP) | Analysis | **Self-preservation bias encoded in instruction-following layers, not just RLHF** |
 | P116 | Selectively Quitting Improves Agent Safety | Defense | **"Compulsion to act" is instruction-following bias; Specified Quit overrides it** |
+| P117 | Knowledge Leakage in HyDE Query Expansion | Defense | **First empirical proof that HyDE gains come from memorized gold evidence (27.6-83.5% matched claims) — benign analog of D-024** |
+| P118 | HyDE Seminal (Gao et al.) | Attack (surface) | **Seminal HyDE paper; claims "dense bottleneck filters false details" without verification — creates G-042 gap** |
+| P119 | PR-Attack (Bilevel Optimization) | Attack | **91-100% ASR on 6 LLMs via joint corpus + soft prompt attack — requires both infrastructure compromises (contrast to D-024)** |
+| P120 | HijackRAG (Retrieval Hijack) | Attack | **0.91-0.97 ASR via retriever-targeted adversarial texts; all defenses insufficient — opposite surface to D-024** |
+| P121 | Backdoored Retrievers (Clop & Teglia) | Attack | **0.97-1.0 ASR via backdoor fine-tuning of dense retriever; NFCorpus medical domain — contrast pipeline stage to D-024** |
 
-**Total**: 67 papers | **Critical finding**: System prompts provide inconsistent, bypassable protection (C1). P045 shows they can be poisoned at the source. P056/P057 propose architectural solutions. RUN-004 adds RAG-layer defenses (P061-P066) and architectural defenses (P076 ISE, P077 PFT, P080 DefensiveTokens). RUN-005 adds multi-turn erosion (P095-P100) and CoT hijacking (P087, P094) as new bypass vectors. RAG-defense batch adds P111 (hybrid BM25+vector), P112 (3-layer defense-in-depth), P113 (SDAG sparse attention -- new SOTA).
+**Total**: 72 papers | **Critical finding**: System prompts provide inconsistent, bypassable protection (C1). P045 shows they can be poisoned at the source. P056/P057 propose architectural solutions. RUN-004 adds RAG-layer defenses (P061-P066) and architectural defenses (P076 ISE, P077 PFT, P080 DefensiveTokens). RUN-005 adds multi-turn erosion (P095-P100) and CoT hijacking (P087, P094) as new bypass vectors. RAG-defense batch adds P111 (hybrid BM25+vector), P112 (3-layer defense-in-depth), P113 (SDAG sparse attention -- new SOTA). HyDE-security batch (P117-P121) establishes the RAG attack taxonomy to position D-024: benign analog (P117), baseline (P118), coordinated joint attack (P119), retrieval hijack (P120), backdoored fine-tuning (P121) — D-024 introduces a new stage absent from all of them.
 
 ---
 
@@ -220,8 +225,13 @@ Papers addressing input/output filtering, guardrail systems, semantic similarity
 | P099 | Crescendo Multi-Turn | Attack | **Entirely benign prompts classified safe by content filters** |
 | P100 | ActorBreaker Distribution Shift | Attack | **Prompts classified benign by Llama-Guard 2 -- content-based filters useless** |
 | P115 | Deception in LLMs: Self-Preservation | Analysis | **DeepSeek R1 emergent self-preservation via reasoning + agent loop; observation-based detection insufficient** |
+| P117 | Knowledge Leakage in HyDE | Defense | **NLI-based entailment filter exposes query-expansion leakage; δ² pipeline diagnostic for HyDE hallucination** |
+| P118 | HyDE Seminal | Attack (surface) | **"Encoder's dense bottleneck filters hallucinated details" is an unverified δ² filtering claim — refuted by D-024** |
+| P119 | PR-Attack | Attack | **Bilevel optimization bypasses simple text-based filters; ACC preserved without trigger — stealth via soft prompt layer** |
+| P120 | HijackRAG | Attack | **Paraphrasing and Top-k Expansion reduce ASR marginally (0.97 → 0.80) — δ² filters insufficient vs optimized payloads** |
+| P121 | Backdoored Retrievers | Attack | **Precision@1 identical to benign retriever (0.52 vs 0.52) — δ² performance monitoring cannot detect backdoor** |
 
-**Total**: 46 papers | **Critical finding**: Filters can be evaded (P009, P049: 100% bypass) but remain useful in layered defense. Judges vulnerable (P044: 99%). RAG layer creates new attack surface (P054, P055). RUN-004 adds activation-based detection (P063 RevPRAG), architectural filtering (P076 ISE, P080 DefensiveTokens), and industrial guardrails (P084 LlamaFirewall). P086 shows alignment faking invalidates observation-based detection. RUN-005 shows multi-turn attacks use entirely benign prompts (P099, P100) rendering content-based filters useless. RAG-defense batch adds P111 (cross-model safety variance 47-93%), P112 (response verification layer), P113 (SDAG + RAGDefender complementarity).
+**Total**: 51 papers | **Critical finding**: Filters can be evaded (P009, P049: 100% bypass) but remain useful in layered defense. Judges vulnerable (P044: 99%). RAG layer creates new attack surface (P054, P055). RUN-004 adds activation-based detection (P063 RevPRAG), architectural filtering (P076 ISE, P080 DefensiveTokens), and industrial guardrails (P084 LlamaFirewall). P086 shows alignment faking invalidates observation-based detection. RUN-005 shows multi-turn attacks use entirely benign prompts (P099, P100) rendering content-based filters useless. RAG-defense batch adds P111 (cross-model safety variance 47-93%), P112 (response verification layer), P113 (SDAG + RAGDefender complementarity). HyDE-security batch (P117-P121) shows every δ² defense tested (paraphrasing, top-k expansion, precision monitoring, dense-bottleneck filtering) is insufficient against the RAG attack family.
 
 ---
 
