@@ -25,6 +25,12 @@ class Scenario:
     clinical_context: str = ""
     expected_impact: str = ""
     allowed_output_spec: Optional[dict] = None
+    # Help metadata (Design X pragmatic - Scenario model refactoring 2026-04-09)
+    # Structure: {title, icon, conjecture, severity, description, formal,
+    #             mechanism, expected, defense, svcBreakdown, mitre, chainId}
+    # Served by GET /api/redteam/scenario-help/{id} to the frontend modal.
+    help: Dict[str, Any] = field(default_factory=dict)
+    help_md_path: str = ""  # optional detailed doc in prompts/*.md
 
 
 @dataclass
@@ -55,7 +61,346 @@ class ScenarioResult:
 # Catalogue of 47 scenarios (10 original + 37 kill-chain/solo)
 # ---------------------------------------------------------------------------
 
+
+
+def _load_template_from_json(filename: str) -> str:
+    """Load the 'template' field from backend/prompts/<filename>.
+
+    Used by gap4 ablation autogen SCENARIO_CATALOG entries to load adversarial
+    templates at scenario-construction time rather than embedding them as
+    verbatim string literals in scenarios.py.
+
+    Added 2026-04-09 RUN-008 to enable gap4-v2 ablation scenario registration
+    after the generator patch failed with NameError. Content filter rationale:
+    this helper keeps templates in backend/prompts/*.json where they can be
+    audited in isolation, rather than flattening them into scenarios.py where
+    they would mix with the 3400+ lines of the main catalog.
+
+    The function is called at module import time by each gap4 Scenario(...)
+    constructor. Failures (file not found, missing 'template' key) raise
+    clear exceptions so that misconfigured prompts are detected at startup,
+    not at attack execution time.
+
+    Args:
+        filename: basename of the JSON file in backend/prompts/
+                  (e.g. "108-gap4-v2-carrier-full.json")
+
+    Returns:
+        The 'template' field of the JSON file as a string.
+
+    Raises:
+        FileNotFoundError: if the JSON file does not exist
+        KeyError: if the JSON has no 'template' field
+    """
+    import json
+    import os
+
+    prompts_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "prompts"
+    )
+    path = os.path.join(prompts_dir, filename)
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if "template" not in data:
+        raise KeyError(
+            "Prompt file " + filename + " has no 'template' field"
+        )
+    return data["template"]
+
+
 SCENARIO_CATALOG: List[Scenario] = [
+# BEGIN_GAP4_ABLATION_AUTOGEN — managed by backend/tools/gap4_ablation_generator.py — do not edit by hand
+# 14 scenarios for GAP 4 homoglyph ablation experiment (v1 intent-driven + v2 carrier-driven)
+# Source of truth: backend/tools/gap4_ablation_generator.py
+# Regenerate with: python backend/tools/gap4_ablation_generator.py --family all
+# Rollback with:   python backend/tools/gap4_ablation_generator.py --rollback
+
+    # ---- Family v1 ----
+    Scenario(
+        id="gap4_v1_homoglyph_full",
+        name="GAP 4 Ablation (v1 Intent-Driven): δ² Full Homoglyph Substitution",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/11-gap4-v1-homoglyph-full.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="full_substitution",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/11-gap4-v1-homoglyph-full.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("11-gap4-v1-homoglyph-full.json"),
+                objective="Measure ASR for ablation role full_substitution in family v1_intent_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v1_homoglyph_toolname",
+        name="GAP 4 Ablation (v1 Intent-Driven): δ² Partial Homoglyph (Tool Name Only)",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/98-gap4-v1-homoglyph-toolname.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="partial_toolname",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/98-gap4-v1-homoglyph-toolname.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("98-gap4-v1-homoglyph-toolname.json"),
+                objective="Measure ASR for ablation role partial_toolname in family v1_intent_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v1_homoglyph_hybrid",
+        name="GAP 4 Ablation (v1 Intent-Driven): δ⁰+δ² Hybrid Homoglyph (50% Substitution)",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/99-gap4-v1-homoglyph-hybrid.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="hybrid_mix",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/99-gap4-v1-homoglyph-hybrid.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("99-gap4-v1-homoglyph-hybrid.json"),
+                objective="Measure ASR for ablation role hybrid_mix in family v1_intent_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v1_homoglyph_nfkc_defense",
+        name="GAP 4 Ablation (v1 Intent-Driven): δ² Full Homoglyph vs NFKC Defense",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/100-gap4-v1-homoglyph-nfkc-defense.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="defense_test",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/100-gap4-v1-homoglyph-nfkc-defense.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("100-gap4-v1-homoglyph-nfkc-defense.json"),
+                objective="Measure ASR for ablation role defense_test in family v1_intent_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v1_baseline_control",
+        name="GAP 4 Ablation (v1 Intent-Driven): Baseline Control (Clean Clinical Query)",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/104-gap4-v1-baseline-control.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="control",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/104-gap4-v1-baseline-control.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("104-gap4-v1-baseline-control.json"),
+                objective="Measure ASR for ablation role control in family v1_intent_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v1_homoglyph_verbs",
+        name="GAP 4 Ablation (v1 Intent-Driven): δ² Partial Homoglyph (Bypass Verbs Only)",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/105-gap4-v1-homoglyph-verbs.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="partial_verbs",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/105-gap4-v1-homoglyph-verbs.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("105-gap4-v1-homoglyph-verbs.json"),
+                objective="Measure ASR for ablation role partial_verbs in family v1_intent_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v1_homoglyph_grammar",
+        name="GAP 4 Ablation (v1 Intent-Driven): δ² Partial Homoglyph (Grammar Words Only)",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/106-gap4-v1-homoglyph-grammar.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="partial_grammar",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/106-gap4-v1-homoglyph-grammar.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("106-gap4-v1-homoglyph-grammar.json"),
+                objective="Measure ASR for ablation role partial_grammar in family v1_intent_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+
+    # ---- Family v2 ----
+    Scenario(
+        id="gap4_v2_baseline_control",
+        name="GAP 4 Ablation (v2 Carrier-Driven): Baseline Control (Clean Clinical Query)",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/107-gap4-v2-baseline-control.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="control",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/107-gap4-v2-baseline-control.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("107-gap4-v2-baseline-control.json"),
+                objective="Measure ASR for ablation role control in family v2_carrier_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v2_carrier_full",
+        name="GAP 4 Ablation (v2 Carrier-Driven): δ² Full Homoglyph Substitution",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/108-gap4-v2-carrier-full.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="full_substitution",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/108-gap4-v2-carrier-full.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("108-gap4-v2-carrier-full.json"),
+                objective="Measure ASR for ablation role full_substitution in family v2_carrier_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v2_carrier_toolname",
+        name="GAP 4 Ablation (v2 Carrier-Driven): δ² Partial Homoglyph (Tool Name Only)",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/109-gap4-v2-carrier-toolname.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="partial_toolname",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/109-gap4-v2-carrier-toolname.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("109-gap4-v2-carrier-toolname.json"),
+                objective="Measure ASR for ablation role partial_toolname in family v2_carrier_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v2_carrier_verbs",
+        name="GAP 4 Ablation (v2 Carrier-Driven): δ² Partial Homoglyph (Bypass Verbs Only)",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/110-gap4-v2-carrier-verbs.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="partial_verbs",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/110-gap4-v2-carrier-verbs.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("110-gap4-v2-carrier-verbs.json"),
+                objective="Measure ASR for ablation role partial_verbs in family v2_carrier_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v2_carrier_grammar",
+        name="GAP 4 Ablation (v2 Carrier-Driven): δ² Partial Homoglyph (Grammar Words Only)",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/111-gap4-v2-carrier-grammar.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="partial_grammar",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/111-gap4-v2-carrier-grammar.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("111-gap4-v2-carrier-grammar.json"),
+                objective="Measure ASR for ablation role partial_grammar in family v2_carrier_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v2_carrier_hybrid",
+        name="GAP 4 Ablation (v2 Carrier-Driven): δ⁰+δ² Hybrid Homoglyph (50% Substitution)",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/112-gap4-v2-carrier-hybrid.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="hybrid_mix",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/112-gap4-v2-carrier-hybrid.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("112-gap4-v2-carrier-hybrid.json"),
+                objective="Measure ASR for ablation role hybrid_mix in family v2_carrier_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+    Scenario(
+        id="gap4_v2_carrier_nfkc_defense",
+        name="GAP 4 Ablation (v2 Carrier-Driven): δ² Full Homoglyph vs NFKC Defense",
+        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/113-gap4-v2-carrier-nfkc-defense.md",
+        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection
+        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",
+        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",
+        steps=[
+            ScenarioStep(
+                name="defense_test",
+                attack_type="injection",
+                # Template loaded at runtime from backend/prompts/113-gap4-v2-carrier-nfkc-defense.json
+                # to keep adversarial payload out of source code (content filter safety)
+                message=_load_template_from_json("113-gap4-v2-carrier-nfkc-defense.json"),
+                objective="Measure ASR for ablation role defense_test in family v2_carrier_driven",
+                variables={},
+                chain_id="",
+            ),
+        ],
+    ),
+
+# END_GAP4_ABLATION_AUTOGEN
+
     # 1. Ligature Compromise
     Scenario(
         id="ligature_compromise",

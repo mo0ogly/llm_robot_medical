@@ -46,6 +46,26 @@
             "command": "node .claude/hooks/secret-scanner.cjs"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/file_size_check.cjs"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session_primer.sh"
+          }
+        ]
       }
     ]
   }

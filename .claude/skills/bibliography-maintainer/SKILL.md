@@ -44,6 +44,24 @@ autonomous agentic loop (DECOMPOSE -> PLAN -> ACT -> OBSERVE -> EVALUATE -> REPL
 ### Agent Memory Protocol
 
 **BEFORE starting work**, every agent MUST:
+
+**STEP 0 — MANDATORY anti-doublon pre-check** (added 2026-04-09 after RUN-008 Crescendo incident)
+
+For any paper / reference with an arXiv ID that the agent is about to verify, analyze, inject, or attribute a P-ID to, **run the dedup check first**:
+
+```bash
+python backend/tools/check_corpus_dedup.py <arxiv_id> [<arxiv_id> ...]
+```
+
+- Exit 0 `[NEW]` → proceed with full verification and analysis pipeline
+- Exit 1 `[DUPLICATE] as PXXX` → **STOP**. The corpus version PXXX is authoritative. Reference PXXX directly. Do NOT re-verify via WebFetch. Do NOT create a new P-ID. Do NOT re-inject into ChromaDB.
+- Exit 2 `[ERROR]` → diagnose (MANIFEST missing, needle too short) before proceeding.
+
+For papers without an arXiv ID (conference proceedings, non-preprint journals), use the `--title` fallback: `python backend/tools/check_corpus_dedup.py --title "<distinctive substring, >= 12 chars>"`.
+
+This step is required for COLLECTOR, ANALYST, LIBRARIAN, and any scoped verification sub-agent. Skipping it caused a real incident on 2026-04-09 where Crescendo (arXiv:2404.01833, already P099) was re-verified in a scoped bibliography-maintainer run.
+
+Then proceed with the standard protocol:
 1. Read `MEMORY_STATE.md` to understand current state
 2. Read `discoveries/DISCOVERIES_INDEX.md` to know current discoveries
 3. Read the specific discovery files relevant to their role (see Discoveries Protocol below)
