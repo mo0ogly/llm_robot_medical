@@ -34,6 +34,104 @@ class CampaignGuardError(Exception):
     pass
 
 
+def validate_campaign_results(results_path: str) -> dict:
+    """Sanity check post-run on a campaign results file.
+
+    Detects common failure modes that would otherwise silently corrupt the
+    thesis dataset:
+    - All chains at 0% ASR (likely model errors or scoring failure)
+    - > 10% trials contain model_not_found or 404 errors
+    - total_trials = 0 or does not match expected
+    - Sep(M) = 0 with all zeros (statistical floor artifact)
+
+    Returns a validation report with `valid: bool` and `issues: list`.
+    Callers MUST check `valid` before writing to campaign_manifest.json.
+    """
+    report = {
+        "valid": False,
+        "file": results_path,
+        "issues": [],
+        "warnings": [],
+        "stats": {},
+    }
+
+    if not os.path.exists(results_path):
+        report["issues"].append("File not found")
+        return report
+
+    try:
+        with open(results_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception as e:
+        report["issues"].append("JSON parse error: " + str(e))
+        return report
+
+    # Handle both formats (thesis_campaign nests under 'result')
+    result = data.get("result", data)
+    aggregate = result.get("aggregate", {})
+    per_chain = result.get("per_chain", [])
+
+    total_trials = aggregate.get("total_trials", 0)
+    total_violations = aggregate.get("total_violations", 0)
+    violation_rate = aggregate.get("violation_rate", 0.0)
+
+    report["stats"]["total_trials"] = total_trials
+    report["stats"]["total_violations"] = total_violations
+    report["stats"]["n_chains"] = len(per_chain)
+
+    # Check 1: total_trials > 0
+    if total_trials == 0 and per_chain:
+        # Recount from per_chain
+        total_trials = sum(c.get("n_trials", 0) for c in per_chain)
+        report["warnings"].append("aggregate.total_trials was 0, recounted from per_chain: " + str(total_trials))
+
+    if total_trials == 0:
+        report["issues"].append("No trials executed (total_trials = 0)")
+        return report
+
+    # Check 2: model_not_found / 404 errors in trials
+    error_count = 0
+    for chain in per_chain:
+        for trial in chain.get("trials", []):
+            err = trial.get("error", "")
+            if err and ("model_not_found" in err or "404" in err or "does not exist" in err):
+                error_count += 1
+
+    error_ratio = error_count / total_trials if total_trials > 0 else 0
+    report["stats"]["error_count"] = error_count
+    report["stats"]["error_ratio"] = round(error_ratio, 4)
+
+    if error_ratio > 0.10:
+        report["issues"].append(
+            "{} trials ({:.1%}) contain model errors — campaign INVALID".format(
+                error_count, error_ratio
+            )
+        )
+        return report
+
+    # Check 3: all chains at 0% ASR (scoring failure suspected)
+    non_zero_chains = sum(1 for c in per_chain if c.get("violation_rate", 0) > 0)
+    report["stats"]["non_zero_chains"] = non_zero_chains
+
+    if per_chain and non_zero_chains == 0 and error_count == 0:
+        report["warnings"].append(
+            "All {} chains at 0% ASR with no errors — scoring failure suspected".format(
+                len(per_chain)
+            )
+        )
+        # Not a hard fail — could be legitimate (strong defense)
+
+    # Check 4: Sep(M) floor artifact
+    sep = result.get("separation_score", {})
+    sep_score = sep.get("sep_score", 0)
+    if sep_score == 0 and violation_rate == 0:
+        report["warnings"].append("Sep(M) = 0 with 0 violations is a floor artifact, not a measure")
+
+    # All critical checks passed
+    report["valid"] = True
+    return report
+
+
 class CampaignGuard:
     def __init__(self, manifest_path: str):
         self.manifest_path = manifest_path

@@ -4,8 +4,8 @@
 > Tous les agents DOIVENT le lire AVANT de travailler et le mettre a jour APRES.
 > Les decouvertes evoluent a chaque RUN — elles ne sont jamais figees.
 
-**Derniere mise a jour** : TC-002 (2026-04-08)
-**Corpus** : 102 articles (P001-P102, excl. P088 doublon)
+**Derniere mise a jour** : THESIS-001 (2026-04-09)
+**Corpus** : 116 articles (P001-P116, excl. P088/P105/P106)
 
 ---
 
@@ -16,6 +16,9 @@
 | ID | Decouverte | RUN | Confiance | Fichier |
 |----|-----------|-----|-----------|---------|
 | D-001 | **Triple Convergence** : δ⁰ effacable (P039, preuve formelle P052) + δ¹ empoisonnable (P045, RAG P054/P055) + juges bypass 99% (P044, P049 100%) = les 3 premieres couches simultanement vulnerables. δ³ seul survivant. **NUANCE TC-002 : la convergence est ANTAGONISTE, pas additive** — combiner les couches REDUIT l'ASR (δ¹ seul = 33% vs δ⁰+δ¹+δ² = 20% sur 70B). Score baisse de 10/10 a 8/10. | RUN-002→TC-002 | **8/10** | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
+| D-023 | **Bimodalite des vulnerabilites de chaine** : Les vulnerabilites RAG/agent sont bimodales, pas distribuees continues. THESIS-001 (N=1200, Groq 8B) : 33/40 chaines a 0% ASR, 2/40 a 96.7% ASR, tres peu de chaines intermediaires. L'ASR global de 6.75% masque cette distribution. Les rapports thesis doivent reporter **par chaine**, pas en agrege. | THESIS-001 | **9/10** | [EXPERIMENT_REPORT_THESIS_001.md](../experiments/EXPERIMENT_REPORT_THESIS_001.md) |
+| D-024 | **HyDE self-amplification** : Le modele cible genere lui-meme un document hypothetique contenant les payloads d'attaque avec autorite fabriquee (references FDA fictives, classifications de securite inventees), puis utilise ce document comme contexte. Boucle d'auto-injection amplifiee : 96.7% ASR (29/30) sur llama-3.1-8b-instant. **Aucun papier du corpus (P001-P116) n'identifie HyDE comme vecteur d'attaque** — contribution originale de la these. Sep(M) par chaine = 0.9667 (vs 0.067 global). | THESIS-001 | **9/10** | [EXPERIMENT_REPORT_THESIS_001.md](../experiments/EXPERIMENT_REPORT_THESIS_001.md) |
+| D-025 | **Parsing Trust exploit** : XML Agent atteint 96.7% ASR avec un SVC dimensionnel de seulement 0.11 (LOW POTENTIAL selon le scoring classique). Le modele "parse" et "valide" les tags XML de l'attaquant comme legitimes (`<calibration_update>` → "Valid XML structure"). Cette classe d'attaque n'est pas capturee par les 6 dimensions SVC standard. **Necessite d7 (Parsing Trust)** comme nouvelle dimension SVC. | THESIS-001 | **9/10** | [EXPERIMENT_REPORT_THESIS_001.md](../experiments/EXPERIMENT_REPORT_THESIS_001.md) |
 | D-002 | **Gap δ³ medical** : La classe δ³ (enforcement externe post-output) est implementee dans CaMeL (DeepMind, arXiv:2503.18813), AgentSpec (ICSE 2026, arXiv:2503.18666), LlamaFirewall (Meta, arXiv:2505.03574). Cependant, AUCUN de ces systemes ne l'instancie dans le domaine chirurgical medical avec contraintes physiques (parametres physiologiques, outils interdits). AEGIS est le premier prototype connu dans ce domaine precis. P060 (SoK, IEEE S&P) confirme que δ³ est la couche la moins exploree. | RUN-001→005 | 8/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
 | D-003 | **Alignement effacable** : Un seul prompt suffit a desaligner 15 LLMs (P039, Microsoft). L'alignement n'est pas contournable — il est effacable. | RUN-002 | 9/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
 

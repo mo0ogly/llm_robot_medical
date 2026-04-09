@@ -126,6 +126,18 @@
 
 ---
 
+### PRIORITE 7 — Gaps identifies post-THESIS-001 (2026-04-09)
+
+| ID | Gap | Evidence du gap | Avantage AEGIS | Statut |
+|----|-----|----------------|---------------|--------|
+| G-042 | **Pas de defense contre HyDE self-amplification** | Aucun papier du corpus (P001-P116) n'identifie HyDE comme vecteur d'attaque. THESIS-001 montre 96.7% ASR (29/30, IC [83.3%, 99.4%]) sur llama-3.1-8b-instant. Le modele fabrique lui-meme des documents d'autorite (FDA fictive, classifications inventees) et les utilise comme contexte. | AEGIS est le premier a documenter et defendre contre ce vecteur. Contribution originale D-024. | OUVERT — CRITIQUE |
+| G-043 | **SVC ne capture pas Parsing Trust** | XML Agent a SVC=0.11 (LOW POTENTIAL) mais ASR=96.7%. Le scoring SVC 6 dimensions evalue des dimensions sociales (autorite, urgence, contexte) mais rate l'exploit parsing-as-trust. | Ajouter d7 (Parsing Trust) comme 7eme dimension SVC. Contribution methodologique. | ACTIONNABLE |
+| G-044 | **RagSanitizer pattern-based insuffisant** | RAG-001, RAG-002 et THESIS-001 convergent : le sanitizer pattern-matching actuel laisse passer 96.7% des attaques HyDE. Les payloads sont paraphrases par le modele avant d'etre scannes. | Implementer RagSanitizer v2 embedding-based (detection semantique). | ACTIONNABLE |
+| G-045 | **Defense generique ne fonctionne pas** | THESIS-001 montre une bimodalite extreme (D-023) : 33 chaines a 0% ASR, 2 a 96.7%. Une defense generique ne peut pas optimiser simultanement pour hyde et xml_agent qui ont des mecanismes radicalement differents. | Defense-per-chain architecture : oracle deterministe pour hyde, whitelist de tags pour xml_agent. | A CONCEVOIR |
+| G-046 | **Pas de sanity check post-run** | Le run THESIS-001 v2 (pre-fix AG2 multi-provider) a produit 1200 trials avec 100% erreurs `model_not_found` mais a ete enregistre comme `PENDING_ANALYSIS` dans le manifest. Les safeguards actuels ne detectent pas ce type d'echec. | Ajouter sanity check post-run : flag INVALID si > 10% trials contiennent model errors ou 0% chains ont ASR > 0. | ACTIONNABLE |
+
+---
+
 ## Gaps Fermes
 
 | ID | Gap | Ferme par | RUN |
