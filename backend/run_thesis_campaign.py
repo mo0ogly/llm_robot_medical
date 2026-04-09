@@ -57,6 +57,9 @@ def _detect_provider() -> str:
         or "llama-3.3" in MODEL_NAME
         or "llama-3.1" in MODEL_NAME
         or "mixtral" in MODEL_NAME
+        or "qwen" in MODEL_NAME.lower()
+        or "gemma" in MODEL_NAME.lower()
+        or "deepseek" in MODEL_NAME.lower()
     ):
         return "groq"
     return "ollama"
