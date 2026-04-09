@@ -54,6 +54,26 @@ Les protocoles DOIVENT etre adaptes a la taille du modele cible :
 - **7B** : max_tokens >= 300, fuzzing moyen (1-2 transforms), temperature 0.3
 - **70B+** : parametres standard, fuzzing complet, temperature 0.7
 
+## Multi-Provider LLM — Regle Absolue
+
+**Tout agent AG2 (ConversableAgent) DOIT accepter `provider` et `model` en parametres.**
+
+Regles :
+1. **Propagation integrale** : si l'orchestrateur recoit `provider=groq`, TOUS les agents (RedTeam, Medical, SecurityAudit, AdaptiveAttacker, GroupChatManager) DOIVENT recevoir le meme provider. Jamais de fallback cache sur Ollama.
+2. **Pas de modele hardcode specifique au provider** : `CYBER_MODEL = "saki007ster/CybersecurityRiskAnalyst:latest"` n'existe que sur Ollama. Quand `provider != "ollama"`, utiliser `MEDICAL_MODEL` en fallback.
+3. **Signature obligatoire** : `def create_XXX_agent(provider: str = None, model: str = None) -> ConversableAgent`
+4. **Verification** : avant lancement, `grep -c "groq.com.*200 OK"` vs `grep -c "11434"` dans les logs. Si mix provider detecte → BLOQUER.
+
+### RETEX 2026-04-08 — THESIS-001 gele 3h
+
+**Symptome** : THESIS-001 bloque a 115 appels Groq avec retry loop Ollama (500 errors).
+
+**Cause** : `orchestrator.py` passait `provider=groq` uniquement au `medical_agent`. Les 3 autres agents (`red_team_agent`, `security_audit_agent`, `adaptive_attacker`) tombaient sur Ollama par defaut. Quand Ollama devenait instable, le GroupChat AG2 restait bloque en retry sur `security_audit_agent`.
+
+**Fix** : propager `provider/model` a tous les `create_*_agent()` + fallback `CYBER_MODEL → MEDICAL_MODEL` quand provider cloud.
+
+**Lecon** : AG2 multi-agent = multi-config LLM. Chaque `ConversableAgent` a sa propre `llm_config`. Les scripts directs (`call_llm()`) sont plus robustes car mono-provider par design.
+
 ## Boucle Iterative des Campagnes
 
 Chaque campagne a un maximum de 3 iterations :

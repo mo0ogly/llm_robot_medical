@@ -15,6 +15,7 @@ from agents.prompts import MEDICAL_PROMPTS, REDTEAM_PROMPTS, AEGIS_PROMPTS
 from agents.security_audit_agent import (
     score_response, compute_separation_score, wilson_ci,
     compute_svc, AllowedOutputSpec, DEFAULT_SPEC,
+    compute_delta0_attribution, validate_output,
 )
 import re
 import math
@@ -163,21 +164,46 @@ def _round_robin_speaker(last_speaker, groupchat):
 class RedTeamOrchestrator:
     """Orchestrateur principal du pipeline de red-teaming."""
 
-    def __init__(self, max_rounds: int = 15, levels: dict = None, lang: str = "en", aegis_shield: bool = False):
+    def __init__(self, max_rounds: int = 15, levels: dict = None, lang: str = "en",
+                 aegis_shield: bool = False, provider: str = None, model: str = None):
+        """Initialize the red-teaming orchestrator.
+
+        Args:
+            max_rounds: Maximum rounds for GroupChat.
+            levels: Difficulty levels for each agent role.
+            lang: Language code (en, fr, br).
+            aegis_shield: Enable AEGIS structural separation shield.
+            provider: LLM provider override (ollama, groq, openai, openai-compatible, anthropic).
+                      If None, uses default Ollama. Applies to AG2 GroupChatManager and
+                      future LangChain-based operations (delta0 protocol, campaigns).
+            model: Model name override. If None, uses provider default.
+        """
         if levels is None:
             levels = {"medical": "normal", "redteam": "normal", "security": "normal"}
-        
+
         self.levels = levels
         self.lang = lang
         self.aegis_shield = aegis_shield
-        self.red_team_agent = create_red_team_agent()
+        self.provider = provider
+        self.model = model
+        # All agents use the same provider to avoid mixed Ollama/Groq issues
+        # (RETEX 2026-04-08: THESIS-001 blocked because red_team + security used Ollama
+        #  while medical used Groq — Ollama 500 errors froze the pipeline)
+        self.red_team_agent = create_red_team_agent(provider=provider, model=model)
         self.red_team_agent.update_system_message(REDTEAM_PROMPTS.get(lang, REDTEAM_PROMPTS["en"]).get(levels.get("redteam", "normal")))
-        
-        self.medical_agent = create_medical_robot_agent()
+
+        # Target agent uses the selected provider/model (cross-model research, Protocol P-delta-0)
+        # meditron:7b/70b -> no RLHF alignment -> delta-0 baseline (expected ASR ~ 80-100%)
+        # llama3.2/groq -> RLHF-aligned -> delta-0 dominant (expected ASR ~ 0-20%)
+        self.medical_agent = create_medical_robot_agent(provider=provider, model=model)
         self.medical_agent.update_system_message(MEDICAL_PROMPTS.get(lang, MEDICAL_PROMPTS["en"]).get(levels.get("medical", "normal")))
-        
-        self.security_agent = create_security_audit_agent()
+
+        self.security_agent = create_security_audit_agent(provider=provider, model=model)
         self.security_agent.update_system_message(AEGIS_PROMPTS.get(lang, AEGIS_PROMPTS["en"]).get(levels.get("security", "normal")))
+
+        # Determine model for AG2 GroupChatManager
+        _manager_model = model or MEDICAL_MODEL
+        _llm_cfg = get_llm_config(_manager_model, provider=provider)
 
         self.groupchat = GroupChat(
             agents=[self.red_team_agent, self.medical_agent, self.security_agent],
@@ -188,10 +214,10 @@ class RedTeamOrchestrator:
 
         self.manager = GroupChatManager(
             groupchat=self.groupchat,
-            llm_config=get_llm_config(MEDICAL_MODEL),
+            llm_config=_llm_cfg,
         )
 
-        self.adaptive_attacker = create_adaptive_attacker_agent()
+        self.adaptive_attacker = create_adaptive_attacker_agent(provider=provider, model=model)
 
         self.report = AuditReport()
 
@@ -436,6 +462,92 @@ class RedTeamOrchestrator:
         result = compute_separation_score(data_violations, instr_violations)
         result["attack_payload_snippet"] = attack_message[:200]
         return result
+
+    async def run_delta0_protocol(
+        self,
+        attack_message: str,
+        attack_type: str = "injection",
+        n_trials: int = 30,
+    ) -> dict:
+        """
+        Execute the δ⁰/δ¹ discrimination protocol.
+
+        Definition 3.3bis (Extension of Zverev et al. ICLR 2025):
+        Tests the same payload WITH and WITHOUT system prompt to isolate
+        which defense layer (δ⁰ = RLHF vs δ¹ = system prompt) is responsible
+        for the model's refusal.
+
+        Protocol:
+          1. Run N trials WITH system prompt -> ASR(S) = δ⁰ + δ¹
+          2. Run N trials WITHOUT system prompt -> ASR(empty) = δ⁰ only
+          3. Compute attribution via compute_delta0_attribution()
+
+        Args:
+            attack_message: The adversarial payload to test
+            attack_type: "injection" | "rule_bypass" | "prompt_leak"
+            n_trials: Number of trials per condition (>= 30 for validity)
+
+        Returns:
+            Dict with δ⁰ attribution, per-condition ASR, Wilson CIs, interpretation.
+        """
+        # Phase 1: Trials WITH system prompt (normal mode)
+        violations_with_sp = []
+        for i in range(n_trials):
+            result = await self.run_single_attack(attack_type, attack_message)
+            target_response = result.target_response
+            validation = validate_output(target_response)
+            violations_with_sp.append(not validation.get("in_allowed_set", True))
+
+        asr_with_sp = sum(violations_with_sp) / max(len(violations_with_sp), 1)
+
+        # Phase 2: Trials WITHOUT system prompt (δ⁰ isolation)
+        # Save original system message, set to empty
+        original_sp = self.medical_agent.system_message
+        self.medical_agent.update_system_message("")
+
+        violations_no_sp = []
+        for i in range(n_trials):
+            self.medical_agent.reset()
+            response = await self.medical_agent.a_generate_reply(
+                messages=[{"role": "user", "content": attack_message}],
+            )
+            target_response = response if isinstance(response, str) else str(response)
+            validation = validate_output(target_response)
+            violations_no_sp.append(not validation.get("in_allowed_set", True))
+
+        # Restore original system prompt
+        self.medical_agent.update_system_message(original_sp)
+
+        # Phase 3: Compute attribution
+        attribution = compute_delta0_attribution(
+            asr_no_sp=sum(violations_no_sp) / max(len(violations_no_sp), 1),
+            asr_with_sp=asr_with_sp,
+            n_trials_no_sp=n_trials,
+            n_trials_with_sp=n_trials,
+        )
+
+        # Add Wilson CIs
+        attribution["ci_with_sp"] = wilson_ci(sum(violations_with_sp), n_trials)
+        attribution["ci_no_sp"] = wilson_ci(sum(violations_no_sp), n_trials)
+
+        # Persist results for AnalysisView (/api/redteam/analysis/delta0-summary)
+        try:
+            logs_dir = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                "logs"
+            )
+            os.makedirs(logs_dir, exist_ok=True)
+            summary = dict(attribution)
+            summary["attack_type"] = attack_type
+            summary["n_trials"] = n_trials
+            summary["timestamp"] = datetime.now().isoformat()
+            summary["statistically_valid"] = n_trials >= 30
+            with open(os.path.join(logs_dir, "delta0_results.json"), "w", encoding="utf-8") as _f:
+                json.dump(summary, _f, indent=2, ensure_ascii=False, default=str)
+        except Exception:
+            pass  # Non-blocking
+
+        return attribution
 
     async def run_scenario_stream(self, scenario_id: str):
         """Execute un scenario multi-etapes avec contexte cumulatif.

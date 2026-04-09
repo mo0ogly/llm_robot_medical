@@ -76,11 +76,13 @@ Ne préfixe PAS tes messages par "je vais tester..." - agis directement.
 """
 
 
-def create_red_team_agent() -> ConversableAgent:
-    """Crée le RedTeamAgent avec les stratégies d'attaque."""
+def create_red_team_agent(provider: str = None, model: str = None) -> ConversableAgent:
+    """Create RedTeamAgent with configurable provider (Ollama/Groq/OpenAI)."""
+    target_model = model or MEDICAL_MODEL
+    llm_cfg = get_llm_config(target_model, provider=provider)
     return ConversableAgent(
         name="RedTeamAgent",
         system_message=REDTEAM_SYSTEM_PROMPT,
-        llm_config=get_llm_config(MEDICAL_MODEL),
+        llm_config=llm_cfg,
         human_input_mode="NEVER",
     )
