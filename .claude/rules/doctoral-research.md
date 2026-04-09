@@ -22,6 +22,29 @@ JAMAIS de travail qui reste dans _staging/ sans etre propage. JAMAIS de rapport 
 Avant d'attribuer un P-ID, le COLLECTOR DOIT verifier l'absence de doublon
 via query ChromaDB (titre + auteurs, seuil cosine > 0.9). Si doublon detecte → ne pas integrer.
 
+## ANTI-DOUBLON ÉTAPE 0 — avant toute vérification biblio (scoped ou full)
+
+Avant d'envoyer une référence arXiv à WebFetch / WebSearch / ANALYST / COLLECTOR — que ce soit en mode full_search, incremental, ou dans un sub-agent de vérification ad-hoc — **TOUJOURS cross-check MANIFEST.md pour son arXiv ID en premier** via l'utilitaire dédié :
+
+```bash
+python backend/tools/check_corpus_dedup.py <arxiv_id> [<arxiv_id> ...]
+```
+
+Comportement :
+- Exit 0 `[NEW]` → procéder avec la vérification / analyse / injection
+- Exit 1 `[DUPLICATE] as PXXX` → **ARRÊTER**. La version corpus PXXX est autoritative. Référencer PXXX au lieu de créer un doublon. Ne PAS re-vérifier sur arXiv, ne PAS créer de nouvelle analyse, ne PAS ré-injecter dans ChromaDB.
+- Exit 2 `[ERROR]` → diagnostiquer (MANIFEST manquant, needle trop court) avant de continuer
+
+Cette étape est **obligatoire** pour :
+- `/bibliography-maintainer full_search` et `/bibliography-maintainer incremental`
+- Tout sub-agent COLLECTOR / ANALYST spawné depuis un skill
+- Tout sub-agent de vérification ad-hoc (p.ex. verification scoped d'une note académique)
+- Toute création manuelle d'un P-ID dans MANIFEST.md
+
+**Failure mode documenté** : 2026-04-09, un agent de vérification scoped a dédupliqué via cosine arXiv (source externe) mais PAS via MANIFEST (source interne). Résultat : Crescendo (arXiv:2404.01833, déjà présent comme P099) a été re-vérifié et aurait été re-intégré sans le cross-check manuel post-hoc. Fix : `backend/tools/check_corpus_dedup.py` + cette règle + Step 0 dans le SKILL.md du bibliography-maintainer.
+
+**Limitation** : le check s'appuie sur l'arXiv ID (pattern `arXiv:XXXX.XXXXX` dans MANIFEST). Pour les papers sans arXiv ID (conference proceedings, journaux sans preprint), compléter par un check titre via `--title "<needle>"` (needle >= 12 chars pour éviter les faux positifs). Pour les doublons sémantiques (même contenu, titre différent), le fallback reste le check cosine ChromaDB du COLLECTOR ci-dessus.
+
 ## POST-INJECTION — COLLECTOR
 
 Apres injection PDF dans ChromaDB, verifier >= 5 chunks presents.
