@@ -64,6 +64,10 @@ theme:
 
 extra_css:
   - stylesheets/aegis.css
+  - stylesheets/semantic-search.css
+
+extra_javascript:
+  - javascripts/semantic-search.js
 
 repo_url: https://github.com/pizzif/poc_medical
 repo_name: pizzif/poc_medical
@@ -100,9 +104,28 @@ plugins:
             Results & Telemetry: Results & Telemetry
             Red Team Lab: Red Team Lab
             Scenarios: Scenarios
+            Attack chains: Attack chains
+            Forge genetique: Genetic Forge
+            Campagnes experimentales: Experimental Campaigns
+            Cadre delta: Delta Framework
+            Vue d'ensemble: Overview
             Taxonomie: Taxonomy
             Metriques: Metrics
             Integration: Integration
+            Agents AG2: AG2 agents
+            Simulation Da Vinci: Da Vinci Simulation
+            RAG ChromaDB: RAG ChromaDB
+            Recherche semantique: Semantic Search
+            Experiments: Experiments
+            "RETEX (briefings + audits)": "RETEX (briefings + audits)"
+            Skills Claude: Claude Skills
+            Tests: Tests
+            Providers: Providers
+            Manuscrit: Manuscript
+            Glossaire: Glossary
+            i18n trilingue: Trilingual i18n
+            Contribution: Contributing
+            Notation delta: Delta notation
             Recherche: Research
             Etat courant: Current State
             Decouvertes: Discoveries
@@ -136,9 +159,28 @@ plugins:
             Results & Telemetry: Resultados & Telemetria
             Red Team Lab: Red Team Lab
             Scenarios: Cenarios
+            Attack chains: Cadeias de ataque
+            Forge genetique: Forge Genetica
+            Campagnes experimentales: Campanhas Experimentais
+            Cadre delta: Estrutura Delta
+            Vue d'ensemble: Visao Geral
             Taxonomie: Taxonomia
             Metriques: Metricas
             Integration: Integracao
+            Agents AG2: Agentes AG2
+            Simulation Da Vinci: Simulacao Da Vinci
+            RAG ChromaDB: RAG ChromaDB
+            Recherche semantique: Busca semantica
+            Experiments: Experimentos
+            "RETEX (briefings + audits)": "RETEX (briefings + auditorias)"
+            Skills Claude: Skills Claude
+            Tests: Testes
+            Providers: Provedores
+            Manuscrit: Manuscrito
+            Glossaire: Glossario
+            i18n trilingue: i18n Trilingual
+            Contribution: Contribuicao
+            Notation delta: Notacao delta
             Recherche: Pesquisa
             Etat courant: Estado Atual
             Decouvertes: Descobertas
@@ -208,27 +250,52 @@ nav:
     - RAG: api/rag.md
     - Templates: api/templates.md
     - Results & Telemetry: api/results.md
+  - Cadre delta:
+    - Vue d'ensemble: delta-layers/index.md
+    - "delta0 - RLHF Alignment": delta-layers/delta-0.md
+    - "delta1 - System Prompt": delta-layers/delta-1.md
+    - "delta2 - Syntactic Shield": delta-layers/delta-2.md
+    - "delta3 - Output Enforcement": delta-layers/delta-3.md
+    - Notation delta: notation-delta.md
   - Red Team Lab:
     - redteam-lab/index.md
     - Scenarios: redteam-lab/scenarios.md
+    - Attack chains: chains/index.md
+    - Forge genetique: forge/index.md
+    - Campagnes experimentales: campaigns/index.md
     - Prompts (99): prompts/index.md
     - Taxonomie: taxonomy/index.md
     - Metriques: metrics/index.md
     - Integration: redteam-lab/integration.md
+  - Systeme:
+    - Agents AG2: agents/index.md
+    - Simulation Da Vinci: simulation/davinci.md
+    - RAG ChromaDB: rag/index.md
+    - Recherche semantique: semantic-search/index.md
+    - Providers: providers/setup.md
+    - Tests: tests/index.md
+    - i18n trilingue: i18n/index.md
   - Recherche:
     - research/index.md
     - Etat courant: research/state.md
+    - Experiments: experiments/index.md
+    - RETEX (briefings + audits): experiments/retex/index.md
+    - Manuscrit: manuscript/index.md
     - Decouvertes:
       - research/discoveries/index.md
+      - "Decouvertes D-series (D001-D028)": research/discoveries/d-series.md
+      - "Conjectures C1-C8 detaillees": research/discoveries/c-series.md
       - Conjectures: research/discoveries/conjectures.md
       - Triple Convergence: research/discoveries/triple-convergence.md
       - Gaps: research/discoveries/gaps.md
     - Bibliographie:
       - research/bibliography/index.md
       - Par couche delta: research/bibliography/by-delta.md
-      - Glossaire: research/bibliography/glossaire.md
+      - Glossaire bibliographie: research/bibliography/glossaire.md
+    - Glossaire: glossaire/index.md
     - Fiches d'attaque: research/fiches-attaque/index.md
     - Articles: research/articles/index.md
+    - Skills Claude: skills/index.md
   - Staging (Agents):
     - staging/index.md
     - Analyst (89): staging/analyst.md
@@ -239,3 +306,4 @@ nav:
     - Mathteacher (13): staging/mathteacher.md
   - Plans: plans/index.md
   - Roadmap: roadmap.md
+  - Contribution: contributing/index.md

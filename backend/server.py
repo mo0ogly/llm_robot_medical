@@ -22,7 +22,12 @@ app = FastAPI(title="PoC LLM Medical - API")
 # CORS: Restricted to dev origins by default.
 # For production: set CORS_ORIGINS="https://yourdomain.com"
 # Previous: allow_origins=["*"] (PDCA C-37 violation)
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
+CORS_ORIGINS = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:5173,http://127.0.0.1:5173,"
+    "http://localhost:8001,http://127.0.0.1:8001,"
+    "https://pizzif.github.io",
+).split(",")
 
 app.add_middleware(
     CORSMiddleware,

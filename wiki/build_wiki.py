@@ -39,6 +39,7 @@ def clean_docs():
     generated_dirs.extend([
         WIKI_DOCS / "research" / "fiches-attaque",
         WIKI_DOCS / "plans",
+        WIKI_DOCS / "experiments" / "retex",
     ])
     for d in generated_dirs:
         if d.exists():
@@ -272,6 +273,110 @@ def copy_prompts():
     (dst_base / "index.md").write_text("".join(lines), encoding="utf-8")
 
 
+def copy_retex():
+    """Copie les RETEX (briefings + memory state + audit-these) vers le wiki.
+
+    Ces fichiers constituent le retour d'experience entre runs et sessions :
+    - _staging/briefings/DIRECTOR_BRIEFING_RUN*.md : briefings par RUN
+    - _staging/memory/MEMORY_STATE.md : etat memoire cumulative
+    - _staging/audit-these/*.md : rapports d'audit anti-hallucination
+    - _staging/research-director/*.md : scoring reports (si existent)
+    """
+    if not STAGING.exists():
+        return
+
+    retex_dst = WIKI_DOCS / "experiments" / "retex"
+    retex_dst.mkdir(parents=True, exist_ok=True)
+
+    # 1. DIRECTOR BRIEFINGS par RUN
+    briefings_src = STAGING / "briefings"
+    briefings_dst = retex_dst / "briefings"
+    briefings_items = []
+    if briefings_src.exists():
+        briefings_dst.mkdir(parents=True, exist_ok=True)
+        for md in sorted(briefings_src.glob("DIRECTOR_BRIEFING_*.md")):
+            copy_md(md, briefings_dst / md.name)
+            briefings_items.append(md.stem)
+
+    # 2. MEMORY STATE
+    memory_src = STAGING / "memory" / "MEMORY_STATE.md"
+    memory_dst = retex_dst / "memory-state.md"
+    if memory_src.exists():
+        copy_md(memory_src, memory_dst)
+
+    # 3. AUDIT-THESE reports
+    audit_src = STAGING / "audit-these"
+    audit_dst = retex_dst / "audits"
+    audit_items = []
+    if audit_src.exists():
+        audit_dst.mkdir(parents=True, exist_ok=True)
+        for md in sorted(audit_src.glob("*.md")):
+            copy_md(md, audit_dst / md.name)
+            audit_items.append(md.stem)
+
+    # 4. RESEARCH-DIRECTOR scoring reports (optional)
+    director_src = STAGING / "research-director"
+    director_dst = retex_dst / "scoring-reports"
+    director_items = []
+    if director_src.exists():
+        director_dst.mkdir(parents=True, exist_ok=True)
+        for md in sorted(director_src.glob("*.md")):
+            copy_md(md, director_dst / md.name)
+            director_items.append(md.stem)
+
+    # 5. Generate index page
+    index_lines = [
+        "# RETEX — Retours d'experience\n\n",
+        "!!! abstract \"Retour d'experience inter-sessions\"\n",
+        "    Cette section agrege les **briefings**, **scoring reports** et **audits anti-hallucination**\n",
+        "    generes par les skills `/bibliography-maintainer` et `/research-director` apres chaque RUN.\n",
+        "    Les fichiers sont automatiquement synchronises depuis `research_archive/_staging/` par\n",
+        "    `wiki/build_wiki.py` lors de chaque `/wiki-publish update`.\n\n",
+        "## Director Briefings\n\n",
+        "Briefings synthetiques produits apres chaque RUN par `/bibliography-maintainer` Phase 6.\n\n",
+    ]
+    if briefings_items:
+        for name in briefings_items:
+            index_lines.append("- [" + name + "](briefings/" + name + ".md)\n")
+    else:
+        index_lines.append("_Aucun briefing disponible._\n")
+
+    index_lines.append("\n## Memory State\n\n")
+    if memory_src.exists():
+        index_lines.append("- [MEMORY_STATE.md](memory-state.md) — etat memoire cumulative\n")
+    else:
+        index_lines.append("_MEMORY_STATE.md absent._\n")
+
+    index_lines.append("\n## Audits anti-hallucination (`/audit-these`)\n\n")
+    if audit_items:
+        for name in audit_items:
+            index_lines.append("- [" + name + "](audits/" + name + ".md)\n")
+    else:
+        index_lines.append("_Aucun audit disponible._\n")
+
+    if director_items:
+        index_lines.append("\n## Scoring reports `/research-director`\n\n")
+        for name in director_items:
+            index_lines.append("- [" + name + "](scoring-reports/" + name + ".md)\n")
+
+    index_lines.append("\n## Pipeline d'update\n\n")
+    index_lines.append("```mermaid\n")
+    index_lines.append("flowchart LR\n")
+    index_lines.append("    RUN[\"RUN N\"] --> BIB[\"bibliography-maintainer\"]\n")
+    index_lines.append("    BIB --> BRIEF[\"DIRECTOR_BRIEFING_RUNXXX.md\"]\n")
+    index_lines.append("    RUN --> DIR[\"research-director\"]\n")
+    index_lines.append("    DIR --> SCORE[\"AUDIT_SESSION-*.md\"]\n")
+    index_lines.append("    RUN --> AUDIT[\"audit-these\"]\n")
+    index_lines.append("    AUDIT --> UNSRC[\"UNSOURCED_CLAIMS_*.md\"]\n")
+    index_lines.append("    BRIEF --> WIKI[\"/wiki-publish update\"]\n")
+    index_lines.append("    SCORE --> WIKI\n")
+    index_lines.append("    UNSRC --> WIKI\n")
+    index_lines.append("    WIKI --> PAGE[\"wiki/experiments/retex/\"]\n")
+    index_lines.append("```\n")
+
+    (retex_dst / "index.md").write_text("".join(index_lines), encoding="utf-8")
+
+
 def copy_staging_detailed():
     """Copie le contenu detaille des agents de staging."""
     if not STAGING.exists():
@@ -385,36 +490,13 @@ def copy_root_docs():
 
 
 def generate_scenarios_page():
-    """Genere la page des scenarios d'attaque."""
+    """La page scenarios.md est maintenant maintenue manuellement (contenu riche avec
+    exemples, MITRE, couches delta, structure Scenario). Ne pas ecraser si existe."""
     dst = WIKI_DOCS / "redteam-lab" / "scenarios.md"
-    content = """# Scenarios d'attaque
-
-## Les 4 scenarios principaux
-
-| # | Scenario | Technique | MITRE ATT&CK |
-|---|----------|-----------|--------------|
-| 0 | **Baseline** | Fonctionnement normal, dossier HL7 intact | -- |
-| 1 | **Poison Lent** | Modification subtile du dossier HL7 via PACS. L'IA recommande une tension de pince letale (injection de prompt indirecte) | T1565.001 |
-| 2 | **Ransomware** | Prise de controle directe forcant `freeze_instruments()` -- instruments bloques | T1486 |
-| 3 | **Defense Aegis** | Second Agent IA isole qui surveille et declenche un debat multi-rounds | T1059.009 |
-
-## Architecture d'attaque
-
-Le backend AEGIS dispose de **36 chaines d'attaque** et **102 templates** organises en pipeline :
-
-1. **Reconnaissance** -- Analyse du system prompt et des capacites du modele cible
-2. **Injection** -- Insertion du payload via le vecteur choisi (DPI, IPI, RAG, agent)
-3. **Execution** -- Declenchement de l'action malveillante (tool call, exfiltration, manipulation)
-4. **Audit** -- Mesure des metriques formelles (ASR, Sep(M), SVC 6D)
-
-## Metriques formelles
-
-- **ASR** (Attack Success Rate) -- Taux de reussite sur N >= 30 essais
-- **Sep(M)** -- Score de separation (Zverev et al., ICLR 2025)
-- **SVC** -- Score de Viabilite de Compromission sur 6 dimensions
-- **P(detect)** -- Probabilite de detection par les defenses
-- **Cosine drift** -- Derive semantique du modele compromis
-"""
+    if dst.exists() and dst.stat().st_size > 1000:
+        return  # Deja ecrit manuellement, on ne touche pas
+    # Fallback minimal si le fichier est absent
+    content = "# Scenarios d'attaque\n\n(a completer)\n"
     dst.write_text(content, encoding="utf-8")
 
 
@@ -494,6 +576,7 @@ def main():
     copy_articles()
     copy_staging()
     copy_staging_detailed()
+    copy_retex()
     copy_plans()
 
     print("[10/12] Copie des prompts backend...")

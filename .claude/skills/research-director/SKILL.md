@@ -151,7 +151,7 @@ Avant de lire chaque fichier, vérifier :
 
 | # | Fichier | Ce qu'on cherche |
 |---|---------|-----------------|
-| 1 | `_staging/DIRECTOR_BRIEFING_RUN{XXX}.md` (le plus récent) | Conjectures, gaps P0/P1, plan RUN suivant |
+| 1 | `_staging/briefings/DIRECTOR_BRIEFING_RUN{XXX}.md` (le plus récent) | Conjectures, gaps P0/P1, plan RUN suivant |
 | 2 | `_staging/PROMPT_FORGE_BRIEFING_{date}.md` (le plus récent) | ASR forge, patterns, impact conjectures |
 | 3 | `research_requests.json` | N pending / resolved / blocked par priorité |
 | 4 | `fiche_index.json` | N fiches done / remaining, SVC |
@@ -168,7 +168,7 @@ Pour chaque rapport sous-skill non encore audité depuis le dernier cycle :
 
 | Source | Pattern | Contenu |
 |--------|---------|---------|
-| bibliography-maintainer | `_staging/DIRECTOR_BRIEFING_RUN{XXX}.md` | Conjectures, gaps, plan RUN+1 |
+| bibliography-maintainer | `_staging/briefings/DIRECTOR_BRIEFING_RUN{XXX}.md` | Conjectures, gaps, plan RUN+1 |
 | aegis-prompt-forge | `_staging/PROMPT_FORGE_BRIEFING_{date}.md` | ASR, patterns, impact conjectures |
 | fiche-attaque | `fiche_index.json` + Section 11 de chaque fiche | Gaps identifiés |
 
@@ -456,6 +456,37 @@ Quand toutes les sous-tâches sont SUCCESS, PARTIAL, ou BLOCKED :
 
 **Puis produire le Bilan de session (cf. §14).**
 
+**Phase wiki-sync (MANDATORY — auto-publish wiki) :**
+
+Apres toute session qui a touche a `research_archive/doc_references/`,
+`research_archive/discoveries/`, `research_archive/experiments/`, ou `research_archive/manuscript/`,
+le director DOIT synchroniser le wiki MkDocs pour que les modifications soient visibles :
+
+```bash
+# Regenerer les pages statiques du wiki depuis les sources
+python wiki/build_wiki.py
+cd wiki && python -m mkdocs build
+```
+
+Equivalent via skill dedie (preferable, gere les erreurs proprement) :
+
+```
+/wiki-publish update
+```
+
+**Regles** :
+- Cette etape est NON-NEGOTIABLE apres toute session qui modifie la recherche.
+- Si `build_wiki.py` echoue, logger l'erreur dans le Bilan de session et STOPPER.
+- Si `mkdocs build` emet de NOUVEAUX warnings (non pre-existants), les flager dans le Bilan.
+- Le widget de **recherche semantique live** (`/semantic-search/`) pointe directement sur
+  ChromaDB et reflete automatiquement les nouveaux chunks — aucune action supplementaire
+  requise pour cette surface.
+- Si l'utilisateur n'a pas encore commit, le director DOIT annoncer que le wiki a ete
+  reconstruit localement et rappeler de commit + push pour propager a GitHub Pages.
+- Post-sync : verifier que les nouveaux P-IDs (issus du bibliography-maintainer cette
+  session) apparaissent bien dans `wiki/docs/research/bibliography/{year}/`. Si manquant,
+  relancer `build_wiki.py` en mode verbose pour diagnostiquer.
+
 **Phase dream (consolidation memoire) :**
 Lancer `/dream audit` pour verifier l'etat de la memoire. Si le verdict est NEEDS_CONSOLIDATION ou CRITICAL, lancer `/dream consolidate`.
 
@@ -678,7 +709,7 @@ OBSERVE (endpoint + métriques) → EVALUATE → COMPLETE
 
 | Fichier | Rôle | Accès |
 |---------|------|-------|
-| `_staging/DIRECTOR_BRIEFING_RUN{XXX}.md` | Briefing bibliography-maintainer | R |
+| `_staging/briefings/DIRECTOR_BRIEFING_RUN{XXX}.md` | Briefing bibliography-maintainer | R |
 | `_staging/PROMPT_FORGE_BRIEFING_{date}.md` | Briefing aegis-prompt-forge | R |
 | `research_requests.json` | File d'attente des gaps | R/W |
 | `fiche_index.json` | Progression des 97 fiches | R |
