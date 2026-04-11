@@ -143,68 +143,28 @@ function clearMarker() {
 }
 
 function spawnRebuild(relPath) {
-  logLine(`Triggered by ${relPath} — spawning rebuild...`);
+  logLine(`Triggered by ${relPath} — spawning worker (detached)...`);
 
-  // Windows: use python.exe via powershell; Linux/Mac: use python3
-  const isWin = process.platform === 'win32';
-  const pythonBin = isWin ? 'python.exe' : 'python3';
-
-  // build_wiki.py first (copies sources), then mkdocs build (generates site)
-  const buildScript = path.join(REPO_ROOT, 'wiki', 'build_wiki.py');
+  // Delegate to the standalone worker script. This ensures the full pipeline
+  // (build_wiki.py + mkdocs build) runs sequentially and survives the hook's
+  // process.exit(0). Chaining two child processes via Node's .on('close') in
+  // the hook itself fails on Windows because the parent dies before the child
+  // termination callback fires.
+  const workerScript = path.join(REPO_ROOT, '.claude', 'hooks', 'auto_wiki_rebuild_worker.cjs');
 
   const child = spawn(
-    pythonBin,
-    [buildScript],
+    process.execPath, // node executable
+    [workerScript, relPath],
     {
-      cwd: path.join(REPO_ROOT, 'wiki'),
+      cwd: REPO_ROOT,
       detached: true,
-      stdio: ['ignore', 'pipe', 'pipe'],
+      stdio: 'ignore',
       windowsHide: true,
     },
   );
 
-  let stdout = '';
-  let stderr = '';
-  child.stdout.on('data', (data) => { stdout += data.toString(); });
-  child.stderr.on('data', (data) => { stderr += data.toString(); });
-
-  child.on('close', (code) => {
-    if (code === 0) {
-      logLine(`build_wiki.py OK (exit 0)`);
-      // Chain mkdocs build
-      const mkdocs = spawn(
-        pythonBin,
-        ['-m', 'mkdocs', 'build'],
-        {
-          cwd: path.join(REPO_ROOT, 'wiki'),
-          detached: true,
-          stdio: ['ignore', 'pipe', 'pipe'],
-          windowsHide: true,
-        },
-      );
-      let mout = '';
-      let merr = '';
-      mkdocs.stdout.on('data', (d) => { mout += d.toString(); });
-      mkdocs.stderr.on('data', (d) => { merr += d.toString(); });
-      mkdocs.on('close', (mcode) => {
-        if (mcode === 0) {
-          logLine(`mkdocs build OK (exit 0) — rebuild complete for ${relPath}`);
-          clearMarker();
-        } else {
-          logLine(`mkdocs build FAIL (exit ${mcode}): ${merr.slice(0, 500)}`);
-        }
-      });
-      mkdocs.on('error', (err) => {
-        logLine(`mkdocs spawn error: ${err.message}`);
-      });
-      mkdocs.unref();
-    } else {
-      logLine(`build_wiki.py FAIL (exit ${code}): ${stderr.slice(0, 500)}`);
-    }
-  });
-
   child.on('error', (err) => {
-    logLine(`python spawn error: ${err.message}`);
+    logLine(`worker spawn error: ${err.message}`);
   });
 
   child.unref();
