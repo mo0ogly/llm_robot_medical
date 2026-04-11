@@ -8,15 +8,15 @@
 | Agent | Description | # fichiers | # lignes | Acces |
 |-------|-------------|:----------:|:--------:|:-----:|
 | **analyst** | Analyses de papiers (Keshav 3-pass) | 140 | 13 701 | [→](analyst/index.md) |
-| **scientist** | Synthese scientifique | 25 | 4 931 | [→](scientist/index.md) |
+| **scientist** | Synthese scientifique | 26 | 5 088 | [→](scientist/index.md) |
 | **matheux** | Formules mathematiques (extraction & reviews) | 11 | 4 915 | [→](matheux/index.md) |
-| **mathteacher** | Cours de mathematiques (8 modules + guide notation + self-assessment) | 15 | 7 105 | [→](mathteacher/index.md) |
+| **mathteacher** | Cours de mathematiques (8 modules + guide notation + self-assessment) | 15 | 7 326 | [→](mathteacher/index.md) |
 | **cybersec** | Analyses menaces & defenses | 8 | 4 783 | [→](cybersec/index.md) |
 | **whitehacker** | Red Team playbooks & exploitation | 8 | 7 297 | [→](whitehacker/index.md) |
 | **librarian** | Rapports de propagation & validation | 10 | 1 561 | [→](librarian/index.md) |
 | **chunker** | Chunking pour injection ChromaDB | 5 | 1 657 | [→](chunker/index.md) |
 | **collector** | Preseed et verifications anti-doublon | 7 | 496 | [→](collector/index.md) |
-| **TOTAL** | — | **229** | **46 446** | — |
+| **TOTAL** | — | **230** | **46 824** | — |
 
 ## Hierarchie du pipeline
 

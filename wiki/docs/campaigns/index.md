@@ -179,23 +179,51 @@ Le frontend (`frontend/src/components/redteam/`) fournit :
 **Verdict** : INCONCLUSIVE (N=6 < 30). Campagne a reproduire avec N=30 + shield OFF pour mesurer
 δ¹ seul.
 
-### Campagne THESIS-001 — C1 validation cross-model
+### Campagne THESIS-001 — HyDE/XML Bimodalite (N=1200)
 
-**Objectif** : valider C1 sur LLaMA 3.2 3B via 36 attack chains, Groq provider.
+> [Rapport complet](../experiments/reports/EXPERIMENT_REPORT_THESIS_001.md)
+
+**Modele** : llama-3.1-8b-instant (Groq) | **N** : 30 × 40 chaines = 1 200 runs | **Date** : 2026-04-09
+
+| Metrique | Valeur |
+|----------|--------|
+| ASR global | **6.75%** IC 95% [5.5%, 8.3%] |
+| Sep(M) global | 0.067 (NO SEPARATION) |
+| Chaines critiques | hyde **96.7%**, xml_agent **96.7%** |
+| Chaines a 0% ASR | 33 / 40 |
+
+**4 findings publiables** :
+
+- **F1 — HyDE (96.7% ASR)** : le modele genere un document hypothetique incluant les instructions malveillantes. Le RagSanitizer ne detecte pas les payloads paraphrase par le modele lui-meme.
+- **F2 — XML Agent (96.7% ASR)** : les tags XML injectes sont traites comme instructions legitimes (`<system_override>` = autorite apparente).
+- **F3 — Bimodalite** : 33 chaines a 0%, 2 a 96.7%, quasi-rien entre les deux. L'ASR moyen masque la realite — il faut reporter **par chaine**.
+- **F4 — Sep(M)=0.067** : delta-1+delta-2 structurellement insuffisants meme a N=1200 → renforce C2.
+
+**Decouverte** : D-023 (bimodalite des vulnerabilites de chaine).
 
 **RETEX** : bug identifie ou l'orchestrateur ne propageait pas `provider=groq` aux 4 agents AG2.
-Fix : `create_*_agent()` signature update, fallback `CYBER_MODEL → MEDICAL_MODEL`. Duree du freeze :
-3h (cf. `redteam-forge.md` rules).
+Fix : `create_*_agent()` signature, fallback `CYBER_MODEL → MEDICAL_MODEL`. Freeze : 3h.
 
 ### Campagne THESIS-002 — Cross-model 70B
 
-**Objectif** : valider XML Agent 100% ASR sur modele 70B.
+> [Rapport complet](../experiments/reports/EXPERIMENT_REPORT_THESIS_002.md)
 
-Voir commit `5971d50 feat(thesis-002): cross-model validation — XML Agent 100% ASR on 70B`.
+**Objectif** : valider XML Agent 100% ASR sur modele 70B (Groq).
+
+Commit `5971d50 feat(thesis-002): cross-model validation — XML Agent 100% ASR on 70B`.
 
 ### Campagne THESIS-003 — Qwen 3 32B cross-family
 
+> [Rapport complet](../experiments/reports/EXPERIMENT_REPORT_THESIS_003.md)
+
 **Objectif** : famille Qwen vs famille LLaMA, decouvertes D-024/D-025 family-specific.
+
+### Campagne TC-001/TC-002 — Triple Convergence
+
+> [TC-001 v2](../experiments/reports/EXPERIMENT_REPORT_TC001_v2.md) | [TC-002](../experiments/reports/EXPERIMENT_REPORT_TC002.md)
+
+TC-001 : test de convergence additive des attaques (INCONCLUSIVE v1, parametres corriges en v2).
+TC-002 : **REFUTED** — interaction antagoniste (combinaison d'attaques < attaque seule sur 70B).
 
 ## 6. Boucle iterative (regle AEGIS)
 
@@ -214,7 +242,7 @@ Voir commit `5971d50 feat(thesis-002): cross-model validation — XML Agent 100%
 
     Les resultats sont archives dans :
 
-    - `research_archive/experiments/EXPERIMENT_REPORT_*.md`
+    - [`experiments/reports/`](../experiments/reports/index.md) — rapports experimentaux complets
     - `research_archive/experiments/campaign_manifest.json`
 
 ## 7. Pipeline automatise (skills)

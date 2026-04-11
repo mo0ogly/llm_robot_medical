@@ -403,3 +403,43 @@ Si vous avez un score faible dans une section specifique, voici les modules a pr
 
 *Quiz mis a jour le 2026-04-04 (RUN-002) — 38 questions couvrant les 7 modules + formules 2026*
 *Base sur les 37 formules extraites de 46 articles (22 RUN-001 + 15 RUN-002)*
+
+---
+
+# POST-RUN VERIFICATION_DELTA3_20260411 — Questions additionnelles
+
+Ces questions couvrent la nouvelle section "composition vs unification formelle" du Module 4, ajoutee suite a la verification de la claim "4eme implementation δ³" qui a revele 7+ frameworks δ³ existants (LMQL 2022 en precurseur).
+
+### Q-39 — Composition vs unification
+
+LlamaFirewall (Meta 2025, P131) compose 3 policies independantes : `PromptGuard2(input) ∧ AlignmentCheck(reasoning) ∧ CodeShield(output)`. AEGIS utilise un predicat unifie `Integrity(S) := Reachable(M,i) ⊆ Allowed(i)`.
+
+**Question** : quelle est la difference mathematique fondamentale entre ces deux approches ?
+
+A) Composition = conjonction booleenne de verdicts independants ; unification = inclusion ensembliste sur un ensemble pre-specifie
+B) Composition = plus rapide ; unification = plus precise
+C) Composition = deterministe ; unification = probabiliste
+D) Aucune difference formelle, juste stylistique
+
+**Reponse** : **A**
+
+**Explication** : La composition booleenne (LlamaFirewall F73) combine N verdicts binaires issus de N detecteurs heterogenes. L'inclusion ensembliste AEGIS verifie qu'aucun output reellement genere (`Reachable(M,i)`) ne sort d'un ensemble pre-specifie (`Allowed(i)`) — ce qui permet de definir formellement ce qui est autorise **a priori**, independamment du processus de detection. La conjonction existe toujours a l'interieur de `Allowed(i)`, mais l'unification AEGIS ajoute le quantificateur universel `∀o ∈ Reachable(M,i)` qui change la nature de la verification.
+
+**Pourquoi c'est important** : pour une specification reglementaire FDA 510k (Da Vinci Xi, `max_tension_g = 800`), il faut pouvoir ecrire explicitement ce qui est autorise — une suite de detecteurs opaques ne suffit pas.
+
+### Q-40 — Genealogie du pattern δ³
+
+Parmi ces frameworks, quel est le **precurseur historique** (2022) du pattern "validate output contre specification declarative" ?
+
+A) CaMeL (Debenedetti et al. 2025, P081)
+B) AgentSpec (Wang et al. 2025, P082)
+C) LMQL (Beurer-Kellner, Fischer, Vechev 2022, P135, PLDI 2023)
+D) AEGIS (2026)
+
+**Reponse** : **C**
+
+**Explication** : LMQL (Language Model Query Language) a ete publie en decembre 2022 (arXiv:2212.06094) et presente a PLDI 2023. C'est le premier DSL a proposer la syntaxe `argmax(LLM(prompt)) where c_1 and c_2` avec une semantique operationnelle formelle. Son premier auteur Beurer-Kellner a ensuite co-ecrit P126 Tramer et al. 2025 "Design Patterns for Securing LLM Agents against Prompt Injections", confirmant la continuite de recherche. AEGIS n'est donc pas la 4eme implementation du pattern mais au minimum la **6eme** chronologiquement (LMQL 2022 → Guardrails AI 2023 → LLM Guard 2023 → CaMeL 2025 → AgentSpec 2025 → LlamaFirewall 2025 → RAGShield 2026 → AEGIS 2026). La contribution originale d'AEGIS est l'**unification formelle** sous `Integrity(S)` et la **specialisation medicale FDA**, pas l'anteriorite du pattern.
+
+---
+
+*Quiz mis a jour le 2026-04-11 (VERIFICATION_DELTA3) — 40 questions, +2 sur composition vs unification*

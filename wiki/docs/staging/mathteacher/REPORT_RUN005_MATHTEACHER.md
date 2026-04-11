@@ -145,3 +145,43 @@ Les formules specifiques de C8 (taux de peer-preservation, scores de deception, 
 *Agent MATHTEACHER — RUN-005 complete*
 *Curriculum : 8 modules (7 existants + 1 nouveau), 45 formules couvertes*
 *Glossaire : 170+ symboles documentes*
+
+---
+
+## Post-RUN VERIFICATION_DELTA3_20260411
+
+**Context** : verification scoped de la claim "4eme implementation δ³" dans `wiki/docs/delta-layers/delta-3.md`. Les agents ANALYST et MATHEUX ont conclu verdict **NUANCED** : le pattern "validate output contre specification declarative" existe depuis **LMQL 2022** (P135, PLDI 2023), soit 7+ frameworks δ³ historiques avant AEGIS. La contribution originale d'AEGIS est (a) l'unification formelle sous `Integrity(S) := Reachable(M,i) ⊆ Allowed(i)`, (b) la specialisation FDA 510k Da Vinci Xi, et (c) la mesurabilite via Sep(M).
+
+**Decision MATHTEACHER** : curriculum NE NECESSITE PAS de nouveau module. Les 8 modules existants couvrent deja les fondamentaux (algebre de Boole Module 1, Sep(M) et Wilson CI Module 4). Une extension localisee du Module 4 suffit a enseigner la distinction **composition vs unification formelle**, qui est LA notion pedagogique manquante pour comprendre le positionnement AEGIS dans la taxonomie δ³.
+
+**Actions executees** :
+- `Module_04_Scores_Metriques.md` : +1 section post-verification "composition vs unification" (~120 lignes appended, avant `*Module 4 termine*`)
+  - Intuition pedagogique (analogie detecteurs vs specification)
+  - **Formule F73** [PRE-FORMEL] LlamaFirewall composition (Chennabasappa et al. 2025, P131)
+  - **Formule F74** [DEFINITION] LMQL where-clause (Beurer-Kellner, Fischer, Vechev 2022, P135, PLDI 2023)
+  - Tableau comparatif composition vs unification (5 dimensions)
+  - Exercice 1 : conversion LMQL → AEGIS avec solution
+  - Exercice 2 : composition booleenne vs inclusion ensembliste avec solution (subtilite du quantificateur universel)
+  - Renvoi vers `DELTA3_FORMAL_COMPARISON_20260411.md` pour la comparaison complete des 8 frameworks
+- `SELF_ASSESSMENT_QUIZ.md` : +2 questions (Q-39 composition vs unification, Q-40 genealogie du pattern), section "POST-RUN VERIFICATION_DELTA3_20260411" appendee
+
+**Formules ajoutees au curriculum** : **2**
+- F73 [PRE-FORMEL] LlamaFirewall = PromptGuard2 ∧ AlignmentCheck ∧ CodeShield
+- F74 [DEFINITION] LMP(prompt, constraints) = {o : o = sample(LLM(prompt)) ∧ ∀i, c_i(o) = True}
+
+**Questions quiz ajoutees** : **2**
+- Q-39 difference formelle composition vs unification (reponse A)
+- Q-40 precurseur historique du pattern (reponse C = LMQL 2022)
+
+**Conjectures couvertes par cette extension** :
+- **C2 (δ³ necessite, 10/10 stable)** : renforcee par le contexte LMQL 2022 precurseur + contribution AEGIS clarifiee (unification formelle, pas anteriorite du pattern)
+- **C6 (medical vulnerability, +0.5 → 10/10)** : renforcee implicitement par le renvoi a P132 Weissman et al. 2025 npj DM (motivation publique independante)
+
+**Verdict MATHTEACHER** : **edits suffisent, pas de nouveau module necessaire**. Le curriculum reste a **8 modules, 47 formules couvertes** (45 + F73 + F74), **40 questions de quiz** (38 + Q-39 + Q-40). La distinction pedagogique composition/unification est desormais enseignable au niveau bac+2 via les exercices fournis, sans prerequis supplementaire au-dela de l'algebre de Boole (Module 1) et des ensembles (pre-requis implicite).
+
+**Suivi** : si un etudiant reporte une incomprehension sur la distinction inclusion ensembliste vs conjonction booleenne (subtilite du quantificateur universel dans l'Exercice 2), iterer le module avec un exemple numerique concret (ex : N=3 outputs generes, verifier chacun contre Allowed(i)).
+
+---
+
+*Post-verification RUN VERIFICATION_DELTA3_20260411 — 2026-04-11*
+*Curriculum final : 8 modules, 47 formules, 40 questions de quiz*

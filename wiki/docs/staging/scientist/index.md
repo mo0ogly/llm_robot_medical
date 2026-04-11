@@ -3,7 +3,7 @@
 !!! abstract "Agent `_staging/scientist/`"
     Axes de recherche, rapports de decouverte, revues de phase. Produits par l'agent SCIENTIST du pipeline bibliography-maintainer.
 
-**25 fichiers** disponibles.
+**26 fichiers** disponibles.
 
 ## Liste complete
 
@@ -33,4 +33,5 @@
 | [`REVIEW_COMPLETE_CORPUS.md`](REVIEW_COMPLETE_CORPUS.md) | Revue Complete du Corpus AEGIS -- 60 Papers, 16 Decouvertes, 7 Conjectures | 349 |
 | [`SAFETY_JUDGES_SEARCH_RR-DA-002.md`](SAFETY_JUDGES_SEARCH_RR-DA-002.md) | RR-DA-002 : Juges SAFETY vulnerables — CONFIRME | 22 |
 | [`SCIENTIST_UPDATE_P0.md`](SCIENTIST_UPDATE_P0.md) | SCIENTIST UPDATE — Post Deep-Analysis P0 Lot 1 | 115 |
+| [`VERDICT_FINAL_VERIFICATION_DELTA3_20260411.md`](VERDICT_FINAL_VERIFICATION_DELTA3_20260411.md) | VERDICT FINAL SCIENTIST — VERIFICATION_DELTA3_20260411 | 157 |
 | [`VERIFICATION_DELTA3_CLAIM.md`](VERIFICATION_DELTA3_CLAIM.md) | Verification — Affirmation "AEGIS seul systeme delta-3" | 29 |

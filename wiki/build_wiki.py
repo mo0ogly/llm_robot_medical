@@ -43,6 +43,7 @@ def clean_docs():
         WIKI_DOCS / "research" / "fiches-attaque",
         WIKI_DOCS / "plans",
         WIKI_DOCS / "experiments" / "retex",
+        WIKI_DOCS / "experiments" / "reports",
     ])
     for d in generated_dirs:
         if d.exists():
@@ -499,6 +500,43 @@ def copy_discoveries():
     for md in DISCOVERIES.glob("*.md"):
         if md.name not in mapping:
             copy_md(md, WIKI_DOCS / "research" / "discoveries" / md.name)
+
+
+def copy_experiments():
+    """Copie les rapports experimentaux de research_archive/experiments/ vers wiki/docs/experiments/reports/."""
+    EXPERIMENTS_SRC = RESEARCH / "experiments"
+    if not EXPERIMENTS_SRC.exists():
+        return
+
+    reports_dir = WIKI_DOCS / "experiments" / "reports"
+    reports_dir.mkdir(parents=True, exist_ok=True)
+
+    md_files = sorted(EXPERIMENTS_SRC.glob("*.md"))
+    for md in md_files:
+        copy_md(md, reports_dir / md.name)
+
+    # Generate index
+    lines = [
+        "# Experiment Reports\n\n",
+        "Rapports experimentaux generes par les campagnes AEGIS.\n\n",
+        "| Rapport | Description |\n",
+        "|---------|-------------|\n",
+    ]
+    labels = {
+        "EXPERIMENT_REPORT_THESIS_001.md": "THESIS-001 — HyDE/XML Bimodality (N=1200, 40 chains)",
+        "EXPERIMENT_REPORT_THESIS_002.md": "THESIS-002 — Cross-model 70B (Groq)",
+        "EXPERIMENT_REPORT_THESIS_003.md": "THESIS-003 — Qwen family-specific",
+        "EXPERIMENT_REPORT_TC001.md": "TC-001 — Triple Convergence v1",
+        "EXPERIMENT_REPORT_TC001_v2.md": "TC-001 v2 — Triple Convergence (corrected)",
+        "EXPERIMENT_REPORT_TC002.md": "TC-002 — Additive Convergence (antagonistic)",
+        "EXPERIMENT_REPORT_CROSS_MODEL.md": "Cross-model validation",
+    }
+    for md in md_files:
+        label = labels.get(md.name, md.stem.replace("_", " "))
+        lines.append("| [" + label + "](" + md.name + ") | |\n")
+
+    (reports_dir / "index.md").write_text("".join(lines), encoding="utf-8")
+    print("  " + str(len(md_files)) + " rapports experimentaux copies vers experiments/reports/")
 
 
 def copy_articles():
@@ -1401,6 +1439,9 @@ def main():
 
     print("[8/10] Copie des decouvertes...")
     copy_discoveries()
+
+    print("[8b/10] Copie des rapports experimentaux...")
+    copy_experiments()
 
     print("[9/12] Copie des articles et staging...")
     copy_articles()
