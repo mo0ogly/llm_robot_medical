@@ -119,8 +119,15 @@ jobs:
         run: cp -r wiki/site frontend/dist/wiki
 
       # --- Deploy ---
+      # PDCA cycle 3.5: enablement:true tells configure-pages to auto-enable
+      # GitHub Pages on the repo if not already enabled (requires the
+      # workflow to have `pages: write` permission — already set above).
+      # Previously this step failed with "Get Pages site failed" because
+      # Pages was never manually enabled in the repo Settings.
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        with:
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
