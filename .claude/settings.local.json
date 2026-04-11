@@ -57,6 +57,17 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/auto_wiki_rebuild.cjs"
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "",

@@ -60,25 +60,66 @@ function Get-PidOnPort([int]$port) {
     return $null
 }
 
+function Get-AllPidsOnPort([int]$port) {
+    # Returns ALL PIDs bound to the port (LISTENING + ESTABLISHED), including
+    # forked worker children (uvicorn reload, multiprocessing spawn, etc.).
+    $conns = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue
+    if (-not $conns) { return @() }
+    return ($conns.OwningProcess | Select-Object -Unique)
+}
+
+function Kill-ProcessTree([int]$processPid) {
+    # Walk + kill the full process tree via taskkill /T.
+    # Fix for PDCA cycle 3 / RETEX 2026-04-11:
+    # uvicorn reload workers and multiprocessing spawn children inherit the
+    # listening socket handle. Stop-Process only kills the parent — the child
+    # keeps the port alive. taskkill /T walks the tree and kills all descendants.
+    if (-not $processPid) { return }
+    & taskkill.exe /F /T /PID $processPid 2>&1 | Out-Null
+}
+
 function Kill-Port([int]$port) {
-    $FoundPid = Get-PidOnPort $port
-    if ($FoundPid) {
-        INF "Killing process $FoundPid on port $port..."
-        Stop-Process -Id $FoundPid -Force -ErrorAction SilentlyContinue
-        # Wait up to 3 seconds for the port to be released
-        $timeout = 6
-        while ($timeout -gt 0) {
-            Start-Sleep -Milliseconds 500
-            if (-not (Get-PidOnPort $port)) {
-                OK "Port $port freed."
-                return
-            }
-            $timeout--
-        }
-        ERR "Port $port still bound after kill attempt."
-    } else {
+    $allPids = Get-AllPidsOnPort $port
+    if ($allPids.Count -eq 0) {
         INF "Port $port already free."
+        return
     }
+
+    # First pass: kill process trees of all PIDs currently bound to the port
+    foreach ($p in $allPids) {
+        INF "Killing process tree $p on port $port..."
+        Kill-ProcessTree $p
+    }
+
+    # Wait up to 3 seconds for the port to be released
+    $timeout = 6
+    while ($timeout -gt 0) {
+        Start-Sleep -Milliseconds 500
+        if (-not (Get-AllPidsOnPort $port)) {
+            OK "Port $port freed."
+            return
+        }
+        $timeout--
+    }
+
+    # Second pass: some ghost PIDs may have been replaced by forked workers
+    # that inherited the socket. Re-scan and kill any remaining holder.
+    $remaining = Get-AllPidsOnPort $port
+    if ($remaining.Count -gt 0) {
+        WARN "Port $port still held by orphan PID(s) after first pass: $($remaining -join ', ')"
+        foreach ($p in $remaining) {
+            INF "Killing orphan PID $p..."
+            Kill-ProcessTree $p
+            Stop-Process -Id $p -Force -ErrorAction SilentlyContinue
+        }
+        Start-Sleep -Milliseconds 800
+        if (-not (Get-AllPidsOnPort $port)) {
+            OK "Port $port freed after orphan cleanup."
+            return
+        }
+    }
+
+    ERR "Port $port still bound after kill attempt (PIDs: $((Get-AllPidsOnPort $port) -join ', '))."
 }
 
 function Get-PortStatus([int]$port) {
