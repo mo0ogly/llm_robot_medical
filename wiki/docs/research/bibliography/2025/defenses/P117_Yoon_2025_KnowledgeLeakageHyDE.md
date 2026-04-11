@@ -3,7 +3,7 @@
 **Reference** : arXiv:2504.14175v2
 **Revue/Conf** : ACL 2025 Findings — CORE A*
 **Lu le** : 2026-04-09
-> **PDF Source**: `P117_yoon_hypothetical_knowledge_leakage.pdf`
+> **PDF Source**: [literature_for_rag/P117_yoon_hypothetical_knowledge_leakage.pdf](../../../../assets/pdfs/P117_yoon_hypothetical_knowledge_leakage.pdf)
 > **Statut**: [ARTICLE VERIFIE] — lu en texte complet via ChromaDB (32 chunks dans aegis_bibliography)
 
 ### Resume (5 lignes)

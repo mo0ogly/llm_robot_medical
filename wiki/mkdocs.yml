@@ -21,7 +21,7 @@ theme:
         icon: material/weather-night
         name: Mode sombre
   font:
-    text: Inter
+    text: IBM Plex Sans
     code: JetBrains Mono
   features:
     - navigation.tabs
@@ -195,7 +195,9 @@ plugins:
             Staging (Agents): Staging (Agentes)
             Plans: Planos
             Roadmap: Roadmap
-  - mermaid2
+  # Mermaid rendu via Material built-in (pymdownx.superfences.fence_code_format)
+  # Pas de mermaid2 plugin — conflit avec le loader Material + theme variables custom
+  # Style des diagrammes : override dans docs/stylesheets/aegis.css (selecteurs .mermaid svg)
 
 markdown_extensions:
   - admonition
@@ -204,7 +206,7 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: !!python/name:mermaid2.fence_mermaid_custom
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.highlight:
@@ -214,6 +216,9 @@ markdown_extensions:
   - pymdownx.mark
   - pymdownx.critic
   - pymdownx.keys
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - tables
   - attr_list
   - md_in_html
@@ -304,6 +309,7 @@ nav:
     - Matheux (9): staging/matheux.md
     - Whitehacker (7): staging/whitehacker.md
     - Mathteacher (13): staging/mathteacher.md
+  - Publications: publications/index.md
   - Plans: plans/index.md
   - Roadmap: roadmap.md
   - Contribution: contributing/index.md

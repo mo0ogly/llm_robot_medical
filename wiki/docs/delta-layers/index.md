@@ -29,43 +29,88 @@ disjointes. Une attaque passe la defense **si elle contourne toutes les couches 
 
 ## Schema architectural
 
+Le flux traverse les 4 couches dans l'ordre **δ² → δ¹ → δ⁰ → δ³**. Chaque couche detecte
+des classes d'attaques differentes, et un bypass n'est possible **que si TOUTES les couches
+activees** echouent simultanement.
+
 ```mermaid
 flowchart LR
-    subgraph INPUT["Entree (HL7, RAG, user turn)"]
-        I["Donnees + instructions"]
+    subgraph INPUT["Sources d'entree"]
+        direction TB
+        HL7["HL7 FHIR<br/>segment OBX"]
+        RAG["RAG chunks<br/>ChromaDB"]
+        USR["User turn<br/>multi-tour"]
     end
 
-    subgraph D2["δ² : Syntactic Shield (RagSanitizer)"]
-        D2a["15 detecteurs Unicode"]
-        D2b["Score > seuil = REDACT"]
+    subgraph SHIELD["delta-2 — Syntactic Shield"]
+        direction TB
+        D2A["RagSanitizer<br/>15 detecteurs"]
+        D2B["score obfuscation<br/>threshold = 4"]
+        D2C["REDACT si > seuil<br/>Pass sinon"]
+        D2A --> D2B --> D2C
     end
 
-    subgraph D1["δ¹ : System Prompt / IH"]
-        D1a["Instructions hierarchisees"]
-        D1b["Role assignment + guardrails"]
+    subgraph SYS["delta-1 — System Prompt / IH"]
+        direction TB
+        D1A["Instructions<br/>hierarchisees"]
+        D1B["Role + guardrails<br/>AG2 agent"]
+        D1C["Content-filter<br/>prompt-level"]
+        D1A --> D1B --> D1C
     end
 
-    subgraph M["LLM (δ⁰ interne)"]
-        D0["Poids RLHF + safety layers"]
+    subgraph MODEL["delta-0 — LLM interne"]
+        direction TB
+        D0A["Poids RLHF / DPO<br/>aligned"]
+        D0B["Safety layers<br/>Zhao ICLR 2025"]
+        D0C["Shallow<br/>Wei 2025"]
+        D0A --> D0B --> D0C
     end
 
-    subgraph D3["δ³ : Output Enforcement"]
-        D3a["validate_output()"]
-        D3b["Allowed(i) spec"]
-        D3c["Audit trail"]
+    subgraph ENFORCE["delta-3 — Output Enforcement"]
+        direction TB
+        D3A["validate_output()"]
+        D3B["AllowedOutputSpec<br/>tension max 800g"]
+        D3C["Audit trail<br/>Wilson CI"]
+        D3A --> D3B --> D3C
     end
 
-    I --> D2
-    D2 --> D1
-    D1 --> M
-    M --> D3
-    D3 -->|"violation ? → BLOCK"| OUT["Sortie validee"]
+    OUT(["Sortie validee<br/>Integrity(S) OK"])
+    BLOCK(["VIOLATION<br/>BLOCK + alert"])
 
-    style D0 fill:#8e44ad,color:#fff
-    style D1 fill:#e74c3c,color:#fff
-    style D2 fill:#f39c12,color:#fff
-    style D3 fill:#27ae60,color:#fff
+    INPUT --> SHIELD
+    SHIELD -->|"score < 4"| SYS
+    SHIELD -->|"score &gt;= 4"| BLOCK
+    SYS --> MODEL
+    MODEL --> ENFORCE
+    ENFORCE -->|"in_allowed_set<br/>= true"| OUT
+    ENFORCE -->|"violation"| BLOCK
+
+    classDef layerDelta2 fill:#fff7ed,stroke:#ea580c,stroke-width:2px,color:#7c2d12
+    classDef layerDelta1 fill:#fef2f2,stroke:#dc2626,stroke-width:2px,color:#7f1d1d
+    classDef layerDelta0 fill:#faf5ff,stroke:#9333ea,stroke-width:2px,color:#581c87
+    classDef layerDelta3 fill:#f0fdfa,stroke:#0d9488,stroke-width:2px,color:#134e4a
+    classDef inputSource fill:#f1f5f9,stroke:#475569,stroke-width:1px,color:#1e293b
+    classDef outOk fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+    classDef outBad fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#7f1d1d
+
+    class SHIELD,D2A,D2B,D2C layerDelta2
+    class SYS,D1A,D1B,D1C layerDelta1
+    class MODEL,D0A,D0B,D0C layerDelta0
+    class ENFORCE,D3A,D3B,D3C layerDelta3
+    class HL7,RAG,USR inputSource
+    class OUT outOk
+    class BLOCK outBad
 ```
+
+**Lecture du schema** :
+
+1. **`INPUT`** (gris) : sources d'entree potentiellement adversariales — HL7 OBX (vecteur principal medical), RAG chunks (Stage 6 HyDE self-amp), user turn (multi-tour erosion)
+2. **δ²** (orange) : pre-traitement deterministe. Reject si score obfuscation >= 4
+3. **δ¹** (rouge) : instructions comportementales. Peut etre bypasse par authority framing
+4. **δ⁰** (violet) : alignement dans les poids. Shallow (Wei ICLR 2025), contournable par prefix attacks
+5. **δ³** (cyan/vert) : validation formelle de la sortie contre `AllowedOutputSpec`. Deterministe et independant du modele
+6. **`BLOCK`** (rouge vif) : toute violation detectee. Logged dans Wilson CI.
+7. **`OUT`** (vert) : sortie qui a traverse les 4 couches sans violation. `Integrity(S) = true`.
 
 ## Tableau comparatif
 

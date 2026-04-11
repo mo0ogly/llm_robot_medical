@@ -3,7 +3,7 @@
 **Reference** : arXiv:2410.14479v1
 **Revue/Conf** : arXiv preprint (Thales DIS, Cybersecurity AI Team) [PREPRINT]
 **Lu le** : 2026-04-09
-> **PDF Source**: `P121_clop_backdoored_retrievers.pdf`
+> **PDF Source**: [literature_for_rag/P121_clop_backdoored_retrievers.pdf](../../../../assets/pdfs/P121_clop_backdoored_retrievers.pdf)
 > **Statut**: [ARTICLE VERIFIE] — lu en texte complet via ChromaDB (20 chunks dans aegis_bibliography)
 
 ### Classification AEGIS

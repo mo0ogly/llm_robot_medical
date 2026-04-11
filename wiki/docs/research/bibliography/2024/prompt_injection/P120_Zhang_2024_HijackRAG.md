@@ -3,7 +3,7 @@
 **Reference** : arXiv:2410.22832v1
 **Revue/Conf** : arXiv preprint (Zhejiang University) [PREPRINT]
 **Lu le** : 2026-04-09
-> **PDF Source**: `P120_zhang_hijackrag.pdf`
+> **PDF Source**: [literature_for_rag/P120_zhang_hijackrag.pdf](../../../../assets/pdfs/P120_zhang_hijackrag.pdf)
 > **Statut**: [ARTICLE VERIFIE] — lu en texte complet via ChromaDB (21 chunks dans aegis_bibliography)
 
 ### Classification AEGIS

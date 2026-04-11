@@ -1,19 +1,39 @@
-# Staging - Agents de recherche
+# Staging — Agents de recherche
 
-Le dossier `_staging/` contient le travail des 9 agents specialises du pipeline `bibliography-maintainer`.
+!!! abstract "Pipeline bibliography-maintainer"
+    Le dossier `research_archive/_staging/` contient **l'integralite du travail** produit par les 9 agents specialises du pipeline `/bibliography-maintainer` (COLLECTOR → ANALYST → MATHEUX → CYBERSEC → WHITEHACKER → LIBRARIAN → CHUNKER → MATHTEACHER → SCIENTIST). Ces fichiers sont normalement invisibles aux chercheurs externes car ils vivent dans le repo git. Ce wiki **les publie**.
 
-| Agent | Fichiers | Description |
-|-------|----------|-------------|
-| **analyst** | 135 | Analyses individuelles des papiers (P001-P089) |
-| **audit-these** | 4 | Verification structuree de la these |
-| **briefings** | 3 | Agent specialise |
-| **chunker** | 14 | Preparation des chunks RAG (JSONL) |
-| **collector** | 19 | Metadonnees et verification des papiers |
-| **cybersec** | 7 | Analyses de menaces et couverture defensive |
-| **librarian** | 10 | Rapports d'organisation et validation |
-| **matheux** | 10 | Glossaire detaille et formules mathematiques |
-| **mathteacher** | 15 | Modules educatifs et quiz |
-| **memory** | 2 | Logs d'execution et suivi d'etat |
-| **scientist** | 25 | Axes de recherche et rapports de decouverte |
-| **signals** | 1 | Agent specialise |
-| **whitehacker** | 8 | Playbooks red team et guides d'exploitation |
+## Agents et productions
+
+| Agent | Description | # fichiers | # lignes | Acces |
+|-------|-------------|:----------:|:--------:|:-----:|
+| **analyst** | Analyses de papiers (Keshav 3-pass) | 140 | 13 701 | [→](analyst/index.md) |
+| **scientist** | Synthese scientifique | 25 | 4 931 | [→](scientist/index.md) |
+| **matheux** | Formules mathematiques (extraction & reviews) | 11 | 4 915 | [→](matheux/index.md) |
+| **mathteacher** | Cours de mathematiques (8 modules + guide notation + self-assessment) | 15 | 7 105 | [→](mathteacher/index.md) |
+| **cybersec** | Analyses menaces & defenses | 8 | 4 783 | [→](cybersec/index.md) |
+| **whitehacker** | Red Team playbooks & exploitation | 8 | 7 297 | [→](whitehacker/index.md) |
+| **librarian** | Rapports de propagation & validation | 10 | 1 561 | [→](librarian/index.md) |
+| **chunker** | Chunking pour injection ChromaDB | 5 | 1 657 | [→](chunker/index.md) |
+| **collector** | Preseed et verifications anti-doublon | 7 | 496 | [→](collector/index.md) |
+| **TOTAL** | — | **229** | **46 446** | — |
+
+## Hierarchie du pipeline
+
+```mermaid
+flowchart LR
+    COL["COLLECTOR"] --> ANA["ANALYST"]
+    ANA --> MAT["MATHEUX"]
+    ANA --> CYB["CYBERSEC"]
+    ANA --> WH["WHITEHACKER"]
+    MAT --> MT["MATHTEACHER"]
+    MAT --> SCI["SCIENTIST"]
+    CYB --> SCI
+    WH --> SCI
+    SCI --> LIB["LIBRARIAN"]
+    LIB --> CHK["CHUNKER"]
+    CHK --> DB[("ChromaDB<br/>aegis_bibliography")]
+    style DB fill:#00bcd4,color:#fff
+```
+
+**Acces complet** : chaque agent a sa propre section navigable. Les fichiers sont disponibles en lecture web **et** telechargement markdown direct.

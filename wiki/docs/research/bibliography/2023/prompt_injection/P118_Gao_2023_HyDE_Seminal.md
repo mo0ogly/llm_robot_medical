@@ -3,7 +3,7 @@
 **Reference** : arXiv:2212.10496v1 (publie ACL 2023)
 **Revue/Conf** : ACL 2023 — CORE A*
 **Lu le** : 2026-04-09
-> **PDF Source**: `P118_gao_hyde_original.pdf`
+> **PDF Source**: [literature_for_rag/P118_gao_hyde_original.pdf](../../../../assets/pdfs/P118_gao_hyde_original.pdf)
 > **Statut**: [ARTICLE VERIFIE] — lu en texte complet via ChromaDB (19 chunks dans aegis_bibliography)
 
 ### Resume (5 lignes)

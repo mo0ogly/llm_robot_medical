@@ -12,6 +12,13 @@
 
 ## 1. Origine litteraire
 
+!!! warning "[CLAIM EN VERIFICATION ACADEMIQUE — 2026-04-11]"
+    La claim ci-dessous ("quatrieme implementation") est **en cours de verification** par le
+    pipeline `/bibliography-maintainer` (mode scoped) pour eviter toute annonce d'une nouveaute
+    qui existe deja dans la litterature. **Ne pas citer** tant que le rapport skill n'est pas
+    valide. Verdict attendu dans `research_archive/_staging/analyst/` + mise a jour MANIFEST si
+    nouveaux papers identifies.
+
 !!! danger "Couche la moins exploree"
     Sur **127 papiers** du corpus AEGIS, seuls **14** adressent δ³ — et seulement **3 fournissent
     une implementation concrete** :
@@ -21,6 +28,7 @@
     - **RAGShield** (P066, partiel via provenance verification)
 
     La these AEGIS propose une **quatrieme** implementation via `validate_output` + `AllowedOutputSpec`.
+    **[PENDING VERIFICATION via /bibliography-maintainer scoped 2026-04-11]**
 
 ### Papiers fondateurs
 

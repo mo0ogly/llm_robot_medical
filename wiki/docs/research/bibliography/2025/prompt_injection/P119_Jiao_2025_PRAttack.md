@@ -3,7 +3,7 @@
 **Reference** : arXiv:2504.07717v3, SIGIR 2025
 **Revue/Conf** : SIGIR 2025 — CORE A*, peer-reviewed (ACM ISBN 979-8-4007-1592-1/2025/07)
 **Lu le** : 2026-04-09
-> **PDF Source**: `P119_jiao_pr_attack.pdf`
+> **PDF Source**: [literature_for_rag/P119_jiao_pr_attack.pdf](../../../../assets/pdfs/P119_jiao_pr_attack.pdf)
 > **Statut**: [ARTICLE VERIFIE] — lu en texte complet via ChromaDB (37 chunks dans aegis_bibliography)
 
 ### Classification AEGIS
