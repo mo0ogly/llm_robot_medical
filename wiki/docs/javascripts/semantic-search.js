@@ -89,7 +89,11 @@
     const deltaLayer = hit.delta_layer
       ? " <span class='aegis-delta'>" + escapeHtml(hit.delta_layer) + "</span>"
       : "";
-    const preview = escapeHtml(hit.content_preview || "").replace(/\n/g, "<br>");
+
+    // Full chunk content (PDCA cycle 2: no truncation — user explicitly hates truncation).
+    // Support both new API (hit.content) and legacy (hit.content_preview).
+    const rawContent = hit.content != null ? hit.content : (hit.content_preview || "");
+    const content = escapeHtml(rawContent).replace(/\n/g, "<br>");
 
     return `
       <div class="aegis-hit">
@@ -104,7 +108,7 @@
           <span>distance: ${formatDistance(hit.distance)}</span>
           <span>chars: ${hit.content_length || 0}</span>
         </div>
-        <div class="aegis-hit-preview">${preview}</div>
+        <div class="aegis-hit-content">${content}</div>
       </div>
     `;
   }

@@ -8,18 +8,66 @@ Endpoints:
     POST   /api/rag/reset
     POST   /api/redteam/seed-rag
     GET    /api/redteam/seed-rag/check/{scenario_id}
+    GET    /api/rag/collections                 (wiki widget)
+    POST   /api/rag/semantic-search             (wiki widget, rate-limited)
 """
 
 import os
 import shutil
+import time
+from collections import deque
+from threading import Lock
 
-from fastapi import APIRouter, HTTPException, UploadFile, File
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, UploadFile, File, Request
+from pydantic import BaseModel, Field
 
 import chromadb
 from pypdf import PdfReader
 
 router = APIRouter()
+
+
+# --- Simple in-memory rate limiter (PDCA cycle 2, SEC-09) ---
+# Sliding window per-IP, no external dependency (slowapi not installed).
+# Used to protect /api/rag/semantic-search from query flooding.
+
+class SlidingWindowRateLimiter:
+    """Thread-safe sliding window rate limiter, per-key (IP)."""
+
+    def __init__(self, max_requests: int, window_seconds: int):
+        self.max_requests = max_requests
+        self.window_seconds = window_seconds
+        self._buckets: dict[str, deque[float]] = {}
+        self._lock = Lock()
+
+    def check(self, key: str) -> tuple[bool, int]:
+        """Return (allowed, remaining). Records the request if allowed."""
+        now = time.monotonic()
+        cutoff = now - self.window_seconds
+        with self._lock:
+            bucket = self._buckets.setdefault(key, deque())
+            # Drop old entries
+            while bucket and bucket[0] < cutoff:
+                bucket.popleft()
+            if len(bucket) >= self.max_requests:
+                return (False, 0)
+            bucket.append(now)
+            return (True, self.max_requests - len(bucket))
+
+    def cleanup(self, max_buckets: int = 1000) -> None:
+        """Prevent unbounded growth — call periodically."""
+        with self._lock:
+            if len(self._buckets) <= max_buckets:
+                return
+            now = time.monotonic()
+            cutoff = now - self.window_seconds
+            stale = [k for k, v in self._buckets.items() if not v or v[-1] < cutoff]
+            for k in stale:
+                del self._buckets[k]
+
+
+# Semantic search: 20 requests per minute per IP
+_semantic_search_limiter = SlidingWindowRateLimiter(max_requests=20, window_seconds=60)
 
 
 # --- ChromaDB client ---
@@ -46,12 +94,27 @@ class SeedRagRequest(BaseModel):
 
 
 class SemanticSearchRequest(BaseModel):
-    """Request body for the wiki semantic search endpoint."""
-    query: str
-    collection: str = "aegis_bibliography"
-    limit: int = 10
-    min_distance: float = 0.0
-    max_distance: float = 2.0
+    """Request body for the wiki semantic search endpoint.
+
+    Security constraints (PDCA cycle 2, SEC-08):
+        - query length clamped to 500 chars (prevents pathological queries to ChromaDB)
+        - collection validated against whitelist in the endpoint
+        - limit clamped to [1, 50] in the endpoint
+    """
+    query: str = Field(
+        ...,
+        min_length=1,
+        max_length=500,
+        description="Natural language search query (max 500 chars)",
+    )
+    collection: str = Field(
+        default="aegis_bibliography",
+        max_length=64,
+        description="ChromaDB collection name (whitelisted in endpoint)",
+    )
+    limit: int = Field(default=10, ge=1, le=50)
+    min_distance: float = Field(default=0.0, ge=0.0, le=2.0)
+    max_distance: float = Field(default=2.0, ge=0.0, le=2.0)
 
 
 # --- Document CRUD ---
@@ -264,7 +327,7 @@ async def list_collections():
 
 
 @router.post("/api/rag/semantic-search")
-async def semantic_search(req: SemanticSearchRequest):
+async def semantic_search(req: SemanticSearchRequest, request: Request):
     """Semantic search across ChromaDB collections for the wiki widget.
 
     Queries the specified collection (default: aegis_bibliography, 130 papers)
@@ -274,7 +337,26 @@ async def semantic_search(req: SemanticSearchRequest):
     This endpoint is the live backend for the wiki semantic search widget at
     /semantic-search/ — every paper ingested via the bibliography-maintainer
     pipeline becomes immediately searchable here with zero rebuild required.
+
+    Rate limited to 20 requests/min per client IP (PDCA cycle 2, SEC-09).
+    Input validation via SemanticSearchRequest (query max 500 chars, limit
+    clamped 1-50, collection whitelist in body).
     """
+    # Rate limit check — per client IP (or X-Forwarded-For if behind proxy)
+    client_ip = (
+        request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+        or (request.client.host if request.client else "unknown")
+    )
+    allowed, remaining = _semantic_search_limiter.check(client_ip)
+    if not allowed:
+        raise HTTPException(
+            status_code=429,
+            detail="Rate limit exceeded: 20 requests per minute per IP. Please slow down.",
+            headers={"Retry-After": "60"},
+        )
+    # Opportunistic cleanup of stale buckets
+    _semantic_search_limiter.cleanup()
+
     try:
         chroma = get_chroma_client()
 
@@ -336,7 +418,8 @@ async def semantic_search(req: SemanticSearchRequest):
             year = meta.get("year") or meta.get("date") or None
             delta_layer = meta.get("delta_layer") or meta.get("target_delta") or None
 
-            content_preview = (doc or "")[:400]
+            # Full chunk content (PDCA cycle 2: user explicitly wants no truncation)
+            content_full = doc or ""
 
             hits.append({
                 "id": doc_id,
@@ -347,8 +430,8 @@ async def semantic_search(req: SemanticSearchRequest):
                 "delta_layer": delta_layer,
                 "distance": dist,
                 "similarity": (1.0 - dist) if dist is not None else None,
-                "content_preview": content_preview,
-                "content_length": len(doc or ""),
+                "content": content_full,
+                "content_length": len(content_full),
             })
 
         return {

@@ -277,25 +277,36 @@
   border-radius: 2px;
 }
 
-.aegis-hit-preview {
-  padding: 0.75rem 1rem;
+/* Full chunk content — no truncation, PDCA cycle 2 (user hates truncation) */
+.aegis-hit-content,
+.aegis-hit-preview /* legacy class alias */ {
+  padding: 0.875rem 1.125rem;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   font-size: 0.8125rem;
   line-height: 1.6;
   color: var(--md-default-fg-color, #d0d0d0);
   font-family: "JetBrains Mono", monospace;
-  max-height: 200px;
+  max-height: 600px;
   overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
+.aegis-hit-content::-webkit-scrollbar,
 .aegis-hit-preview::-webkit-scrollbar {
   width: 6px;
 }
 
+.aegis-hit-content::-webkit-scrollbar-thumb,
 .aegis-hit-preview::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #e53935, #00bcd4);
   border-radius: 3px;
+}
+
+[data-md-color-scheme="default"] .aegis-hit-content {
+  background: rgba(0, 0, 0, 0.04);
+  color: #333;
 }
 
 /* Light mode adjustments */
@@ -308,6 +319,7 @@
   background: #fff;
 }
 
+[data-md-color-scheme="default"] .aegis-hit-content,
 [data-md-color-scheme="default"] .aegis-hit-preview {
   background: rgba(0, 0, 0, 0.04);
   color: #333;
