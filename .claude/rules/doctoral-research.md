@@ -70,6 +70,15 @@ Avant une campagne N>=30, lancer 5 runs baseline :
 2. Apres chaque batch de fiches : `python lint_sources.py` sur les fiches → si > 5% → PAS DONE
 3. Apres chaque correction de refs : `python verify_fidelity.py` → si erreur factuelle → CORRIGER
 4. Toute affirmation "le seul", "le premier", "aucun autre" → WebSearch de verification AVANT publication
+5. **HUMILITY GATE (2026-04-12)** : "Il y a tres peu de chance que personne ait vu avant nous.
+   Soyons humbles." Le SCIENTIST ne peut PAS promouvoir une decouverte de PROPOSED a ACTIVE
+   si elle contient un mot-cle de primeur ("premier", "seul", "aucun autre", "first", "only",
+   "novel", "unprecedented") SANS avoir d'abord execute un WebSearch via `/bibliography-maintainer scoped`.
+   Si un concurrent est trouve → reformuler en "parmi les premiers" ou "etend le travail de X".
+   Si rien n'est trouve → qualifier avec scope + date ("aucun travail identifie par WebSearch YYYY-MM-DD").
+   JAMAIS de primeur absolue. Cette regle est un GATE BLOQUANT, pas un conseil.
+   **Failure mode documente** : D-021 "premier red team autonome" refute par AutoRedTeamer (OpenReview 2025).
+   Taux de faux positifs detecte : 3.4% (1/29 decouvertes). C'est trop pour une these ENS.
 5. Chaque session COMMENCE par `/audit-these full` et se TERMINE par `/audit-these full`
 
 Le volume n'est PAS une metrique de qualite. "97/97 done" ne veut rien dire si 42.8% des claims n'ont pas de source.
@@ -219,7 +228,7 @@ Avant de citer un papier, verifier :
 - `research_archive/RESEARCH_STATE.md` — source de verite
 - `research_archive/RESEARCH_ARCHIVE_GUIDE.md` — structure des dossiers
 - `research_archive/doc_references/prompt_analysis/research_requests.json` — file d'attente gaps
-- `research_archive/_staging/DIRECTOR_BRIEFING_RUN*.md` — briefings par RUN
+- `research_archive/_staging/briefings/DIRECTOR_BRIEFING_RUN*.md` — briefings par RUN
 
 ## Red Team Forge
 

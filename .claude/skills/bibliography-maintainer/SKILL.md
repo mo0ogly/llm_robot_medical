@@ -18,6 +18,48 @@ autonomous agentic loop (DECOMPOSE -> PLAN -> ACT -> OBSERVE -> EVALUATE -> REPL
 | `curriculum_update` | "curriculum", "math", "modules" | Run MATHEUX + MATHTEACHER only |
 | `research_axes` | "axes", "synthesis", "analyse croisee" | Run SCIENTIST only on all existing data |
 | `rag_refresh` | "rag", "chunks", "chromadb" | Run CHUNKER only, regenerate all chunks |
+| `methodology_refresh` | "methodology", "method_papers", "methodo" | Refresh de la collection aegis_methodology_papers (separee d'aegis_bibliography). Agents actifs : COLLECTOR (arXiv methodo), ANALYST (resume FR), CHUNKER (ingest via ingest_methodology_paper.py). Agents skips : MATHEUX, CYBERSEC, WHITEHACKER, MATHTEACHER, SCIENTIST. Frequence : trimestrielle. |
+
+### Mode `methodology_refresh` -- detail
+
+**Declencheur** : "methodology", "method_papers", "methodo"
+
+**Collection cible** : `aegis_methodology_papers` -- JAMAIS `aegis_bibliography`.
+
+**Source unique des fiches** : `research_archive/doc_references/{YEAR}/methodology/M*.md`
+
+Format canonique : **P006 long** (H2 titre `## [Authors, YEAR] — Title` + metadonnees
+`**Reference** : arXiv:XXXX` / `**Revue/Conf** : ...` + sections H3 `### Abstract original`,
+`### Resume`, `### Analyse critique`, `### Mecanismes algorithmiques formalises`,
+`### Pertinence these AEGIS`, `### Citations cles`, `### Classification`).
+
+Le repertoire historique `research_archive/methodology_corpus/` a ete **supprime**
+le 2026-04-11 pour eliminer la duplication de source. Tout nouveau paper de
+methodologie DOIT etre ajoute sous `doc_references/{YEAR}/methodology/Mxxx_*.md`
+au format P006 complet (verifie via pypdf + tag `[ARTICLE VERIFIE]`).
+
+**Agents actifs** :
+
+| Agent | Role dans methodology_refresh |
+|-------|-------------------------------|
+| COLLECTOR | Recherche de nouveaux papers methodologie sur arXiv (autonomy, multi-agent research, iterative LLM, agentic benchmarks). Verifie dedup via `check_corpus_dedup.py --title`. |
+| ANALYST | Produit le resume FR et remplit les sections obligatoires de la fiche (Resume FR, Contributions, Mecanismes repris dans AEGIS, Limites, Citations). |
+| CHUNKER | Ingere la fiche dans `aegis_methodology_papers` via `ingest_methodology_paper.py`. |
+
+**Agents SKIPS** : MATHEUX, CYBERSEC, WHITEHACKER, MATHTEACHER, SCIENTIST
+(hors-sujet sur les papers de methodologie agentique).
+
+**Frequence recommandee** : trimestrielle (4 papers/an maximum -- corpus quasi-statique).
+
+**Output** :
+- Fiche markdown P006 dans `research_archive/doc_references/{YEAR}/methodology/Mxxx_Slug_YYYY_Topic.md`
+- Chunks ingeres dans la collection ChromaDB `aegis_methodology_papers`
+
+**Scripts** :
+```
+python .claude/skills/aegis-research-lab/scripts/ingest_methodology_paper.py --all
+python .claude/skills/aegis-research-lab/scripts/retrieve_methodology_paper.py "query test"
+```
 
 ## Inter-Session Memory (Continuity System)
 
@@ -350,6 +392,51 @@ It MUST contain ALL of the following sections:
 - DISCOVERIES: all 4 files
 - MEMORY_STATE.md: cumulative counters
 
+### Phase 6b: HUMILITY GATE — Primacy Claims Verification (MANDATORY, BLOCKING)
+
+**Added 2026-04-12 after audit-these claims revealed D-021 false positive.**
+
+**Rule**: every new discovery (D-XXX) proposed by SCIENTIST or ANALYST that contains
+ANY of the following keywords in its description is **BLOCKED from promotion**
+(PROPOSED → ACTIVE) until a WebSearch verification passes:
+
+**Trigger keywords** (case-insensitive, FR + EN):
+`premier`, `premiere`, `seul`, `seule`, `aucun autre`, `aucun papier`,
+`contribution originale`, `first`, `only`, `no other`, `novel contribution`,
+`unique`, `unprecedented`, `never been`, `no prior`, `we are the first`.
+
+**Procedure when triggered**:
+
+1. **STOP** — do NOT assign the D-ID yet.
+2. **WebSearch** (via COLLECTOR agent or direct WebSearch tool) with:
+   - The core claim reformulated as a search query
+   - At least 2 variant queries (synonyms, different phrasing)
+   - Date range: 2020-present
+3. **If competitor found** (paper, framework, blog post, GitHub repo):
+   - Reformulate discovery: replace "premier/seul" with "parmi les premiers" or
+     "extends the work of [competitor]"
+   - Add the competitor to the corpus via standard pipeline (pre-check dedup first)
+   - Lower confidence by 1 point (reflects loss of primacy)
+   - Proceed with D-ID assignment using the reformulated text
+4. **If NO competitor found**:
+   - Qualify the claim with scope + date: "aucun travail identifie par WebSearch
+     (YYYY-MM-DD) dans le corpus AEGIS (P001-PXXX)"
+   - NEVER state absolute primacy ("le premier au monde", "the only one")
+   - Proceed with D-ID assignment using the qualified text
+
+**Failure mode documented (2026-04-12)**: D-021 claimed "premier exemple de red team
+autonome avec memoire persistante" but AutoRedTeamer (OpenReview 2025) implements
+exactly this with memory-based attack selection + lifelong/incremental attack library.
+The SCIENTIST assigned D-021 without WebSearch → false positive in the thesis.
+
+**Philosophical principle** (user directive, 2026-04-12):
+> "Il y a tres peu de chance que personne ait vu avant nous ces decouvertes. Soyons humbles."
+> The default assumption is that someone has seen it before us. The burden of proof
+> is on AEGIS to demonstrate novelty, not on the reviewer to find prior art.
+
+**This gate is BLOCKING**: the DIRECTOR BRIEFING cannot be marked COMPLETE if any
+unverified primacy claim exists in the new discoveries of the current RUN.
+
 ### Phase 7: WIKI SYNC (MANDATORY — auto-publish)
 
 After the DIRECTOR BRIEFING is generated, the Orchestrator MUST sync the MkDocs wiki so that
@@ -419,6 +506,84 @@ GAPS:
 
 ---
 
+## Collections ChromaDB gerees
+
+Ce skill interagit avec deux collections ChromaDB distinctes selon le mode d'execution.
+Ne jamais melanger les collections -- les requetes RAG cote securite ne doivent pas
+etre polluees par les papers methodologiques, et vice versa.
+
+| Collection | Mode(s) | Source | Contenu |
+|-----------|---------|--------|---------|
+| `aegis_bibliography` | full_search, incremental, analyze_only, rag_refresh | `research_archive/doc_references/{YEAR}/{domain}/` (hors `methodology/`) | ~46 papers securite LLM, prompt injection, robot chirurgical Da Vinci Xi |
+| `aegis_methodology_papers` | methodology_refresh | `research_archive/doc_references/{YEAR}/methodology/M*.md` | Papers de methodologie agentique au format P006 (Agent Laboratory, AI Scientist v1/v2, AI co-scientist, ScienceAgentBench, Tongyi DeepResearch, SAGA, Securing MCP, ...) |
+
+Scripts associes :
+- `aegis_bibliography` -> `research_archive/_staging/chunker/ingest_to_chromadb.py` (genere par CHUNKER)
+- `aegis_methodology_papers` -> `.claude/skills/aegis-research-lab/scripts/ingest_methodology_paper.py`
+
+---
+
 ## Epilogue — Dream audit
 
 Apres le DIRECTOR BRIEFING, lancer `/dream audit`. Si le verdict est NEEDS_CONSOLIDATION ou CRITICAL, lancer `/dream consolidate`.
+
+---
+
+## Bibliographie méthodologique (mapping agent → paper)
+
+Ce skill est lui-meme une implementation d'architecture multi-agent inspiree de la
+litterature des systemes scientifiques autonomes. Le swarm de 9 agents est a la fois
+l'outil qui maintient la collection `aegis_methodology_papers` ET l'objet d'etude dont
+les fiches M* formalisent les methodes.
+
+Source unique de verite des fiches : `research_archive/doc_references/{2025,2026}/methodology/M*.md` (format P006).
+
+### Mapping agent ↔ papers methodologiques
+
+| Agent | Role | Paper(s) source | Pertinence |
+|-------|------|-----------------|------------|
+| COLLECTOR | Recherche arXiv 46 articles, boucle auto-corrective si <20 | M002 AI Scientist v1 (Lu et al. 2024, arXiv:2408.06292) + M007 MLR-Copilot (Li et al. 2024, arXiv:2408.14033) | End-to-end idea -> code -> experiment |
+| ANALYST | 34 resumes FR P006 | M001 Agent Laboratory (Schmidgall et al. 2025, arXiv:2501.04227) | Mecanisme literature_review |
+| MATHEUX | Extraction 22 formules | - | Specificite AEGIS (pas de source methodo directe) |
+| CYBERSEC | 34 modeles de menaces | M014 Securing MCP (Errico, Ngiam, Sojan 2025, arXiv:2511.20920) | Threat model canonique MCP (C1-C5) |
+| WHITEHACKER | 18 techniques + 12 PoC | M014 + corpus offensif AEGIS | Translation threat -> PoC |
+| LIBRARIAN | Organisation FS + index + purge doublons | M005 agentRxiv (Schmidgall & Moor 2025, arXiv:2503.18102) | Partage cumulatif structure |
+| MATHTEACHER | 7 modules de cours FR | - | Specificite pedagogique AEGIS |
+| SCIENTIST | 8 axes de recherche + SWOT | M004 AI co-scientist (Gottweis et al. 2025, arXiv:2502.18864) | Reflection / ranking / evolution multi-agent |
+| CHUNKER | 290 chunks RAG -> ChromaDB | M005 agentRxiv + infrastructure partage | Embeddings all-MiniLM-L6-v2 local, zero API |
+
+### Mode `methodology_refresh` — cas particulier
+
+Ce mode traite exclusivement les fiches M* du repertoire `research_archive/doc_references/{YEAR}/methodology/`
+et les indexe dans la collection dediee `aegis_methodology_papers` (disjointe de `aegis_bibliography`).
+Le CHUNKER utilise `ingest_methodology_paper.py` au lieu du pipeline CHUNKER standard.
+
+Script : `.claude/skills/aegis-research-lab/scripts/ingest_methodology_paper.py --all`
+
+Etat courant de la collection (2026-04-11) : 17 fiches P006 indexees, 136 chunks, couvrant
+les 5 categories fondatrices (systemes end-to-end, benchmarks, infrastructure, deploiements
+industriels, taxonomies de limites).
+
+### Contraintes issues du safety floor S1-S6 (herite de research-director §5quater)
+
+- **S1** — Mandat these AEGIS non negociable : toute recherche hors scope (securite LLM Da Vinci Xi) est refusee par SCIENTIST.
+- **S5** — Pas de modification des SKILL.md par le swarm : seul research-director avec autorisation supervisee peut modifier les skills.
+- **S6** — Si le COLLECTOR utilise un outil externe via MCP (ex. arXiv API), les controles C2/C3 de aegis-research-lab §4.4 s'appliquent.
+
+### Collections ChromaDB (rappel)
+
+| Collection | Mode | Source | Nb fiches |
+|------------|------|--------|-----------|
+| `aegis_bibliography` | full_search, incremental, analyze_only, rag_refresh | `doc_references/{YEAR}/{domain}/` hors methodology | ~46 papers securite LLM |
+| `aegis_methodology_papers` | methodology_refresh | `doc_references/{YEAR}/methodology/M*.md` | 17 fiches P006 |
+
+### Visualisation web
+
+- Page pipeline (9 agents + gates + modes) : `/thesis/bibliography-pipeline` (`frontend/src/components/thesis/BibliographyPipelineView.jsx`)
+- Page corpus 17 papers methodologiques : `/thesis/academic-agents` (`frontend/src/components/thesis/AcademicAgentsView.jsx`)
+- Page workflow integre AEGIS (4 skills + references biblio inline) : `/thesis/aegis-workflow` (`frontend/src/components/thesis/AegisWorkflowView.jsx`)
+
+### References croisees
+
+- Analyse de gap formelle phase (c) : `research_archive/research_notes/SESSION-001_phase_c_gap_analysis_methodology_vs_skills_2026-04-11.md`
+- Tracker de conjectures : `research_archive/discoveries/CONJECTURES_TRACKER.md` (MC1-MC13)
