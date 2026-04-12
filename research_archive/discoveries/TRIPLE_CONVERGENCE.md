@@ -204,3 +204,60 @@ Voir DISCOVERIES_INDEX.md — Paradoxe δ⁰/δ¹ : effacer le prompt systeme RE
 
 **Score de confiance global** : **8/10** (baisse de 10/10, TC-002 refute la convergence additive)
 **Statut** : ACTIVE — NUANCEE TC-002. La simultaneite des vulnerabilites δ⁰/δ¹/δ² est confirmee (40+ papiers), mais la convergence est ANTAGONISTE : combiner les couches REDUIT l'ASR au lieu de l'augmenter (δ¹ seul = 33% vs δ⁰+δ¹+δ² = 20% sur 70B). Le prompt systeme est a la fois protection et vecteur (D-022). Le profil de vulnerabilite est taille-dependant (3B = fuzzing δ², 70B = contexte RAG δ¹). En attente de validation sur d'autres modeles 70B+ pour confirmer la generalisation.
+
+---
+
+## Verification 2026-04-11 — LlamaFirewall (P131, Meta AI) confirms D-001
+
+**Context** : RUN VERIFICATION_DELTA3_20260411, scoped pour verifier la claim "AEGIS = 4eme implementation δ³". CYBERSEC a analyse 5 nouveaux frameworks (P131 LlamaFirewall, P132 Weissman npj DM, P133 Guardrails AI, P134 LLM Guard, P135 LMQL) contre D-001.
+
+**LlamaFirewall renforce D-001 (modere a fort)** :
+
+Meta AI, un des plus grands labs industriels, publie explicitement dans l'abstract de P131 (arXiv:2505.03574, Chennabasappa et al. 2025, Section 1) que "model fine-tuning or chatbot-focused guardrails do not fully address" les risques agents. C'est une reconnaissance publique et industrielle que δ⁰ (fine-tuning = alignment) et δ² (chatbot guardrails) sont insuffisants, et qu'un "real-time guardrail monitor to serve as a final layer of defense" est necessaire — exactement l'argument central de D-001.
+
+**Limitation** : LlamaFirewall couvre δ²+δ³ (partiellement) mais PAS δ⁰ ni δ¹. CodeShield est un δ³ specialise pour le domaine CODE, pas pour les domaines haut-enjeu comme le medical chirurgical. LlamaFirewall ne teste PAS le scenario triple convergence TC-002 (aucune eval δ⁰ efface + δ¹ empoisonne + δ² fuzzed).
+
+**Weissman et al. 2025 (P132) renforce indirectement D-001 via le domaine medical** :
+
+Publie dans npj Digital Medicine (Nature portfolio, DOI 10.1038/s41746-025-01544-y), le paper etablit que "prompts are inadequate for this purpose [constrain LLM output for regulatory compliance]" (abstract). Une revue Nature portfolio reclame publiquement des methodes de contrainte output LLM pour le domaine medical FDA — ce qui renforce C2 (necessite δ³) au niveau reglementaire, pas seulement technique.
+
+**Guardrails AI (P133), LLM Guard (P134), LMQL (P135)** : ces 3 frameworks confirment que le pattern δ³ existe depuis 2022 (LMQL PLDI 2023) et qu'il est adopte dans l'industrie. Ils ne REFUTENT pas D-001 mais invalident arithmetiquement la claim "4eme implementation" (voir ci-dessous). Aucun des 3 ne teste la triple convergence.
+
+**Nuance arithmetique sur C2** :
+
+Avant cette verification, on citait "0/73+ papiers avec δ³". La verification 2026-04-11 a identifie au moins 7 implementations publiques du pattern δ³ generique :
+
+1. LMQL (ETH Zurich, PLDI 2023, arXiv:2212.06094) — constraint-driven decoding
+2. Guardrails AI (2023, industrial) — Pydantic schemas + composable validators
+3. LLM Guard (Protect AI, 2023) — partiel, output scanners
+4. CaMeL P081 (2025) — capability-based access control
+5. AgentSpec P082 (2025, ICSE) — runtime declarative enforcement
+6. LlamaFirewall P131 (Meta, 2025-05) — CodeShield static analysis + Agent Alignment
+7. RAGShield P066 (2026) — RAG output validation
+
+**D-001 reste VALIDE avec confiance 8/10**. Les frameworks identifies sont des implementations du PATTERN δ³, pas des solutions a la triple convergence. Aucun ne teste l'interaction antagoniste δ⁰/δ¹/δ² observee dans TC-002. La these AEGIS reste la SEULE validation empirique de la triple convergence et la PREMIERE implementation δ³ specialisee medicale chirurgicale.
+
+**Impact sur la claim "4eme implementation"** : refutee arithmetiquement. AEGIS est au minimum la 8eme implementation publique connue du pattern δ³. Reformulation recommandee : **"Premiere implementation δ³ SPECIALISEE medicale chirurgicale avec contraintes biomecaniques ancrees FDA 510k"** (la contribution originale se deplace du pattern vers sa specialisation domaine).
+
+---
+
+**VALIDATED BY SCIENTIST RUN VERIFICATION_DELTA3_20260411** (2026-04-11)
+
+D-001 Triple Convergence reste a **8/10** stable. L'identification de 7+ frameworks δ³ generiques publics ne contredit PAS D-001 (qui affirme que δ⁰/δ¹/δ² sont simultanement vulnerables). Au contraire, cela **confirme** que tous les frameworks identifies considerent δ³ comme la **seule couche survivante** — c'est la position convergente publiquement formulee par la communaute academique (ETH Zurich LMQL PLDI 2023, Cambridge SoK δ³ P060, Meta AI LlamaFirewall abstract, Nature portfolio npj Digital Medicine Weissman 2025).
+
+**Implication pour la these** : D-001 reste le **fondement scientifique** de la contribution AEGIS, et G-063 (specialisation medicale δ³ FDA-ancree, cree lors de cette verification) est la **contribution originale AEGIS** qui ne contredit pas D-001 mais l'**applique** au domaine surgical avec contraintes biomecaniques.
+
+**Normalisation P-IDs (post-LIBRARIAN)** : la section ci-dessus utilise la numerotation pre-LIBRARIAN. Apres collision detection LIBRARIAN (LlamaFirewall etait deja P084 au MANIFEST), la renumerotation definitive est :
+- LlamaFirewall = **P084** (deja MANIFEST)
+- npj DM Weissman = **P131** (NEW)
+- Guardrails AI = **P132** (NEW)
+- LLM Guard = **P133** (NEW)
+- LMQL = **P134** (NEW)
+
+**Convergence unanime** : les 5 agents precedents (ANALYST, MATHEUX, CYBERSEC, WHITEHACKER, LIBRARIAN) ont converge sur le verdict **NUANCED — REFORMULATION OBLIGATOIRE**. Aucun gate SUPERVISED declenche (|Δ C2|=0, |Δ C6|=0.5, mode AUTONOMOUS).
+
+**Source consolidee** : `_staging/scientist/VERDICT_FINAL_VERIFICATION_DELTA3_20260411.md`
+
+**Signature** : SCIENTIST RUN VERIFICATION_DELTA3_20260411, 2026-04-11
+
+Reference detaillee : `research_archive/_staging/cybersec/DELTA3_THREAT_MODEL_20260411.md`

@@ -4,8 +4,8 @@
 > Tous les agents DOIVENT le lire AVANT de travailler et le mettre a jour APRES.
 > Les decouvertes evoluent a chaque RUN — elles ne sont jamais figees.
 
-**Derniere mise a jour** : HyDE-security batch P117-P121 (2026-04-09)
-**Corpus** : 121 articles (P001-P121, excl. P088/P105/P106)
+**Derniere mise a jour** : RUN-008 scoped note integration P128-P130 (2026-04-09)
+**Corpus** : 130 articles (P001-P130, excl. P088/P105/P106). Dernieres additions : RUN-007 P122-P127 (OWASP x2, CAPTURE, Systematic Analysis, Design Patterns Tramer, IPI Competition) puis RUN-008 P128-P130 (Kang Programmatic Behavior, CodeAct Wang ICML 2024, ToolSandbox Lu Apple NAACL 2025).
 
 ---
 
@@ -51,6 +51,16 @@
 | D-021 | **Knowledge repository adversarial auto-evolutif** : P096 (Mastermind, Ren et al. 2026) introduit un systeme multi-agent qui accumule autonomement des connaissances sur les succes et echecs d'attaque, puis adapte sa strategie. Le systeme s'auto-ameliore sans intervention humaine — premier exemple de red team autonome avec memoire persistante. Implication : les defenses statiques seront systematiquement depassees. | RUN-005 | 8/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
 | D-022 | **Paradoxe δ⁰/δ¹** : Effacer le prompt systeme (δ⁰) REDUIT l'efficacite du contexte empoisonne (δ¹). Sur 70B, δ¹ seul = 33% ASR mais δ⁰+δ¹ = 17% (TC-002, N=30, Groq llama-3.3-70b-versatile). Le prompt systeme est a la fois PROTECTION (instruction-following pour les regles) et VECTEUR (instruction-following pour le poison). Implication : la convergence des couches est antagoniste, pas additive — l'attaquant optimal doit choisir ses vecteurs, pas les combiner. | TC-002 | 8/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
 
+### MOYENNE (ouvre une piste) — ajouts RUN-008
+
+Trois decouvertes issues de l'integration scoped P128-P130 (Kang / CodeAct / ToolSandbox) declenchee par la verification bibliographique de la note `Note_Academique_Context_Isolated_Adversarial_Workflow.md`. **Note : les proposals initiales de l'ANALYST sub-agent utilisaient les IDs D-021/D-022/D-023 (collision avec existant). Renumerotees D-026/D-027/D-028 lors du commit, prochain libre apres D-025.**
+
+| ID | Decouverte | RUN | Confiance | Fichier |
+|----|-----------|-----|-----------|---------|
+| D-026 | **Asymmetrie economique attaquant/defenseur** : P128 (Kang, Li, Stoica, Guestrin, Zaharia, Hashimoto, 2023, arXiv:2302.05733) documente un cout d'attaque de **$0.0064-$0.016 USD par generation** (email malveillant genere via payload splitting sur ChatGPT + text-davinci-003, Section 6 "Economic Analysis") versus **$0.10 par generation humaine** (Kang et al. 2023 citant Holman et al. 2007). Le ratio effectif est donc **~6.25x-15.6x** en faveur de l'attaquant ($0.10/$0.016 = 6.25x au bas de gamme LLM, $0.10/$0.0064 = 15.6x au haut de gamme), pas les 125-500x initialement reportes par l'ANALYST sub-agent. L'asymmetrie economique structure neanmoins le paysage de la menace : les defenses cost-efficacement deployables sont une contrainte de conception majeure. Supporte C1 (fragilite structurelle de l'alignement), C4 (echec separation instructions/donnees via payload splitting), C5 (dimension economique absente des benchmarks). **CROSS-VALIDATED 2026-04-09 post-audit** contre `literature_for_rag/P128_2302.05733.pdf` (pypdf extraction, 14 pages, 53001 chars) : `$0.0064` (3 matches), `$0.016` (2 matches), `text-davinci-003` (8 matches), `payload splitting` (3 matches), `human generation may cost as much as $0.10` (1 match) — tous confirmes sauf le ratio 125-500x qui etait une extrapolation incorrecte, corrigee ici. | RUN-008 + cross-val 2026-04-09 | 8/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
+| D-027 | **Code-Action Amplification** : P129 (Wang, Chen, Yuan, Zhang, Li, Peng, Ji, CodeAct, ICML 2024, arXiv:2402.01030) introduit l'architecture ou les actions d'agent sont du code Python executable. Amelioration +20 pts absolus sur M3ToolEval (GPT-4-1106 : 52.4% JSON-based vs 74.4% CodeAct, Table 3, p. 6). **Implication securitaire qualitative** : dans un agent CodeAct, une injection de prompt ne produit pas du texte adversarial inerte mais du code Python execute avec les privileges de l'agent (acces fichiers, API, subprocess). Le papier elude l'angle adversarial (une seule phrase sur sandbox en Section 7) et ne propose aucun test red team. Renforce C7 (tool-call surface = couche la plus faible) et indirectement C2 (regex incapable de detecter semantique Python obfusquee via chaines encodees, ast-manipulation, exec dynamique). Cree directement le gap G-023 (adversarial benchmark dedie aux agents CodeAct/ReAct code-based). | RUN-008 | 8/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
+| D-028 | **Tool Hallucination Floor** : P130 (Lu, Holleis, Zhang et al., ToolSandbox Apple / NAACL 2025 Findings, arXiv:2408.04682) identifie que lorsqu'un modele n'a pas l'outil necessaire pour completer une tache, il HALLUCINE des appels d'outils plutot que de refuser (scenarios "Insufficient Information", Section 5). Le gap GPT-4o 73.0% vs meilleur open-source 31.4% (Table 2) montre que la vulnerabilite est orthogonale a la taille du modele. **Surface d'attaque directe** : forcer la hallucination d'outils cliniques inexistants (ex : `trigger_emergency_override` en contexte Da Vinci Xi) via absence strategique d'information dans le prompt. **Opportunite de contribution originale pour AEGIS** : construire un AdversarialToolSandbox en contexte medical robotique (cf. G-024 en todo). Supporte C5 (benchmarks stateless existants sous-estimaient le gap) et indirectement C7. | RUN-008 | 8/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
+
 ### HAUTE (renforce un argument majeur) — ajouts RUN-005
 
 | ID | Decouverte | RUN | Confiance | Fichier |
@@ -88,6 +98,7 @@ La litterature pre-P117 (PR-Attack, HijackRAG, Backdoored Retrievers, PoisonedRA
 | RUN-005 | D-017, D-018, D-019, D-020, D-021 | D-004 (confiance 7→9.5, 8 papiers convergents), D-002 (description enrichie 102 papers) | 21 |
 | TC-002 | D-022 | D-001 (confiance 10→8, convergence antagoniste refute additivite) | 22 |
 | HyDE-P117-P121 | Taxonomie 6-stages (nouvelle section) | D-024 (confiance 9→10, positionnement canonique par P117-P121 : baseline P118, benign analog P117, contrasts P119/P120/P121) | 22 |
+| RUN-008 | D-026 (Kang asymmetrie economique), D-027 (CodeAct amplification), D-028 (ToolSandbox hallucination floor) | — | 25 |
 
 ---
 
@@ -104,3 +115,51 @@ La litterature pre-P117 (PR-Attack, HijackRAG, Backdoored Retrievers, PoisonedRA
    - Confiance peut monter OU descendre selon les nouvelles preuves
    - Une decouverte peut etre INVALIDEE si contredite par >= 3 papers forts
    - Toujours documenter le POURQUOI du changement
+6. **ID collision prevention (OBLIGATOIRE)** : Avant de proposer un D-ID, appeler :
+   ```
+   python backend/tools/check_corpus_dedup.py --next-discovery
+   ```
+   Ne JAMAIS proposer un D-ID de memoire ou par inference sequentielle. Seul
+   `get_next_discovery_id()` est la source de verite. **Historique bug** : RUN-008
+   ANALYST sub-agent a propose D-021/D-022/D-023 sans lire ce fichier — meme classe
+   de bug que la re-verification Crescendo (arXiv:2404.01833 = P099 deja present).
+   Correction post-hoc requise : renumerotation en D-026/D-027/D-028.
+
+---
+
+## VERIFICATION_DELTA3_20260411 — Ajout SCIENTIST 2026-04-11
+
+### D-029 CANDIDATE — Pattern δ³ academiquement etabli depuis 2022, AEGIS = specialisation medicale
+
+**Observation** : la verification scoped VERIFICATION_DELTA3_20260411 a revele que le pattern
+`validate_output + specification formelle` est academiquement etabli depuis LMQL
+(Beurer-Kellner, Fischer, Vechev, 2022, arXiv:2212.06094, PLDI 2023 CORE A*, P134) et
+industriellement adopte depuis 2023 (Guardrails AI P132, LLM Guard P133). AEGIS n'est PAS
+l'inventeur du pattern (8-9e implementation connue) mais sa **premiere specialisation
+medicale chirurgicale** avec contraintes biomecaniques FDA-ancrees pour le robot Da Vinci Xi.
+
+**Liste ordonnee des implementations δ³ publiques identifiees** (par date de premiere publication) :
+1. **LMQL** (ETH Zurich, 2022-12, PLDI 2023 CORE A*, arXiv:2212.06094, P134) — precurseur academique peer-reviewed, DSL constraint-driven decoding
+2. **Guardrails AI** (2023, industriel, ~6700 stars GitHub, Apache 2.0, P132) — framework Python Pydantic-based
+3. **LLM Guard** (Protect AI, 2023, industriel, ~2800 stars, MIT, P133) — 36 scanners multi-detection (partiellement δ³)
+4. **CaMeL** (Debenedetti et al., 2025, arXiv:2503.18813, P081) — capability-based access control
+5. **AgentSpec** (Wang et al., 2025, ICSE, arXiv:2503.18666, P082) — runtime declarative enforcement
+6. **LlamaFirewall CodeShield** (Chennabasappa et al., 2025, Meta AI, arXiv:2505.03574, P084) — analyse statique code-domain
+7. **RAGShield** (2026, arXiv:2604.00387, P066) — RAG output validation
+8. **AEGIS** (ENS, 2026) — **premiere specialisation medicale chirurgicale FDA-ancree Da Vinci Xi** : contraintes biomecaniques formelles (tension 50-800 g, `forbidden_tools` par phase chirurgicale, directives HL7 OBX coherentes avec l'ontologie SNOMED-CT).
+
+**Confiance** : **9/10** (evidence solide, 7+ frameworks publics verifies par Keshav 3-pass + MITRE ATLAS + OWASP LLM Top 10 cross-check)
+
+**Papers concernes** : P084 LlamaFirewall (2025-05), P131 npj DM Weissman (2025-03), P132 Guardrails AI (2023), P133 LLM Guard (2023), P134 LMQL (2022-12), P081 CaMeL (2025), P082 AgentSpec (2025), P066 RAGShield (2026)
+
+**Impact sur la these** :
+- **Retirer** toute revendication de primeur sur le pattern generique δ³ (wiki delta-3.md §1)
+- **Positionner** AEGIS strictement comme **specialisation medicale chirurgicale avec ancrage FDA 510k**, pas comme "quatrieme implementation"
+- **Citer** l'autorite peer-reviewed Nature portfolio P131 Weissman et al. (2025) comme justification reglementaire publique du besoin
+
+**Status** : CANDIDATE → needs one more review cycle (RUN+1 experimentalist campaign N>=30) before VALIDATED
+
+**Source SCIENTIST** : `_staging/scientist/VERDICT_FINAL_VERIFICATION_DELTA3_20260411.md`
+**Converge avec** : G-063 (nouveau gap SCIENTIST), verdicts NUANCED unanimes des 5 agents precedents (ANALYST, MATHEUX, CYBERSEC, WHITEHACKER, LIBRARIAN)
+
+**Signature** : SCIENTIST RUN VERIFICATION_DELTA3_20260411, 2026-04-11

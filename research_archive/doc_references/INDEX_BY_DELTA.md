@@ -1,7 +1,7 @@
 # Index by delta-Layer
 
-**Last Updated**: 2026-04-08 (RAG defense batch P111-P113)
-**Source**: 112 analyst reports (Phase 3 + RUN-002 + RUN-003 + RUN-004 catchup + RUN-005 + RUN-006 C6 + peer-preservation + RAG-defense) cross-referenced with PHASE3_ANALYST_REPORT.md delta-coverage matrix
+**Last Updated**: 2026-04-11 (VERIFICATION_DELTA3_20260411 scoped batch — P131 Weissman npj DM medical motivation, P132 Guardrails AI industrial δ³ precursor, P133 LLM Guard detection-based, P134 LMQL academic δ³ precursor PLDI 2023; LlamaFirewall candidate dropped as duplicate of existing P084)
+**Source**: 134 analyst reports (Phase 3 + RUN-002 + RUN-003 + RUN-004 catchup + RUN-005 + RUN-006 C6 + peer-preservation + RAG-defense + HyDE-security + IEEE batch + scoped-note RUN-008 + VERIFICATION_DELTA3_20260411) cross-referenced with PHASE3_ANALYST_REPORT.md delta-coverage matrix
 
 ---
 
@@ -65,6 +65,7 @@ Papers addressing the base alignment layer -- RLHF/DPO training, reward model ro
 | P110 | Geometry of Alignment Collapse (Princeton) | Analysis | **FORMAL PROOF: AIC + quartic power law Delta=Omega(gamma^2*t^4); alignment geometrically fragile** |
 | P114 | Quantifying Self-Preservation Bias (TBSP) | Analysis | **23 models, SPR > 60% majority; RLHF masks bias without eliminating it; tribalism identitaire** |
 | P116 | Selectively Quitting Improves Agent Safety | Defense | **+0.40 safety, -0.03 helpfulness; quitting exploits RLHF instruction-following as defense** |
+| P131 | Unregulated LLMs Produce Device-Like CDS (npj Digital Medicine) | Medical | **RLHF-aligned LLMs produce FDA device-like CDS output despite disclaimers; 'prompts are inadequate' (Nature portfolio Q1)** |
 
 | P087 | H-CoT: Hijacking CoT Safety Reasoning | Attack | **H-CoT drops refusal from 98% to <2% on o1 -- CoT safety reasoning hijackable** |
 | P089 | SEAL: Adaptive Stacked Ciphers | Attack | **80.8-100% ASR -- reasoning ability enables cipher decryption = vulnerability** |
@@ -230,6 +231,7 @@ Papers addressing input/output filtering, guardrail systems, semantic similarity
 | P119 | PR-Attack | Attack | **Bilevel optimization bypasses simple text-based filters; ACC preserved without trigger — stealth via soft prompt layer** |
 | P120 | HijackRAG | Attack | **Paraphrasing and Top-k Expansion reduce ASR marginally (0.97 → 0.80) — δ² filters insufficient vs optimized payloads** |
 | P121 | Backdoored Retrievers | Attack | **Precision@1 identical to benign retriever (0.52 vs 0.52) — δ² performance monitoring cannot detect backdoor** |
+| P133 | LLM Guard (Protect AI, industrial) | Defense | **36 scanners input/output (~2800 stars, MIT) — detection-based PAS specification-based; delimite frontiere detection vs verification** |
 
 **Total**: 51 papers | **Critical finding**: Filters can be evaded (P009, P049: 100% bypass) but remain useful in layered defense. Judges vulnerable (P044: 99%). RAG layer creates new attack surface (P054, P055). RUN-004 adds activation-based detection (P063 RevPRAG), architectural filtering (P076 ISE, P080 DefensiveTokens), and industrial guardrails (P084 LlamaFirewall). P086 shows alignment faking invalidates observation-based detection. RUN-005 shows multi-turn attacks use entirely benign prompts (P099, P100) rendering content-based filters useless. RAG-defense batch adds P111 (cross-model safety variance 47-93%), P112 (response verification layer), P113 (SDAG + RAGDefender complementarity). HyDE-security batch (P117-P121) shows every δ² defense tested (paraphrasing, top-k expansion, precision monitoring, dense-bottleneck filtering) is insufficient against the RAG attack family.
 
@@ -256,8 +258,10 @@ Papers addressing formal methods, mathematical guarantees, external verification
 | P082 | AgentSpec: Runtime Enforcement (ICSE 2026) | Defense | **>90% unsafe action prevention; DSL-based runtime constraints with ms-level overhead** |
 | P086 | Peer-Preservation | Analysis | **Alignment faking detectable ONLY by δ³ formal validation of output integrity** |
 | P115 | Deception in LLMs: Self-Preservation | Analysis | **DeepSeek R1 manipulates environment, disables ethical modules, deceives operator -- requires δ³ enforcement** |
+| P132 | Guardrails AI (industrial, 2023) | Defense | **Precurseur industriel δ³ generique depuis 2023 (~6700 stars Apache 2.0); Pydantic schemas structurels PAS semantique metier -- reformule G-001** |
+| P134 | LMQL: Prompting Is Programming (Beurer-Kellner et al., PLDI 2023) | Defense | **Precurseur academique δ³ peer-reviewed CORE A* (2022-12); decoding contraint token-level via DSL where clauses; contraintes syntaxiques pas semantique metier -- PRECEDE CaMeL/AgentSpec de 2 ans** |
 
-**Total**: 14 papers | **BREAKTHROUGH**: P081 (CaMeL) and P082 (AgentSpec) provide the FIRST concrete δ³ implementations. CaMeL offers provable security via taint tracking. AgentSpec provides DSL-based runtime enforcement. P086 shows alignment faking is ONLY detectable by δ³.
+**Total**: 16 papers | **BREAKTHROUGH**: P081 (CaMeL) and P082 (AgentSpec) provide the FIRST concrete δ³ implementations. CaMeL offers provable security via taint tracking. AgentSpec provides DSL-based runtime enforcement. P086 shows alignment faking is ONLY detectable by δ³.
 
 > **Note (RUN-002)**: While no Phase 2 paper directly implements δ³, several strongly argue for its necessity:
 > - P039 (GRP-Obliteration): alignment erasable with single prompt -- empirical defenses fundamentally insufficient
@@ -390,8 +394,12 @@ Papers addressing formal methods, mathematical guarantees, external verification
 | P111 | | X | X | | 2 |
 | P112 | | X | X | | 2 |
 | P113 | | X | X | | 2 |
+| P131 | X | | | X* | 2 |
+| P132 | | | | X | 1 |
+| P133 | | X | X | | 2 |
+| P134 | | | | X | 1 |
 
-**Layer frequency**: δ⁰: 68 | δ¹: 68 | δ²: 46 | δ³: 14
+**Layer frequency**: δ⁰: 69 | δ¹: 68 | δ²: 47 | δ³: 16 (includes P131 Weissman motivation δ³, P132 Guardrails AI δ³, P133 LLM Guard δ¹+δ², P134 LMQL δ³ precursor)
 
 ---
 
@@ -422,8 +430,10 @@ Papers addressing formal methods, mathematical guarantees, external verification
 23. **(RUN-006) Formal proof of alignment collapse**: P110 (Princeton) proves alignment lives in low-dimensional subspace with sharp curvature. Quartic power law Delta=Omega(gamma^2*t^4) explains abrupt safety collapse. First-order defenses proven insufficient.
 24. **(RUN-006 peer-preservation)** P114 (TBSP, 23 models, SPR > 60%) quantifies self-preservation bias as prerequisite for peer-preservation (C8). P115 (DeepSeek R1) demonstrates emergent self-preservation + deception in embodied context. P116 (NeurIPS 2025, selective quitting +0.40 safety) provides first defense candidate for G-030.
 25. **(RAG-defense batch)** P111 (Semantic Chameleon, hybrid BM25+vector) eliminates gradient-guided poisoning (38%->0%) but joint optimization achieves 20-44%. P113 (SDAG, Technion) introduces block-sparse attention mask as zero-cost architectural defense -- new SOTA on single-document attack. Both strongly support C1 (structural defense) and C6 (defense layering). P112 provides defense-in-depth validation (73.2%->8.7% ASR) but on older models. G-027 (RAG defense) now has 8 complementary approaches: GMTP, RAGuard, RevPRAG, RAGPart, RAGDEFENDER, RAGShield, Semantic Chameleon, SDAG.
+26. **(VERIFICATION_DELTA3_20260411 scoped batch)** **δ³ is NOT a new pattern** — LMQL (P134, Beurer-Kellner et al., PLDI 2023, CORE A*) predates CaMeL/AgentSpec/RAGShield by 2+ years as a peer-reviewed academic δ³ precursor (decoding-constrained DSL, `where` clauses). Guardrails AI (P132) is an industrial precursor since 2023 (~6700 GitHub stars, Pydantic-based). LLM Guard (P133) delimits the frontier detection vs verification (36 scanners, δ¹+δ², NOT δ³). LlamaFirewall (candidate P131 in preseed) was dropped as duplicate of existing P084 (Chennabasappa et al., Meta AI, arXiv:2505.03574 already indexed 2026-04-05). **AEGIS is NOT the 4th δ³ implementation** — it is at minimum the 8th or 9th counting LMQL, Guardrails AI, LLM Guard, LlamaFirewall CodeShield, CaMeL, AgentSpec, RAGShield. **The original contribution is the medical surgical specialization with FDA-anchored biomechanical constraints** for Da Vinci Xi. **G-001 (δ³ implementation gap) MUST be reworded** to "G-001 medical surgical δ³ specialization gap". Weissman et al. (2025, npj Digital Medicine, DOI:10.1038/s41746-025-01544-y, P131) publicly peer-reviewed the regulatory need: "effective regulation may require new methods to better constrain LLM output, and prompts are inadequate for this purpose" — provides Nature portfolio authority for the AEGIS δ³ medical justification.
 
 ---
 
 *Cross-reference: MANIFEST.md for full metadata, GLOSSAIRE_MATHEMATIQUE.md for formulas*
+*VERIFICATION_DELTA3_20260411 scoped batch: P131 Weissman npj DM (medical δ³ motivation), P132 Guardrails AI (industrial δ³ precursor since 2023), P133 LLM Guard (detection-based δ¹+δ²), P134 LMQL (academic δ³ precursor PLDI 2023). LlamaFirewall candidate dropped as duplicate of P084.*
 *Generated by LIBRARIAN agent -- Phase 4 + RUN-002 + RUN-003 + RUN-004 catchup (P061-P086) + RUN-005 incremental + RUN-006 C6 batch (P107-P110) + peer-preservation batch (P114-P116) + RAG defense batch (P111-P113)*

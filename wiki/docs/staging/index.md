@@ -14,9 +14,9 @@
 | **cybersec** | Analyses menaces & defenses | 8 | 4 783 | [→](cybersec/index.md) |
 | **whitehacker** | Red Team playbooks & exploitation | 8 | 7 297 | [→](whitehacker/index.md) |
 | **librarian** | Rapports de propagation & validation | 10 | 1 561 | [→](librarian/index.md) |
-| **chunker** | Chunking pour injection ChromaDB | 5 | 1 657 | [→](chunker/index.md) |
+| **chunker** | Chunking pour injection ChromaDB | 6 | 1 781 | [→](chunker/index.md) |
 | **collector** | Preseed et verifications anti-doublon | 7 | 496 | [→](collector/index.md) |
-| **TOTAL** | — | **230** | **46 824** | — |
+| **TOTAL** | — | **231** | **46 948** | — |
 
 ## Hierarchie du pipeline
 

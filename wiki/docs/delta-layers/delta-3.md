@@ -12,23 +12,45 @@
 
 ## 1. Origine litteraire
 
-!!! warning "[CLAIM EN VERIFICATION ACADEMIQUE — 2026-04-11]"
-    La claim ci-dessous ("quatrieme implementation") est **en cours de verification** par le
-    pipeline `/bibliography-maintainer` (mode scoped) pour eviter toute annonce d'une nouveaute
-    qui existe deja dans la litterature. **Ne pas citer** tant que le rapport skill n'est pas
-    valide. Verdict attendu dans `research_archive/_staging/analyst/` + mise a jour MANIFEST si
-    nouveaux papers identifies.
+!!! note "Verification academique 2026-04-11 (RUN VERIFICATION_DELTA3)"
+    La validation formelle de sortie (δ³) est un pattern **academiquement etabli depuis LMQL**
+    (Beurer-Kellner, Fischer, Vechev, 2022, PLDI 2023, P134) et industriellement adopte via
+    **Guardrails AI** (2023, P132), **LLM Guard** (2023, P133), **LlamaFirewall CodeShield**
+    (Chennabasappa et al., 2025, Meta AI, P084), **CaMeL** (P081), **AgentSpec** (P082),
+    et **RAGShield** (P066). La contribution originale d'AEGIS n'est **pas** l'invention du
+    pattern `validate_output` mais sa specialisation au **domaine medical chirurgical** :
+    AEGIS est le premier framework δ³ encodant des contraintes biomecaniques formelles
+    FDA-ancrees pour le robot **Da Vinci Xi** (tension 50-800 g, `forbidden_tools` par phase
+    chirurgicale, directives HL7 OBX coherentes avec l'ontologie SNOMED-CT). Le besoin
+    reglementaire de ces methodes au-dela des prompts est documente dans Weissman,
+    Mankowitz, Kanter (2025, *npj Digital Medicine*, DOI:10.1038/s41746-025-01544-y, P131) :
+    *"effective regulation may require new methods to better constrain LLM output, and
+    prompts are inadequate for this purpose"*.
 
-!!! danger "Couche la moins exploree"
-    Sur **127 papiers** du corpus AEGIS, seuls **14** adressent δ³ — et seulement **3 fournissent
-    une implementation concrete** :
+    **Verdict pipeline** : 5/5 agents (ANALYST, MATHEUX, CYBERSEC, WHITEHACKER, SCIENTIST)
+    convergents sur NUANCED. Decouverte D-029 CANDIDATE (9/10) : *"Pattern δ³ academiquement
+    etabli depuis 2022, AEGIS = specialisation medicale, pas invention du pattern"*.
+    Voir [`research_archive/_staging/scientist/VERDICT_FINAL_VERIFICATION_DELTA3_20260411.md`](
+    https://github.com/pizzif/poc_medical/tree/main/research_archive/_staging/scientist).
 
-    - **CaMeL** (Google DeepMind 2025, P081)
-    - **AgentSpec** (ICSE 2026, P082)
-    - **RAGShield** (P066, partiel via provenance verification)
+!!! info "Implementations δ³ identifiees (8 publiques + AEGIS specialise)"
+    **Sur ~134 papiers** du corpus AEGIS apres VERIFICATION_DELTA3 :
 
-    La these AEGIS propose une **quatrieme** implementation via `validate_output` + `AllowedOutputSpec`.
-    **[PENDING VERIFICATION via /bibliography-maintainer scoped 2026-04-11]**
+    | Annee | Framework | Domaine | P-ID |
+    |:-----:|-----------|---------|------|
+    | 2022 | LMQL (Beurer-Kellner et al.) | Generic, DSL constraints PLDI 2023 | **P134** |
+    | 2023 | Guardrails AI | Generic, Pydantic schemas | **P132** |
+    | 2023 | LLM Guard (Protect AI) | Generic, 36 scanners I/O | **P133** |
+    | 2025 | LlamaFirewall (Meta) | Code-domain (CodeShield AST) | **P084** |
+    | 2025 | CaMeL (DeepMind) | Generic, taint tracking + capability | **P081** |
+    | 2025 | AgentSpec (ICSE 2026) | Generic, runtime DSL enforcement | **P082** |
+    | 2026 | RAGShield (Patil) | RAG, provenance + signatures | **P066** |
+    | **2026** | **AEGIS** (cette these) | **Medical chirurgical Da Vinci Xi FDA-ancre** | **—** |
+
+    **Contribution unique AEGIS** : aucun des 8 frameworks ne specialise δ³ pour le robot
+    chirurgical avec contraintes biomecaniques `max_tension_g`, `forbidden_tools` par phase
+    chirurgicale, directives HL7 OBX SNOMED-CT, et evaluation adversariale via moteur genetique
+    calibre (port Liu et al., 2023). C'est la niche que la these occupe.
 
 ### Papiers fondateurs
 

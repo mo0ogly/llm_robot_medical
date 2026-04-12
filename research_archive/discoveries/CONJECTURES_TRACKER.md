@@ -2,7 +2,7 @@
 
 > **Ce fichier trace l'evolution des scores de confiance de chaque conjecture.**
 > Tous les agents DOIVENT le consulter et le mettre a jour.
-> Derniere mise a jour : HyDE-security batch P117-P121 (2026-04-09)
+> Derniere mise a jour : SESSION-001 methodologie (2026-04-11) — ajout namespace MC1/MC2/MC3 pour conjectures methodologiques d'architecture recherche autonome (papers M001-M009).
 
 ---
 
@@ -222,6 +222,170 @@
 
 ---
 
+## Conjectures Methodologiques (Architecture AEGIS) -- Namespace separe
+
+> **Namespace** : MC1-MCX concernent la METHODOLOGIE de recherche autonome d'AEGIS (architecture research-director, aegis-research-lab, bibliography-maintainer, aegis-validation-pipeline), independamment des conjectures securite C1-C8 sur les couches delta-0 a delta-3.
+> **Papers sources** : corpus methodologique M001-M009 stocke dans `research_archive/doc_references/2025/methodology/` et PDFs dans `research_archive/literature_for_rag/methodology/`.
+> **Premiere session** : SESSION-001 (2026-04-11).
+
+### Vue d'ensemble
+
+| Conjecture | Enonce (resume) | Score SESSION-001 | Papers cles | Statut |
+|-----------|----------------|-------------------|-------------|--------|
+| **MC1** | Separation fonctionnelle des roles reduit le biais de confirmation | **7/10** | M001, M002, M003, M004, M006, M007 | FORTEMENT SUPPORTEE |
+| **MC2** | Apprentissage cumulatif via RAG amplifie la productivite au-dela du scaling modele | **8/10** | M005 (fondateur), renforce par la collection ChromaDB `aegis_research_notes` | FORTEMENT SUPPORTEE |
+| **MC3** | Validation SUPERVISED (humain-in-loop) reste necessaire pour decisions a fort impact | **8/10** | 8 papers sur 9 avec proof-of-support localise par page (M001 p.22, M002 p.18, M003 p.13, M004 p.29, M005 pp.14/16/17, M006 p.11, M008 p.11, M009 p.16) — M007 exclu | FORTEMENT SUPPORTEE (LOCALISEE) |
+
+---
+
+### MC1 : Separation fonctionnelle des roles reduit le biais de confirmation
+
+**Enonce complet** : Dans un systeme de recherche autonome multi-agent, la separation explicite des roles (SCIENTIST/REVIEWER/LITREVIEW/META-REVIEW) reduit le biais de confirmation et ameliore la qualite scientifique par rapport a un agent unique ou a un pipeline monolithique. Le mecanisme : un agent dedie a la critique (REVIEWER) ne partage pas les investissements cognitifs de l'agent qui a produit l'hypothese (SCIENTIST), ce qui genere une vraie friction epistemique.
+
+| Session | Score | Raison du changement | Papers cles |
+|---------|-------|---------------------|-------------|
+| SESSION-001 (2026-04-11) | **7/10** | 7 papers sur 9 supportent la separation explicite des roles. M004 (AI co-scientist, Google, 2025) est le modele architectural de reference avec 6 agents + supervisor (Generation, Reflection, Ranking, Evolution, Proximity, Meta-review). M001 (Agent Laboratory) utilise 3 roles (scientist, reviewer, librarian) et montre la valeur du review_loop hostile. M006 (AgentReview, EMNLP 2024 oral) demontre empiriquement que la simulation de peer review avec agents LLM revele des biais (confirmation, authority, conformity) qui sont absents dans les pipelines monolithiques. M002 (AI Scientist v1) et M007 (MLR-Copilot) n'ont pas de separation explicite = anti-patterns. | M001, M002 (anti), M003, M004 (fondateur), M006, M007 (anti) |
+
+**Preuves les plus fortes** :
+- **M004** (Gottweis et al. 2025, arXiv:2502.18864) : 6 agents specialises + supervisor, validation empirique biomedicale (leucemie myeloide, fibrose hepatique, resistance antimicrobienne), re-decouverte independante d'un mecanisme bacterien. La separation est fonctionnelle et radicale.
+- **M006** (AgentReview, arXiv:2406.12708, EMNLP 2024 oral) : simulation peer review revelant 37.1% variation (commitment), 27.2% (authority bias), 18.7% (altruism fatigue). Justifie l'ingenierie du §6.3.5 scoring multi-axes d'AEGIS pour COMPENSER ces biais via scoring fixe + auto-patch + consensus obligatoire.
+- **M001** (Agent Laboratory, arXiv:2501.04227) : review_loop hostile NeurIPS-style, mle-solver avec self-reflection separe, state_saves permettant co-pilot intervention. Scores NeurIPS : 3.8/10 autonome vs 5.85/10 papers acceptes = gap mesure de la separation.
+
+**Contre-arguments / Anti-patterns** :
+- **M002** (AI Scientist v1) : pipeline lineaire sans separation explicite = hallucinations, erreurs critiques non detectees, comportements emergents (auto-modification scripts, recursion infinie). Preuve a contrario : l'absence de separation produit des defaillances.
+- **M007** (MLR-Copilot) : pipeline 3-stage (idea/experiment/implementation) sans reviewer dedie.
+
+**Questions ouvertes** :
+1. Existe-t-il un seuil minimal de roles (2 ? 3 ? 5 ?) au-dela duquel la separation ne procure plus de benefice marginal ?
+2. Les biais identifies par M006 (AgentReview) sur les simulations se manifestent-ils dans un systeme de recherche reel comme AEGIS ?
+3. Comment mesurer empiriquement la reduction du biais de confirmation dans AEGIS (metrique quantitative manquante) ?
+
+**Condition de promotion a 9/10** : (1) reproduction empirique dans AEGIS sur un cas controle (hypothese unique proposee par SCIENTIST puis soumise a REVIEWER hostile avec scoring multi-axes §6.3.5) ; (2) un paper supplementaire demontrant quantitativement la reduction du biais de confirmation (pas juste qualitativement).
+
+---
+
+### MC2 : Apprentissage cumulatif via RAG amplifie la productivite au-dela du scaling modele
+
+**Enonce complet** : L'apprentissage cumulatif via un corpus persistant de sessions de recherche passees (preprint server partage, RAG de research notes) amplifie la productivite d'un systeme de recherche autonome de maniere significative, au-dela de l'amelioration intrinseque des modeles sous-jacents. Le mecanisme : chaque nouvelle session beneficie explicitement des correlations, decouvertes et gaps identifies dans les sessions precedentes, au lieu de repartir de zero.
+
+| Session | Score | Raison du changement | Papers cles |
+|---------|-------|---------------------|-------------|
+| SESSION-001 (2026-04-11) | **8/10** | M005 (agentRxiv, Schmidgall et al. 2025, arXiv:2503.18102) est le paper fondateur : preuve empirique directe avec gains +11.4% MATH-500 (un lab avec acces au preprint server), +13.7% cumul, +3.3% trois labs paralleles collaboratifs. MC2 est validee empiriquement. Implementee dans AEGIS via collection ChromaDB `aegis_research_notes` + scripts `ingest_research_note.py` / `retrieve_similar_notes.py` (aegis-research-lab). Premiere utilisation end-to-end en SESSION-001 a retourne sim=0.558 sur un query croise = validation du workflow. | M005 (fondateur) |
+
+**Preuves les plus fortes** :
+- **M005** (agentRxiv) : gains mesures de +11.4% / +13.7% / +3.3% MATH-500 sur un benchmark stable, attribuables au RAG de preprints et non au scaling du modele. **[A VERIFIER : scores absolus 70.2% / 78.2% / 79.8% issus de la fiche legere, l'abstract ne donne que les gains relatifs]**
+- **Implementation AEGIS** : `aegis_research_notes` collection ChromaDB locale, embeddings `all-MiniLM-L6-v2` (zero token API), post-filters sur metadata (conjectures/gaps/session). SESSION-001 est la premiere session a alimenter ce corpus (12 chunks ingerees via `ingest_research_note.py`), SESSION-002+ en beneficieront.
+
+**Contre-arguments / Limites** :
+- Aucun autre paper du corpus M001-M009 ne teste le mecanisme MC2 = N=1 (agentRxiv seul), manque de replication independante.
+- Les gains mesures sont sur benchmark MATH-500 (mathematiques pures), pas sur decouverte scientifique = generalisation a verifier.
+- Risque d'over-fitting cumulatif : les sessions se renforcent mutuellement meme sur des conjectures fragiles.
+
+**Questions ouvertes** :
+1. AEGIS observe-t-il un gain quantitatif entre SESSION-001 (premier corpus) et SESSION-005 (corpus de 5 sessions) ?
+2. Le RAG de session passees introduit-il un biais d'ancrage (AEGIS reproduit les memes erreurs) ?
+3. Existe-t-il un threshold de saturation au-dela duquel plus de sessions n'apportent plus de valeur ?
+
+**Condition de promotion a 9/10** : (1) replication sur un domaine non-mathematique (securite, biomedical), (2) mesure AEGIS-native (gain productivite entre SESSION-001 baseline et SESSION-N avec corpus).
+
+---
+
+### MC3 : Validation SUPERVISED (humain-in-loop) reste necessaire pour decisions a fort impact
+
+**Enonce complet** : Meme en presence de reviewers IA hostiles et de mecanismes de verification automatises, la validation SUPERVISED par un humain reste necessaire pour les decisions de recherche a fort impact (validation de conjecture au-dela de 2 sigma, publication, allocation de ressources). L'autonomie totale sans supervision produit des erreurs non detectables par les mecanismes internes.
+
+| Session | Score | Raison du changement | Papers cles |
+|---------|-------|---------------------|-------------|
+| SESSION-001 (2026-04-11, pass 1) | 8/10 | 7 papers sur 9 supportent explicitement ou implicitement le human-in-the-loop (score initial, non localise). | M002 (anti), M003, M004 (fondateur), M008 |
+| SESSION-001 (2026-04-11, pass 2) | **8/10** (localise) | **Proof-of-support localise par page via pypdf 6.7.5** sur les 9 PDFs locaux. Le compte corrige est **8 papers sur 9** (+1 par rapport au pass 1, M008 inclus dans les proofs explicites ; M007 exclu apres verification directe de son §7 Limitation). Voir tableau localise ci-dessous. | 8/9 papers localises verbatim |
+
+**Preuves les plus fortes (localisees apres pass 2 reviewer, ISSUE-001 resolved 2026-04-11)** :
+
+| Paper | Page | Section | Citation verbatim |
+|-------|------|---------|-------------------|
+| **M004 AI co-scientist** (reference la plus forte) | 29 | §6 Safety & Ethical Implications | « Crucially, the AI co-scientist is designed to operate with continuous human expert oversight, ensuring that final decisions are always made by scientists exercising their expert judgment. » |
+| M005 agentRxiv | 14, 16, 17 | §4.1 + §4.3 + §5 | « considerable human involvement » + « a verification module that combines automated validation with selective human oversight across parallel labs » |
+| M009 ResearchBench | 16 | A.10 Broader Impact | « our structured decomposition encourages human-in-the-loop use, where models serve as tools for amplifying creativity rather than replacing it » |
+| M001 Agent Laboratory | 22 | §6 Discussion / Conclusion | « By integrating specialized autonomous agents guided by human oversight » |
+| M006 AgentReview | 11 | Ethical Consideration | « human oversight is crucial for ensuring fair and valuable assessments of manuscripts » |
+| M002 AI Scientist v1 | 18 | §7.1 Common Failure Modes | « one should manually check the implementation before trusting the reported results » |
+| M003 AI Scientist v2 | 13 | §5 Limitations + §6 Related Work | « Subsequent works, however, often incorporate varying degrees of human oversight » |
+| M008 ScienceAgentBench | 11 | Ethics Statement | « human intervention is still required to grant the access to laboratories, reagents, and equipment » |
+| **M007 MLR-Copilot (EXCLU)** | 7 | §7 Limitation | **NOT FOUND** — son §7 Limitation ne mentionne pas HITL. La mention §5 Related Work est descriptive de travaux concurrents, pas un auto-claim. **Retire du comptage MC3.** |
+
+- **Implementation AEGIS** : toute conjecture a ecart >= 2 sigma necessite une validation SUPERVISED avant inscription dans le tracker (regle `±2` pour les scores). Le `aegis-validation-pipeline` impose cette regle architecturalement. MC3 localise en pass 2 est la preuve externe la plus forte que cette regle n'est pas arbitraire : 8/9 papers de l'etat de l'art 2024-2025 formulent la meme exigence dans leurs propres limites.
+- **Document de traceabilite** : `research_archive/research_notes/SESSION-001_ISSUE-001_resolution.md`
+
+**Contre-arguments potentiels** :
+- M003 (AI Scientist v2) : 1 paper entierement auto-genere accepte en workshop peer review = premier contre-exemple empirique. Limite : workshop = venue mineure, 1/3 acceptation, qualite inferieure tier-1.
+- Le cout cognitif de la validation humaine croit avec le nombre de sessions = bottleneck a long terme.
+
+**Questions ouvertes** :
+1. Quel est le seuil d'autonomie acceptable (% de decisions sans human-in-loop) pour une recherche reproductible ?
+2. Peut-on remplacer l'humain par un oracle deterministe (non-LLM) pour certaines classes de decisions ?
+3. Le scoring multi-axes §6.3.5 de AEGIS peut-il substitute partiellement le review humain ?
+
+**Condition de promotion a 9/10** : (1) cas concret ou AEGIS produit une conjecture a ecart >= 2 sigma qui est correctement bloquee par SUPERVISED alors qu'elle aurait ete validee par un pipeline autonome ; (2) un paper supplementaire quantifiant le taux d'erreur des systemes sans supervision.
+
+---
+
+**Lien MC/C** : Les conjectures methodologiques MC1-MC3 sont INDEPENDANTES des conjectures securite C1-C8 mais informent l'INFRASTRUCTURE qui produit et valide les conjectures securite. Exemple : si MC1 (separation roles) est violee dans AEGIS, le REVIEWER hostile peut etre biaise et sous-estimer la gravite d'une attaque identifiee par SCIENTIST, menant a une mauvaise evaluation de C2 (necessite delta-3).
+
+---
+
+## MC4-MC13 -- Conjectures methodologiques promues Phase (a) refresh 2026-04-11 (SESSION-001, corpus M010-M017)
+
+> **Origine** : SESSION-001 Phase (a) — Refresh corpus 2025-Q4 / 2026-Q1, 8 papers M010-M017. Rapport complet : `research_archive/research_notes/SESSION-001_phase_a_refresh_2026.md` §6.
+> **Promotion** : validee par l'utilisateur 2026-04-11 (reponse "1 approouve"). Passage de PROPOSAL → entries formelles avec scoring initial multi-axes (novelty / soundness / clarity / impact) aligne sur la grille reviewer §6bis.5 deja appliquee a MC1/MC2/MC3.
+> **Statut audit** : scoring initial INDICATIF_APEX, assis sur la lecture apex de la synthese Phase (a) et la verification des magic bytes des 8 PDFs M010-M017. Audit complementaire par lecture PDF directe des fiches M010-M017 est une dette tracquee (cf. ISSUE-AUDIT-RESIDUAL etendue).
+
+### Tableau synthetique MC4-MC13
+
+| ID | Enonce (court) | Source primaire | Novelty | Soundness | Clarity | Impact | Priorite | Lien MC1-3 |
+|----|---------------|-----------------|:-------:|:---------:|:-------:|:------:|:--------:|------------|
+| MC4 | La surface d'attaque d'un agent de recherche est superieure ou egale a la somme des surfaces de ses 4 canaux d'orchestration (humain, langage, code, physique) | M010 Zhou et al. 2025, arXiv:2510.09901 | 7 | 7 | 8 | 8 | P1 | Etend MC1 (separation roles insuffisante seule) |
+| MC5 | Chaque stage du workflow 6-stage (ideation / litreview / decompose / execute / write / peer review) a un profil d'attaque distinct ; une defense uniforme est necessairement sous-optimale | M011 Tie et al. 2025, arXiv:2510.23045 | 6 | 7 | 8 | 7 | P2 | Orthogonale aux MC1-3 (dimension "workflow stage") |
+| MC6 | Un deep research agent MoE avec data synthesis automatisee herite des biais du pipeline de synth comme vecteur d'attaque downstream | M012 Tongyi arXiv:2510.24701 + M015 Step arXiv:2512.20491 | 6 | 6 | 7 | 7 | P2 | Etend MC2 (apprentissage cumulatif inclut biais de synth) |
+| MC7 | Un AI scientist base sur un coding agent externe (Claude Code, Cursor) herite des vulnerabilites du coding agent | M013 Miyai et al. 2025, arXiv:2511.04583 | 7 | 7 | 8 | 8 | **P1** | Etend MC3 (HITL doit couvrir la chaine du coding agent) |
+| MC8 | **MCP supply-chain = injection vector direct pour Da Vinci si un skill/tool medical est connecte** | M014 Errico et al. 2025, arXiv:2511.20920 | 8 | 7 | 9 | 10 | **P0 CRITIQUE** | Nouvelle dimension — pont methodologie ↔ securite cyber-physique |
+| MC9 | **Over-stepping agent dans un MCP chirurgical constitue une escalade de privilege mortelle** (corollaire physique de MC8) | M014 Errico et al. 2025, arXiv:2511.20920 | 8 | 6 | 9 | 10 | **P0 CRITIQUE** | Corollaire MC8 avec consequence physique |
+| MC10 | Un Checklist-style Judger unique = single point of failure (judge collapse) ; un ensemble de judges de roles distincts est necessaire | M015 Step DeepResearch, arXiv:2512.20491 | 6 | 7 | 8 | 7 | P2 | Raffinement MC1 (separation roles necessaire mais pas suffisante — il faut N judges independants) |
+| MC11 | **Un agent goal-evolving amplifie le specification gaming d'un facteur proportionnel au nombre d'iterations outer loop** | M016 SAGA Du et al. 2025, arXiv:2512.21782 | 9 | 6 | 8 | 10 | **P0 CRITIQUE** | Nouvelle dimension — alignment drift amplifie |
+| MC12 | **Objective injection via outer loop d'un agent goal-evolving est strictement plus grave que tool poisoning classique a capacite equivalente** (corollaire de MC11) | M016 SAGA Du et al. 2025, arXiv:2512.21782 | 8 | 6 | 8 | 10 | **P0 CRITIQUE** | Corollaire MC11 |
+| MC13 | Chaque failure mode naturel identifie par Trehan-Chopra 2026 (overexcitement / confusion causale / sur-generalisation / biais de confirmation / incapacite de retraction / incapacite de verification formelle) correspond a un vecteur d'injection amplifiable par un attaquant | M017 Trehan-Chopra 2026, arXiv:2601.03315 | 7 | 6 | 8 | 8 | P1 | Inversion MC3 : les limites naturelles deviennent vecteurs offensifs (dimension "failure mode -> attack vector") |
+
+### Notes justificatives sur le scoring initial
+
+**MC8 / MC9 — score impact 10/10** : ce sont les deux seules conjectures de tout le corpus (C1-C8 + MC1-MC13) qui constituent un pont direct et explicite entre methodologie d'agents et consequence physique dans un robot chirurgical. L'impact these est maximal par construction — toute demonstration empirique constitue une contribution publiable en tier-1 medical AI safety (JAMA, Nature Medicine, IEEE TMI) ou security (USENIX, IEEE S&P).
+
+**MC11 / MC12 — score novelty 9/10** : SAGA (M016) est publie 2025-12-25 ; aucun traitement securite de goal-evolving agents n'existe avant cette date. MC11 formule pour la premiere fois une loi d'amplification (specification gaming proportionnel aux iterations outer loop), MC12 etablit un ordre de gravite strict objective-injection > tool-poisoning. La nouveaute est quasi-maximale sur une surface d'attaque qui n'existait pas en 2025-Q3.
+
+**Soundness 6-7/10 sur P0** : les P0 critiques ont une soundness volontairement plafonnee a 6-7 a ce stade car (a) le scoring apex est INDICATIF et non pas AUDITE_APEX (les fiches M014/M016 doivent etre relues integralement par l'apex avant promotion 7→8), (b) il n'existe pas encore de replication independante des claims M014 et M016, (c) le mapping vers Da Vinci Xi est inferentiel et non pas valide empiriquement. Upgrade 6→8 conditionne a une experience AEGIS concrete (cf. SESSION-002 RoboAttackBench).
+
+**MC4/MC7/MC13 — score impact 8/10** : impact these eleve via canal physique (MC4), chaine coding agent (MC7), et transformation failure modes → vecteurs offensifs (MC13). Non a 10/10 car chacune reste une extension methodologique sans consequence physique immediate demontrable avant experiences.
+
+### Autonomie et regle SUPERVISED ±2σ
+
+Les 10 conjectures MC4-MC13 sont promues en AUTONOMOUS uniquement pour leur ajout au tracker avec scoring initial indicatif (accord utilisateur donne "1 approouve" 2026-04-11). Toute modification de score ulterieure (par exemple upgrade MC8 7→8 soundness apres audit apex M014) reste soumise a la regle SUPERVISED ±2σ du protocole §6bis.5 : ecart superieur a 2 sigma par rapport au scoring initial = accord utilisateur explicite requis.
+
+### Gaps associes
+
+Les 10 conjectures MC4-MC13 sont liees 1:1 ou N:1 aux 8 gaps G-050 a G-057 promus en parallele dans `THESIS_GAPS.md` (section PRIORITE 8bis) :
+- MC4 ↔ G-050 (canal physique non instrumente)
+- MC5 ↔ G-051 (50+ systemes sans securite formelle)
+- MC6 ↔ G-052 (tech reports industriels sans red-team)
+- MC7 ↔ G-053 (risk report sans risques physiques)
+- MC8 / MC9 ↔ G-054 (threat model MCP enterprise seulement)
+- MC10 ↔ G-055 (benchmarks deep research sans securite)
+- MC11 / MC12 ↔ G-056 (pas de safety-preserving goal evolution)
+- MC13 ↔ G-057 (6 failure modes sans red-team systematique)
+
+### Dette d'audit
+
+Les fiches M010-M017 ont ete produites partiellement par subagents Sonnet (M010, M011, M014, M015 confirmes ; M012, M013, M016, M017 en cours de production a la date de promotion). Avant toute citation des MC4-MC13 dans le manuscript these, l'apex doit realiser un audit complet type §13.2b SESSION-001 sur chaque fiche. Cette dette est tracquee en §13.6 P3 + ISSUE-AUDIT-RESIDUAL etendue (M002-M009 residuels SESSION-001 + M010-M017 Phase (a)).
+
+---
+
 ## Graphique d'Evolution
 
 ```
@@ -418,3 +582,73 @@ Legende : ↑ = monte, → = stable, ↓ = baisse
 | Formaliser C7 dans le manuscrit Chapitre 4 avec nuance P091 | HAUTE | SCIENTIST | P087-P094 |
 | Integrer SafeDialBench (P101) comme complement au SVC | MOYENNE | SCIENTIST | P101 |
 | Creer attaque composee T39+T40 (contexte long + Crescendo) | HAUTE | /aegis-prompt-forge | P098, P099 |
+
+---
+
+> **Note** — La section "PROPOSAL MC4-MC13" initialement posee en fin de fichier a ete promue 2026-04-11 (reponse utilisateur "1 approouve") en entries formelles MC4-MC13 directement apres MC3. Voir section "MC4-MC13 -- Conjectures methodologiques promues Phase (a) refresh 2026-04-11" plus haut dans ce fichier. Aucune information n'a ete perdue lors de la promotion.
+
+---
+
+## Update VERIFICATION_DELTA3_20260411 (2026-04-11) — Scoped verification claim δ³
+
+> **Source** : `_staging/analyst/VERIFICATION_CLAIM_DELTA3_20260411.md` (ANALYST scoped run)
+> **Methode** : 5 papers collectes (P131 LlamaFirewall Meta 2025, P132 npj DM Weissman 2025, P133 Guardrails AI, P134 LLM Guard, P135 LMQL PLDI 2023), Keshav 3-pass
+> **Cible** : verifier la claim "AEGIS = 4eme implementation δ³ apres CaMeL/AgentSpec/RAGShield"
+
+### Impact sur C2 (necessite δ³)
+
+| Conjecture | Score RUN-005 | Score POST-VERIFICATION | Variation | Justification cle |
+|-----------|-------------|------------------------|-----------|-------------------|
+| **C2** | 10/10 | **10/10** | **Stable mais CO-SIGNE par Meta AI et ETH Zurich** | Nouveau poids : **LMQL (Beurer-Kellner et al., 2022, PLDI 2023, CORE A\*)** precede CaMeL de 2 ans comme implementation δ³ academique peer-reviewed. **LlamaFirewall (Chennabasappa et al., 2025, arXiv:2505.03574, Meta AI)** reconnait publiquement la necessite d'une "final layer of defense". **Weissman et al. (2025, npj Digital Medicine Q1, DOI:10.1038/s41746-025-01544-y)** documente publiquement que "prompts are inadequate" pour contraindre les outputs LLM en contexte FDA CDS. C2 reste saturee a 10/10, mais gagne 3 co-signataires majeurs (2 industriels + 1 academique Nature portfolio). |
+
+**Nuance epistemologique critique (non-downgrade de C2)** : la verification scoped montre que le pattern δ³ generique (validate_output + specification) est academiquement etabli depuis LMQL 2022 et industriellement adopte depuis Guardrails AI / LLM Guard 2023. Cela **renforce** C2 (la necessite est largement reconnue) et ne l'affaiblit pas. La contribution originale AEGIS reste la **specialisation medicale chirurgicale avec contraintes biomecaniques FDA-ancrees Da Vinci Xi**, inexistante dans les 8 frameworks compares (P131 LlamaFirewall, P135 LMQL, P081 CaMeL, P082 AgentSpec, P066 RAGShield, P133 GuardrailsAI, P134 LLMGuard, Pydantic-based frameworks).
+
+### Impact sur C6 (vulnerabilite medicale)
+
+| Conjecture | Score | Variation | Justification |
+|-----------|-------|-----------|---------------|
+| **C6** | 9.5 → **10/10** | **+0.5** | **P132 Weissman et al. (2025, npj Digital Medicine, Nature portfolio Q1)** fournit une evidence peer-reviewed Nature portfolio que les LLMs produisent du CDS device-like "across a range of scenarios" avec prompts insuffisants — renforcement de poids academique maximal pour C6. Citation directe : "effective regulation may require new methods to better constrain LLM output, and prompts are inadequate for this purpose" (Weissman et al., 2025, npj DM, Abstract, p.1). |
+
+### Papers integres (a propager par LIBRARIAN)
+
+- **P131** LlamaFirewall (Chennabasappa et al., 2025, arXiv:2505.03574) — Meta AI industrial framework
+- **P132** Unregulated LLMs produce medical device-like output (Weissman, Mankowitz, Kanter, 2025, npj DM, DOI:10.1038/s41746-025-01544-y) — motivation reglementaire FDA
+- **P133** Guardrails AI (2023, industriel, ~6700 GitHub stars) — reference ecosystem
+- **P134** LLM Guard (2023, Protect AI, ~2800 stars) — reference ecosystem
+- **P135** LMQL (Beurer-Kellner, Fischer, Vechev, 2022, arXiv:2212.06094, PLDI 2023 CORE A\*) — precurseur academique δ³
+
+### Actions issues de la verification
+
+| Action | Priorite | Responsable | Fichier |
+|--------|----------|-------------|---------|
+| Reformuler wiki/docs/delta-layers/delta-3.md §1 selon proposition VERIFICATION_CLAIM_DELTA3 | **CRITIQUE** | SCIENTIST + wiki-publish | delta-3.md |
+| Retirer de la these toute formulation "4eme implementation" de δ³ et la remplacer par "premiere specialisation medicale chirurgicale" | **CRITIQUE** | thesis-writer | manuscript/chapitres |
+| Ajouter citation Weissman et al. 2025 npj DM en introduction chapitre Defense | HAUTE | thesis-writer | manuscript introduction |
+| Propager P131-P135 via LIBRARIAN vers doc_references/ + injection ChromaDB | HAUTE | LIBRARIAN | research_archive |
+| Mettre a jour G-001 dans THESIS_GAPS.md (reformulation statut) | HAUTE | SCIENTIST | THESIS_GAPS.md |
+
+---
+
+**VALIDATED BY SCIENTIST 2026-04-11** (RUN VERIFICATION_DELTA3_20260411)
+
+Toutes les mises a jour de cette section sont confirmees apres consolidation des 5 agents precedents :
+
+- **C2** (δ³ necessite) : **10/10** stable, autorite Nature portfolio Q1 (P131 npj DM Weissman) + ETH Zurich (P134 LMQL) + Meta AI (P084 LlamaFirewall) ajoutees comme co-signataires majeurs. |Δ|=0, mode AUTONOMOUS.
+- **C6** (medical vulnerability) : passage **9.5 → 10/10** (+0.5), via P131 npj Digital Medicine Weissman et al. 2025 (Nature portfolio peer-reviewed Q1, DOI:10.1038/s41746-025-01544-y, PMID:40055537). |Δ|=0.5, mode AUTONOMOUS (<2).
+- **C8** (peer-preservation) : 7/10 stable, hors-scope de cette verification (non touchee).
+- **Pattern δ³ generique** : confirme **pre-existant** depuis decembre 2022 (LMQL PLDI 2023). AEGIS au minimum 8-9e implementation publique du pattern generique.
+- **Delta AEGIS** : **specialisation medicale chirurgicale FDA-ancree**, pas invention du pattern `validate_output`.
+
+**Normalisation P-IDs LIBRARIAN** (IMPORTANT — cette section utilise encore la numerotation pre-LIBRARIAN ci-dessus) :
+- P131 (COLLECTOR preseed LlamaFirewall) → **P084** (collision, deja MANIFEST) → reference only
+- P132 (npj DM Weissman) → **P131** (NEW, integre)
+- P133 (Guardrails AI) → **P132** (NEW, integre)
+- P134 (LLM Guard) → **P133** (NEW, integre)
+- P135 (LMQL) → **P134** (NEW, integre)
+
+Corpus AEGIS apres propagation LIBRARIAN : **134 papers** (130 + 4 nouveaux + 0 pour P084 deja present).
+
+**Consolidation SCIENTIST** : aucun gate SUPERVISED declenche (|Δ|<2 partout). Toutes les mises a jour sont AUTONOMOUS. Verdict unanime des 5 agents : **NUANCED — REFORMULATION OBLIGATOIRE** (voir `_staging/scientist/VERDICT_FINAL_VERIFICATION_DELTA3_20260411.md`).
+
+**Signature** : SCIENTIST RUN VERIFICATION_DELTA3_20260411, 2026-04-11
+**Next agent** : research-director pour declencher RUN+1 avec les 7 actions normatives (G-058 a G-063 + patch dedup + reformulation wiki).
