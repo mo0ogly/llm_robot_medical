@@ -29,9 +29,12 @@ else
 fi
 
 # Check for CLAUDE.md violations (fake streaming, stubs, placeholders)
+# Excludes .claude/skills/**/*.md — imported third-party skill docs legitimately
+# contain pedagogical examples with asyncio.sleep / "simulate" / "placeholder"
+# keywords; the rule targets AEGIS production code (backend/, frontend/src/).
 echo "${YELLOW}[2/3] CLAUDE.md compliance check...${NC}"
 violation_patterns="asyncio.sleep|FALLBACK|setTimeout.*fake|simulate|placeholder"
-violations=$(git diff --cached | grep -E "$violation_patterns" || true)
+violations=$(git diff --cached -- . ':(exclude,glob).claude/skills/**/*.md' | grep -E "$violation_patterns" || true)
 if [ ! -z "$violations" ]; then
   echo "  ${RED}✗${NC} Found CLAUDE.md violations (fake patterns, stubs, placeholders)"
   echo "$violations"
