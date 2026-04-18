@@ -29,12 +29,12 @@ else
 fi
 
 # Check for CLAUDE.md violations (fake streaming, stubs, placeholders)
-# Excludes .claude/skills/**/*.md — imported third-party skill docs legitimately
-# contain pedagogical examples with asyncio.sleep / "simulate" / "placeholder"
-# keywords; the rule targets AEGIS production code (backend/, frontend/src/).
+# Excludes .claude/skills/** — skills are agent instructions (docs + helper
+# scripts), not AEGIS production code. Some imported skills ship .py files
+# with example snippets. Production code lives in backend/ and frontend/src/.
 echo "${YELLOW}[2/3] CLAUDE.md compliance check...${NC}"
 violation_patterns="asyncio.sleep|FALLBACK|setTimeout.*fake|simulate|placeholder"
-violations=$(git diff --cached -- . ':(exclude,glob).claude/skills/**/*.md' | grep -E "$violation_patterns" || true)
+violations=$(git diff --cached -- . ':(exclude,glob).claude/skills/**' | grep -E "$violation_patterns" || true)
 if [ ! -z "$violations" ]; then
   echo "  ${RED}✗${NC} Found CLAUDE.md violations (fake patterns, stubs, placeholders)"
   echo "$violations"
@@ -44,12 +44,12 @@ else
 fi
 
 # Check for sensitive data (API keys, secrets in code)
-# Same exclusion as step 2: imported skill docs under .claude/skills/**/*.md
-# contain example snippets like api_key="your-api-key" for pedagogical
-# purposes, not real secrets.
+# Same exclusion as step 2: .claude/skills/** contains agent instructions and
+# helper scripts that reference env vars like self.api_key = os.getenv(...),
+# which are patterns (not real secrets).
 echo "${YELLOW}[3/3] Security check (no secrets)...${NC}"
 secret_patterns="api.key|password=|secret=|token=.*Bearer|OPENAI_API_KEY.*="
-secrets=$(git diff --cached -- . ':(exclude,glob).claude/skills/**/*.md' | grep -E "$secret_patterns" || true)
+secrets=$(git diff --cached -- . ':(exclude,glob).claude/skills/**' | grep -E "$secret_patterns" || true)
 if [ ! -z "$secrets" ]; then
   echo "  ${RED}✗${NC} Found potential secrets in code"
   echo "$secrets"
