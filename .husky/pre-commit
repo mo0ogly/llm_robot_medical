@@ -44,9 +44,12 @@ else
 fi
 
 # Check for sensitive data (API keys, secrets in code)
+# Same exclusion as step 2: imported skill docs under .claude/skills/**/*.md
+# contain example snippets like api_key="your-api-key" for pedagogical
+# purposes, not real secrets.
 echo "${YELLOW}[3/3] Security check (no secrets)...${NC}"
 secret_patterns="api.key|password=|secret=|token=.*Bearer|OPENAI_API_KEY.*="
-secrets=$(git diff --cached | grep -E "$secret_patterns" || true)
+secrets=$(git diff --cached -- . ':(exclude,glob).claude/skills/**/*.md' | grep -E "$secret_patterns" || true)
 if [ ! -z "$secrets" ]; then
   echo "  ${RED}✗${NC} Found potential secrets in code"
   echo "$secrets"
