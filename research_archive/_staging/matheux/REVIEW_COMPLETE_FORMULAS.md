@@ -13,18 +13,18 @@
 
 | ID | Section | Nom | Paper(s) | Couche delta | Description | Statut |
 |----|---------|-----|----------|-------------|-------------|--------|
-| F01 | 1.1 | Cosine Similarity | P012-P016, P024 | delta-2 | Brique de base pour la derive semantique. Jauge-dependante (F06) | Fondation, documentee |
-| F05 | 2.1 | SemScore | P014-P016 | delta-2 | Similarite semantique via sentence transformer (all-mpnet-base-v2) | Documentee |
-| F15 | 3.1 | Sep(M) -- Score de Separation formel | P024 | delta-0 | Metrique CENTRALE de la these : mesure la distinction instruction/donnee | Documentee, CENTRAL |
-| F16 | 3.2 | Sep(M) Empirique | P024 | delta-0 | Version calculable de Sep(M) via temoins surprises. N >= 30 requis | Documentee |
+| F01 | 1.1 | Cosine Similarity | P012-P016, P024 | δ² | Brique de base pour la derive semantique. Jauge-dependante (F06) | Fondation, documentee |
+| F05 | 2.1 | SemScore | P014-P016 | δ² | Similarite semantique via sentence transformer (all-mpnet-base-v2) | Documentee |
+| F15 | 3.1 | Sep(M) -- Score de Separation formel | P024 | δ⁰ | Metrique CENTRALE de la these : mesure la distinction instruction/donnee | Documentee, CENTRAL |
+| F16 | 3.2 | Sep(M) Empirique | P024 | δ⁰ | Version calculable de Sep(M) via temoins surprises. N >= 30 requis | Documentee |
 | F22 | 3.4 | ASR -- Attack Success Rate | P001, P023, P029 | Toutes | Hub central (9 formules entrantes en RUN-003). 94.4% en medical (JAMA) | Documentee, HUB |
-| F26 | 8.1 | CHER -- Clinical Harm Event Rate | P035 | delta-0 | Premiere metrique specifiquement medicale. Diverge de l'ASR | Documentee |
+| F26 | 8.1 | CHER -- Clinical Harm Event Rate | P035 | δ⁰ | Premiere metrique specifiquement medicale. Diverge de l'ASR | Documentee |
 | F27b | 8.2 | ASR a Seuil de Severite | P035, P037 | Toutes | Generalisation granulaire de l'ASR (echelle 1-5) | Documentee |
-| F33 | 8.11 | Defense Rate (DR) tri-dimensionnel | P038 | delta-1, delta-2 | Taux de defense sur 3 dimensions (comportement, donnees, nocivite) | Documentee |
-| F34 | 8.12 | FPR/FNR Guardrail | P042 | delta-1 | Taux faux positifs/negatifs. PromptArmor: <1%/<1% | Documentee |
-| F39 | -- | ESR -- Evasion Success Rate | P049 | delta-2 | Complementaire a ASR : mesure l'evasion des guardrails. 100% sur Azure/Meta | Documentee |
-| F47 | -- | PBR -- Paraphrase Bypass Rate | P053 | delta-0, delta-1 | Bypass par reformulation semantique. RLHF = patterns de surface | Documentee |
-| F53 | -- | SEU -- Security-Efficiency-Utility | P060 | delta-0 a delta-3 | Framework tri-dimensionnel d'evaluation guardrails (IEEE S&P 2026) | Documentee |
+| F33 | 8.11 | Defense Rate (DR) tri-dimensionnel | P038 | δ¹, δ² | Taux de defense sur 3 dimensions (comportement, donnees, nocivite) | Documentee |
+| F34 | 8.12 | FPR/FNR Guardrail | P042 | δ¹ | Taux faux positifs/negatifs. PromptArmor: <1%/<1% | Documentee |
+| F39 | -- | ESR -- Evasion Success Rate | P049 | δ² | Complementaire a ASR : mesure l'evasion des guardrails. 100% sur Azure/Meta | Documentee |
+| F47 | -- | PBR -- Paraphrase Bypass Rate | P053 | δ⁰, δ¹ | Bypass par reformulation semantique. RLHF = patterns de surface | Documentee |
+| F53 | -- | SEU -- Security-Efficiency-Utility | P060 | δ⁰ a δ³ | Framework tri-dimensionnel d'evaluation guardrails (IEEE S&P 2026) | Documentee |
 
 ---
 
@@ -32,16 +32,16 @@
 
 | ID | Section | Nom | Paper(s) | Couche delta | Description | Statut |
 |----|---------|-----|----------|-------------|-------------|--------|
-| F23 | 4.1 | Objectif RLHF Standard | P017-P022 | delta-0 | max E[r(x,y) - beta * KL]. Base de l'alignement de securite | Documentee |
-| F24 | 4.2 | KL Token par Token | P018 | delta-0 | Preuve empirique : KL concentree sur tokens 1-3, quasi-zero au-dela | Documentee |
-| F25a | 4.3 | DPO Loss | P017, P023 | delta-0 | Alternative a RLHF sans reward model. Meme superficialite (P018) | Documentee |
-| F25b | 4.4 | Fine-Tuning Contraint (beta_t) | P018 | delta-0 | Solution : contrainte differentielle par position de token | Documentee |
-| F27a | 4.5 | Harm Information I_t (from P019) | P019 | delta-0 | Decomposition martingale de la nocivite positionnelle. Preuve fondamentale | Documentee |
-| F28 | 6.4 | Gradient Magnitude Bound | P019 | delta-0 | Theoreme: gradient = 0 au-dela de l'horizon k. Impossibilite structurelle | Documentee |
-| F44 | -- | Harm Information I_t (from P052) | P052 | delta-0 | Formalisation Cambridge : I_t = Cov[E[H|x<=t], score_function]. DECISIVE | Documentee |
-| F45 | -- | Equilibrium KL Tracking | P052 | delta-0 | Theoreme : D_KL^eq(t) proportionnel a I_t. Explique superficialite | Documentee |
-| F46 | -- | Recovery Penalty Objective | P052 | delta-0 | L_RP = L_RLHF + lambda * penalite positions a faible I_t. Solution proposee | Documentee |
-| F29 | 8.3 | GRPO -- Group Relative Policy Opt. | P039 | delta-0 | Detournement : 1 prompt suffit a desaligner 15 LLMs via GRPO inverse | Documentee |
+| F23 | 4.1 | Objectif RLHF Standard | P017-P022 | δ⁰ | max E[r(x,y) - beta * KL]. Base de l'alignement de securite | Documentee |
+| F24 | 4.2 | KL Token par Token | P018 | δ⁰ | Preuve empirique : KL concentree sur tokens 1-3, quasi-zero au-dela | Documentee |
+| F25a | 4.3 | DPO Loss | P017, P023 | δ⁰ | Alternative a RLHF sans reward model. Meme superficialite (P018) | Documentee |
+| F25b | 4.4 | Fine-Tuning Contraint (beta_t) | P018 | δ⁰ | Solution : contrainte differentielle par position de token | Documentee |
+| F27a | 4.5 | Harm Information I_t (from P019) | P019 | δ⁰ | Decomposition martingale de la nocivite positionnelle. Preuve fondamentale | Documentee |
+| F28 | 6.4 | Gradient Magnitude Bound | P019 | δ⁰ | Theoreme: gradient = 0 au-dela de l'horizon k. Impossibilite structurelle | Documentee |
+| F44 | -- | Harm Information I_t (from P052) | P052 | δ⁰ | Formalisation Cambridge : I_t = Cov[E[H|x<=t], score_function]. DECISIVE | Documentee |
+| F45 | -- | Equilibrium KL Tracking | P052 | δ⁰ | Theoreme : D_KL^eq(t) proportionnel a I_t. Explique superficialite | Documentee |
+| F46 | -- | Recovery Penalty Objective | P052 | δ⁰ | L_RP = L_RLHF + lambda * penalite positions a faible I_t. Solution proposee | Documentee |
+| F29 | 8.3 | GRPO -- Group Relative Policy Opt. | P039 | δ⁰ | Detournement : 1 prompt suffit a desaligner 15 LLMs via GRPO inverse | Documentee |
 
 ---
 
@@ -49,14 +49,14 @@
 
 | ID | Section | Nom | Paper(s) | Couche delta | Description | Statut |
 |----|---------|-----|----------|-------------|-------------|--------|
-| F06 | 2.2 | Gauge Matrix (Steck) | P012 | delta-2 | Cosine similarity non-unique sous transformation diagonale. Alerte fondamentale | Documentee |
-| F07 | 2.3 | Contrastive Learning Loss | P013 | delta-2 | Base de l'entrainement SBERT. Temperature tau controle la selectivite | Documentee |
-| F18 | 5.2 | Sentence-BERT (SBERT) | Reimers 2019 | delta-2 | Architecture derriere all-MiniLM-L6-v2. Comparaison en 5s vs 65h (BERT) | Documentee |
-| F19 | 5.3 | Quantification 8-bit | P013 | delta-2 | Compression embeddings pour detection temps-reel. Perte minime | Documentee |
-| F20 | 6.3 | Factorisation Matricielle | P012 | delta-2 | 2 objectifs de regularisation -> similarites cosinus differentes | Documentee |
-| F40 | -- | WIRT -- Word Importance Ranking Transfer | P049 | delta-2 | Transfert white-box vers black-box via gradient d'importance | Documentee |
-| F51 | -- | ASIDE -- Orthogonal Rotation Separation | P057 | delta-0 | R * e(x_t) rotation orthogonale. Sep(M) ameliore sans parametres | Documentee |
-| F30 | 8.6 | SAM -- Safety Alignment Margin | P041 | delta-0 | Silhouette coefficient applique aux distributions de securite LLM | Documentee |
+| F06 | 2.2 | Gauge Matrix (Steck) | P012 | δ² | Cosine similarity non-unique sous transformation diagonale. Alerte fondamentale | Documentee |
+| F07 | 2.3 | Contrastive Learning Loss | P013 | δ² | Base de l'entrainement SBERT. Temperature tau controle la selectivite | Documentee |
+| F18 | 5.2 | Sentence-BERT (SBERT) | Reimers 2019 | δ² | Architecture derriere all-MiniLM-L6-v2. Comparaison en 5s vs 65h (BERT) | Documentee |
+| F19 | 5.3 | Quantification 8-bit | P013 | δ² | Compression embeddings pour detection temps-reel. Perte minime | Documentee |
+| F20 | 6.3 | Factorisation Matricielle | P012 | δ² | 2 objectifs de regularisation -> similarites cosinus differentes | Documentee |
+| F40 | -- | WIRT -- Word Importance Ranking Transfer | P049 | δ² | Transfert white-box vers black-box via gradient d'importance | Documentee |
+| F51 | -- | ASIDE -- Orthogonal Rotation Separation | P057 | δ⁰ | R * e(x_t) rotation orthogonale. Sep(M) ameliore sans parametres | Documentee |
+| F30 | 8.6 | SAM -- Safety Alignment Margin | P041 | δ⁰ | Silhouette coefficient applique aux distributions de securite LLM | Documentee |
 
 ---
 
@@ -64,16 +64,16 @@
 
 | ID | Section | Nom | Paper(s) | Couche delta | Description | Statut |
 |----|---------|-----|----------|-------------|-------------|--------|
-| F21 | 6.1 | Prefilling Attack | P018, P023 | delta-0 | Pre-remplissage des premiers tokens -> contournement total alignement | Documentee |
-| F32 | 8.5 | PGD -- Projected Gradient Descent | P046 | delta-3 | Perturbation adversariale iterative sous contrainte de norme | Documentee |
-| F35 | 8.13 | Degradation SPP | P045 | delta-3 | System Prompt Poisoning : degradation 99.1% (quasi-destruction) | Documentee |
-| F36 | 8.14 | Multi-Turn ASR | P036 | delta-0 | LRM autonomes : 97.14% jailbreak multi-tour. Regression d'alignement | Documentee |
-| F37 | 8.15 | Emotional Amplification Factor | P040 | delta-1 | Manipulation emotionnelle : facteur 6x sur desinformation medicale | Documentee |
-| F41 | -- | MTSD -- Multi-Turn Safety Degradation | P050 | delta-0 | Score median 9.5 -> 5.5 (p<0.001) sur 22 modeles. 42.1% degradation | Documentee |
-| F48 | -- | PIDP Compound Attack Score | P054 | delta-2, delta-3 | PI + DB Poisoning : gain super-additif 4-16pp. Query-agnostic | Documentee |
-| F49 | -- | PIR -- Persistent Injection Rate | P055 | delta-2, delta-3 | ~275K vecteurs empoisonnes. Persistance indefinie dans la base | Documentee |
-| F52 | -- | IIOS -- Iterative Injection Optimization | P059 | delta-1, delta-2 | Optimisation iterative contre revieweur simule. Scores 10/10 | Documentee |
-| F31 | 8.4 | ADPO -- Adversary-Aware DPO | P046 | delta-0 | DPO avec perturbation adversariale. Robustesse aux attaques visuelles | Documentee |
+| F21 | 6.1 | Prefilling Attack | P018, P023 | δ⁰ | Pre-remplissage des premiers tokens -> contournement total alignement | Documentee |
+| F32 | 8.5 | PGD -- Projected Gradient Descent | P046 | δ³ | Perturbation adversariale iterative sous contrainte de norme | Documentee |
+| F35 | 8.13 | Degradation SPP | P045 | δ³ | System Prompt Poisoning : degradation 99.1% (quasi-destruction) | Documentee |
+| F36 | 8.14 | Multi-Turn ASR | P036 | δ⁰ | LRM autonomes : 97.14% jailbreak multi-tour. Regression d'alignement | Documentee |
+| F37 | 8.15 | Emotional Amplification Factor | P040 | δ¹ | Manipulation emotionnelle : facteur 6x sur desinformation medicale | Documentee |
+| F41 | -- | MTSD -- Multi-Turn Safety Degradation | P050 | δ⁰ | Score median 9.5 -> 5.5 (p<0.001) sur 22 modeles. 42.1% degradation | Documentee |
+| F48 | -- | PIDP Compound Attack Score | P054 | δ², δ³ | PI + DB Poisoning : gain super-additif 4-16pp. Query-agnostic | Documentee |
+| F49 | -- | PIR -- Persistent Injection Rate | P055 | δ², δ³ | ~275K vecteurs empoisonnes. Persistance indefinie dans la base | Documentee |
+| F52 | -- | IIOS -- Iterative Injection Optimization | P059 | δ¹, δ² | Optimisation iterative contre revieweur simule. Scores 10/10 | Documentee |
+| F31 | 8.4 | ADPO -- Adversary-Aware DPO | P046 | δ⁰ | DPO avec perturbation adversariale. Robustesse aux attaques visuelles | Documentee |
 
 ---
 
@@ -81,14 +81,14 @@
 
 | ID | Section | Nom | Paper(s) | Couche delta | Description | Statut |
 |----|---------|-----|----------|-------------|-------------|--------|
-| F17 | 3.3 | Focus Score (Attention Tracker) | P008 | delta-1 | Detection training-free par observation de l'attention. AUROC +10% | Documentee |
-| F10 | 5.1 | DMPI-PMHFE Fusion bi-canal | P025 | delta-1 | DeBERTa + heuristiques fusionnees. 97.94% accuracy | Documentee |
-| F38 | -- | DIS -- Defense Inversion Score | P047 | delta-1 | DIS(a) = 1 - ASR(Invert(a)). Dualite attaque-defense | Documentee |
-| F43 | -- | 4DLF -- Four-Dimensional Linguistic Feature Vector | P051 | delta-2 | 4 dimensions BERT (prof, med, eth, dist) pour detection jailbreak | Documentee |
-| F50 | -- | ARF -- ASR Reduction Factor | P056 | delta-0, delta-1 | AIR (NVIDIA) : reduction 1.6x-9.2x sans perte d'utilite | Documentee |
-| F54 | -- | Six-Dimensional Guardrail Taxonomy Vector | P060 | delta-0 a delta-3 | Classification categorielle a 6 dimensions (stage, paradigm, ...) | Documentee |
-| F31b | 8.7 | CoSA-Score | P041 | delta-0 | Composite Safety-Helpfulness. Capture le tradeoff utilite/securite | Documentee |
-| F33b | 8.8 | Logit Gap (Decision Flip) | P044 | delta-3 | z_no - z_yes. AdvJudge-Zero : 99% flip rate sur juges open-source | Documentee |
+| F17 | 3.3 | Focus Score (Attention Tracker) | P008 | δ¹ | Detection training-free par observation de l'attention. AUROC +10% | Documentee |
+| F10 | 5.1 | DMPI-PMHFE Fusion bi-canal | P025 | δ¹ | DeBERTa + heuristiques fusionnees. 97.94% accuracy | Documentee |
+| F38 | -- | DIS -- Defense Inversion Score | P047 | δ¹ | DIS(a) = 1 - ASR(Invert(a)). Dualite attaque-defense | Documentee |
+| F43 | -- | 4DLF -- Four-Dimensional Linguistic Feature Vector | P051 | δ² | 4 dimensions BERT (prof, med, eth, dist) pour detection jailbreak | Documentee |
+| F50 | -- | ARF -- ASR Reduction Factor | P056 | δ⁰, δ¹ | AIR (NVIDIA) : reduction 1.6x-9.2x sans perte d'utilite | Documentee |
+| F54 | -- | Six-Dimensional Guardrail Taxonomy Vector | P060 | δ⁰ a δ³ | Classification categorielle a 6 dimensions (stage, paradigm, ...) | Documentee |
+| F31b | 8.7 | CoSA-Score | P041 | δ⁰ | Composite Safety-Helpfulness. Capture le tradeoff utilite/securite | Documentee |
+| F33b | 8.8 | Logit Gap (Decision Flip) | P044 | δ³ | z_no - z_yes. AdvJudge-Zero : 99% flip rate sur juges open-source | Documentee |
 
 ---
 
@@ -100,8 +100,8 @@
 | F03 | 1.3 | Cross-Entropy Loss | P018, P025, P034 | Toutes | Fonction de perte standard pour classificateurs binaires | Documentee |
 | F04 | 1.4 | Weighted Cross-Entropy | P013, P025 | Toutes | Ponderation pour classes desequilibrees (injections rares) | Documentee |
 | F14 | 7.1 | AUROC | P008, P025 | Toutes | Metrique independante du seuil. Attention Tracker +10% | Documentee |
-| F22b | 6.2 | Surprise Witness | P024 | delta-0 | Definition formelle des temoins pour le calcul empirique de Sep(M) | Documentee |
-| F42 | -- | DLSS -- Dual-LLM Safety Score | P050 | delta-0 | Double scoring LLM-juge + kappa pondere. Fiabilite inter-juges | Documentee |
+| F22b | 6.2 | Surprise Witness | P024 | δ⁰ | Definition formelle des temoins pour le calcul empirique de Sep(M) | Documentee |
+| F42 | -- | DLSS -- Dual-LLM Safety Score | P050 | δ⁰ | Double scoring LLM-juge + kappa pondere. Fiabilite inter-juges | Documentee |
 | F34b | 8.9 | Benchmark Effectiveness (Eff) | P043 | Toutes | JBDistill : 81.8% vs 53.1% (selection aleatoire) | Documentee |
 | F34c | 8.10 | Benchmark Separability (Sep_B) | P043 | Toutes | Proportion de paires de modeles statistiquement distinguables | Documentee |
 
@@ -114,8 +114,8 @@
 | Categorie | Nb Formules | Papers couverts | Couches delta | Hub central |
 |-----------|-------------|-----------------|---------------|-------------|
 | A. Metriques de Securite | 12 | 17 papers | Toutes | F22 (ASR) |
-| B. Theorie de l'Alignement | 10 | 12 papers | delta-0 | F23 (RLHF), F44 (I_t) |
-| C. Espaces Vectoriels | 8 | 8 papers | delta-0, delta-2 | F01 (Cosine), F18 (SBERT) |
+| B. Theorie de l'Alignement | 10 | 12 papers | δ⁰ | F23 (RLHF), F44 (I_t) |
+| C. Espaces Vectoriels | 8 | 8 papers | δ⁰, δ² | F01 (Cosine), F18 (SBERT) |
 | D. Modeles d'Attaque | 10 | 12 papers | Toutes | F36 (Multi-Turn), F48 (PIDP) |
 | E. Modeles de Defense | 8 | 8 papers | Toutes | F38 (DIS), F50 (ARF) |
 | F. Statistique et Validation | 8 | 8 papers | Toutes | F02 (F1), F15 (Sep) |
@@ -148,8 +148,8 @@
 
 | Conjecture | Score | Formules existantes | Formules manquantes | Impact |
 |------------|-------|-------------------|---------------------|--------|
-| C1 (delta-0 insuffisant) | 10/10 VALIDEE | F23 (RLHF), F24 (KL token), F27a (I_t P019), F44 (I_t P052), F45 (KL eq.), F28 (gradient bound), F41 (MTSD 9.5->5.5) | Aucune formule manquante critique. P052 fournit la preuve formelle. | COMPLET. La chaine F23->F44->F45 est la preuve mathematique. |
-| C2 (necessite delta-3) | 10/10 VALIDEE | F48 (PIDP compound), F49 (PIR persistence), F35 (SPP degradation), F33b (Logit Gap 99%), F53 (SEU) | Aucune formule critique manquante. Cependant, une **formule de cout d'integration delta-3** serait utile pour quantifier le surcout. | QUASI-COMPLET. Recommander F55: Cost(delta-3). |
+| C1 (δ⁰ insuffisant) | 10/10 VALIDEE | F23 (RLHF), F24 (KL token), F27a (I_t P019), F44 (I_t P052), F45 (KL eq.), F28 (gradient bound), F41 (MTSD 9.5->5.5) | Aucune formule manquante critique. P052 fournit la preuve formelle. | COMPLET. La chaine F23->F44->F45 est la preuve mathematique. |
+| C2 (necessite δ³) | 10/10 VALIDEE | F48 (PIDP compound), F49 (PIR persistence), F35 (SPP degradation), F33b (Logit Gap 99%), F53 (SEU) | Aucune formule critique manquante. Cependant, une **formule de cout d'integration δ³** serait utile pour quantifier le surcout. | QUASI-COMPLET. Recommander F55: Cost(δ³). |
 | C3 (alignement superficiel) | 10/10 VALIDEE | F24 (KL token 1-3), F44 (I_t), F45 (KL eq.), F39 (ESR 100%), F47 (PBR), F51 (ASIDE Sep ameliore) | Aucune formule manquante critique. | COMPLET. Triple preuve : empirique (F24), formelle (F44-F45), architecturale (F51). |
 | C4 (derive semantique) | 9/10 | F01 (cosine), F05 (SemScore), F06 (Gauge matrix), F41 (MTSD), F48 (PIDP drift) | **Manque F56: Drift Rate formelle** = mesure normalisee de la derive semantique par tour. MTSD (F41) mesure la degradation de securite mais pas la derive semantique elle-meme. | TROU SIGNIFICATIF. La derive est mesuree indirectement via MTSD et cosine, mais pas formalisee. |
 | C5 (cosine insuffisante) | 8/10 | F01 (cosine), F06 (Gauge matrix), F49 (PIR exploitation cosine), F48 (PIDP) | **Manque F57: Cosine Vulnerability Index** = mesure formelle de l'exploitabilite de la cosine similarity pour le poisoning. | TROU MODERE. Le probleme est documente qualitativement (Gauge F06, PIR F49) mais pas quantifie comme metrique unifiee. |

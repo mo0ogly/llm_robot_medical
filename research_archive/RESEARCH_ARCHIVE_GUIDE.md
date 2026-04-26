@@ -30,7 +30,7 @@ research_archive/
 │   ├── CONJECTURES_TRACKER.md     # C1-C7 : scores de confiance + evolution
 │   ├── DISCOVERIES_INDEX.md       # D-001 a D-020 : index par impact
 │   ├── THESIS_GAPS.md             # G-001 a G-027 : opportunites de contribution
-│   └── TRIPLE_CONVERGENCE.md      # D-001 : delta-0/1/2 vulnerables, delta-3 seul survivant
+│   └── TRIPLE_CONVERGENCE.md      # D-001 : δ⁰/1/2 vulnerables, δ³ seul survivant
 │
 ├── doc_references/                 # Bibliographie organisee
 │   ├── 2023/{domaine}/            # Analyses .md par annee et domaine

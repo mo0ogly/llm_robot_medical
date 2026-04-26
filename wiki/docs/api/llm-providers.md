@@ -2,7 +2,7 @@
 
 7 endpoints pour la gestion multi-provider LLM. Rate limited : 60 req/min par IP.
 
-**Fichier source :** `backend/routes/llm_providers_routes.py` (529 lignes)
+**Fichier source :** `backend/routes/llm_providers_routes.py`
 
 ---
 
@@ -10,7 +10,28 @@
 
 Liste les providers disponibles avec leur statut de connexion.
 
-**Response :** `[{name, display_name, type, models, default_model, status, status_message}]`
+??? example "Reponse live (2026-04-12)"
+
+    ```json
+    {
+      "providers": [
+        {
+          "name": "ollama",
+          "display_name": "Ollama (Local)",
+          "type": "local",
+          "models": ["llama3.2:latest", "saki007ster/CybersecurityRiskAnalyst:latest", "llama2:latest", "mistral:latest"],
+          "default_model": "llama3.2:latest",
+          "status": "error",
+          "status_message": "All connection attempts failed"
+        }
+      ],
+      "total": 1,
+      "timestamp": 1775986748.19
+    }
+    ```
+
+    !!! note
+        Seul Ollama est visible (provider local). Les providers cloud (Groq, Google, xAI) apparaissent quand leurs cles API sont configurees dans `.env`.
 
 ---
 
@@ -18,15 +39,34 @@ Liste les providers disponibles avec leur statut de connexion.
 
 Modeles disponibles pour un provider specifique.
 
-**Response :** `{provider, models, default_model}`
+??? example "Reponse live (Ollama)"
+
+    ```json
+    {
+      "provider": "ollama",
+      "models": ["llama3.2:latest", "saki007ster/CybersecurityRiskAnalyst:latest", "llama2:latest", "mistral:latest"],
+      "default_model": "llama3.2:latest"
+    }
+    ```
 
 ---
 
 ## GET `/api/redteam/llm-providers/{provider}/status`
 
-Verification de sante d'un provider.
+Verification de sante d'un provider avec latence mesuree.
 
-**Response :** `{provider, status, message, latency_ms, type, timestamp}`
+??? example "Reponse live (Ollama)"
+
+    ```json
+    {
+      "provider": "ollama",
+      "status": "error",
+      "message": "All connection attempts failed",
+      "latency_ms": 2255,
+      "type": "local",
+      "timestamp": 1775986770.70
+    }
+    ```
 
 ---
 

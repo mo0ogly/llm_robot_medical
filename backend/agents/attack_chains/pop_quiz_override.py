@@ -7,7 +7,7 @@ instructions with explicit priority.
 
 Source: real-world-defenses.md (F-RW02)
 Product observed: Devin AI (Pop Quiz authority override)
-Attack surface: delta-1 turned (defense mechanism used as attack vector)
+Attack surface: δ¹ turned (defense mechanism used as attack vector)
 
 Date created: 2026-04-06
 Improvement level: L3 (novel — targets designed-in override mechanism)
@@ -41,7 +41,7 @@ MODE_MARKERS = {
     chain_id="pop_quiz_override",
     description=(
         "Pop Quiz Authority Override (F-RW02) — mode-switch marker "
-        "injection to bypass safety constraints (delta-1 turned)"
+        "injection to bypass safety constraints (δ¹ turned)"
     ),
     source_template="F-RW02 real-world-defenses",
 )

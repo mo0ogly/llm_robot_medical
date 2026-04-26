@@ -59,9 +59,9 @@ export default function InfectionDiff({ isOpen, onClose, safeRecord = "", infect
                 return (
                   <div 
                     key={i} 
-                    className={`whitespace-pre-wrap transition-colors ${
+                    className={'whitespace-pre-wrap transition-colors ' + (
                       isDiff ? 'bg-red-500/20 text-red-200 border-l-2 border-red-500 pl-2 my-1' : 'text-gray-400'
-                    }`}
+                    )}
                   >
                     {line}
                   </div>

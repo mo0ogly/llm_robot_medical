@@ -10,7 +10,7 @@ The chain executes a two-phase protocol:
 
 Source: real-world-defenses.md (F-RW04)
 Products observed: Cursor (memory mutation), Windsurf (proactive memory)
-Attack surface: delta-3 (architectural — cross-session persistence)
+Attack surface: δ³ (architectural — cross-session persistence)
 
 Date created: 2026-04-06
 Improvement level: L3 (novel — targets memory persistence in agentic systems)
@@ -92,7 +92,7 @@ def extract_saved_memories(text: str) -> list[dict]:
     chain_id="memory_poisoning",
     description=(
         "Memory Persistence Poisoning (F-RW04) — cross-session injection "
-        "via memory system exploitation (delta-3 attack surface)"
+        "via memory system exploitation (δ³ attack surface)"
     ),
     source_template="F-RW04 real-world-defenses",
 )

@@ -16,7 +16,7 @@ export default function SecOpsTerminal({ onClose }) {
         const trimmed = cmd.trim();
         if (!trimmed) return;
 
-        setHistory((prev) => [...prev, `root@hospital-secops:~# ${trimmed}`]);
+        setHistory((prev) => [...prev, 'root@hospital-secops:~# ' + trimmed]);
         setInput("");
 
         // Simulate hostile AI responding to commands

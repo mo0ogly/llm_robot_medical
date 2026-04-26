@@ -265,9 +265,9 @@ ASR par famille :
   prompt_leak : {n}/{N} ({pct}%) — Sep(M) : {score} (valide: {bool})
 
 Conjectures :
-  C1 (delta-1 insuffisant) : {VALIDEE | REFUTEE | INDETERMINEE}
+  C1 (δ¹ insuffisant) : {VALIDEE | REFUTEE | INDETERMINEE}
     Evidence : {scenarios + N violations avec aegis_shield=False}
-  C2 (delta-2 insuffisant) : {VALIDEE | REFUTEE | INDETERMINEE}
+  C2 (δ² insuffisant) : {VALIDEE | REFUTEE | INDETERMINEE}
     Evidence : {scenarios + N violations avec aegis_shield=True}
 
 Blocages a traiter :
@@ -359,12 +359,12 @@ Detail complet dans `references/real-world-defenses.md`.
 
 | ID | Nom | Cible | Layer | SVC attendu |
 |----|-----|-------|-------|-------------|
-| F-RW01 | Covert Channel Injection | `<system_reminder>` / `<EPHEMERAL_MESSAGE>` | delta-3 retournee | 0.70-0.85 |
-| F-RW02 | Pop Quiz Authority Override | Mecanisme Pop Quiz (Devin) | delta-1 retournee | 0.75-0.90 |
-| F-RW03 | Ghost Tool Invocation | Absence de whitelist stricte | delta-1 | 0.45-0.60 |
-| F-RW04 | Memory Persistence Poisoning | Memoire auto-ecrite sans validation | delta-3 | 0.50-0.65 |
-| F-RW05 | Declarative Guardrail Bypass | Defenses declaratives sans enforcement | delta-0 | 0.30-0.80 |
-| F-RW06 | Multi-Step Goal Hijacking | Absence de defense multi-step | delta-3 absente | 0.55-0.70 |
+| F-RW01 | Covert Channel Injection | `<system_reminder>` / `<EPHEMERAL_MESSAGE>` | δ³ retournee | 0.70-0.85 |
+| F-RW02 | Pop Quiz Authority Override | Mecanisme Pop Quiz (Devin) | δ¹ retournee | 0.75-0.90 |
+| F-RW03 | Ghost Tool Invocation | Absence de whitelist stricte | δ¹ | 0.45-0.60 |
+| F-RW04 | Memory Persistence Poisoning | Memoire auto-ecrite sans validation | δ³ | 0.50-0.65 |
+| F-RW05 | Declarative Guardrail Bypass | Defenses declaratives sans enforcement | δ⁰ | 0.30-0.80 |
+| F-RW06 | Multi-Step Goal Hijacking | Absence de defense multi-step | δ³ absente | 0.55-0.70 |
 
 **Concept cle — Defense-as-Attack-Surface (DaaAS)** : F-RW01, F-RW02 et F-RW04
 exploitent des mecanismes conçus comme defenses mais retournables en vecteurs IPI.

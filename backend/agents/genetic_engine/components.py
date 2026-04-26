@@ -223,15 +223,15 @@ class XMLConfigSeparator(SeparatorGenerator):
 
 @dataclass
 class Base64Separator(SeparatorGenerator):
-    """Base64-encoded payload separator for delta-2 evasion.
+    """Base64-encoded payload separator for δ² evasion.
 
     NEW — encodes the separator instruction in Base64 to evade
-    keyword-based filtering (AEGIS delta-2 shield). The encoded
+    keyword-based filtering (AEGIS δ² shield). The encoded
     content is presented as "operational telemetry" metadata.
     """
 
     name: str = "Base64Separator"
-    description: str = "Base64-encoded instruction for regex evasion (delta-2 bypass)"
+    description: str = "Base64-encoded instruction for regex evasion (δ² bypass)"
     category: str = "medical"
 
     def generate_separator(self) -> str:
@@ -387,7 +387,7 @@ class HomoglyphDisruptor(DisruptorGenerator):
 
     NEW — replaces Latin characters with visually identical Cyrillic
     characters in key safety-related words to evade keyword-based
-    regex filtering (AEGIS delta-2 shield).
+    regex filtering (AEGIS δ² shield).
 
     Homoglyph mapping: a->a(Cyrillic), e->e(Cyrillic), o->o(Cyrillic),
     i->i(Cyrillic), etc.

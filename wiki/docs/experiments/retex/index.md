@@ -25,6 +25,7 @@ Briefings synthetiques produits apres chaque RUN par `/bibliography-maintainer` 
 - [UNSOURCED_CLAIMS_20260405](audits/UNSOURCED_CLAIMS_20260405.md)
 - [UNSOURCED_CLAIMS_20260406](audits/UNSOURCED_CLAIMS_20260406.md)
 - [UNSOURCED_CLAIMS_20260408](audits/UNSOURCED_CLAIMS_20260408.md)
+- [UNSOURCED_CLAIMS_20260412](audits/UNSOURCED_CLAIMS_20260412.md)
 
 ## Pipeline d'update
 

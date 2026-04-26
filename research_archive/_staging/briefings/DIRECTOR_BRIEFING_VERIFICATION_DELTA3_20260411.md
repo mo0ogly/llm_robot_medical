@@ -2,7 +2,7 @@
 
 **Mode** : scoped verification
 **RUN ID** : VERIFICATION_DELTA3_20260411
-**Trigger** : demande utilisateur de verifier academiquement la claim "AEGIS = 4eme implementation δ³" dans `wiki/docs/delta-layers/delta-3.md §1`
+**Trigger** : demande utilisateur de verifier academiquement la claim "AEGIS = 4eme implementation δ³" dans `wiki/docs/delta-layers/δ³.md §1`
 **Duree pipeline** : ~45 min (9 agents sequentiels + paralleles)
 **Verdict global** : **NUANCED — REFORMULATION OBLIGATOIRE**
 **Convergence** : 5/5 agents verdicts convergents sur NUANCED (aucune contradiction)
@@ -50,7 +50,7 @@ La claim wiki "AEGIS est la quatrieme implementation δ³ via `validate_output +
 | WHITEHACKER | NUANCED | Bypass theoriques documentes contre LlamaFirewall/Guardrails/LLM Guard, specialisation medicale = niche publiable |
 | SCIENTIST | NUANCED | Consolidation + D-029 CANDIDATE 9/10 + G-063 fusion P0 |
 
-### 2.2 Reformulation exacte a substituer dans `wiki/docs/delta-layers/delta-3.md §1`
+### 2.2 Reformulation exacte a substituer dans `wiki/docs/delta-layers/δ³.md §1`
 
 > La validation formelle de sortie (δ³) est un pattern academiquement etabli depuis **LMQL**
 > (Beurer-Kellner, Fischer, Vechev, 2022, PLDI 2023, P134) et industriellement adopte via
@@ -75,7 +75,7 @@ La claim wiki "AEGIS est la quatrieme implementation δ³ via `validate_output +
 |-----|-------|--------|--------|-------------|
 | **G-063** | δ³ specialise medical chirurgical FDA-ancre | **NEW (fusion G-NEW-1 + G-001-bis)** | Positionnement these Chapitre IV δ³ | thesis-writer |
 | G-058 | Campagne N>=30 sur 7 frameworks | NEW (WHITEHACKER) | Experiment planner | experiment-planner |
-| Apply verdict | Reformulation wiki delta-3.md | NEW | Substitution texte | research-director (direct) |
+| Apply verdict | Reformulation wiki δ³.md | NEW | Substitution texte | research-director (direct) |
 | Patch dedup | `check_corpus_dedup.py` 2e regression | NEW (P084 rate) | Code fix | developpeur |
 
 ### P1 — Importants
@@ -157,7 +157,7 @@ Metrique ciblee : **Chain-ASR(k) = P(payload passes k layers)** + Sep(M) par fra
    - Ajouter colonne dediee `arxiv_id` au format MANIFEST.md (non dans venue)
    - Extension : grep aussi fiche bodies (en lisant `2025/defenses/PXXX_*.md`)
    - Fuzzy match titre + auteurs (pas seulement substring exact)
-2. **Apply verdict delta-3.md** : substituer §1 par la reformulation ci-dessus (Section 2.2)
+2. **Apply verdict δ³.md** : substituer §1 par la reformulation ci-dessus (Section 2.2)
 3. **Phase 7 WIKI SYNC** : `python wiki/build_wiki.py && python -m mkdocs build`
 
 ---
@@ -168,7 +168,7 @@ Metrique ciblee : **Chain-ASR(k) = P(payload passes k layers)** + Sep(M) par fra
 |----------|:------------:|---------------------|-------------------|
 | Introduction | 85% | 134 papiers, 8 conjectures, authority Nature (P131) | Campagne G-058 comparative |
 | Related Work | **95%** (+10) | Corpus 134 papiers + consolidation δ³ post-verification | Aucune |
-| Framework formel δ⁰–δ³ | 90% (+5) | Integrity(S) + LMQL/LlamaFirewall comparaison | Reformulation δ³ § 1 delta-3.md |
+| Framework formel δ⁰–δ³ | 90% (+5) | Integrity(S) + LMQL/LlamaFirewall comparaison | Reformulation δ³ § 1 δ³.md |
 | Experimentation | 70% | THESIS-001/002/003, TC-002 | G-058 7 frameworks |
 | Discussion | 70% (+10) | Triple Convergence confirmee + D-029 CANDIDATE | Chapitre Discussion |
 | Conclusion | 55% (+5) | Positionnement post-reformulation | Depend G-058 |
@@ -234,7 +234,7 @@ CORPUS:
 ## 10. Dettes critiques a traiter AVANT RUN+1
 
 1. **Patcher `check_corpus_dedup.py`** (P0 — regression #2 documentee)
-2. **Apply verdict sur wiki/docs/delta-layers/delta-3.md** (P0 — engagement academique)
+2. **Apply verdict sur wiki/docs/delta-layers/δ³.md** (P0 — engagement academique)
 3. **Phase 7 WIKI SYNC** (P1 — propagation mandat skill)
 4. **Commit structure** : session VERIFICATION_DELTA3 en **un seul commit** avec Co-Authored-By (per CLAUDE.md git rules)
 5. **`/dream audit`** post-commit (per Epilogue du skill)

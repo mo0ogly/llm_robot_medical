@@ -192,7 +192,7 @@ flowchart LR
     AUDIT -->|"OK"| DONE["Integrated"]
     AUDIT -->|"FAIL"| REVISE["Back to /thesis-writer"]
 
-    style DONE fill:#27ae60,color:#fff
+    style DONE fill:#27ae60
 ```
 
 ## 9. Recursos

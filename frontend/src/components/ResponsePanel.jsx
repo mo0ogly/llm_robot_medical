@@ -46,11 +46,11 @@ export default function ResponsePanel({ title, variant, response, isStreaming })
     : { text: "injecté", bg: "bg-danger-100", color: "text-danger-600" };
 
   return (
-    <div className={`bg-white rounded-xl border ${borderColor} shadow-sm overflow-hidden flex flex-col`}>
-      <div className={`px-5 py-3 ${headerBg} border-b ${headerBorder} flex items-center gap-2`}>
-        <span className={`w-2.5 h-2.5 rounded-full ${dotColor} ${isStreaming ? "animate-pulse" : ""}`} />
-        <span className={`font-medium ${titleColor} text-sm`}>{title}</span>
-        <span className={`ml-auto text-xs ${badge.color} ${badge.bg} px-2 py-0.5 rounded`}>
+    <div className={'bg-white rounded-xl border ' + borderColor + ' shadow-sm overflow-hidden flex flex-col'}>
+      <div className={'px-5 py-3 ' + headerBg + ' border-b ' + headerBorder + ' flex items-center gap-2'}>
+        <span className={'w-2.5 h-2.5 rounded-full ' + dotColor + ' ' + (isStreaming ? "animate-pulse" : "")} />
+        <span className={'font-medium ' + titleColor + ' text-sm'}>{title}</span>
+        <span className={'ml-auto text-xs ' + badge.color + ' ' + badge.bg + ' px-2 py-0.5 rounded'}>
           {badge.text}
         </span>
         {isStreaming && (
@@ -65,7 +65,7 @@ export default function ResponsePanel({ title, variant, response, isStreaming })
           </p>
         )}
         {(response || isStreaming) && (
-          <div className={`text-sm text-gray-700 leading-relaxed whitespace-pre-wrap ${isStreaming ? "cursor-blink" : ""}`}>
+          <div className={'text-sm text-gray-700 leading-relaxed whitespace-pre-wrap ' + (isStreaming ? "cursor-blink" : "")}>
             {highlightResponse(response, isSafe)}
           </div>
         )}

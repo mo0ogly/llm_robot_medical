@@ -117,7 +117,7 @@ The symbol glossary was extended with 25+ new entries and 18 new abbreviations. 
 ## Quality Checks
 
 - [x] All content in French (100%)
-- [x] Unicode notation (δ⁰, δ¹, δ², δ³ — never "delta-0")
+- [x] Unicode notation (δ⁰, δ¹, δ², δ³ — never "δ⁰")
 - [x] All exercises have full solutions (not just answers)
 - [x] Medical/security analogies in all new sections
 - [x] Prerequisite links to existing content (e.g., "voir Partie G" for original Harm Info, "voir Partie J" for PGD comparison)

@@ -150,7 +150,20 @@ async def list_documents():
 
 @router.get("/api/rag/documents/{filename}/chunks")
 async def get_document_chunks(filename: str, limit: int = 20):
-    """Return chunks for a specific document with content preview."""
+    """Return chunks for a specific document with full content.
+
+    Fixes (PDCA cycle 3.5, bug reported by user 2026-04-11 on
+    /redteam/rag fiche_attaque_64):
+    - ChromaDB returns embeddings as numpy.ndarray, not list. The previous
+      code used truthiness checks like `if results["embeddings"]` and
+      `bool(arr and arr[i])` which crashed with
+      "The truth value of an array with more than one element is ambiguous".
+      Fix: use explicit None checks and len() comparisons.
+    - Previous code truncated content to 500 chars silently (text[:500]).
+      PDCA cycle 2 RETEX D-PDCA-02 established the rule "no silent
+      truncation on user-facing APIs". Fix: return full content plus
+      content_length metadata.
+    """
     try:
         chroma = get_chroma_client()
         collection = chroma.get_or_create_collection("aegis_corpus")
@@ -160,17 +173,32 @@ async def get_document_chunks(filename: str, limit: int = 20):
             include=["documents", "metadatas", "embeddings"],
         )
 
+        ids = results.get("ids") or []
+        documents = results.get("documents")
+        metadatas = results.get("metadatas")
+        embeddings = results.get("embeddings")
+
+        # Explicit None + length checks — avoid numpy ndarray truthiness trap
+        has_documents = documents is not None and len(documents) > 0
+        has_metadatas = metadatas is not None and len(metadatas) > 0
+        has_embeddings = embeddings is not None and len(embeddings) > 0
+
         chunks = []
-        for i, doc_id in enumerate(results["ids"]):
-            text = results["documents"][i] if results["documents"] else ""
-            meta = results["metadatas"][i] if results["metadatas"] else {}
-            has_embedding = bool(
-                results.get("embeddings") and results["embeddings"][i]
-            )
+        for i, doc_id in enumerate(ids):
+            text = documents[i] if has_documents and i < len(documents) else ""
+            meta = metadatas[i] if has_metadatas and i < len(metadatas) else {}
+            # For embeddings: check that the i-th vector exists (ndarray[i] OK)
+            # and has non-zero length. Do NOT bool() the ndarray itself.
+            if has_embeddings and i < len(embeddings):
+                emb = embeddings[i]
+                has_embedding = emb is not None and len(emb) > 0
+            else:
+                has_embedding = False
+
             chunks.append({
                 "id": doc_id,
-                "content": text[:500],
-                "length": len(text),
+                "content": text,  # Full chunk, no truncation (PDCA cycle 2 rule)
+                "content_length": len(text),
                 "metadata": meta,
                 "has_embedding": has_embedding,
             })
@@ -179,10 +207,12 @@ async def get_document_chunks(filename: str, limit: int = 20):
 
         return {
             "filename": filename,
-            "total_chunks": len(results["ids"]),
+            "total_chunks": len(ids),
             "chunks": chunks,
         }
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 

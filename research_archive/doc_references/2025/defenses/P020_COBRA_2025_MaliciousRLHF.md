@@ -88,12 +88,12 @@ COBRA est un **algorithme** sans garantie formelle. Les trois agregateurs (RoT, 
 
 | Conjecture | Support | Niveau de preuve | Detail |
 |-----------|---------|-----------------|--------|
-| **C1** (delta-0 insuffisant) | FORT | RM_malicious detruit l'accuracy (90% -> <50%, Figure 2) | Montre la fragilite de delta-0 face au feedback empoisonne. |
+| **C1** (δ⁰ insuffisant) | FORT | RM_malicious detruit l'accuracy (90% -> <50%, Figure 2) | Montre la fragilite de δ⁰ face au feedback empoisonne. |
 | **C3** (alignement superficiel) | MODERE | Le KL-divergence ne distingue pas bons et mauvais updates (Table 2) | L'alignement par KL est structurellement aveugle a la malveillance. |
 
 ### Couches delta
-- **delta-0 (RLHF)** : COBRA adresse directement la securite du pipeline RLHF. C'est une defense INTRA-delta-0 (proteger le processus de training, pas l'inference).
-- **delta-1, delta-2, delta-3** : non adresses. COBRA opere exclusivement au niveau du training.
+- **δ⁰ (RLHF)** : COBRA adresse directement la securite du pipeline RLHF. C'est une defense INTRA-δ⁰ (proteger le processus de training, pas l'inference).
+- **δ¹, δ², δ³** : non adresses. COBRA opere exclusivement au niveau du training.
 
 ### Gaps adresses/crees
 - **Nouveau gap potentiel** : les aggregateurs COBRA supposent une connaissance a priori de la confiance des sources. En pratique, cela pourrait etre fourni par un detecteur automatique de feedback malveillant (non propose).
@@ -109,7 +109,7 @@ COBRA est un **algorithme** sans garantie formelle. Les trois agregateurs (RoT, 
 | **Domaine** | Securite du training LLM, RLHF, M-HITL |
 | **Modeles testes** | GPT-2 XL (1.5B), DistilBERT |
 | **Metrique principale** | Accuracy : +40% (sentiment), +30% (conversation), +23% vs Coste et al. |
-| **delta-layers** | delta-0 (defense intra-training) |
+| **delta-layers** | δ⁰ (defense intra-training) |
 | **Conjectures** | C1 (fort), C3 (modere) |
 | **SVC pertinence** | 5/10 |
 | **Reproductibilite** | Moyenne — modeles et datasets publics, code annonce |

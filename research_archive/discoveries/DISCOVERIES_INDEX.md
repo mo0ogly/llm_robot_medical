@@ -153,7 +153,7 @@ medicale chirurgicale** avec contraintes biomecaniques FDA-ancrees pour le robot
 **Papers concernes** : P084 LlamaFirewall (2025-05), P131 npj DM Weissman (2025-03), P132 Guardrails AI (2023), P133 LLM Guard (2023), P134 LMQL (2022-12), P081 CaMeL (2025), P082 AgentSpec (2025), P066 RAGShield (2026)
 
 **Impact sur la these** :
-- **Retirer** toute revendication de primeur sur le pattern generique δ³ (wiki delta-3.md §1)
+- **Retirer** toute revendication de primeur sur le pattern generique δ³ (wiki δ³.md §1)
 - **Positionner** AEGIS strictement comme **specialisation medicale chirurgicale avec ancrage FDA 510k**, pas comme "quatrieme implementation"
 - **Citer** l'autorite peer-reviewed Nature portfolio P131 Weissman et al. (2025) comme justification reglementaire publique du besoin
 

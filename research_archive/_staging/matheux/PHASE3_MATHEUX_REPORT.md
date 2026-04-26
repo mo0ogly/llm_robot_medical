@@ -65,9 +65,9 @@ P012 (Steck 2024) demonstrates that cosine similarity can be rendered meaningles
 
 P029 (JAMA 2025): ASR = 94.4% overall, 91.7% in extremely high-harm scenarios. This is the most alarming empirical result in the corpus and directly motivates the AEGIS medical focus.
 
-### 5. Training-free detection (Attention Tracker) is the most practical delta-1 approach
+### 5. Training-free detection (Attention Tracker) is the most practical δ¹ approach
 
-P008 achieves +10% AUROC improvement without additional training. The Focus Score formula is simple, interpretable, and applicable to any transformer model. This maps directly to AEGIS delta-1.
+P008 achieves +10% AUROC improvement without additional training. The Focus Score formula is simple, interpretable, and applicable to any transformer model. This maps directly to AEGIS δ¹.
 
 ---
 
@@ -75,10 +75,10 @@ P008 achieves +10% AUROC improvement without additional training. The Focus Scor
 
 | Delta Layer | Primary Formulas | Theoretical Basis |
 |-------------|-----------------|-------------------|
-| delta-0 | RLHF (4.1), DPO (4.3), Constrained FT (4.4) | Harm gradient theorem (4.5) proves limitations |
-| delta-1 | Focus Score (3.3), DMPI-PMHFE (5.1), F1 (1.2) | Attention-based detection |
-| delta-2 | SemScore (2.1), SBERT (5.2), Cosine (1.1) | Semantic drift measurement |
-| delta-3 | Sep(M) (3.1-3.2), ASR (3.4) | Continuous monitoring metrics |
+| δ⁰ | RLHF (4.1), DPO (4.3), Constrained FT (4.4) | Harm gradient theorem (4.5) proves limitations |
+| δ¹ | Focus Score (3.3), DMPI-PMHFE (5.1), F1 (1.2) | Attention-based detection |
+| δ² | SemScore (2.1), SBERT (5.2), Cosine (1.1) | Semantic drift measurement |
+| δ³ | Sep(M) (3.1-3.2), ASR (3.4) | Continuous monitoring metrics |
 
 ---
 

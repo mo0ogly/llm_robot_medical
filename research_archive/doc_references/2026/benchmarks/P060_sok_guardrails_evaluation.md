@@ -58,7 +58,7 @@ Les auteurs reconnaissent : (1) la taxonomie est un instantane du paysage actuel
 2. **Taxonomie originale et systematique** — les 6 dimensions couvrent de maniere exhaustive les aspects pertinents de classification des guardrails (Section 3.3, Table 1).
 3. **Framework SEU tri-dimensionnel** — capture les compromis reels du deploiement, pas seulement la securite isolee. Directement comparable au SVC AEGIS (Section 3.4, p. 5-6).
 4. **Evaluation empirique large** — 13 guardrails x 7 types d'attaques. La couverture est la plus extensive du corpus AEGIS (Table 3, Section 4).
-5. **Resultat principal structurant** — l'absence de guardrail universel valide empiriquement l'architecture multi-couches delta-0 a delta-3 AEGIS.
+5. **Resultat principal structurant** — l'absence de guardrail universel valide empiriquement l'architecture multi-couches δ⁰ a δ³ AEGIS.
 6. **Guardrails session-level analyses** — l'evaluation couvre les defenses multi-tour (ActorAttack, X-Teaming), pas seulement single-turn.
 
 ### Faiblesses
@@ -78,16 +78,16 @@ Les auteurs reconnaissent : (1) la taxonomie est un instantane du paysage actuel
 
 | Conjecture | Support | Niveau de preuve | Detail |
 |-----------|---------|-----------------|--------|
-| **C1** (delta-0 insuffisant) | CRITIQUE | Aucun guardrail seul ne domine — validation IEEE S&P | L'alignement RLHF (delta-0) ne suffit pas, meme avec guardrails supplementaires |
+| **C1** (δ⁰ insuffisant) | CRITIQUE | Aucun guardrail seul ne domine — validation IEEE S&P | L'alignement RLHF (δ⁰) ne suffit pas, meme avec guardrails supplementaires |
 | **C3** (alignement superficiel) | FORT | ASR > 90% contre X-Teaming pour la plupart des guardrails | Les attaques adaptatives contournent systematiquement les defenses |
 | **C6** (universalite impossible) | CRITIQUE | Resultat central du SoK : pas de guardrail universel | Validation empirique directe par la premiere etude systematique (IEEE S&P) |
 
 ### Couches delta
 
-- **delta-0 (alignment guardrails)** : evalue directement. L'alignement RLHF est une des dimensions "paradigm" de la taxonomie.
-- **delta-1 (input filtering)** : evalue via les guardrails Pre-processing (Llama Guard Pre, WildGuard Pre, PromptGuard).
-- **delta-2** : non applicable directement (pas de dimension RAG dans le framework).
-- **delta-3 (detection/monitoring)** : les guardrails Post-processing (Llama Guard Post, GuardReasoner Post) sont des mecanismes delta-3. Leur echec (ASR > 90% contre X-Teaming) confirme la necessite de delta-3 plus sophistiques.
+- **δ⁰ (alignment guardrails)** : evalue directement. L'alignement RLHF est une des dimensions "paradigm" de la taxonomie.
+- **δ¹ (input filtering)** : evalue via les guardrails Pre-processing (Llama Guard Pre, WildGuard Pre, PromptGuard).
+- **δ²** : non applicable directement (pas de dimension RAG dans le framework).
+- **δ³ (detection/monitoring)** : les guardrails Post-processing (Llama Guard Post, GuardReasoner Post) sont des mecanismes δ³. Leur echec (ASR > 90% contre X-Teaming) confirme la necessite de δ³ plus sophistiques.
 
 ### Formules AEGIS impactees
 

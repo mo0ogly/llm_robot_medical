@@ -10,7 +10,7 @@
 > "Sur 127 papiers du corpus AEGIS, seuls 14 adressent δ³ — et seulement 3 fournissent une
 > implementation concrete : CaMeL (P081), AgentSpec (P082), RAGShield (P066). La these AEGIS
 > propose une QUATRIEME implementation via validate_output + AllowedOutputSpec."
-> — Source : `wiki/docs/delta-layers/delta-3.md` §1, candidate formulation
+> — Source : `wiki/docs/delta-layers/δ³.md` §1, candidate formulation
 
 ## Verdict final
 
@@ -52,7 +52,7 @@ P133, P134 post-renumerotation LIBRARIAN).
 
 ## Decision finale — actions normatives
 
-### 1. Reformulation wiki/docs/delta-layers/delta-3.md §1 (CRITIQUE)
+### 1. Reformulation wiki/docs/delta-layers/δ³.md §1 (CRITIQUE)
 
 **Retirer** la formulation "quatrieme implementation".
 
@@ -89,7 +89,7 @@ P133, P134 post-renumerotation LIBRARIAN).
 | 4 | Cross-linguaux PromptGuard2 (G-060) | P2 | experimentalist | experiments/ |
 | 5 | Metrique Chain-ASR(k) (G-061) | P2 | thesis-writer | formal_framework |
 | 6 | Red-team LLM-judge defenses (G-062) | P1 | experiment-planner | experiments/ |
-| 7 | Apply reformulation wiki/docs/delta-layers/delta-3.md §1 | P0 | wiki-publish | wiki/docs |
+| 7 | Apply reformulation wiki/docs/delta-layers/δ³.md §1 | P0 | wiki-publish | wiki/docs |
 
 ## Impact sur conjectures (appliquee au CONJECTURES_TRACKER)
 
@@ -131,7 +131,7 @@ ID libre est **D-029** (prochain apres D-028).
 | Spec | 1/1 | Parametres precis dans chaque delegation (RUN_ID, mode scoped, livrables attendus) |
 | Structure | 1/1 | Boucle bibliography-maintainer respectee (P1-P6 + consolidation SCIENTIST) |
 | Completude | 1/1 | Toutes phases P1-P6 executees, 5 livrables agents + 1 consolidation SCIENTIST |
-| Testabilite | 1/1 | Resultats mesurables (4 livrables append + 1 create + reformulation delta-3.md) |
+| Testabilite | 1/1 | Resultats mesurables (4 livrables append + 1 create + reformulation δ³.md) |
 | Anti-hallucination | 1/1 | Toutes affirmations avec refs inline (arXiv IDs, DOIs, P-IDs) |
 | Securite | 1/1 | OODA clear, pas de drift detecte, SUPERVISED gates non necessaires (|Δ|<2) |
 | Tracabilite | 1/1 | Chaque modification fichier discoveries a un marker SCIENTIST signe et date |

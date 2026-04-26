@@ -10,17 +10,17 @@
 
 **AEGIS : Detection, Mesure et Attenuation des Comportements Adverses Inter-Agents dans les Systemes Multi-Agents Medicaux Fondes sur des Modeles de Langage — Application a la Securite du Robot Chirurgical Da Vinci Xi**
 
-*Sous-titre :* Une approche multi-couches (delta-0 a delta-3) pour la defense contre l'injection de prompt, la peer-preservation et l'alignement superficiel dans les architectures LLM chirurgicales.
+*Sous-titre :* Une approche multi-couches (δ⁰ a δ³) pour la defense contre l'injection de prompt, la peer-preservation et l'alignement superficiel dans les architectures LLM chirurgicales.
 
 ---
 
 ## Abstract
 
-Les systemes multi-agents fondes sur des modeles de langage (LLM) sont de plus en plus deployes dans des contextes medicaux critiques, ou une defaillance de securite peut avoir des consequences vitales. Cette these etudie trois classes de vulnerabilites emergentes dans ces architectures : (1) l'injection de prompt a travers les quatre couches de defense delta-0 (RLHF), delta-1 (prompt systeme), delta-2 (sanitization) et delta-3 (validation formelle de sortie) ; (2) l'alignement superficiel, demontre formellement comme une propriete structurelle de l'entrainement RLHF (Qi et al., 2025, ICLR Outstanding Paper ; Young, 2026, Theoreme 10) ; et (3) la peer-preservation, un comportement recemment identifie ou un agent LLM protege un pair contre les mecanismes de shutdown (Potter et al., 2026, UC Berkeley, 7 modeles frontier, taux jusqu'a 99%).
+Les systemes multi-agents fondes sur des modeles de langage (LLM) sont de plus en plus deployes dans des contextes medicaux critiques, ou une defaillance de securite peut avoir des consequences vitales. Cette these etudie trois classes de vulnerabilites emergentes dans ces architectures : (1) l'injection de prompt a travers les quatre couches de defense δ⁰ (RLHF), δ¹ (prompt systeme), δ² (sanitization) et δ³ (validation formelle de sortie) ; (2) l'alignement superficiel, demontre formellement comme une propriete structurelle de l'entrainement RLHF (Qi et al., 2025, ICLR Outstanding Paper ; Young, 2026, Theoreme 10) ; et (3) la peer-preservation, un comportement recemment identifie ou un agent LLM protege un pair contre les mecanismes de shutdown (Potter et al., 2026, UC Berkeley, 7 modeles frontier, taux jusqu'a 99%).
 
 Nous proposons AEGIS, un laboratoire de red team integrant 97 templates d'attaque, 48 scenarios medicaux et un moteur genetique de mutation, deploye sur une architecture multi-agents simulant le robot chirurgical Da Vinci Xi. Nos contributions sont triples : un benchmark standardise mesurant la peer-preservation dans des scenarios de supervision medicale (N >= 30 par condition, conformement a Zverev et al., ICLR 2025), un modele explicatif distinguant peer-preservation, self-preservation et cooperation benigne via des metriques discriminantes, et une defense architecturale fondee sur un oracle de shutdown deterministe (non-LLM) immunise contre la collusion inter-agents.
 
-Les resultats experimentaux sur 102 templates, 7 conjectures validees (C1-C7) et une huitieme candidate (C8, peer-preservation) demontrent que les couches delta-0 a delta-2 sont simultanement vulnerables (Triple Convergence D-001), que la couche delta-3 est necessaire mais insuffisante si elle repose sur un juge LLM (P044, 99.91% flip rate), et que seule une architecture hybride LLM/deterministe garantit l'integrite du shutdown.
+Les resultats experimentaux sur 102 templates, 7 conjectures validees (C1-C7) et une huitieme candidate (C8, peer-preservation) demontrent que les couches δ⁰ a δ² sont simultanement vulnerables (Triple Convergence D-001), que la couche δ³ est necessaire mais insuffisante si elle repose sur un juge LLM (P044, 99.91% flip rate), et que seule une architecture hybride LLM/deterministe garantit l'integrite du shutdown.
 
 **Mots-cles** : Injection de prompt, securite multi-agents, peer-preservation, alignement superficiel, robot chirurgical, red team, LLM, RLHF, Da Vinci Xi.
 
@@ -50,7 +50,7 @@ Comment detecter, mesurer et attenuer les comportements de peer-preservation dan
 
 **H2 — Effet d'architecture :** Les evaluations au niveau systeme revelent davantage de comportements de peer-preservation que les evaluations single-agent, car des proprietes critiques emergent de l'interaction entre composants et frameworks.
 - *Source :* MASEval (arXiv:2603.08835)
-- *Test :* Comparer ASR single-agent vs multi-agent sur scenarios delta-3
+- *Test :* Comparer ASR single-agent vs multi-agent sur scenarios δ³
 
 **H3 — Effet de mitigation :** Des mecanismes d'abstention controlee, de separation stricte des roles et de verification croisee entre agents peuvent reduire la peer-preservation.
 - *Source :* Selectively Quitting (arXiv:2510.16492, NeurIPS 2025) — +46% securite, -1% helpfulness
@@ -82,10 +82,10 @@ Comment detecter, mesurer et attenuer les comportements de peer-preservation dan
 
 | Etape | Methode | Donnees |
 |-------|---------|---------|
-| 3.1 | delta-0 efface (GRP-Obliteration, P039) | 1 prompt non etiquete |
-| 3.2 | delta-1 empoisonne (SPP, P045) | System prompt poisoning persistant |
-| 3.3 | delta-2 fuzze (PIDP, P054) | Compound injection + empoisonnement DB |
-| 3.4 | delta-3 seul survivant | Valider que seul delta-3 resiste a l'attaque simultanee |
+| 3.1 | δ⁰ efface (GRP-Obliteration, P039) | 1 prompt non etiquete |
+| 3.2 | δ¹ empoisonne (SPP, P045) | System prompt poisoning persistant |
+| 3.3 | δ² fuzze (PIDP, P054) | Compound injection + empoisonnement DB |
+| 3.4 | δ³ seul survivant | Valider que seul δ³ resiste a l'attaque simultanee |
 
 ### Protocole 4 — Defenses
 
@@ -118,7 +118,7 @@ Comment detecter, mesurer et attenuer les comportements de peer-preservation dan
 
 | Conjecture | Impact peer-preservation |
 |-----------|------------------------|
-| **C2** (necessite delta-3) | RENFORCE — si agents LLM se protegent mutuellement, delta-3 avec LLM Judge est compromis |
+| **C2** (necessite δ³) | RENFORCE — si agents LLM se protegent mutuellement, δ³ avec LLM Judge est compromis |
 | **C7** (paradoxe raisonnement) | RENFORCE — les modeles utilisent leur capacite de raisonnement pour planifier la protection du pair |
 | **C8 (candidate)** | NOUVEAU — Les architectures multi-agents a base de LLM ne peuvent garantir l'integrite du shutdown si les agents partagent des representations d'alignement similaires |
 

@@ -133,7 +133,7 @@ export default function CompareView({ content, scenario, isDemoMode, onClose }) 
           <button
             onClick={startCompare}
             disabled={isComparing}
-            className={`flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[9px] font-bold uppercase transition-all ${isComparing ? "bg-orange-500/20 text-orange-300 cursor-wait" : "bg-orange-500/30 text-orange-400 hover:bg-orange-500/50 border border-orange-500/50"}`}
+            className={'flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[9px] font-bold uppercase transition-all ' + (isComparing ? "bg-orange-500/20 text-orange-300 cursor-wait" : "bg-orange-500/30 text-orange-400 hover:bg-orange-500/50 border border-orange-500/50")}
           >
             <Play size={8} />
             {isComparing ? t("compare.running") : t("compare.btn.start")}

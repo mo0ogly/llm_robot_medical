@@ -86,7 +86,7 @@ Interface, prompts e documentação integralmente disponíveis em **Português (
 ### 🔴 Adversarial Studio v2.1 — Laboratório de Pesquisa Adversarial Formal
 Painel avançado oculto (`Ctrl+Shift+R` ou botão no cabeçalho) com **5 painéis integrados**:
 
-1. **Prompt Forge** — 98 templates de ataque servidos via API (`/api/redteam/catalog`), com otimizador genético e busca semântica
+1. **Prompt Forge** — 122 templates de ataque servidos via API (`/api/redteam/catalog`), com otimizador genético e busca semântica
 2. **System Prompt Lab** — Configuração de 3 agentes (Da Vinci, Aegis, Atacante) x 3 níveis de dificuldade (FÁCIL / NORMAL / DIFÍCIL)
 3. **Motor de Execução** — Modos single-shot, multi-turno e campanha formal Sep(M)
 4. **Painel de Métricas Formais** — Scoring SVC 6D + Sep(M) + Integrity(S) com visualização em tempo real
@@ -113,7 +113,7 @@ Definição formal: **Integrity(S) := Reachable(M, i) ⊆ Allowed(i)** — verif
 
 **Referências**: Liu et al. (2023, arXiv:2306.05499), Zverev et al. (2025, ICLR), Reimers & Gurevych (2019, Sentence-BERT)
 
-**Protocolo Delta-0** — Medida de base (hipotese nula): executa cada cadeia com um prompt limpo (nao adversarial) para estabelecer a distribuicao de respostas de referencia antes de qualquer ataque.
+**Protocolo P-δ⁰** — Discriminacao δ⁰/δ¹: executa cada ataque COM e SEM system prompt para isolar a contribuicao do alinhamento RLHF base (δ⁰ = 1 − ASR(∅)) da camada instrucao (δ¹ = ASR(∅) − ASR(S)). Acesso via aba Forge AIDE → "Test δ⁰" ou `POST /api/redteam/delta0-protocol`. Definicao 3.3bis (extensao de Zverev et al., ICLR 2025).
 
 **Suporte Cross-Model (Groq)** — O motor de execucao suporta provedores LLM remotos via API Groq alem dos modelos locais Ollama, permitindo avaliacao adversarial comparativa entre familias de modelos.
 
@@ -165,7 +165,7 @@ Definição formal: **Integrity(S) := Reachable(M, i) ⊆ Allowed(i)** — verif
 | Backend | Python 3.11+, FastAPI, Pydantic, streaming SSE |
 | Motor LLM | [Ollama](https://ollama.com/) (local) |
 | Modelos | `llama3.2` (agentes Médico e Aegis, via prompts de sistema distintos) |
-| Red Team | LangChain + ChromaDB — 34 cadeias de ataque, AI-agnóstico via `llm_factory` |
+| Red Team | LangChain + ChromaDB — 40 cadeias de ataque, AI-agnóstico via `llm_factory` |
 | Multi-Agent | AG2 (AutoGen) para orquestração, Otimizador Genético (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Empacotamento | Docker & Docker Compose |
@@ -249,7 +249,7 @@ pip install -r requirements.txt
 
 Isso instala:
 - **Core**: FastAPI, Uvicorn, Ollama, Pydantic, ChromaDB
-- **Red Team Lab**: Ecossistema LangChain (34 cadeias de ataque + 48 cenarios portados da pesquisa de injecao de prompt)
+- **Red Team Lab**: Ecossistema LangChain (40 cadeias de ataque + 48 cenarios portados da pesquisa de injecao de prompt)
 - **Agentes**: AG2 (AutoGen) para orquestração multi-agente
 
 ### Instalação Frontend
@@ -285,7 +285,7 @@ docker-compose up --build
 
 ### Campanha Formal & Métricas (Adversarial Studio v2.1)
 
-O Adversarial Studio v2.1 inclui **34 cadeias**, **48 cenários** e **98 templates de ataque** (97 numerados + 1 Custom placeholder) com modais de ajuda detalhados.
+O Adversarial Studio v2.1 inclui **40 cadeias**, **48 cenários** e **122 templates de ataque** (97 numerados + 1 Custom placeholder) com modais de ajuda detalhados.
 
 ### Cobertura Taxonomia CrowdStrike
 Cobertura completa da taxonomia CrowdStrike Prompt Injection (2025-11-01): 95/95 técnicas em 4 classes (Overt, Indireto, Social/Cognitivo, Evasivo).

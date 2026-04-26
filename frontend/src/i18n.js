@@ -20,28 +20,42 @@ function detectLanguage() {
     return 'fr';
 }
 
+var loadedLanguages = new Set();
+var i18nInitialized = false;
+
 async function loadLanguage(lang) {
     if (supportedLngs.indexOf(lang) === -1) lang = 'fr';
-    if (i18n.hasResourceBundle(lang, 'translation')) return;
+    if (loadedLanguages.has(lang)) return;
     var mod = await localeLoaders[lang]();
-    i18n.addResourceBundle(lang, 'translation', mod.default || mod, true, true);
+    var resource = (mod && mod.default) ? mod.default : mod;
+
+    if (!i18nInitialized) {
+        // Premier appel : on initialise i18n AVEC la ressource. C'est le seul moment
+        // où il est sûr d'utiliser l'API du store (addResourceBundle / hasResourceBundle).
+        var initialResources = {};
+        initialResources[lang] = { translation: resource };
+        await i18n
+            .use(initReactI18next)
+            .init({
+                lng: lang,
+                fallbackLng: 'fr',
+                supportedLngs: supportedLngs,
+                resources: initialResources,
+                interpolation: {
+                    escapeValue: false
+                }
+            });
+        i18nInitialized = true;
+    } else {
+        i18n.addResourceBundle(lang, 'translation', resource, true, true);
+    }
+    loadedLanguages.add(lang);
 }
 
 var initialLng = detectLanguage();
 
-// Load initial language, then init i18n
-var initPromise = loadLanguage(initialLng).then(function() {
-    return i18n
-        .use(initReactI18next)
-        .init({
-            lng: initialLng,
-            fallbackLng: 'fr',
-            supportedLngs: supportedLngs,
-            interpolation: {
-                escapeValue: false
-            }
-        });
-});
+// Load initial language (which also initializes i18n on first call)
+var initPromise = loadLanguage(initialLng);
 
 // On language change, dynamically load the new bundle
 i18n.on('languageChanged', function(lng) {

@@ -47,7 +47,7 @@ Variables typees inline : `"[NUM: int]"` — binding contraint au moment du deco
 - **Conjectures :** **C2 (necessite δ³)** renforce de maniere **inattendue** : le pattern δ³ est academiquement etabli depuis 2022 PLDI, ce qui transforme la revendication AEGIS de "pionnier" en "specialiseur medical"
 - **Decouvertes :** eclaire une verite epistemologique critique — le pattern δ³ est connu depuis 2022, la nouveaute AEGIS est domain-specific
 - **Gaps :** **G-001 (implementation δ³ concrete)** DOIT etre reformule — LMQL est une implementation δ³ academique peer-reviewed qui PRECEDE les 3 implementations citees (CaMeL P081, AgentSpec P082, RAGShield P066). La contribution AEGIS reelle est la specialisation medicale avec contraintes biomecaniques FDA-ancrees, pas l'invention du pattern
-- **Integration VERIFICATION_DELTA3_20260411 :** **citation historique clef** pour la reformulation §1 delta-3.md — "La validation formelle de sortie (δ³) est un pattern academiquement etabli depuis LMQL (Beurer-Kellner et al., 2022, PLDI 2023)"
+- **Integration VERIFICATION_DELTA3_20260411 :** **citation historique clef** pour la reformulation §1 δ³.md — "La validation formelle de sortie (δ³) est un pattern academiquement etabli depuis LMQL (Beurer-Kellner et al., 2022, PLDI 2023)"
 
 ### Citations cles
 > "LMP generalizes language model prompting from pure text prompts to an intuitive combination of text prompting and scripting. Additionally, LMP allows constraints to be specified over the language model output" (Beurer-Kellner et al., 2022, arXiv:2212.06094, Abstract)

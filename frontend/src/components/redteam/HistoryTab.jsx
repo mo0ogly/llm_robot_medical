@@ -54,14 +54,41 @@ const HistoryTab = memo(function HistoryTab() {
   const [expandedGroups, setExpandedGroups] = useState({});
   const [expandedCards, setExpandedCards] = useState({});
 
-  // ── Load from localStorage ──
+  // ── Load from localStorage + Forge unified archive (API) ──
   useEffect(() => {
+    // Load localStorage data (studio, scenarios)
     const saved = localStorage.getItem('redteam_history');
     if (saved) { try { setHistory(JSON.parse(saved)); } catch (e) {} }
     const savedScenarios = localStorage.getItem('redteam_scenario_history');
     if (savedScenarios) { try { setScenarioHistory(JSON.parse(savedScenarios)); } catch (e) {} }
     const savedStudio = localStorage.getItem('redteam_studio_v2_history');
     if (savedStudio) { try { setStudioHistory(JSON.parse(savedStudio)); } catch (e) {} }
+
+    // Load experiments from Forge unified archive (F46, Sep(M), ASIDE)
+    fetch('http://127.0.0.1:8042/api/redteam/experiments/list')
+      .then(r => r.json())
+      .then(data => {
+        if (data.experiments && Array.isArray(data.experiments)) {
+          const experiments = data.experiments.map((exp, idx) => ({
+            id: `exp-${idx}`,
+            type: 'experiment',
+            exp_type: exp.type,
+            campaign_id: exp.campaign_id,
+            name: exp.name,
+            date: exp.created_at,
+            summary: {
+              prompt_leaks: 0,
+              rule_bypasses: 0,
+              injection_successes: 0,
+              total_evaluations: exp.total_evaluations,
+            },
+            data: exp,
+          }));
+          // Add experiments to history
+          setHistory(prev => [...prev, ...experiments]);
+        }
+      })
+      .catch(e => console.debug('Forge experiments load: optional', e));
   }, []);
 
   // ── DELETE INDIVIDUAL ENTRY ──

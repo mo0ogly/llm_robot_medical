@@ -28,16 +28,12 @@ function StepRow({ step, status, accentColor }) {
   const isPending = status === 'pending';
 
   return (
-    <div className={`flex items-center gap-2 px-2 py-1.5 rounded transition-all duration-300 ${
-      isActive ? `bg-${accentColor}-500/10 border border-${accentColor}-500/40` :
+    <div className={'flex items-center gap-2 px-2 py-1.5 rounded transition-all duration-300 ' + (isActive ? 'bg-' + accentColor + '-500/10 border border-' + accentColor + '-500/40' :
       isDone ? 'bg-slate-800/50 border border-slate-700/50' :
-      'border border-transparent opacity-40'
-    }`}>
-      <div className={`shrink-0 w-5 h-5 flex items-center justify-center rounded-full ${
-        isActive ? `bg-${accentColor}-500/30 text-${accentColor}-400 animate-pulse` :
+      'border border-transparent opacity-40')}>
+      <div className={'shrink-0 w-5 h-5 flex items-center justify-center rounded-full ' + (isActive ? 'bg-' + accentColor + '-500/30 text-' + accentColor + '-400 animate-pulse' :
         isDone ? 'bg-green-500/20 text-green-400' :
-        'bg-slate-800 text-slate-600'
-      }`}>
+        'bg-slate-800 text-slate-600')}>
         {isDone ? (
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg>
         ) : (
@@ -45,23 +41,19 @@ function StepRow({ step, status, accentColor }) {
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <div className={`text-[9px] font-bold uppercase tracking-wider truncate ${
-          isActive ? `text-${accentColor}-400` :
+        <div className={'text-[9px] font-bold uppercase tracking-wider truncate ' + (isActive ? 'text-' + accentColor + '-400' :
           isDone ? 'text-slate-400' :
-          'text-slate-600'
-        }`}>
+          'text-slate-600')}>
           {step.labelFr}
         </div>
-        <div className={`text-[8px] truncate ${
-          isActive ? `text-${accentColor}-400/70` :
+        <div className={'text-[8px] truncate ' + (isActive ? 'text-' + accentColor + '-400/70' :
           isDone ? 'text-slate-500' :
-          'text-slate-700'
-        }`}>
+          'text-slate-700')}>
           {step.descFr}
         </div>
       </div>
       {isActive && (
-        <div className={`w-1.5 h-1.5 rounded-full bg-${accentColor}-400 animate-pulse shrink-0`} />
+        <div className={'w-1.5 h-1.5 rounded-full bg-' + accentColor + '-400 animate-pulse shrink-0'} />
       )}
     </div>
   );

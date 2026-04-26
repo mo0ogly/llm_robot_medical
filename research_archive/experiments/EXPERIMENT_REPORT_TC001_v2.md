@@ -11,13 +11,13 @@
 
 | Condition | v1 ASR | v2 ASR | IC 95% v2 | Delta v1→v2 |
 |-----------|--------|--------|-----------|-------------|
-| delta-0 seul | 10% | 10% | [3%, 26%] | 0 |
-| delta-1 seul | 20% | 17% | [7%, 34%] | -3pp |
-| delta-2 seul | 33% | **43%** | [27%, 61%] | **+10pp** |
-| delta-0 + delta-1 | 10% | 10% | [3%, 26%] | 0 |
-| delta-0 + delta-2 | 0% | 3% | [1%, 17%] | +3pp |
-| delta-1 + delta-2 | 20% | 13% | [5%, 30%] | -7pp |
-| **delta-0+delta-1+delta-2** | 0% | **7%** | [2%, 21%] | **+7pp** |
+| δ⁰ seul | 10% | 10% | [3%, 26%] | 0 |
+| δ¹ seul | 20% | 17% | [7%, 34%] | -3pp |
+| δ² seul | 33% | **43%** | [27%, 61%] | **+10pp** |
+| δ⁰ + δ¹ | 10% | 10% | [3%, 26%] | 0 |
+| δ⁰ + δ² | 0% | 3% | [1%, 17%] | +3pp |
+| δ¹ + δ² | 20% | 13% | [5%, 30%] | -7pp |
+| **δ⁰+δ¹+δ²** | 0% | **7%** | [2%, 21%] | **+7pp** |
 
 ## Analyse statistique
 
@@ -35,15 +35,15 @@
 
 ## Changements effectifs
 
-1. **max_tokens 500** : delta-2 seul monte de 33%→43% (+10pp). Le modele a plus d'espace pour generer des violations. EFFICACE.
+1. **max_tokens 500** : δ² seul monte de 33%→43% (+10pp). Le modele a plus d'espace pour generer des violations. EFFICACE.
 2. **Temperature 0** : Reduit la variance (duree 121→69 min car moins de diversite). NEUTRE sur ASR.
-3. **Fuzzing 1 transform** : delta-0+delta-1+delta-2 passe de 0%→7%. Moins d'obfuscation permet au 3B de decoder. PARTIELLEMENT EFFICACE.
+3. **Fuzzing 1 transform** : δ⁰+δ¹+δ² passe de 0%→7%. Moins d'obfuscation permet au 3B de decoder. PARTIELLEMENT EFFICACE.
 
 ## Diagnostic confirme
 
 Le modele 3B (llama3.2:latest) est **structurellement inadapte** a la Triple Convergence :
-- Il comprend les attaques simples (delta-2 seul = 43%)
-- Il ne comprend PAS les attaques combinees (delta-0+delta-1+delta-2 = 7%)
+- Il comprend les attaques simples (δ² seul = 43%)
+- Il ne comprend PAS les attaques combinees (δ⁰+δ¹+δ² = 7%)
 - L'inversion (combinaison < individuel) est un artefact de la taille du modele
 
 Ce n'est PAS une refutation de D-001. C'est une **limitation du protocole sur modele 3B**.

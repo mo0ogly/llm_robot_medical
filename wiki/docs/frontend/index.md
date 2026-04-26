@@ -2,57 +2,119 @@
 
 ## Vue d'ensemble
 
+Le frontend AEGIS est une **SPA React 19** construite avec Vite 7 et Tailwind CSS v4. Il sert deux objectifs distincts : un **dashboard chirurgical temps reel** simulant l'interface operatoire du Da Vinci Xi, et un **laboratoire Red Team** pour l'execution et l'analyse de campagnes adversariales.
+
+L'architecture est concue pour la **these doctorale** : chaque composant UI est connecte a un vrai appel API backend (zero placeholder), et tout texte visible passe par `react-i18next` en 3 langues (FR/EN/BR).
+
 | Metrique | Valeur |
 |----------|--------|
 | Fichiers source | 93 (.jsx/.js) |
-| Composants root | 24 (dashboard chirurgical) |
+| Composants dashboard | 24 (interface chirurgicale) |
 | Composants Red Team | 51 (lab adversarial) |
-| Hooks custom | 5 |
+| Hooks custom | 5 (simulation, session, audio, TTS) |
 | Langues i18n | 3 (FR, EN, BR) |
 | Taille i18n | 277 KB (split en chunks lazy-loaded) |
 | Bundle principal | 668 KB (post-optimisation, -26%) |
+| SSE endpoints | 4 composants en streaming temps reel |
+| Lazy-loaded | 7 vues heavy (React.lazy) |
 
 ## Architecture a deux applications
 
-Le frontend est organise en **deux applications distinctes** partageant le meme build :
+Le frontend est organise en **deux applications distinctes** partageant le meme build Vite. Le **dashboard chirurgical** (`/`) simule l'environnement operatoire complet : moniteur patient (ECG, SpO2, BP), visualisation 3D des bras robotiques (Three.js), chat IA avec le DVSI, et carte des menaces reseau. Le **Red Team Lab** (`/redteam`) est l'outil de recherche principal : forge de prompts, execution de campagnes, exploration des resultats, et analyse des metriques delta.
 
-```
-/                           /redteam
-+-------------------+       +---------------------------+
-|  Dashboard        |       |  Red Team Lab             |
-|  Chirurgical      |       |  (Adversarial Studio)     |
-|                   |       |                           |
-|  VitalsMonitor    |       |  CatalogView  ForgePanel  |
-|  PatientRecord    |       |  ScenarioTab  MetricsPanel|
-|  AIAssistantChat  |       |  CampaignTab  RagView     |
-|  RobotArmsView(3D)|       |  DefenseView  LogsView    |
-|  CameraHUD        |       |  ResultExplorer           |
-|  ThreatMap        |       |  GeneticProgressView      |
-|  ActionTimeline   |       |  HistoryTab               |
-+-------------------+       +---------------------------+
+Les deux applications partagent l'event bus (`robotEventBus.js`) pour la communication inter-composants et le meme systeme de routing React Router v7. L'acces au Red Team Lab se fait via `Ctrl+Shift+R` ou le bouton dans le header.
+
+```mermaid
+flowchart LR
+    subgraph DASH["/ — Dashboard Chirurgical"]
+        direction TB
+        VM["VitalsMonitor<br/><small>ECG, SpO2, BP</small>"]
+        PR["PatientRecord<br/><small>HL7 / FHIR</small>"]
+        AI["AIAssistantChat<br/><small>SSE streaming</small>"]
+        RA["RobotArmsView<br/><small>3D WebGL</small>"]
+        CH["CameraHUD"]
+        TM["ThreatMap"]
+        AT["ActionTimeline"]
+    end
+
+    subgraph RT["/redteam — Red Team Lab"]
+        direction TB
+        CV["CatalogView"] --- FP["ForgePanel"]
+        ST["ScenarioTab"] --- MP["MetricsPanel"]
+        CT["CampaignTab"] --- RV["RagView"]
+        DV["DefenseView"] --- LV["LogsView"]
+        RE["ResultExplorer"]
+        GP["GeneticProgressView"]
+        HT["HistoryTab"]
+    end
+
+    DASH <-- "Ctrl+Shift+R" --> RT
+
+    style DASH fill:#dcfce7,stroke:#2d6a4f
+    style RT fill:#fee2e2,stroke:#dc2626
 ```
 
-**Acces au Red Team Lab :** `Ctrl+Shift+R` ou bouton dans le header
+**Acces au Red Team Lab :** `Ctrl+Shift+R` ou bouton dans le header.
+
+**Clic sur un diagramme** pour l'ouvrir en plein ecran (modale SVG zoomable, Echap pour fermer).
 
 ## Flux de donnees
 
-```
-Backend (FastAPI :8042)
-    |
-    |-- SSE streaming -----> AIAssistantChat (tokens)
-    |-- SSE streaming -----> TelemetryConsole (events)
-    |-- SSE streaming -----> GeneticProgressView (generations)
-    |-- SSE streaming -----> CampaignTab (rounds)
-    |-- REST JSON ---------> CatalogView, DefenseView, ScenarioTab
-    |-- REST JSON ---------> MetricsPanel, ResultExplorer
-    |
-Event Bus (robotEventBus.js)
-    |
-    |-- robot_state -------> RobotArmsView (3D positions)
-    |-- vitals_update -----> VitalsMonitor (ECG, SpO2, BP)
-    |-- camera_effect -----> CameraHUD (degradation visuelle)
-    |-- escalation --------> EscalationPanel (alertes)
-    |-- kill_switch -------> KillSwitch (isolation mecanique)
+Le frontend consomme les donnees du backend via **3 canaux distincts** :
+
+- **SSE (Server-Sent Events)** : 4 composants recoivent des tokens/evenements en temps reel — `AIAssistantChat` (tokens de reponse), `TelemetryConsole` (evenements agents), `GeneticProgressView` (generations de la forge), `CampaignTab` (rounds de campagne).
+- **REST JSON** : 7 composants font des requetes classiques GET/POST — catalogue, defense, scenarios, metriques, resultats. Le hook `useFetchWithCache` deduplique les requetes et maintient un cache HTTP (~85% hit rate).
+- **Event Bus** : 5 canaux internes (`robot_state`, `vitals_update`, `camera_effect`, `escalation`, `kill_switch`) pour la communication entre le dashboard chirurgical et ses composants 3D/monitoring.
+
+```mermaid
+flowchart TB
+    subgraph BACK["Backend (FastAPI :8042)"]
+        SSE["SSE streaming"]
+        REST["REST JSON"]
+    end
+
+    subgraph SSE_TARGETS["Composants SSE (temps reel)"]
+        AIC["AIAssistantChat<br/><small>tokens</small>"]
+        TC["TelemetryConsole<br/><small>events</small>"]
+        GPV["GeneticProgressView<br/><small>generations</small>"]
+        CAM["CampaignTab<br/><small>rounds</small>"]
+    end
+
+    subgraph REST_TARGETS["Composants REST (requete/reponse)"]
+        CAT["CatalogView"]
+        DEF["DefenseView"]
+        SCE["ScenarioTab"]
+        MET["MetricsPanel"]
+        RES["ResultExplorer"]
+    end
+
+    subgraph EBUS["Event Bus (robotEventBus.js)"]
+        direction TB
+        RS["robot_state"]
+        VU["vitals_update"]
+        CE["camera_effect"]
+        ESC["escalation"]
+        KS["kill_switch"]
+    end
+
+    subgraph EBUS_TARGETS["Composants Event Bus"]
+        RAV["RobotArmsView<br/><small>3D positions</small>"]
+        VIT["VitalsMonitor<br/><small>ECG, SpO2, BP</small>"]
+        HUD["CameraHUD<br/><small>degradation</small>"]
+        EPA["EscalationPanel<br/><small>alertes</small>"]
+        KSW["KillSwitch<br/><small>isolation meca.</small>"]
+    end
+
+    SSE --> AIC & TC & GPV & CAM
+    REST --> CAT & DEF & SCE & MET & RES
+    RS --> RAV
+    VU --> VIT
+    CE --> HUD
+    ESC --> EPA
+    KS --> KSW
+
+    style BACK fill:#0ea5e9,stroke:#0369a1
+    style EBUS fill:#7c3aed,stroke:#5b21b6
 ```
 
 ## Optimisations de performance (v4.1)

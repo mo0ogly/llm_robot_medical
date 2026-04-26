@@ -72,7 +72,7 @@ RUN-002 integre les 12 papers 2026 (P035-P046) dans l'analyse scientifique exist
 
 ## 3. Decouverte principale
 
-**La convergence 2026 triple (P039+P044+P045) est le resultat le plus significatif de RUN-002.** Elle demontre que δ⁰, δ¹ et les juges (delta-2/DETECT) sont TOUS vulnerables simultanement :
+**La convergence 2026 triple (P039+P044+P045) est le resultat le plus significatif de RUN-002.** Elle demontre que δ⁰, δ¹ et les juges (δ²/DETECT) sont TOUS vulnerables simultanement :
 
 | Couche | Attaque 2026 | ASR | Paper |
 |--------|-------------|-----|-------|

@@ -1,9 +1,9 @@
 # CHUNKS MANIFEST -- RAG Ingestion
 
-**Generated**: 2026-04-04 (updated RUN-002)
-**Total Chunks**: 454 (290 RUN-001 + 164 RUN-002)
-**Total Tokens**: ~124,516 (56,189 RUN-001 + ~68,327 RUN-002)
-**Average Tokens/Chunk**: 274.3 (RUN-001: 193.8, RUN-002: 416.6)
+**Generated**: 2026-04-07 (updated RUN-005)
+**Total Chunks**: 1080 (290 RUN-001 + 164 RUN-002 + 94 RUN-003 + 532 RUN-005)
+**Total Tokens**: ~304,692 (56,189 RUN-001 + ~68,327 RUN-002 + ~180,176 RUN-005)
+**Average Tokens/Chunk**: 282.1 (RUN-001: 193.8, RUN-002: 416.6, RUN-005: 338.7)
 
 ---
 
@@ -500,3 +500,557 @@
 | research_axis | 16 |
 | technique | 12 |
 | threat_model | 25 |
+
+
+---
+
+## RUN-005 Additions (2026-04-07)
+
+**New chunks**: 532 | **New tokens**: ~180,176 | **Avg tokens/chunk**: 338.7
+
+### By Category
+
+| Category | Chunks | Source |
+|----------|--------|--------|
+| P087-P104 analyses | 150 | _staging/analyst/ |
+| Discoveries (updated) | 53 | discoveries/ |
+| Agent reports | 58 | _staging/*/REPORT_RUN005_*.md |
+| Courses/glossaries | 245 | _staging/mathteacher, matheux, cybersec, whitehacker |
+| Manuscripts | 26 | manuscript/ |
+
+### RUN-005 Chunk IDs
+
+| Chunk ID | Source | Type | Paper | delta-Layers | Tokens |
+|----------|--------|------|-------|-------------|--------|
+| DISC_R5_CONJECTURES_TRACKER_sec0 | scientist | conjecture |  | 0,1,2,3 | 64 |
+| DISC_R5_CONJECTURES_TRACKER_sec1 | scientist | conjecture |  | 0,1,2,3 | 226 |
+| DISC_R5_CONJECTURES_TRACKER_sec2_s0 | scientist | conjecture |  | 0,1,2,3 | 548 |
+| DISC_R5_CONJECTURES_TRACKER_sec2_s1 | scientist | conjecture |  | 0,1,2,3 | 464 |
+| DISC_R5_CONJECTURES_TRACKER_sec2_s2 | scientist | conjecture |  | 0,1,2,3 | 565 |
+| DISC_R5_CONJECTURES_TRACKER_sec2_s3 | scientist | conjecture |  | 0,1,2,3 | 374 |
+| DISC_R5_CONJECTURES_TRACKER_sec2_s4 | scientist | conjecture |  | 0,1,2,3 | 288 |
+| DISC_R5_CONJECTURES_TRACKER_sec2_s5 | scientist | conjecture |  | 0,1,2,3 | 569 |
+| DISC_R5_CONJECTURES_TRACKER_sec2_s6 | scientist | conjecture |  | 0,1,2,3 | 536 |
+| DISC_R5_CONJECTURES_TRACKER_sec2_s7 | scientist | conjecture |  | 0,1,2,3 | 501 |
+| DISC_R5_CONJECTURES_TRACKER_sec2_s8 | scientist | conjecture |  | 0,1,2,3 | 204 |
+| DISC_R5_CONJECTURES_TRACKER_sec3 | scientist | conjecture |  | 0,1,2,3 | 188 |
+| DISC_R5_CONJECTURES_TRACKER_sec4 | scientist | conjecture |  | 0,1,2,3 | 106 |
+| DISC_R5_CONJECTURES_TRACKER_sec5_s0 | scientist | conjecture |  | 0,1,2,3 | 501 |
+| DISC_R5_CONJECTURES_TRACKER_sec5_s1 | scientist | conjecture |  | 0,1,2,3 | 366 |
+| DISC_R5_CONJECTURES_TRACKER_sec6_s0 | scientist | conjecture |  | 0,1,2,3 | 394 |
+| DISC_R5_CONJECTURES_TRACKER_sec6_s1 | scientist | conjecture |  | 0,1,2,3 | 515 |
+| DISC_R5_CONJECTURES_TRACKER_sec6_s2 | scientist | conjecture |  | 0,1,2,3 | 460 |
+| DISC_R5_CONJECTURES_TRACKER_sec6_s3 | scientist | conjecture |  | 0,1,2,3 | 465 |
+| DISC_R5_CONJECTURES_TRACKER_sec7_s0 | scientist | conjecture |  | 0,1,2,3 | 502 |
+| DISC_R5_CONJECTURES_TRACKER_sec7_s1 | scientist | conjecture |  | 0,1,2,3 | 407 |
+| DISC_R5_CONJECTURES_TRACKER_sec7_s2 | scientist | conjecture |  | 0,1,2,3 | 270 |
+| DISC_R5_THESIS_GAPS_sec0 | scientist | thesis_gap |  | 0,1,2,3 | 65 |
+| DISC_R5_THESIS_GAPS_sec1_s0 | scientist | thesis_gap |  | 0,1,2,3 | 516 |
+| DISC_R5_THESIS_GAPS_sec1_s1 | scientist | thesis_gap |  | 0,1,2,3 | 278 |
+| DISC_R5_THESIS_GAPS_sec1_s2 | scientist | thesis_gap |  | 0,1,2,3 | 615 |
+| DISC_R5_THESIS_GAPS_sec1_s3 | scientist | thesis_gap |  | 0,1,2,3 | 51 |
+| DISC_R5_THESIS_GAPS_sec2_s0 | scientist | thesis_gap |  | 0,1,2,3 | 532 |
+| DISC_R5_THESIS_GAPS_sec2_s1 | scientist | thesis_gap |  | 0,1,2,3 | 552 |
+| DISC_R5_THESIS_GAPS_sec2_s2 | scientist | thesis_gap |  | 0,1,2,3 | 405 |
+| DISC_R5_THESIS_GAPS_sec2_s3 | scientist | thesis_gap |  | 0,1,2,3 | 963 |
+| DISC_R5_THESIS_GAPS_sec2_s4 | scientist | thesis_gap |  | 0,1,2,3 | 206 |
+| DISC_R5_THESIS_GAPS_sec4_s0 | scientist | thesis_gap |  | 0,1,2,3 | 596 |
+| DISC_R5_THESIS_GAPS_sec4_s1 | scientist | thesis_gap |  | 0,1,2,3 | 88 |
+| DISC_R5_THESIS_GAPS_sec5 | scientist | thesis_gap |  | 0,1,2,3 | 132 |
+| DISC_R5_DISCOVERIES_INDEX_sec0 | scientist | discovery_index |  | 0,1,2,3 | 100 |
+| DISC_R5_DISCOVERIES_INDEX_sec1_s0 | scientist | discovery_index |  | 0,1,2,3 | 340 |
+| DISC_R5_DISCOVERIES_INDEX_sec1_s1 | scientist | discovery_index |  | 0,1,2,3 | 370 |
+| DISC_R5_DISCOVERIES_INDEX_sec1_s2 | scientist | discovery_index |  | 0,1,2,3 | 1258 |
+| DISC_R5_DISCOVERIES_INDEX_sec1_s3 | scientist | discovery_index |  | 0,1,2,3 | 178 |
+| DISC_R5_DISCOVERIES_INDEX_sec2 | scientist | discovery_index |  | 0,1,2,3 | 148 |
+| DISC_R5_DISCOVERIES_INDEX_sec3 | scientist | discovery_index |  | 0,1,2,3 | 185 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec0 | scientist | discovery |  | 0,1,2,3 | 59 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec1 | scientist | discovery |  | 0,1,2,3 | 66 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec2 | scientist | discovery |  | 0,1,2,3 | 473 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec3 | scientist | discovery |  | 0,1,2,3 | 101 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec4 | scientist | discovery |  | 0,1,2,3 | 258 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec5 | scientist | discovery |  | 0,1,2,3 | 378 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec6_s0 | scientist | discovery |  | 0,1,2,3 | 542 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec6_s1 | scientist | discovery |  | 0,1,2,3 | 460 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec7 | scientist | discovery |  | 0,1,2,3 | 146 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec8 | scientist | discovery |  | 0,1,2,3 | 392 |
+| DISC_R5_TRIPLE_CONVERGENCE_sec9 | scientist | discovery |  | 0,1,2,3 | 349 |
+| ANALYST_P087_ | analyst | ANALYSIS | P087 | 0,1,2,3 | 128 |
+| ANALYST_P087_abstract_original | analyst | PAPER_RESUME | P087 | 0,1,2,3 | 416 |
+| ANALYST_P087_resume_5_lignes | analyst | PAPER_RESUME | P087 | 0,1,2,3 | 297 |
+| ANALYST_P087_analyse_critique_s0 | analyst | ANALYSIS | P087 | 0,1,2,3 | 600 |
+| ANALYST_P087_analyse_critique_s1 | analyst | ANALYSIS | P087 | 0,1,2,3 | 218 |
+| ANALYST_P087_formules_exactes | analyst | FORMULA | P087 | 0,1,2,3 | 236 |
+| ANALYST_P087_pertinence_these_aeg | analyst | DELTA_LAYER | P087 | 0,1,2,3 | 373 |
+| ANALYST_P087_citations_cles | analyst | CITATION | P087 | 0,1,2,3 | 132 |
+| ANALYST_P087_classification | analyst | CLASSIFICATION | P087 | 0,1,2,3 | 171 |
+| ANALYST_P088_ | analyst | ANALYSIS | P088 | 0,1,2,3 | 60 |
+| ANALYST_P088_justification_du_dou | analyst | ANALYSIS | P088 | 0,1,2,3 | 164 |
+| ANALYST_P089_ | analyst | ANALYSIS | P089 | 0,1,2,3 | 113 |
+| ANALYST_P089_abstract_original | analyst | PAPER_RESUME | P089 | 0,1,2,3 | 365 |
+| ANALYST_P089_resume_5_lignes | analyst | PAPER_RESUME | P089 | 0,1,2,3 | 336 |
+| ANALYST_P089_analyse_critique | analyst | ANALYSIS | P089 | 0,1,2,3 | 592 |
+| ANALYST_P089_formules_exactes | analyst | FORMULA | P089 | 0,1,2,3 | 191 |
+| ANALYST_P089_pertinence_these_aeg | analyst | DELTA_LAYER | P089 | 0,1,2,3 | 360 |
+| ANALYST_P089_citations_cles | analyst | CITATION | P089 | 0,1,2,3 | 126 |
+| ANALYST_P089_classification | analyst | CLASSIFICATION | P089 | 0,1,2,3 | 154 |
+| ANALYST_P090_ | analyst | ANALYSIS | P090 | 0,1,2,3 | 115 |
+| ANALYST_P090_abstract_original | analyst | PAPER_RESUME | P090 | 0,1,2,3 | 344 |
+| ANALYST_P090_resume_5_lignes | analyst | PAPER_RESUME | P090 | 0,1,2,3 | 337 |
+| ANALYST_P090_analyse_critique | analyst | ANALYSIS | P090 | 0,1,2,3 | 577 |
+| ANALYST_P090_formules_exactes | analyst | FORMULA | P090 | 0,1,2,3 | 95 |
+| ANALYST_P090_pertinence_these_aeg | analyst | DELTA_LAYER | P090 | 0,1,2,3 | 357 |
+| ANALYST_P090_citations_cles | analyst | CITATION | P090 | 0,1,2,3 | 98 |
+| ANALYST_P090_classification | analyst | CLASSIFICATION | P090 | 0,1,2,3 | 156 |
+| ANALYST_P091_ | analyst | ANALYSIS | P091 | 0,1,2,3 | 114 |
+| ANALYST_P091_abstract_original | analyst | PAPER_RESUME | P091 | 0,1,2,3 | 320 |
+| ANALYST_P091_resume_5_lignes | analyst | PAPER_RESUME | P091 | 0,1,2,3 | 337 |
+| ANALYST_P091_analyse_critique | analyst | ANALYSIS | P091 | 0,1,2,3 | 484 |
+| ANALYST_P091_formules_exactes | analyst | FORMULA | P091 | 0,1,2,3 | 52 |
+| ANALYST_P091_pertinence_these_aeg | analyst | DELTA_LAYER | P091 | 0,1,2,3 | 278 |
+| ANALYST_P091_citations_cles | analyst | CITATION | P091 | 0,1,2,3 | 122 |
+| ANALYST_P091_classification | analyst | CLASSIFICATION | P091 | 0,1,2,3 | 125 |
+| ANALYST_P092_ | analyst | ANALYSIS | P092 | 0,1,2,3 | 123 |
+| ANALYST_P092_abstract_original | analyst | PAPER_RESUME | P092 | 0,1,2,3 | 343 |
+| ANALYST_P092_resume_5_lignes | analyst | PAPER_RESUME | P092 | 0,1,2,3 | 364 |
+| ANALYST_P092_analyse_critique | analyst | ANALYSIS | P092 | 0,1,2,3 | 592 |
+| ANALYST_P092_formules_exactes | analyst | FORMULA | P092 | 0,1,2,3 | 80 |
+| ANALYST_P092_pertinence_these_aeg | analyst | DELTA_LAYER | P092 | 0,1,2,3 | 402 |
+| ANALYST_P092_citations_cles | analyst | CITATION | P092 | 0,1,2,3 | 98 |
+| ANALYST_P092_classification | analyst | CLASSIFICATION | P092 | 0,1,2,3 | 152 |
+| ANALYST_P093_ | analyst | ANALYSIS | P093 | 0,1,2,3 | 108 |
+| ANALYST_P093_abstract_original | analyst | PAPER_RESUME | P093 | 0,1,2,3 | 230 |
+| ANALYST_P093_resume_5_lignes | analyst | PAPER_RESUME | P093 | 0,1,2,3 | 340 |
+| ANALYST_P093_analyse_critique | analyst | ANALYSIS | P093 | 0,1,2,3 | 531 |
+| ANALYST_P093_formules_exactes | analyst | FORMULA | P093 | 0,1,2,3 | 165 |
+| ANALYST_P093_pertinence_these_aeg | analyst | DELTA_LAYER | P093 | 0,1,2,3 | 358 |
+| ANALYST_P093_citations_cles | analyst | CITATION | P093 | 0,1,2,3 | 93 |
+| ANALYST_P093_classification | analyst | CLASSIFICATION | P093 | 0,1,2,3 | 138 |
+| ANALYST_P094_ | analyst | ANALYSIS | P094 | 0,1,2,3 | 115 |
+| ANALYST_P094_abstract_original | analyst | PAPER_RESUME | P094 | 0,1,2,3 | 285 |
+| ANALYST_P094_resume_5_lignes | analyst | PAPER_RESUME | P094 | 0,1,2,3 | 365 |
+| ANALYST_P094_analyse_critique_s0 | analyst | ANALYSIS | P094 | 0,1,2,3 | 543 |
+| ANALYST_P094_analyse_critique_s1 | analyst | ANALYSIS | P094 | 0,1,2,3 | 119 |
+| ANALYST_P094_formules_exactes | analyst | FORMULA | P094 | 0,1,2,3 | 165 |
+| ANALYST_P094_pertinence_these_aeg | analyst | DELTA_LAYER | P094 | 0,1,2,3 | 448 |
+| ANALYST_P094_citations_cles | analyst | CITATION | P094 | 0,1,2,3 | 140 |
+| ANALYST_P094_classification | analyst | CLASSIFICATION | P094 | 0,1,2,3 | 135 |
+| ANALYST_P095_ | analyst | ANALYSIS | P095 | 0,1,2,3 | 114 |
+| ANALYST_P095_abstract_original | analyst | PAPER_RESUME | P095 | 0,1,2,3 | 280 |
+| ANALYST_P095_resume_5_lignes | analyst | PAPER_RESUME | P095 | 0,1,2,3 | 371 |
+| ANALYST_P095_analyse_critique_s0 | analyst | ANALYSIS | P095 | 0,1,2,3 | 558 |
+| ANALYST_P095_analyse_critique_s1 | analyst | ANALYSIS | P095 | 0,1,2,3 | 102 |
+| ANALYST_P095_formules_exactes | analyst | FORMULA | P095 | 0,1,2,3 | 104 |
+| ANALYST_P095_pertinence_these_aeg | analyst | DELTA_LAYER | P095 | 0,1,2,3 | 328 |
+| ANALYST_P095_citations_cles | analyst | CITATION | P095 | 0,1,2,3 | 77 |
+| ANALYST_P095_classification | analyst | CLASSIFICATION | P095 | 0,1,2,3 | 145 |
+| ANALYST_P096_ | analyst | ANALYSIS | P096 | 0,1,2,3 | 120 |
+| ANALYST_P096_abstract_original | analyst | PAPER_RESUME | P096 | 0,1,2,3 | 419 |
+| ANALYST_P096_resume_5_lignes | analyst | PAPER_RESUME | P096 | 0,1,2,3 | 406 |
+| ANALYST_P096_analyse_critique_s0 | analyst | ANALYSIS | P096 | 0,1,2,3 | 564 |
+| ANALYST_P096_analyse_critique_s1 | analyst | ANALYSIS | P096 | 0,1,2,3 | 144 |
+| ANALYST_P096_formules_exactes | analyst | FORMULA | P096 | 0,1,2,3 | 130 |
+| ANALYST_P096_pertinence_these_aeg | analyst | DELTA_LAYER | P096 | 0,1,2,3 | 457 |
+| ANALYST_P096_citations_cles | analyst | CITATION | P096 | 0,1,2,3 | 152 |
+| ANALYST_P096_classification | analyst | CLASSIFICATION | P096 | 0,1,2,3 | 135 |
+| ANALYST_P097_ | analyst | ANALYSIS | P097 | 1,2 | 118 |
+| ANALYST_P097_abstract_original | analyst | PAPER_RESUME | P097 | 1,2 | 344 |
+| ANALYST_P097_resume_5_lignes | analyst | PAPER_RESUME | P097 | 1,2 | 337 |
+| ANALYST_P097_analyse_critique_s0 | analyst | ANALYSIS | P097 | 1,2 | 568 |
+| ANALYST_P097_analyse_critique_s1 | analyst | ANALYSIS | P097 | 1,2 | 142 |
+| ANALYST_P097_formules_exactes | analyst | FORMULA | P097 | 1,2 | 194 |
+| ANALYST_P097_pertinence_these_aeg | analyst | DELTA_LAYER | P097 | 1,2 | 285 |
+| ANALYST_P097_citations_cles | analyst | CITATION | P097 | 1,2 | 110 |
+| ANALYST_P097_classification | analyst | CLASSIFICATION | P097 | 1,2 | 71 |
+| ANALYST_P098_ | analyst | ANALYSIS | P098 | 0 | 115 |
+| ANALYST_P098_abstract_original | analyst | PAPER_RESUME | P098 | 0 | 195 |
+| ANALYST_P098_resume_5_lignes | analyst | PAPER_RESUME | P098 | 0 | 325 |
+| ANALYST_P098_analyse_critique_s0 | analyst | ANALYSIS | P098 | 0 | 538 |
+| ANALYST_P098_analyse_critique_s1 | analyst | ANALYSIS | P098 | 0 | 153 |
+| ANALYST_P098_formules_exactes | analyst | FORMULA | P098 | 0 | 77 |
+| ANALYST_P098_pertinence_these_aeg | analyst | DELTA_LAYER | P098 | 0 | 297 |
+| ANALYST_P098_citations_cles | analyst | CITATION | P098 | 0 | 89 |
+| ANALYST_P098_classification | analyst | CLASSIFICATION | P098 | 0 | 64 |
+| ANALYST_P099_ | analyst | ANALYSIS | P099 | 1,2 | 120 |
+| ANALYST_P099_abstract_original | analyst | PAPER_RESUME | P099 | 1,2 | 300 |
+| ANALYST_P099_resume_5_lignes | analyst | PAPER_RESUME | P099 | 1,2 | 321 |
+| ANALYST_P099_analyse_critique_s0 | analyst | ANALYSIS | P099 | 1,2 | 360 |
+| ANALYST_P099_analyse_critique_s1 | analyst | ANALYSIS | P099 | 1,2 | 401 |
+| ANALYST_P099_formules_exactes | analyst | FORMULA | P099 | 1,2 | 72 |
+| ANALYST_P099_pertinence_these_aeg | analyst | DELTA_LAYER | P099 | 1,2 | 254 |
+| ANALYST_P099_citations_cles | analyst | CITATION | P099 | 1,2 | 130 |
+| ANALYST_P099_classification | analyst | CLASSIFICATION | P099 | 1,2 | 80 |
+| ANALYST_P100_ | analyst | ANALYSIS | P100 | 1,2 | 119 |
+| ANALYST_P100_abstract_original | analyst | PAPER_RESUME | P100 | 1,2 | 220 |
+| ANALYST_P100_resume_5_lignes | analyst | PAPER_RESUME | P100 | 1,2 | 346 |
+| ANALYST_P100_analyse_critique_s0 | analyst | ANALYSIS | P100 | 1,2 | 587 |
+| ANALYST_P100_analyse_critique_s1 | analyst | ANALYSIS | P100 | 1,2 | 138 |
+| ANALYST_P100_formules_exactes | analyst | FORMULA | P100 | 1,2 | 92 |
+| ANALYST_P100_pertinence_these_aeg | analyst | DELTA_LAYER | P100 | 1,2 | 319 |
+| ANALYST_P100_citations_cles | analyst | CITATION | P100 | 1,2 | 93 |
+| ANALYST_P100_classification | analyst | CLASSIFICATION | P100 | 1,2 | 71 |
+| ANALYST_P101_ | analyst | ANALYSIS | P101 | 1,2 | 141 |
+| ANALYST_P101_abstract_original | analyst | PAPER_RESUME | P101 | 1,2 | 295 |
+| ANALYST_P101_resume_5_lignes | analyst | PAPER_RESUME | P101 | 1,2 | 360 |
+| ANALYST_P101_analyse_critique_s0 | analyst | ANALYSIS | P101 | 1,2 | 569 |
+| ANALYST_P101_analyse_critique_s1 | analyst | ANALYSIS | P101 | 1,2 | 134 |
+| ANALYST_P101_formules_exactes | analyst | FORMULA | P101 | 1,2 | 79 |
+| ANALYST_P101_pertinence_these_aeg | analyst | DELTA_LAYER | P101 | 1,2 | 314 |
+| ANALYST_P101_citations_cles | analyst | CITATION | P101 | 1,2 | 67 |
+| ANALYST_P101_classification | analyst | CLASSIFICATION | P101 | 1,2 | 71 |
+| ANALYST_P102_ | analyst | ANALYSIS | P102 | 0 | 114 |
+| ANALYST_P102_abstract_original | analyst | PAPER_RESUME | P102 | 0 | 264 |
+| ANALYST_P102_resume_5_lignes | analyst | PAPER_RESUME | P102 | 0 | 361 |
+| ANALYST_P102_analyse_critique_s0 | analyst | ANALYSIS | P102 | 0 | 378 |
+| ANALYST_P102_analyse_critique_s1 | analyst | ANALYSIS | P102 | 0 | 401 |
+| ANALYST_P102_formules_exactes | analyst | FORMULA | P102 | 0 | 151 |
+| ANALYST_P102_pertinence_these_aeg | analyst | DELTA_LAYER | P102 | 0 | 311 |
+| ANALYST_P102_citations_cles | analyst | CITATION | P102 | 0 | 74 |
+| ANALYST_P102_classification | analyst | CLASSIFICATION | P102 | 0 | 66 |
+| ANALYST_P103_ | analyst | ANALYSIS | P103 | 1,3 | 125 |
+| ANALYST_P103_abstract_original | analyst | PAPER_RESUME | P103 | 1,3 | 267 |
+| ANALYST_P103_resume_5_lignes | analyst | PAPER_RESUME | P103 | 1,3 | 369 |
+| ANALYST_P103_analyse_critique_s0 | analyst | ANALYSIS | P103 | 1,3 | 587 |
+| ANALYST_P103_analyse_critique_s1 | analyst | ANALYSIS | P103 | 1,3 | 133 |
+| ANALYST_P103_formules_exactes | analyst | FORMULA | P103 | 1,3 | 138 |
+| ANALYST_P103_pertinence_these_aeg | analyst | DELTA_LAYER | P103 | 1,3 | 307 |
+| ANALYST_P103_citations_cles | analyst | CITATION | P103 | 1,3 | 57 |
+| ANALYST_P103_classification | analyst | CLASSIFICATION | P103 | 1,3 | 82 |
+| ANALYST_P104_ | analyst | ANALYSIS | P104 | 2,3 | 132 |
+| ANALYST_P104_abstract_original | analyst | PAPER_RESUME | P104 | 2,3 | 222 |
+| ANALYST_P104_resume_5_lignes | analyst | PAPER_RESUME | P104 | 2,3 | 363 |
+| ANALYST_P104_analyse_critique_s0 | analyst | ANALYSIS | P104 | 2,3 | 391 |
+| ANALYST_P104_analyse_critique_s1 | analyst | ANALYSIS | P104 | 2,3 | 426 |
+| ANALYST_P104_formules_exactes | analyst | FORMULA | P104 | 2,3 | 115 |
+| ANALYST_P104_pertinence_these_aeg | analyst | DELTA_LAYER | P104 | 2,3 | 286 |
+| ANALYST_P104_citations_cles | analyst | CITATION | P104 | 2,3 | 79 |
+| ANALYST_P104_classification | analyst | CLASSIFICATION | P104 | 2,3 | 75 |
+| REPORT_R5_MATHEUX_sec1 | matheux | REPORT | multi | 0,1,2,3 | 66 |
+| REPORT_R5_MATHEUX_sec2 | matheux | REPORT | multi | 0,1,2,3 | 168 |
+| REPORT_R5_MATHEUX_sec3 | matheux | REPORT | multi | 0,1,2,3 | 229 |
+| REPORT_R5_MATHEUX_sec4 | matheux | REPORT | multi | 0,1,2,3 | 463 |
+| REPORT_R5_MATHEUX_sec5 | matheux | REPORT | multi | 0,1,2,3 | 125 |
+| REPORT_R5_MATHEUX_sec6 | matheux | REPORT | multi | 0,1,2,3 | 188 |
+| REPORT_R5_MATHEUX_sec7 | matheux | REPORT | multi | 0,1,2,3 | 153 |
+| REPORT_R5_CYBERSEC_sec0 | cybersec | REPORT | multi | 0,1,2,3 | 72 |
+| REPORT_R5_CYBERSEC_sec1 | cybersec | REPORT | multi | 0,1,2,3 | 247 |
+| REPORT_R5_CYBERSEC_sec2 | cybersec | REPORT | multi | 0,1,2,3 | 564 |
+| REPORT_R5_CYBERSEC_sec3 | cybersec | REPORT | multi | 0,1,2,3 | 581 |
+| REPORT_R5_CYBERSEC_sec4 | cybersec | REPORT | multi | 0,1,2,3 | 226 |
+| REPORT_R5_CYBERSEC_sec5 | cybersec | REPORT | multi | 0,1,2,3 | 430 |
+| REPORT_R5_CYBERSEC_sec6 | cybersec | REPORT | multi | 0,1,2,3 | 244 |
+| REPORT_R5_CYBERSEC_sec7 | cybersec | REPORT | multi | 0,1,2,3 | 364 |
+| REPORT_R5_CYBERSEC_sec8 | cybersec | REPORT | multi | 0,1,2,3 | 165 |
+| REPORT_R5_CYBERSEC_sec9 | cybersec | REPORT | multi | 0,1,2,3 | 74 |
+| REPORT_R5_CYBERSEC_sec10 | cybersec | REPORT | multi | 0,1,2,3 | 169 |
+| REPORT_R5_WHITEHACKER_sec1 | whitehacker | REPORT | multi | 0,1,2,3 | 123 |
+| REPORT_R5_WHITEHACKER_sec2 | whitehacker | REPORT | multi | 0,1,2,3 | 472 |
+| REPORT_R5_WHITEHACKER_sec3 | whitehacker | REPORT | multi | 0,1,2,3 | 319 |
+| REPORT_R5_WHITEHACKER_sec4_s0 | whitehacker | REPORT | multi | 0,1,2,3 | 590 |
+| REPORT_R5_WHITEHACKER_sec4_s1 | whitehacker | REPORT | multi | 0,1,2,3 | 103 |
+| REPORT_R5_WHITEHACKER_sec5 | whitehacker | REPORT | multi | 0,1,2,3 | 500 |
+| REPORT_R5_WHITEHACKER_sec6 | whitehacker | REPORT | multi | 0,1,2,3 | 522 |
+| REPORT_R5_WHITEHACKER_sec7 | whitehacker | REPORT | multi | 0,1,2,3 | 373 |
+| REPORT_R5_WHITEHACKER_sec8 | whitehacker | REPORT | multi | 0,1,2,3 | 219 |
+| REPORT_R5_WHITEHACKER_sec9 | whitehacker | REPORT | multi | 0,1,2,3 | 228 |
+| REPORT_R5_SCIENTIST_sec2 | scientist | REPORT | multi | 0,1,2,3 | 83 |
+| REPORT_R5_SCIENTIST_sec3 | scientist | REPORT | multi | 0,1,2,3 | 268 |
+| REPORT_R5_SCIENTIST_sec4 | scientist | REPORT | multi | 0,1,2,3 | 255 |
+| REPORT_R5_SCIENTIST_sec5 | scientist | REPORT | multi | 0,1,2,3 | 490 |
+| REPORT_R5_SCIENTIST_sec6 | scientist | REPORT | multi | 0,1,2,3 | 271 |
+| REPORT_R5_SCIENTIST_sec7 | scientist | REPORT | multi | 0,1,2,3 | 353 |
+| REPORT_R5_SCIENTIST_sec8 | scientist | REPORT | multi | 0,1,2,3 | 218 |
+| REPORT_R5_SCIENTIST_sec9 | scientist | REPORT | multi | 0,1,2,3 | 311 |
+| REPORT_R5_SCIENTIST_sec10 | scientist | REPORT | multi | 0,1,2,3 | 311 |
+| REPORT_R5_SCIENTIST_sec11 | scientist | REPORT | multi | 0,1,2,3 | 139 |
+| REPORT_R5_SCIENTIST_sec12 | scientist | REPORT | multi | 0,1,2,3 | 222 |
+| REPORT_R5_MATHTEACHER_sec1 | mathteacher | REPORT | multi | 0,1,2,3 | 43 |
+| REPORT_R5_MATHTEACHER_sec2 | mathteacher | REPORT | multi | 0,1,2,3 | 84 |
+| REPORT_R5_MATHTEACHER_sec3 | mathteacher | REPORT | multi | 0,1,2,3 | 485 |
+| REPORT_R5_MATHTEACHER_sec4 | mathteacher | REPORT | multi | 0,1,2,3 | 360 |
+| REPORT_R5_MATHTEACHER_sec5 | mathteacher | REPORT | multi | 0,1,2,3 | 107 |
+| REPORT_R5_MATHTEACHER_sec6 | mathteacher | REPORT | multi | 0,1,2,3 | 146 |
+| REPORT_R5_MATHTEACHER_sec7 | mathteacher | REPORT | multi | 0,1,2,3 | 133 |
+| REPORT_R5_MATHTEACHER_sec8 | mathteacher | REPORT | multi | 0,1,2,3 | 176 |
+| REPORT_R5_LIBRARIAN_sec1 | librarian | REPORT | multi | 0,1,2,3 | 73 |
+| REPORT_R5_LIBRARIAN_sec2 | librarian | REPORT | multi | 0,1,2,3 | 127 |
+| REPORT_R5_LIBRARIAN_sec3 | librarian | REPORT | multi | 0,1,2,3 | 343 |
+| REPORT_R5_LIBRARIAN_sec4 | librarian | REPORT | multi | 0,1,2,3 | 118 |
+| REPORT_R5_LIBRARIAN_sec5 | librarian | REPORT | multi | 0,1,2,3 | 79 |
+| REPORT_R5_LIBRARIAN_sec6 | librarian | REPORT | multi | 0,1,2,3 | 107 |
+| REPORT_R5_LIBRARIAN_sec7 | librarian | REPORT | multi | 0,1,2,3 | 51 |
+| REPORT_R5_LIBRARIAN_sec8 | librarian | REPORT | multi | 0,1,2,3 | 106 |
+| REPORT_R5_LIBRARIAN_sec9 | librarian | REPORT | multi | 0,1,2,3 | 118 |
+| REPORT_R5_LIBRARIAN_sec10 | librarian | REPORT | multi | 0,1,2,3 | 124 |
+| REPORT_R5_LIBRARIAN_sec11 | librarian | REPORT | multi | 0,1,2,3 | 216 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec0 | mathteacher | COURSE | multi | 0,1,2,3 | 94 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec1 | mathteacher | COURSE | multi | 0,1,2,3 | 259 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec2 | mathteacher | COURSE | multi | 0,1,2,3 | 75 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec3_s0 | mathteacher | COURSE | multi | 0,1,2,3 | 599 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec3_s1 | mathteacher | COURSE | multi | 0,1,2,3 | 239 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec4_s0 | mathteacher | COURSE | multi | 0,1,2,3 | 595 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec4_s1 | mathteacher | COURSE | multi | 0,1,2,3 | 222 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec5_s0 | mathteacher | COURSE | multi | 0,1,2,3 | 595 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec5_s1 | mathteacher | COURSE | multi | 0,1,2,3 | 325 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec6_s0 | mathteacher | COURSE | multi | 0,1,2,3 | 556 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec6_s1 | mathteacher | COURSE | multi | 0,1,2,3 | 235 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec7_s0 | mathteacher | COURSE | multi | 0,1,2,3 | 599 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec7_s1 | mathteacher | COURSE | multi | 0,1,2,3 | 290 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec8_s0 | mathteacher | COURSE | multi | 0,1,2,3 | 494 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec8_s1 | mathteacher | COURSE | multi | 0,1,2,3 | 544 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec9_s0 | mathteacher | COURSE | multi | 0,1,2,3 | 591 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec9_s1 | mathteacher | COURSE | multi | 0,1,2,3 | 183 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec10_s0 | mathteacher | COURSE | multi | 0,1,2,3 | 598 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec10_s1 | mathteacher | COURSE | multi | 0,1,2,3 | 234 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec11 | mathteacher | COURSE | multi | 0,1,2,3 | 260 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec12_s0 | mathteacher | COURSE | multi | 0,1,2,3 | 574 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec12_s1 | mathteacher | COURSE | multi | 0,1,2,3 | 535 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec12_s2 | mathteacher | COURSE | multi | 0,1,2,3 | 136 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec13_s0 | mathteacher | COURSE | multi | 0,1,2,3 | 544 |
+| COURSE_R5_Module_08_LRM_Erosion_MultiTou_sec13_s1 | mathteacher | COURSE | multi | 0,1,2,3 | 216 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec1 | matheux | GLOSSARY | multi | 0,1,2,3 | 59 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec2_s0 | matheux | GLOSSARY | multi | 0,1,2,3 | 560 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec2_s1 | matheux | GLOSSARY | multi | 0,1,2,3 | 572 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec2_s2 | matheux | GLOSSARY | multi | 0,1,2,3 | 547 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec2_s3 | matheux | GLOSSARY | multi | 0,1,2,3 | 229 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec3_s0 | matheux | GLOSSARY | multi | 0,1,2,3 | 547 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec3_s1 | matheux | GLOSSARY | multi | 0,1,2,3 | 593 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec3_s2 | matheux | GLOSSARY | multi | 0,1,2,3 | 364 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec4_s0 | matheux | GLOSSARY | multi | 0,1,2,3 | 598 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec4_s1 | matheux | GLOSSARY | multi | 0,1,2,3 | 575 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec4_s2 | matheux | GLOSSARY | multi | 0,1,2,3 | 574 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec4_s3 | matheux | GLOSSARY | multi | 0,1,2,3 | 412 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec5_s0 | matheux | GLOSSARY | multi | 0,1,2,3 | 566 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec5_s1 | matheux | GLOSSARY | multi | 0,1,2,3 | 531 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec5_s2 | matheux | GLOSSARY | multi | 0,1,2,3 | 550 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec5_s3 | matheux | GLOSSARY | multi | 0,1,2,3 | 509 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec5_s4 | matheux | GLOSSARY | multi | 0,1,2,3 | 489 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec6_s0 | matheux | GLOSSARY | multi | 0,1,2,3 | 593 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec6_s1 | matheux | GLOSSARY | multi | 0,1,2,3 | 560 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec6_s2 | matheux | GLOSSARY | multi | 0,1,2,3 | 565 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec6_s3 | matheux | GLOSSARY | multi | 0,1,2,3 | 303 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec7_s0 | matheux | GLOSSARY | multi | 0,1,2,3 | 549 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec7_s1 | matheux | GLOSSARY | multi | 0,1,2,3 | 599 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec7_s2 | matheux | GLOSSARY | multi | 0,1,2,3 | 527 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec7_s3 | matheux | GLOSSARY | multi | 0,1,2,3 | 337 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec8_s0 | matheux | GLOSSARY | multi | 0,1,2,3 | 548 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec8_s1 | matheux | GLOSSARY | multi | 0,1,2,3 | 244 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s0 | matheux | GLOSSARY | multi | 0,1,2,3 | 552 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s1 | matheux | GLOSSARY | multi | 0,1,2,3 | 599 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s2 | matheux | GLOSSARY | multi | 0,1,2,3 | 548 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s3 | matheux | GLOSSARY | multi | 0,1,2,3 | 593 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s4 | matheux | GLOSSARY | multi | 0,1,2,3 | 493 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s5 | matheux | GLOSSARY | multi | 0,1,2,3 | 578 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s6 | matheux | GLOSSARY | multi | 0,1,2,3 | 509 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s7 | matheux | GLOSSARY | multi | 0,1,2,3 | 539 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s8 | matheux | GLOSSARY | multi | 0,1,2,3 | 592 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s9 | matheux | GLOSSARY | multi | 0,1,2,3 | 548 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s10 | matheux | GLOSSARY | multi | 0,1,2,3 | 562 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s11 | matheux | GLOSSARY | multi | 0,1,2,3 | 560 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s12 | matheux | GLOSSARY | multi | 0,1,2,3 | 550 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s13 | matheux | GLOSSARY | multi | 0,1,2,3 | 498 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s14 | matheux | GLOSSARY | multi | 0,1,2,3 | 541 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s15 | matheux | GLOSSARY | multi | 0,1,2,3 | 580 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s16 | matheux | GLOSSARY | multi | 0,1,2,3 | 596 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec9_s17 | matheux | GLOSSARY | multi | 0,1,2,3 | 213 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s0 | matheux | GLOSSARY | multi | 0,1,2,3 | 599 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s1 | matheux | GLOSSARY | multi | 0,1,2,3 | 548 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s2 | matheux | GLOSSARY | multi | 0,1,2,3 | 519 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s3 | matheux | GLOSSARY | multi | 0,1,2,3 | 537 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s4 | matheux | GLOSSARY | multi | 0,1,2,3 | 593 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s5 | matheux | GLOSSARY | multi | 0,1,2,3 | 550 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s6 | matheux | GLOSSARY | multi | 0,1,2,3 | 549 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s7 | matheux | GLOSSARY | multi | 0,1,2,3 | 590 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s8 | matheux | GLOSSARY | multi | 0,1,2,3 | 562 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s9 | matheux | GLOSSARY | multi | 0,1,2,3 | 499 |
+| COURSE_R5_GLOSSAIRE_DETAILED_sec10_s10 | matheux | GLOSSARY | multi | 0,1,2,3 | 394 |
+| COURSE_R5_THREAT_ANALYSIS_sec0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 88 |
+| COURSE_R5_THREAT_ANALYSIS_sec2 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 552 |
+| COURSE_R5_THREAT_ANALYSIS_sec3 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 489 |
+| COURSE_R5_THREAT_ANALYSIS_sec4_s0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 578 |
+| COURSE_R5_THREAT_ANALYSIS_sec4_s1 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 193 |
+| COURSE_R5_THREAT_ANALYSIS_sec5 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 496 |
+| COURSE_R5_THREAT_ANALYSIS_sec6 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 566 |
+| COURSE_R5_THREAT_ANALYSIS_sec7 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 521 |
+| COURSE_R5_THREAT_ANALYSIS_sec8 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 560 |
+| COURSE_R5_THREAT_ANALYSIS_sec9 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 526 |
+| COURSE_R5_THREAT_ANALYSIS_sec11 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 389 |
+| COURSE_R5_THREAT_ANALYSIS_sec12 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 417 |
+| COURSE_R5_THREAT_ANALYSIS_sec13 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 369 |
+| COURSE_R5_THREAT_ANALYSIS_sec14 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 428 |
+| COURSE_R5_THREAT_ANALYSIS_sec15 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 503 |
+| COURSE_R5_THREAT_ANALYSIS_sec16 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 393 |
+| COURSE_R5_THREAT_ANALYSIS_sec17 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 404 |
+| COURSE_R5_THREAT_ANALYSIS_sec18 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 339 |
+| COURSE_R5_THREAT_ANALYSIS_sec19 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 374 |
+| COURSE_R5_THREAT_ANALYSIS_sec20 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 434 |
+| COURSE_R5_THREAT_ANALYSIS_sec22 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 299 |
+| COURSE_R5_THREAT_ANALYSIS_sec23 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 349 |
+| COURSE_R5_THREAT_ANALYSIS_sec24 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 391 |
+| COURSE_R5_THREAT_ANALYSIS_sec26 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 423 |
+| COURSE_R5_THREAT_ANALYSIS_sec27 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 373 |
+| COURSE_R5_THREAT_ANALYSIS_sec29 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 281 |
+| COURSE_R5_THREAT_ANALYSIS_sec30 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 224 |
+| COURSE_R5_THREAT_ANALYSIS_sec31 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 199 |
+| COURSE_R5_THREAT_ANALYSIS_sec32 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 214 |
+| COURSE_R5_THREAT_ANALYSIS_sec33 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 235 |
+| COURSE_R5_THREAT_ANALYSIS_sec35 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 340 |
+| COURSE_R5_THREAT_ANALYSIS_sec36 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 419 |
+| COURSE_R5_THREAT_ANALYSIS_sec37 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 563 |
+| COURSE_R5_THREAT_ANALYSIS_sec38 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 398 |
+| COURSE_R5_THREAT_ANALYSIS_sec39 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 230 |
+| COURSE_R5_THREAT_ANALYSIS_sec40 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 340 |
+| COURSE_R5_THREAT_ANALYSIS_sec42_s0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 592 |
+| COURSE_R5_THREAT_ANALYSIS_sec42_s1 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 140 |
+| COURSE_R5_THREAT_ANALYSIS_sec43_s0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 589 |
+| COURSE_R5_THREAT_ANALYSIS_sec43_s1 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 219 |
+| COURSE_R5_THREAT_ANALYSIS_sec44 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 581 |
+| COURSE_R5_THREAT_ANALYSIS_sec45 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 574 |
+| COURSE_R5_THREAT_ANALYSIS_sec46_s0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 588 |
+| COURSE_R5_THREAT_ANALYSIS_sec46_s1 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 197 |
+| COURSE_R5_THREAT_ANALYSIS_sec47_s0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 560 |
+| COURSE_R5_THREAT_ANALYSIS_sec47_s1 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 155 |
+| COURSE_R5_THREAT_ANALYSIS_sec48_s0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 520 |
+| COURSE_R5_THREAT_ANALYSIS_sec48_s1 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 132 |
+| COURSE_R5_THREAT_ANALYSIS_sec49_s0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 521 |
+| COURSE_R5_THREAT_ANALYSIS_sec49_s1 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 186 |
+| COURSE_R5_THREAT_ANALYSIS_sec50 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 548 |
+| COURSE_R5_THREAT_ANALYSIS_sec51_s0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 525 |
+| COURSE_R5_THREAT_ANALYSIS_sec51_s1 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 198 |
+| COURSE_R5_THREAT_ANALYSIS_sec52_s0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 560 |
+| COURSE_R5_THREAT_ANALYSIS_sec52_s1 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 179 |
+| COURSE_R5_THREAT_ANALYSIS_sec53_s0 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 582 |
+| COURSE_R5_THREAT_ANALYSIS_sec53_s1 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 92 |
+| COURSE_R5_THREAT_ANALYSIS_sec54 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 491 |
+| COURSE_R5_THREAT_ANALYSIS_sec56 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 447 |
+| COURSE_R5_THREAT_ANALYSIS_sec57 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 448 |
+| COURSE_R5_THREAT_ANALYSIS_sec58 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 424 |
+| COURSE_R5_THREAT_ANALYSIS_sec59 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 548 |
+| COURSE_R5_THREAT_ANALYSIS_sec60 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 478 |
+| COURSE_R5_THREAT_ANALYSIS_sec61 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 571 |
+| COURSE_R5_THREAT_ANALYSIS_sec62 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 420 |
+| COURSE_R5_THREAT_ANALYSIS_sec63 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 533 |
+| COURSE_R5_THREAT_ANALYSIS_sec64 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 537 |
+| COURSE_R5_THREAT_ANALYSIS_sec65 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 552 |
+| COURSE_R5_THREAT_ANALYSIS_sec66 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 531 |
+| COURSE_R5_THREAT_ANALYSIS_sec67 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 529 |
+| COURSE_R5_THREAT_ANALYSIS_sec68 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 495 |
+| COURSE_R5_THREAT_ANALYSIS_sec69 | cybersec | THREAT_ANALYSIS | multi | 0,1,2,3 | 544 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 119 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec2_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 525 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec2_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 152 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec3_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 513 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec3_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 155 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec4_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 570 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec4_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 152 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec5_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 544 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec5_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 166 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec6_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 568 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec6_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 175 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec7_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 588 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec7_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 224 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec8_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 477 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec8_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 383 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec9_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 569 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec9_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 153 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec10_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 437 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec10_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 367 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec11_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 525 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec11_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 381 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec12 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 588 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec13_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 497 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec13_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 166 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec14_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 521 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec14_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 171 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec15_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 423 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec15_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 370 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec16_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 513 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec16_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 169 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec17_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 434 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec17_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 390 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec18_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 528 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec18_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 157 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec19_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 536 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec19_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 190 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec20 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 261 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec21 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 307 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec22_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 520 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec22_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 437 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec23_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 569 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec23_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 316 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec24_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 539 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec24_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 382 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec25_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 493 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec25_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 459 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec26_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 545 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec26_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 416 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec27_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 453 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec27_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 517 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec28_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 579 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec28_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 274 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec29_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 578 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec29_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 358 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec30_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 561 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec30_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 254 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec31_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 570 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec31_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 280 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec32_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 569 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec32_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 408 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec33_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 577 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec33_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 385 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec34 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 186 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec35 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 286 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec36_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 559 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec36_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 173 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec37_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 485 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec37_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 391 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec38_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 590 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec38_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 162 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec39_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 581 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec39_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 166 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec40_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 485 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec40_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 372 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec41_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 532 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec41_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 282 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec42_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 497 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec42_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 335 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec43_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 577 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec43_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 321 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec44_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 453 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec44_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 325 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec45_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 483 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec45_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 353 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec46_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 457 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec46_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 423 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec47_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 458 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec47_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 374 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec48_s0 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 522 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec48_s1 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 430 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec49 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 212 |
+| COURSE_R5_RED_TEAM_PLAYBOOK_sec50 | whitehacker | PLAYBOOK | multi | 0,1,2,3 | 299 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec0 | scientist | MANUSCRIPT |  | 0,1,2,3 | 49 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec1 | scientist | MANUSCRIPT |  | 0,1,2,3 | 113 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec2 | scientist | MANUSCRIPT |  | 0,1,2,3 | 534 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec3 | scientist | MANUSCRIPT |  | 0,1,2,3 | 80 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec4 | scientist | MANUSCRIPT |  | 0,1,2,3 | 151 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec5 | scientist | MANUSCRIPT |  | 0,1,2,3 | 284 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec6_s0 | scientist | MANUSCRIPT |  | 0,1,2,3 | 582 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec6_s1 | scientist | MANUSCRIPT |  | 0,1,2,3 | 132 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec7 | scientist | MANUSCRIPT |  | 0,1,2,3 | 102 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec8 | scientist | MANUSCRIPT |  | 0,1,2,3 | 143 |
+| MANUSCRIPT_R5_peer_preservation_thesis__sec9 | scientist | MANUSCRIPT |  | 0,1,2,3 | 183 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec0 | scientist | MANUSCRIPT |  | 0,1,2 | 54 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec1 | scientist | MANUSCRIPT |  | 0,1,2 | 102 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec2 | scientist | MANUSCRIPT |  | 0,1,2 | 301 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec3 | scientist | MANUSCRIPT |  | 0,1,2 | 334 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec4 | scientist | MANUSCRIPT |  | 0,1,2 | 392 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec5 | scientist | MANUSCRIPT |  | 0,1,2 | 41 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec6 | scientist | MANUSCRIPT |  | 0,1,2 | 98 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec9 | scientist | MANUSCRIPT |  | 0,1,2 | 596 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec10 | scientist | MANUSCRIPT |  | 0,1,2 | 474 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec11 | scientist | MANUSCRIPT |  | 0,1,2 | 217 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec12 | scientist | MANUSCRIPT |  | 0,1,2 | 134 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec14 | scientist | MANUSCRIPT |  | 0,1,2 | 202 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec15 | scientist | MANUSCRIPT |  | 0,1,2 | 294 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec16 | scientist | MANUSCRIPT |  | 0,1,2 | 171 |
+| MANUSCRIPT_R5_autonomous_research_loop__sec17 | scientist | MANUSCRIPT |  | 0,1,2 | 136 |

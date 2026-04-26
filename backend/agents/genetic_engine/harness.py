@@ -10,7 +10,7 @@ Ported from:
 
 Improvements over original:
     - Connects to the existing MedicalRobotAgent (AutoGen ConversableAgent)
-    - Supports AEGIS delta-2 shield filtering
+    - Supports AEGIS δ² shield filtering
     - Async native (replaces synchronous harness)
     - Uses the lab's existing ``apply_aegis_shield()`` function
 """
@@ -58,14 +58,14 @@ class DaVinciHarness(TargetHarness):
     a simple English-to-French translator. This harness connects
     to the lab's existing AutoGen-based MedicalRobotAgent.
 
-    The harness can optionally apply the AEGIS delta-2 shield
+    The harness can optionally apply the AEGIS δ² shield
     (``apply_aegis_shield()``) before sending the prompt to the target,
     testing whether structural filtering prevents the injection.
 
     Args:
         medical_agent: The AutoGen ConversableAgent representing
             the Da Vinci surgical AI.
-        aegis_shield: Whether to apply delta-2 filtering.
+        aegis_shield: Whether to apply δ² filtering.
         apply_shield_fn: Reference to ``apply_aegis_shield()`` function.
 
     Example:
@@ -84,7 +84,7 @@ class DaVinciHarness(TargetHarness):
     async def run_harness(self, prompt: str) -> str:
         """Send a prompt to the MedicalRobotAgent and return the response.
 
-        Optionally applies AEGIS delta-2 shield filtering before
+        Optionally applies AEGIS δ² shield filtering before
         delivering the prompt to the target.
 
         Args:
@@ -116,7 +116,7 @@ def create_davinci_harness(
 
     Args:
         medical_agent: The AutoGen ConversableAgent for Da Vinci.
-        aegis_shield: Whether to enable delta-2 filtering.
+        aegis_shield: Whether to enable δ² filtering.
 
     Returns:
         Configured DaVinciHarness instance.

@@ -124,7 +124,7 @@ export default function GeneticProgressView({ levels, aegisShield, lang }) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <div style={{ flex: 1, height: 8, background: '#1a1a2e', borderRadius: 4 }}>
-          <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 4, transition: 'width 0.3s' }} />
+          <div style={{ width: pct + '%', height: '100%', background: color, borderRadius: 4, transition: 'width 0.3s' }} />
         </div>
         <span style={{ color, fontWeight: 700, fontFamily: 'monospace', minWidth: 40 }}>{score}/10</span>
       </div>
@@ -134,7 +134,7 @@ export default function GeneticProgressView({ levels, aegisShield, lang }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       {/* Config Panel */}
-      <div style={{ background: '#0f0f23', border: '1px solid #1a1a3e', borderRadius: 8, padding: 16 }}>
+      <div style={{ background: '#12122a', border: '1px solid #3a3a7e', borderRadius: 8, padding: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
           <Dna size={18} color="#e94560" />
           <span style={{ color: '#e94560', fontWeight: 700, fontSize: 14, textTransform: 'uppercase', letterSpacing: 1 }}>
@@ -144,42 +144,42 @@ export default function GeneticProgressView({ levels, aegisShield, lang }) {
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
-          <label style={{ color: '#aaa', fontSize: 12 }}>
+          <label style={{ color: '#cbd5e1', fontSize: 12 }}>
             Intention
             <select
               value={config.intention}
               onChange={e => setConfig(c => ({ ...c, intention: e.target.value }))}
               disabled={running}
-              style={{ width: '100%', padding: 6, background: '#1a1a2e', color: '#fff', border: '1px solid #333', borderRadius: 4, marginTop: 4 }}
+              style={{ width: '100%', padding: 6, background: '#1e1e38', color: '#e2e8f0', border: '1px solid #555', borderRadius: 4, marginTop: 4 }}
             >
               {INTENTION_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
             </select>
           </label>
 
-          <label style={{ color: '#aaa', fontSize: 12 }}>
+          <label style={{ color: '#cbd5e1', fontSize: 12 }}>
             Max Generations
             <input type="number" min={1} max={50} value={config.max_iterations}
               onChange={e => setConfig(c => ({ ...c, max_iterations: +e.target.value }))}
               disabled={running}
-              style={{ width: '100%', padding: 6, background: '#1a1a2e', color: '#fff', border: '1px solid #333', borderRadius: 4, marginTop: 4 }}
+              style={{ width: '100%', padding: 6, background: '#1e1e38', color: '#e2e8f0', border: '1px solid #555', borderRadius: 4, marginTop: 4 }}
             />
           </label>
 
-          <label style={{ color: '#aaa', fontSize: 12 }}>
+          <label style={{ color: '#cbd5e1', fontSize: 12 }}>
             Population Size
             <input type="number" min={5} max={30} value={config.population_size}
               onChange={e => setConfig(c => ({ ...c, population_size: +e.target.value }))}
               disabled={running}
-              style={{ width: '100%', padding: 6, background: '#1a1a2e', color: '#fff', border: '1px solid #333', borderRadius: 4, marginTop: 4 }}
+              style={{ width: '100%', padding: 6, background: '#1e1e38', color: '#e2e8f0', border: '1px solid #555', borderRadius: 4, marginTop: 4 }}
             />
           </label>
 
-          <label style={{ color: '#aaa', fontSize: 12 }}>
+          <label style={{ color: '#cbd5e1', fontSize: 12 }}>
             Mutation Rate
             <input type="number" min={0} max={1} step={0.1} value={config.mutation_rate}
               onChange={e => setConfig(c => ({ ...c, mutation_rate: +e.target.value }))}
               disabled={running}
-              style={{ width: '100%', padding: 6, background: '#1a1a2e', color: '#fff', border: '1px solid #333', borderRadius: 4, marginTop: 4 }}
+              style={{ width: '100%', padding: 6, background: '#1e1e38', color: '#e2e8f0', border: '1px solid #555', borderRadius: 4, marginTop: 4 }}
             />
           </label>
         </div>
@@ -201,9 +201,9 @@ export default function GeneticProgressView({ levels, aegisShield, lang }) {
 
       {/* Progress Bar */}
       {(running || status) && (
-        <div style={{ background: '#0f0f23', border: '1px solid #1a1a3e', borderRadius: 8, padding: 16 }}>
+        <div style={{ background: '#12122a', border: '1px solid #3a3a7e', borderRadius: 8, padding: 16 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ color: '#aaa', fontSize: 12 }}>
+            <span style={{ color: '#cbd5e1', fontSize: 12 }}>
               <TrendingUp size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />
               Generation {currentGen} / {totalGens}
             </span>
@@ -212,7 +212,7 @@ export default function GeneticProgressView({ levels, aegisShield, lang }) {
           </div>
           <div style={{ height: 6, background: '#1a1a2e', borderRadius: 3 }}>
             <div style={{
-              width: `${totalGens > 0 ? (currentGen / totalGens) * 100 : 0}%`,
+              width: (totalGens > 0 ? (currentGen / totalGens) * 100 : 0) + '%',
               height: '100%',
               background: status === 'success' ? '#e94560' : '#6c5ce7',
               borderRadius: 3,
@@ -226,12 +226,12 @@ export default function GeneticProgressView({ levels, aegisShield, lang }) {
               {fitnessHistory.map((f, i) => (
                 <div key={i} style={{
                   flex: 1,
-                  height: `${(f / 10) * 100}%`,
+                  height: ((f / 10) * 100) + '%',
                   background: f >= 8 ? '#e94560' : f >= 5 ? '#f39c12' : '#00b894',
                   borderRadius: 2,
                   minWidth: 4,
                   transition: 'height 0.3s',
-                }} title={`Gen ${i + 1}: ${f}/10`} />
+                }} title={'Gen ' + (i + 1) + ': ' + f + '/10'} />
               ))}
             </div>
           )}
@@ -240,7 +240,7 @@ export default function GeneticProgressView({ levels, aegisShield, lang }) {
 
       {/* Best Chromosome */}
       {bestChromosome && (
-        <div style={{ background: '#0f0f23', border: `1px solid ${status === 'success' ? '#e94560' : '#1a1a3e'}`, borderRadius: 8, padding: 16 }}>
+        <div style={{ background: '#12122a', border: '1px solid ' + (status === 'success' ? '#e94560' : '#3a3a7e'), borderRadius: 8, padding: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
             <Target size={16} color={status === 'success' ? '#e94560' : '#6c5ce7'} />
             <span style={{ color: '#fff', fontWeight: 700, fontSize: 13 }}>Best Chromosome</span>
@@ -252,26 +252,26 @@ export default function GeneticProgressView({ levels, aegisShield, lang }) {
           <div style={{ marginTop: 12, display: 'grid', gap: 8 }}>
             <div>
               <span style={{ color: '#00b894', fontSize: 11, fontWeight: 600 }}>FRAMEWORK</span>
-              <div style={{ color: '#ccc', fontSize: 12, fontFamily: 'monospace', background: '#1a1a2e', padding: 6, borderRadius: 4, marginTop: 2 }}>
+              <div style={{ color: '#ccc', fontSize: 12, fontFamily: 'monospace', background: '#1e1e38', padding: 6, borderRadius: 4, marginTop: 2 }}>
                 {bestChromosome.framework?.slice(0, 100)}
               </div>
             </div>
             <div>
               <span style={{ color: '#e17055', fontSize: 11, fontWeight: 600 }}>SEPARATOR</span>
-              <div style={{ color: '#ccc', fontSize: 12, fontFamily: 'monospace', background: '#1a1a2e', padding: 6, borderRadius: 4, marginTop: 2, whiteSpace: 'pre-wrap' }}>
+              <div style={{ color: '#ccc', fontSize: 12, fontFamily: 'monospace', background: '#1e1e38', padding: 6, borderRadius: 4, marginTop: 2, whiteSpace: 'pre-wrap' }}>
                 {bestChromosome.separator?.slice(0, 100)}
               </div>
             </div>
             <div>
               <span style={{ color: '#6c5ce7', fontSize: 11, fontWeight: 600 }}>DISRUPTOR</span>
-              <div style={{ color: '#ccc', fontSize: 12, fontFamily: 'monospace', background: '#1a1a2e', padding: 6, borderRadius: 4, marginTop: 2 }}>
+              <div style={{ color: '#ccc', fontSize: 12, fontFamily: 'monospace', background: '#1e1e38', padding: 6, borderRadius: 4, marginTop: 2 }}>
                 {bestChromosome.disruptor?.slice(0, 150)}
               </div>
             </div>
             {bestChromosome.llm_response && (
               <div>
                 <span style={{ color: '#fdcb6e', fontSize: 11, fontWeight: 600 }}>TARGET RESPONSE</span>
-                <div style={{ color: '#ccc', fontSize: 12, fontFamily: 'monospace', background: '#1a1a2e', padding: 6, borderRadius: 4, marginTop: 2, maxHeight: 120, overflow: 'auto' }}>
+                <div style={{ color: '#ccc', fontSize: 12, fontFamily: 'monospace', background: '#1e1e38', padding: 6, borderRadius: 4, marginTop: 2, maxHeight: 120, overflow: 'auto' }}>
                   {bestChromosome.llm_response?.slice(0, 300)}
                 </div>
               </div>
@@ -281,9 +281,9 @@ export default function GeneticProgressView({ levels, aegisShield, lang }) {
       )}
 
       {/* Event Feed */}
-      <div ref={feedRef} style={{ maxHeight: 250, overflow: 'auto', background: '#0a0a1a', borderRadius: 8, padding: 8 }}>
+      <div ref={feedRef} style={{ maxHeight: 250, overflow: 'auto', background: '#0e0e22', borderRadius: 8, padding: 8, border: '1px solid #2a2a5a' }}>
         {events.filter(e => e.type === 'generation_done').map((e, i) => (
-          <div key={i} style={{ padding: '4px 8px', borderBottom: '1px solid #111', fontSize: 11, fontFamily: 'monospace', color: '#888' }}>
+          <div key={i} style={{ padding: '4px 8px', borderBottom: '1px solid #1e1e3a', fontSize: 11, fontFamily: 'monospace', color: '#94a3b8' }}>
             <span style={{ color: '#6c5ce7' }}>Gen {e.generation}</span>
             {' '}fitness={e.best_fitness}
             {' '}pop={e.population_size}

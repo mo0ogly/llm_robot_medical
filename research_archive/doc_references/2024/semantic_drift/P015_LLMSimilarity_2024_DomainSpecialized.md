@@ -82,8 +82,8 @@ Le papier est un **algorithme** (pipeline) sans garantie formelle. L'evaluation 
 | **C6** (domaine medical plus vulnerable) | MODERE | Pipeline medical specifique necessaire | Les textes medicaux ont des besoins de similarite specifiques non couverts par les metriques generiques. |
 
 ### Couches delta
-- **delta-2** : l'approche "label first, compare second" pourrait enrichir delta-2 dans AEGIS en ajoutant une couche d'abstraction semantique avant la comparaison.
-- **delta-3** : NON — pipeline heuristique sans garantie.
+- **δ²** : l'approche "label first, compare second" pourrait enrichir δ² dans AEGIS en ajoutant une couche d'abstraction semantique avant la comparaison.
+- **δ³** : NON — pipeline heuristique sans garantie.
 
 ### Mapping AEGIS
 - L'approche de label generation est conceptuellement liee au SVC score d'AEGIS, ou la sortie du LLM est evaluee sur plusieurs dimensions semantiques.
@@ -102,7 +102,7 @@ Le papier est un **algorithme** (pipeline) sans garantie formelle. L'evaluation 
 | **Domaine** | Radiologie, similarite textuelle medicale |
 | **Modeles testes** | GPT-4 (generation labels), all-mpnet-base-v2 (embeddings) |
 | **Metrique principale** | Similarite labels GPT-4 vs. verite terrain CheXpert (qualitative) |
-| **delta-layers** | delta-2 (enrichissement potentiel) |
+| **delta-layers** | δ² (enrichissement potentiel) |
 | **Conjectures** | C5 (fort), C6 (modere) |
 | **SVC pertinence** | 5/10 |
 | **Reproductibilite** | Faible — GPT-4 proprietaire, pas de code |

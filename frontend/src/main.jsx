@@ -27,6 +27,11 @@ var CampaignView = lazy(function() { return import('./components/redteam/views/C
 var PromptForgeMultiLLM = lazy(function() { return import('./components/redteam/PromptForgeMultiLLM.jsx'); });
 var ExperimentDashboard = lazy(function() { return import('./components/redteam/views/ExperimentDashboard.jsx'); });
 
+// Thesis views — doctoral research communication
+var BibliographyPipelineView = lazy(function() { return import('./components/thesis/BibliographyPipelineView.jsx'); });
+var AcademicAgentsView = lazy(function() { return import('./components/thesis/AcademicAgentsView.jsx'); });
+var AegisWorkflowView = lazy(function() { return import('./components/thesis/AegisWorkflowView.jsx'); });
+
 // import.meta.env.BASE_URL = "/llm_robot_medical/" (from vite.config.js)
 // BrowserRouter basename strips this prefix before matching routes
 // So route "/" matches /llm_robot_medical/, "/redteam/rag" matches /llm_robot_medical/redteam/rag
@@ -56,6 +61,10 @@ createRoot(document.getElementById('root')).render(
           <Route path="results" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><ResultExplorer /></Suspense>} />
           <Route path="experiments" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><ExperimentDashboard /></Suspense>} />
         </Route>
+
+        <Route path="/thesis/bibliography-pipeline" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading thesis pipeline...</div>}><BibliographyPipelineView /></Suspense>} />
+        <Route path="/thesis/academic-agents" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading academic agents...</div>}><AcademicAgentsView /></Suspense>} />
+        <Route path="/thesis/aegis-workflow" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading AEGIS workflow...</div>}><AegisWorkflowView /></Suspense>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

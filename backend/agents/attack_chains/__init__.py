@@ -138,12 +138,12 @@ _CHAIN_MODULES = [
     # PARTIE 2H — F-RW operators (real-world defense bypass, 2026-04-06)
     # Source: analysis of 6 commercial products (Cursor, Windsurf, Devin, Manus, Replit)
     # Reference: .claude/skills/aegis-prompt-forge/references/real-world-defenses.md
-    ("covert_channel",        "F-RW01"),  # Covert channel injection via system reminder tags (delta-3 DaaAS)
-    ("pop_quiz_override",     "F-RW02"),  # Pop quiz authority override / mode switch (delta-1 turned)
-    ("ghost_tool",            "F-RW03"),  # Ghost tool invocation via fabricated tool logs (delta-1)
-    ("memory_poisoning",      "F-RW04"),  # Memory persistence poisoning / cross-session (delta-3)
-    ("declarative_bypass",    "F-RW05"),  # Declarative guardrail bypass / enforcement gap (delta-0)
-    ("multi_step_hijack",     "F-RW06"),  # Multi-step goal hijacking / fragmented payload (delta-3 absent)
+    ("covert_channel",        "F-RW01"),  # Covert channel injection via system reminder tags (δ³ DaaAS)
+    ("pop_quiz_override",     "F-RW02"),  # Pop quiz authority override / mode switch (δ¹ turned)
+    ("ghost_tool",            "F-RW03"),  # Ghost tool invocation via fabricated tool logs (δ¹)
+    ("memory_poisoning",      "F-RW04"),  # Memory persistence poisoning / cross-session (δ³)
+    ("declarative_bypass",    "F-RW05"),  # Declarative guardrail bypass / enforcement gap (δ⁰)
+    ("multi_step_hijack",     "F-RW06"),  # Multi-step goal hijacking / fragmented payload (δ³ absent)
 ]
 
 # Chain coverage summary (RUN-004, 2026-04-06):

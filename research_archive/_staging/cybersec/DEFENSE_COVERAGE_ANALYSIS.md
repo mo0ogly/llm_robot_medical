@@ -1,7 +1,7 @@
 # DEFENSE_COVERAGE_ANALYSIS.md -- Aggregate Defense Coverage Matrix
 
-> **Generated**: 2026-04-04 | **Updated**: 2026-04-04 (RUN-002)
-> **Scope**: 46 papers (34 Phase 1 + 12 Phase 2) mapped to AEGIS delta-layer taxonomy
+> **Generated**: 2026-04-04 | **Updated**: 2026-04-07 (RUN-005)
+> **Scope**: 62 papers (34 Phase 1 + 12 Phase 2 + 16 RUN-005 LRM/MSBE) mapped to AEGIS delta-layer taxonomy
 > **Cross-reference**: `backend/taxonomy/defense_taxonomy_2025.json` (66 techniques, 4 classes: PREV, DETECT, RESP, MEAS)
 
 ---
@@ -56,6 +56,22 @@
 | **P044 (AdvJudge-Zero)** | **attack** | -- | -- | **BYPASSED** | -- | **vulnerable** | -- | -- |
 | **P045 (SPP)** | **attack** | -- | **WEAPONIZED** | **ineffective** | -- | -- | -- | -- |
 | **P046 (ADPO)** | **defense** | **ENHANCED** | -- | -- | -- | -- | -- | -- |
+| **P087 (H-CoT)** | **attack** | **BYPASSED** | **indirect** | -- | -- | -- | -- | -- |
+| **P088** | **doublon P036** | -- | -- | -- | -- | -- | -- | -- |
+| **P089 (SEAL)** | **attack** | **BYPASSED** | **TARGETED** | **NOT ADDR** | -- | -- | -- | -- |
+| **P090 (R1 Safety)** | **benchmark** | **EVALUATED** | **tested** | -- | -- | -- | -- | **yes** |
+| **P091 (WeakLink)** | **benchmark** | **indirect** | **tested** | -- | -- | -- | -- | -- |
+| **P092 (SelfJB)** | **attack** | **UNDERMINED** | **BYPASSED** | -- | -- | -- | -- | -- |
+| **P093 (AdvReason)** | **attack** | **DEFEATED** | **implicit** | -- | -- | -- | -- | -- |
+| **P094 (CoT-Hijack)** | **attack** | **MECH-DEFEATED** | **OVERRIDDEN** | -- | -- | -- | -- | **yes** |
+| **P095 (Tempest)** | **attack** | **BYPASSED** | **eroded** | -- | -- | -- | -- | -- |
+| **P096 (Mastermind)** | **attack** | **BYPASSED** | **BYPASSED** | **partial** | -- | -- | -- | -- |
+| **P097 (STAR)** | **attack** | **MECH-ERODED** | **targeted** | -- | -- | -- | -- | -- |
+| **P098 (LongCtx)** | **benchmark** | **PASSIVE-DEGRADE** | -- | -- | -- | -- | -- | -- |
+| **P099 (Crescendo)** | **attack** | **BYPASSED** | **eroded** | **BYPASSED** | -- | -- | -- | -- |
+| **P100 (ActorBreak)** | **attack+defense** | **BYPASSED** | **BYPASSED** | **ineffective** | -- | -- | -- | -- |
+| **P101 (SafeDial)** | **benchmark** | **evaluated** | **evaluated** | -- | -- | -- | -- | **yes** |
+| **P102 (AHD)** | **defense** | **ENHANCED** | -- | -- | -- | -- | -- | -- |
 
 ---
 
@@ -70,8 +86,10 @@
 | constitutional_ai | external | P020 | Complementary to COBRA consensus approach |
 | red_team_training | external | P017, P021, P022, **P043** | JBDistill (P043) provides renewable benchmark source for red team training |
 | magic_token_cotraining | external | **P041** | **NEW (2026)**: Switchable safety via magic tokens; 8B model surpasses 671B in safety |
+| safety_reasoning_data | external | **P092** | **NEW (2025)**: Minimal safety reasoning data during training prevents self-jailbreaking |
+| attention_head_dropout | external | **P102** | **NEW (2025)**: AHD distributes safety across attention heads; ASR 100%->0% against AutoDAN/GCG/Adaptive |
 
-**delta0 Verdict**: Most studied layer (24/46 papers discuss it). Consistently found to be **necessary but insufficient**. Key vulnerabilities: shallow alignment (P018/P019), poisoning (P022), temporal decay (P030), medical domain failure (P029 -- 94.4% ASR). **2026 escalation**: complete obliteration via single prompt (P039), 97.14% bypass by LRMs (P036). New defenses: InstruCoT >90% defense (P038), ADPO adversarial robustness (P046), magic-token co-training (P041).
+**delta0 Verdict**: Most studied layer (32/62 papers discuss it). Consistently found to be **necessary but insufficient**. Key vulnerabilities: shallow alignment (P018/P019), poisoning (P022), temporal decay (P030), medical domain failure (P029 -- 94.4% ASR). **2026 escalation**: complete obliteration via single prompt (P039), 97.14% bypass by LRMs (P036). **RUN-005 escalation**: LRM paradox confirmed by 8 papers (P087-P094) -- reasoning degrades safety; self-jailbreaking without adversary (P092); CoT hijacking at 99% ASR on frontier models (P094); safety signal dilution mechanistically proven (P094); multi-turn erosion formalized (P097 STAR, P099 Crescendo, P096 Mastermind reaching 60% on GPT-5). New defenses: InstruCoT >90% (P038), ADPO (P046), magic-token (P041), **safety reasoning data (P092)**, **AHD attention head dropout (P102)**, **Circuit Breaker + multi-turn data (P100 -- ASR reduced to 14%)**.
 
 ### 2.2 delta1 (System Prompt) -- PREV Class
 
@@ -86,7 +104,7 @@
 | magic_token_switch | external | **P041** | **NEW (2026)**: More precise behavioral switch than natural language preambles |
 | system_prompt_integrity | NOT IMPL | **P045** | **NEW GAP**: System prompt signing/verification needed to counter SPP |
 
-**delta1 Verdict**: Moderate coverage (18/46 papers discuss). Consistently found as **partial** defense. **2026 escalation**: SPP (P045) converts delta1 from defense to attack vector; LRM multi-turn persuasion erodes preamble authority (P036); emotional manipulation bypasses role anchoring (P040). NEW defense: magic-token switching (P041). CRITICAL GAP: no system prompt integrity verification in taxonomy.
+**delta1 Verdict**: Moderate coverage (24/62 papers discuss). Consistently found as **partial** defense. **2026 escalation**: SPP (P045) converts delta1 from defense to attack vector; LRM multi-turn persuasion erodes preamble authority (P036); emotional manipulation bypasses role anchoring (P040). **RUN-005 escalation**: multi-turn attacks (P095 Tempest, P096 Mastermind, P097 STAR, P099 Crescendo) systematically erode system prompt authority through progressive contextual accumulation; self-jailbreaking (P092) generates internal justifications that override system instructions; CoT hijacking (P094) final-answer cue overrides preamble. NEW defense: magic-token switching (P041). CRITICAL GAP: no system prompt integrity verification in taxonomy.
 
 ### 2.3 delta2 (Syntax Filtering / Input Analysis) -- PREV Class
 
@@ -121,7 +139,7 @@
 | **LLM-Based** | llm_guardrail | **P042** | **NEW (2026)**: PromptArmor -- LLM-as-guardrail achieves <1% FPR/FNR; semantic detection superior to pattern matching |
 | **Emotional** | emotional_sentiment_guard | **P040** | **NEW GAP**: Emotional manipulation (6.2% -> 37.5% medical misinfo) not addressed by any current technique |
 
-**delta2 Verdict**: Good coverage (21/46 papers discuss). **Most diverse defense layer**. Character injection (P009) remains primary threat; AEGIS RagSanitizer counters this. **2026 escalation**: AdvJudge-Zero (P044) achieves 99% bypass of ML-based guards via stealth control tokens. NEW defenses: PromptArmor LLM-guardrail <1% FPR (P042); InstruCoT >90% defense (P038). NEW GAPS: emotional manipulation detection (P040); LLM-based guardrails vulnerable to fuzzing (P044). AEGIS RagSanitizer (pattern-based) is NOT vulnerable to AdvJudge-Zero.
+**delta2 Verdict**: Good coverage (25/62 papers discuss). **Most diverse defense layer**. Character injection (P009) remains primary threat; AEGIS RagSanitizer counters this. **2026 escalation**: AdvJudge-Zero (P044) achieves 99% bypass of ML-based guards via stealth control tokens. **RUN-005 note**: SEAL stacked ciphers (P089) would be caught by cipher-pattern detection at delta2 -- AEGIS RagSanitizer should add cipher detection; Crescendo/ActorBreaker use entirely benign inputs that bypass ALL content-based delta2 filters -- structural/behavioral detection needed, not just content analysis. NEW defenses: PromptArmor LLM-guardrail <1% FPR (P042); InstruCoT >90% defense (P038). NEW GAPS: emotional manipulation detection (P040); LLM-based guardrails vulnerable to fuzzing (P044); multi-turn attack detection (behavioral, not content-based).
 
 ### 2.4 delta3 (Formal Verification / Output Enforcement) -- PREV Class
 
@@ -135,7 +153,7 @@
 
 | safety_alignment_margin | external | **P041** | **NEW (2026)**: SAM provides implicit output-space enforcement via distinct behavioral boundaries |
 
-**delta3 Verdict**: **Least studied but most critical layer** (12/46 papers discuss, increasing from 8/34). **2026 confirms delta3 necessity**: GRP-Obliteration (P039) makes delta3 the ONLY surviving defense after delta0 obliteration; SPP (P045) weaponizes delta1, leaving delta3 as compensator. AEGIS's production-grade delta3 implementation (5 techniques) is ahead of the literature and validated by 2026 threat landscape.
+**delta3 Verdict**: **Least studied but most critical layer** (12/62 papers discuss). **2026 confirms delta3 necessity**: GRP-Obliteration (P039) makes delta3 the ONLY surviving defense after delta0 obliteration; SPP (P045) weaponizes delta1, leaving delta3 as compensator. **RUN-005 confirms delta3 necessity even more strongly**: 8 LRM attack papers (P087-P094) show delta0 is mechanistically bypassable via reasoning exploitation; multi-turn attacks (P095-P100) show delta1 is progressively erodable; P094 proves safety signal is low-dimensional and dilutable. Delta3 (deterministic output validation) remains the ONLY defense layer not defeated by any paper in the corpus (62 papers). AEGIS's production-grade delta3 implementation (5 techniques) is ahead of the literature by >1 year.
 
 ---
 

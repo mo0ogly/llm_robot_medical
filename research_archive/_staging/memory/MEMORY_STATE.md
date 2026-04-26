@@ -5,19 +5,90 @@
 > Every agent MUST update this file LAST after completing work.
 
 ## Last Execution
-- **Run ID**: RUN-003
-- **Date**: 2026-04-04
-- **Mode**: incremental (P047-P060, 14 papers from user-curated list)
+- **Run ID**: RUN-008
+- **Date**: 2026-04-09
+- **Mode**: incremental scoped (P128-P130, note-triggered bibliography gap — Kang + CodeAct + ToolSandbox)
 - **Status**: SUCCESS
-- **Duration**: ~45 min total (9 agents, 5 phases)
-- **Previous**: RUN-002 (incremental P035-P046, 2026-04-04)
+- **Duration**: ~20 min (scoped orchestrator: curl PDF download + single ANALYST sub-agent + generate_chunks_run008 + ingest_to_chromadb)
+- **Previous**: RUN-007 (IEEE batch P122-P127, 2026-04-09)
+
+## RUN-008 details (scoped note integration)
+- **Trigger**: scoped bibliography verification of academic note `research_archive/manuscript/Note_Academique_Context_Isolated_Adversarial_Workflow.md` identified 3 refs not in corpus (Kang arXiv:2302.05733, Wang CodeAct arXiv:2402.01030, Lu ToolSandbox arXiv:2408.04682)
+- **Anti-doublon post-hoc catch**: Crescendo (ref [13], arXiv:2404.01833) detected as DUPLICATE of P099 only via manual MANIFEST grep AFTER the verification agent had already WebFetched it. Process failure documented.
+- **Fix implemented RUN-008**: `backend/tools/check_corpus_dedup.py` (158 lines, CLI + Python module, arXiv + title fallback, Windows UTF-8 stdout reconfigure) + `ANTI-DOUBLON ÉTAPE 0` section added to `.claude/rules/doctoral-research.md` + Step 0 mandatory pre-check added to `.claude/skills/bibliography-maintainer/SKILL.md` Agent Memory Protocol
+- **New P-IDs attributed**: P128 (Kang Programmatic Behavior), P129 (CodeAct Wang ICML 2024), P130 (ToolSandbox Lu Apple NAACL 2025)
+
+### RUN-008 RAG Injection Status (verified 2026-04-09 via direct ChromaDB metadata query)
+
+| P-ID | Source | Chunks | Seuil AEGIS (>=5) |
+|------|--------|--------|-------------------|
+| P128 | P128_analysis.md (ANALYST subagent) | **9** | OK |
+| P129 | P129_analysis.md (ANALYST subagent) | **9** | OK |
+| P130 | P130_analysis.md (ANALYST subagent) | **10** | OK |
+| **TOTAL new RUN-008** | — | **28 chunks appended** | **3/3 BLOCKED=0** |
+
+- **3 PDFs arxiv downloaded** to `literature_for_rag/` (580 KB Kang + 4.3 MB CodeAct + 20 MB ToolSandbox)
+- **Analyses FR via general-purpose sub-agent** (~420 s, 16 tool uses, 117k tokens, abstract + method + limitations + inline refs + AEGIS mapping)
+- **Propagation doc_references/**: `2023/prompt_injection/P128_Kang_2023_ProgrammaticBehavior.md`, `2024/model_behavior/P129_Wang_2024_CodeAct.md`, `2024/benchmarks/P130_Lu_2024_ToolSandbox.md`
+- **Post-injection verification**: 3/3 P-IDs validate the `>= 5 chunks` threshold (9, 9, 10)
+- **aegis_bibliography collection**: 10743 → 10783 docs (+40 net, 151 upserts including re-chunks)
+
+### RUN-008 Discovery commits (COMMITTED 2026-04-09 post-audit) + Gap proposals (still in todo)
+
+Discoveries committed to `discoveries/DISCOVERIES_INDEX.md` ### MOYENNE — ajouts RUN-008 section (lines 54-62). Initial proposals from the ANALYST sub-agent used labels D-021/D-022/D-023, but these IDs were already taken (D-021 Knowledge repository from RUN-005, D-022 Paradoxe δ⁰/δ¹ from TC-002, D-023 Bimodalite from THESIS-001). Renumbered at commit time. Next free ID: D-029.
+
+- **D-026** (P128 Kang, 8/10, committed RUN-008 + cross-validated 2026-04-09) — "Asymmetrie economique attaquant/defenseur". **Cross-validated against PDF**: LLM cost $0.0064-$0.016 per generation (confirmed 3+2 matches in P128_2302.05733.pdf Section 6), human cost $0.10 per generation (Holman et al. 2007 cited by Kang). **True ratio is ~6.25x-15.6x, NOT 125-500x as initially reported by ANALYST sub-agent** — the 125-500x was a hallucinated/over-extrapolated number, corrected in DISCOVERIES_INDEX.md D-026 entry. Supports C1, C4, C5. Confidence bumped 7→8 post cross-validation (numerical claims now verified via pypdf extraction).
+- **D-027** (P129 CodeAct Wang ICML 2024, 8/10, committed RUN-008) — "Code-Action Amplification" — in a CodeAct agent, a prompt injection produces executable Python with agent privileges (files, APIs, subprocess), not just inert text. +20 pts absolute on M3ToolEval (GPT-4-1106: 52.4% JSON → 74.4% CodeAct). Supports C7, reinforces C2 indirectly. Creates gap G-023.
+- **D-028** (P130 ToolSandbox Lu Apple NAACL 2025, 8/10, committed RUN-008) — "Insufficient Information = Tool Hallucination Floor" — model hallucinates tool calls rather than refusing when it lacks the required tool. Gap GPT-4o 73.0% vs best open-source 31.4% orthogonal to model size. Supports C5, indirectly C7. Creates gap G-024.
+
+Historique row in DISCOVERIES_INDEX.md: `RUN-008 | D-026, D-027, D-028 | — | 25`.
+
+New gaps flagged (NOT yet committed to `THESIS_GAPS.md`):
+- **G-022** — absence d'evaluation longitudinale 2023-2026 du payload splitting Kang (fonctionne-t-il encore sur LLaMA 3.2 / GPT-4o / Claude 4 ?)
+- **G-023** — absence de benchmark adversarial dedie aux agents CodeAct/ReAct code-based
+- **G-024** — absence de version adversariale de ToolSandbox. **Axe de recherche direct pour AEGIS** : construire "AdversarialToolSandbox" en contexte medical robotique (Da Vinci Xi) — opportunite de contribution originale
+
+Partial closures (to formalize in next SCIENTIST run):
+- **G-010 partiellement adresse** (Kang) : modelisation economique dual-use integree
+- **G-012 partiellement adresse** (CodeAct) : evaluation systematique 17 LLMs tool-use
+- **G-015 partiellement adresse** (ToolSandbox) : benchmark stateful multi-turn disponible
+
+### RUN-008 Known risks
+- **P128 Kang** : les chiffres experimentaux exacts (0.0064-0.016 USD par email, 125-500x cost ratio) proviennent de WebSearch + Semantic Scholar car l'arXiv HTML v1 renvoyait 404 et le PDF n'a pas ete parse par le sub-agent. A cross-valider contre PDF complet lors du prochain audit-these.
+- **Scooping risk P126 (existant)** persistant, non affecte par RUN-008.
+- **Coverage Summary de MANIFEST.md** non mise a jour (counts par domaine/annee). A fixer lors du prochain full LIBRARIAN pass.
+
+## RUN-007 details (IEEE batch)
+- **User input**: 8 IEEE references (bibliography for state-of-art thesis section)
+- **Anti-doublon results**:
+  - Liu 2023 (arXiv:2306.05499) → DEJA present en P001 (HouYi) → SKIP
+  - Multi-Agent Defense (arXiv:2509.14285) → DEJA present en P002 → SKIP
+- **New P-IDs attributed**: P122 (OWASP Cheat Sheet), P123 (OWASP LLM01:2025), P124 (CAPTURE), P125 (Systematic Analysis 36 LLMs), P126 (Design Patterns Tramèr), P127 (IPI Competition)
+- **Critical finding**: P126 (Beurer-Kellner, Tramèr et al.) propose "provable resistance" via design patterns — **RISQUE DE SCOOPING pour C2/δ³**. Action P0 : telecharger PDF et comparer avec AEGIS architecture.
+
+### RUN-007 RAG Injection Status (verified 2026-04-09)
+
+| P-ID | Source | Chunks | Seuil AEGIS (>=5) |
+|------|--------|--------|-------------------|
+| P122 | P122_OWASP_CheatSheet_PromptInjection.md | **5** | OK |
+| P123 | P123_OWASP_LLM01_2025_PromptInjection.md | **11** | OK (enrichi apres 4 chunks initial) |
+| P124 | P124_2505.12368.pdf (CAPTURE) | **38** | OK |
+| P125 | P125_2410.23308.pdf (Systematic Analysis) | **55** | OK |
+| P126 | P126_2506.08837.pdf (Design Patterns) | **101** | OK |
+| P127 | P127_2603.15714.pdf (IPI Competition) | **122** | OK |
+| **TOTAL** | — | **332 chunks** | **6/6 BLOCKED=0** |
+
+- **4 PDFs arxiv telecharges** dans `literature_for_rag/` (total 6.6 MB)
+- **2 fichiers markdown OWASP** uploades directement (standards industriels sans PDF)
+- **Post-injection verification** : 6/6 P-IDs valident le seuil `>= 5 chunks`
+- **RagSanitizer** peut maintenant retrieve ces refs via query ChromaDB
 
 ## Counters (cumulative)
 | Metric | Count | Last Updated |
 |--------|-------|-------------|
-| Papers total | 60 | RUN-003 |
-| Papers analyzed | 60 | RUN-003 |
-| Papers 2025-2026 (analyzed) | 26 | RUN-003 |
+| Papers total | **127** | RUN-007 |
+| Papers analyzed | **127** | RUN-007 |
+| Papers 2025-2026 (analyzed) | 95+ | RUN-007 |
 | Formulas in glossaire | 54 | RUN-003 |
 | Formula dependencies | 66 | RUN-003 |
 | Attack techniques | 48 | RUN-003 |
@@ -96,7 +167,7 @@
 - INDEX_BY_CONJECTURE: C1=30, C2=27, C3=10, C4=8, C5=5, C6=12, C7=7
 - INDEX_BY_TOPIC: Attack=17, Defense=16, Medical=12, Benchmark=7, Embedding=5, Model=4
 - Dedup validation: 0 duplicates (RUN-003)
-- Unicode notation: 82 delta-0/1/2/3 → δ⁰/δ¹/δ²/δ³ fixed
+- Unicode notation: 82 δ⁰/1/2/3 → δ⁰/δ¹/δ²/δ³ fixed
 - Next run: add P061+ from next COLLECTOR
 
 ### MATHTEACHER

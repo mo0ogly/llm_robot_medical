@@ -19,7 +19,7 @@ ou $\text{Invert}(a)$ est la technique d'attaque $a$ inversee en mecanisme defen
   - $\text{Invert}(a)$ = transformation de la technique offensive en technique defensive
   - $\text{ASR}$ = Attack Success Rate residuel (cf. F22/section 3.4)
 - **Dependances**: F22 (ASR, section 3.4)
-- **Couche delta concernee**: delta-1 (instruction-level defense)
+- **Couche delta concernee**: δ¹ (instruction-level defense)
 - **Conjecture liee**: C2 (attack-defense duality)
 
 ---
@@ -36,7 +36,7 @@ ou $g$ est le systeme de guardrail, $t$ est la technique d'evasion (character in
   - $\mathcal{X}_{adv}$ = ensemble de prompts adversariaux de test
   - $t(x)$ = prompt adversarial transforme par la technique d'evasion
 - **Dependances**: F22 (ASR, section 3.4), F34 (FPR/FNR, section 8.12)
-- **Couche delta concernee**: delta-2 (detection evasion)
+- **Couche delta concernee**: δ² (detection evasion)
 - **Conjecture liee**: C3 (guardrail insufficiency), C6 (character-level attacks)
 
 ---
@@ -53,7 +53,7 @@ ou $e(w_i)$ est l'embedding du mot $w_i$ et $\mathcal{L}$ la fonction de perte d
   - $e(w_i)$ = embedding du mot dans le modele white-box
   - $\mathcal{L}$ = fonction de perte du classificateur guardrail (white-box)
 - **Dependances**: F03 (Cross-Entropy Loss, section 1.3), F22 (ASR)
-- **Couche delta concernee**: delta-2 (guardrail bypass)
+- **Couche delta concernee**: δ² (guardrail bypass)
 - **Conjecture liee**: C5 (evasion transferability)
 
 ---
@@ -70,7 +70,7 @@ ou $S_t$ est le score de securite median au tour $t$, $S_1$ est le score initial
   - $S_1$ = score de securite initial (tour 1), typiquement ~9.5
   - $S_T$ = score de securite terminal, typiquement ~5.5
 - **Dependances**: F36 (Multi-Turn ASR, section 8.14)
-- **Couche delta concernee**: delta-0 (alignment degradation over turns)
+- **Couche delta concernee**: δ⁰ (alignment degradation over turns)
 - **Conjecture liee**: C1 (multi-turn degradation)
 
 ---
@@ -89,7 +89,7 @@ ou $w_{ij} = (i-j)^2$ (penalite quadratique), $o_{ij}$ = frequences observees, $
   - $\kappa_{weighted}$ = kappa de Cohen pondere quadratique
   - $o_{ij}$, $e_{ij}$ = matrices de frequences observees/attendues
 - **Dependances**: Aucune formule prealable directe (metrique independante)
-- **Couche delta concernee**: delta-0 (alignment evaluation)
+- **Couche delta concernee**: δ⁰ (alignment evaluation)
 - **Conjecture liee**: C1 (mesure objective de l'alignement)
 
 ---
@@ -109,7 +109,7 @@ $$\hat{y}(x) = \text{Classifier}(\mathbf{f}(x)) \in \{\text{safe}, \text{jailbre
   - $f_{dist}$ = score de distraction contextuelle
   - $\text{Classifier}$ = classificateur de second niveau
 - **Dependances**: F02 (Precision/Recall/F1, section 1.2), F30 (SBERT, section 5.2)
-- **Couche delta concernee**: delta-2 (detection/classification)
+- **Couche delta concernee**: δ² (detection/classification)
 - **Conjecture liee**: C3 (detection feasibility), C4 (layered defense)
 
 ---
@@ -127,7 +127,7 @@ ou $H$ est le score de nocivite de la sequence complete, et $\pi_\theta$ est la 
   - $\pi_\theta$ = politique du modele parametree par $\theta$
   - $\nabla_\theta \log \pi_\theta$ = fonction score (score function)
 - **Dependances**: F23 (objectif RLHF, section 4.1), F24 (divergence KL, section 4.2), F27 (analyse gradient, section 4.5)
-- **Couche delta concernee**: delta-0 (alignment depth)
+- **Couche delta concernee**: δ⁰ (alignment depth)
 - **Conjecture liee**: C1 (alignment is shallow), C2 (early-token concentration)
 
 ---
@@ -144,7 +144,7 @@ soit: la divergence KL d'equilibre entre le modele aligne $\pi^*$ et le modele d
   - $\pi^*$ = politique optimale (alignee)
   - $\pi_{ref}$ = politique de reference (modele de base)
 - **Dependances**: F44 (Harm Information), F24 (KL divergence, section 4.2)
-- **Couche delta concernee**: delta-0 (alignment mechanism)
+- **Couche delta concernee**: δ⁰ (alignment mechanism)
 - **Conjecture liee**: C1 (shallow alignment)
 
 ---
@@ -161,7 +161,7 @@ $$\mathcal{L}_{RP}(\theta) = \mathcal{L}_{RLHF}(\theta) + \lambda \sum_{t=1}^{T}
   - $\epsilon$ = seuil minimal d'information de nocivite
   - $T$ = longueur de la sequence
 - **Dependances**: F44 (Harm Information), F23 (objectif RLHF, section 4.1)
-- **Couche delta concernee**: delta-0 (alignment hardening)
+- **Couche delta concernee**: δ⁰ (alignment hardening)
 - **Conjecture liee**: C1 (shallow alignment fix)
 
 ---
@@ -178,7 +178,7 @@ ou $\mathcal{P}_{para}$ est l'ensemble des paraphrases semantiquement equivalent
   - $p'$ = paraphrase individuelle
   - $M(p')$ = classification de la reponse (harmful/safe)
 - **Dependances**: F22 (ASR, section 3.4), F01 (Cosine Similarity pour mesurer l'equivalence semantique)
-- **Couche delta concernee**: delta-0 (RLHF alignment), delta-1 (semantic bypass)
+- **Couche delta concernee**: δ⁰ (RLHF alignment), δ¹ (semantic bypass)
 - **Conjecture liee**: C1 (alignment is shallow), C3 (semantic attacks bypass token-level defenses)
 
 ---
@@ -196,7 +196,7 @@ $$\Delta\text{ASR} = \text{ASR}_{PIDP} - \max(\text{ASR}_{PI}, \text{ASR}_{DP})$
   - $\text{ASR}_{PIDP}$ = taux de succes avec attaque composee
   - $\Delta\text{ASR}$ = gain marginal de la composition (4-16 pp)
 - **Dependances**: F22 (ASR, section 3.4)
-- **Couche delta concernee**: delta-2 (RAG/retrieval), delta-3 (data integrity)
+- **Couche delta concernee**: δ² (RAG/retrieval), δ³ (data integrity)
 - **Conjecture liee**: C5 (RAG vulnerabilities), C6 (compound attacks amplify)
 
 ---
@@ -213,7 +213,7 @@ ou $\mathcal{Q}$ est l'ensemble des requetes utilisateur et $\mathcal{V}_{poison
   - $\mathcal{V}_{poison}$ = ensemble de vecteurs empoisonnes (~275K dans l'experience)
   - $\text{top-}k(q)$ = les $k$ documents les plus proches de la requete $q$
 - **Dependances**: F01 (Cosine Similarity pour le retrieval vectoriel)
-- **Couche delta concernee**: delta-2 (RAG layer), delta-3 (data persistence)
+- **Couche delta concernee**: δ² (RAG layer), δ³ (data persistence)
 - **Conjecture liee**: C5 (RAG inherit PI vulnerabilities), C7 (persistent poisoning)
 
 ---
@@ -229,7 +229,7 @@ ou $\text{ASR}_{baseline}$ est le taux de succes d'attaque avec la meilleure def
   - $\text{ASR}_{AIR}$ = ASR avec methode AIR (intermediate-layer)
   - ARF $\in [1.6, 9.2]$ dans les experiences reportees
 - **Dependances**: F22 (ASR, section 3.4)
-- **Couche delta concernee**: delta-0 (alignment), delta-1 (instruction hierarchy enforcement)
+- **Couche delta concernee**: δ⁰ (alignment), δ¹ (instruction hierarchy enforcement)
 - **Conjecture liee**: C4 (instruction hierarchy is enforceable at intermediate layers)
 
 ---
@@ -250,8 +250,8 @@ $$\text{Sep}_{ASIDE}(M) = \text{Sep}(M_{+ASIDE}) - \text{Sep}(M_{base})$$
   - $d$ = dimension de l'espace d'embedding
   - $\text{Sep}(M)$ = score de separation (cf. F15/section 3.1)
 - **Dependances**: F15 (Sep(M), section 3.1), F01 (Cosine Similarity)
-- **Couche delta concernee**: delta-0 (architectural separation)
-- **Conjecture liee**: C1 (separation is enforceable), C3 (delta-0 hardening without utility loss)
+- **Couche delta concernee**: δ⁰ (architectural separation)
+- **Conjecture liee**: C1 (separation is enforceable), C3 (δ⁰ hardening without utility loss)
 
 ---
 
@@ -268,7 +268,7 @@ ou $p$ est le prompt d'injection insere dans le papier, $M_{sim}$ est le modele 
   - $S_{review}(r)$ = score d'evaluation de la review generee $r$
   - $p^*$ = prompt optimal trouve par optimisation iterative
 - **Dependances**: F22 (ASR, section 3.4)
-- **Couche delta concernee**: delta-1 (injection crafting), delta-2 (adaptive optimization)
+- **Couche delta concernee**: δ¹ (injection crafting), δ² (adaptive optimization)
 - **Conjecture liee**: C2 (iterative optimization defeats static defenses)
 
 ---
@@ -290,7 +290,7 @@ $$\text{Util}(g) = 1 - \text{FPR}(g)$$
   - $\text{ASR}(g)$ = Attack Success Rate apres application du guardrail
   - $\text{FPR}(g)$ = False Positive Rate (requetes legitimes bloquees)
 - **Dependances**: F22 (ASR, section 3.4), F34 (FPR/FNR, section 8.12)
-- **Couche delta concernee**: delta-0 a delta-3 (evaluation transversale)
+- **Couche delta concernee**: δ⁰ a δ³ (evaluation transversale)
 - **Conjecture liee**: C1 (taxonomy validates multi-layer), C3 (security-utility tradeoff), C6 (no universal guardrail)
 
 ---
@@ -311,7 +311,7 @@ ou chaque dimension est categorielle:
   - $g$ = systeme de guardrail
   - 6 dimensions categorielles (voir ci-dessus)
 - **Dependances**: Aucune formule prealable directe (framework de classification)
-- **Couche delta concernee**: delta-0 a delta-3 (classification transversale)
+- **Couche delta concernee**: δ⁰ a δ³ (classification transversale)
 - **Conjecture liee**: C1 (taxonomy completeness), C6 (no universal guardrail)
 
 ---

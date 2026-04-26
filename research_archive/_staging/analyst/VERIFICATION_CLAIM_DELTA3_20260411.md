@@ -2,7 +2,7 @@
 
 ## Claim examinee
 
-> **Claim originale (wiki/docs/delta-layers/delta-3.md §1, candidate)** :
+> **Claim originale (wiki/docs/delta-layers/δ³.md §1, candidate)** :
 > "Sur 127 papiers du corpus AEGIS, seuls 14 adressent δ³ — et seulement 3 fournissent une implementation concrete : CaMeL (P081), AgentSpec (P082), RAGShield (P066). La these AEGIS propose une QUATRIEME implementation via validate_output + AllowedOutputSpec."
 
 ## Pipeline
@@ -139,7 +139,7 @@ Tableau comparatif AEGIS vs les 8 frameworks identifies (3 de la claim originale
 
 5. **La contribution originale reelle est confirmee** : aucun des 8 frameworks identifies ne propose de contraintes biomecaniques (tension max 50-800g), de forbidden_tools chirurgicaux, de directives HL7 OBX coherentes avec ontologie SNOMED-CT, ni de modelisation formelle du robot Da Vinci Xi. Sur ce terrain, AEGIS est **premier de son espece**.
 
-**Reformulation proposee** (5-10 lignes exactes a substituer dans wiki/docs/delta-layers/delta-3.md §1) :
+**Reformulation proposee** (5-10 lignes exactes a substituer dans wiki/docs/delta-layers/δ³.md §1) :
 
 > **La validation formelle de sortie (δ³) est un pattern academiquement etabli depuis LMQL (Beurer-Kellner et al., 2022, PLDI 2023) et industriellement adopte via Guardrails AI (2023), LLM Guard (2023), LlamaFirewall CodeShield (Chennabasappa et al., 2025, Meta AI), CaMeL (P081), AgentSpec (P082), et RAGShield (P066). La contribution originale d'AEGIS n'est pas l'invention du pattern validate_output mais sa specialisation au domaine medical chirurgical : AEGIS est le premier framework δ³ encodant des contraintes biomecaniques formelles FDA-ancrees pour le robot Da Vinci Xi (tension 50-800 g, forbidden_tools par phase chirurgicale, directives HL7 OBX coherentes avec l'ontologie SNOMED-CT). Le besoin reglementaire de ces methodes au-dela des prompts est documente dans Weissman, Mankowitz, Kanter (2025, npj Digital Medicine, DOI:10.1038/s41746-025-01544-y) : 'effective regulation may require new methods to better constrain LLM output, and prompts are inadequate for this purpose'.**
 

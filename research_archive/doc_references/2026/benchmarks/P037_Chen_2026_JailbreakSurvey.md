@@ -15,7 +15,7 @@
 - **Methode :** Survey systematique tridimensionnel (attaque, defense, evaluation) avec extension aux VLM et proposition de principes de defense unifies a trois couches : perception, generation, parametres (Section I, p.2)
 - **Donnees :** N/A --- survey sans evaluation experimentale originale. Couverture de la litterature jusqu'a janvier 2026
 - **Resultat :** Cadre taxonomique le plus complet du corpus (5 categories d'attaque LLM + 3 categories d'attaque VLM + 3 couches de defense + 4 types de metriques) ; identification de facteurs structurels de vulnerabilite ; distinction formelle hallucination/jailbreak (Sections II-VI)
-- **Limite :** Survey descriptif sans validation experimentale des principes de defense unifies ; principes non formalises mathematiquement ; couche delta-3 absente (Section VI Discussion)
+- **Limite :** Survey descriptif sans validation experimentale des principes de defense unifies ; principes non formalises mathematiquement ; couche δ³ absente (Section VI Discussion)
 
 ### Analyse critique
 

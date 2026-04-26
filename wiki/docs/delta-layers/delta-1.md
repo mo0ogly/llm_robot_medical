@@ -142,8 +142,8 @@ graph TD
     MA --> OUT["Response"]
     OUT --> VAL["validate_output (δ³)"]
 
-    style MA fill:#e74c3c,color:#fff
-    style SA fill:#27ae60,color:#fff
+    style MA fill:#fee2e2
+    style SA fill:#27ae60
 ```
 
 Chaque agent a son **propre** system prompt δ¹ avec des contraintes specifiques :

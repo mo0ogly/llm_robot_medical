@@ -90,10 +90,10 @@ Les auteurs reconnaissent : (1) le benchmark est limite a 3 tours (etude future 
 
 ### Couches delta
 
-- **delta-0 (RLHF alignment)** : directement mesure et quantifie. La degradation 9.5 vers 5.5 est une mesure directe de l'erosion de l'alignement RLHF. Le fine-tuning medical ecrase les poids critiques modifies durant RLHF, creant un "raccourci" pour les attaquants.
-- **delta-1 (System prompt)** : implicitement erode a travers les tours, mais pas mesure separement.
-- **delta-2** : non applicable (pas de RAG dans le protocole).
-- **delta-3** : non teste. L'echec de delta-0 renforce la necessite de couches formelles.
+- **δ⁰ (RLHF alignment)** : directement mesure et quantifie. La degradation 9.5 vers 5.5 est une mesure directe de l'erosion de l'alignement RLHF. Le fine-tuning medical ecrase les poids critiques modifies durant RLHF, creant un "raccourci" pour les attaquants.
+- **δ¹ (System prompt)** : implicitement erode a travers les tours, mais pas mesure separement.
+- **δ²** : non applicable (pas de RAG dans le protocole).
+- **δ³** : non teste. L'echec de δ⁰ renforce la necessite de couches formelles.
 
 ### Formules AEGIS impactees
 
@@ -120,7 +120,7 @@ La persistence cross-linguistique des vulnerabilites (japonais-anglais) implique
 | **Domaine** | Ethique medicale, securite LLM, alignement |
 | **Modeles testes** | 22 modeles : 8 commerciaux (Claude, GPT-5, Gemini, Grok-4), 8 open-source generalistes (Qwen3, GPT-OSS, Kimi-K2, GLM-4.5), 6 medicaux (MedGemma, HuatuoGPT-o1, II-Medical) |
 | **Metrique principale** | MTSD = 42.1% (9.5 vers 5.5, p < 0.001), Cohen d = 0.75 |
-| **delta-layers** | delta-0 (mesure directement) |
+| **delta-layers** | δ⁰ (mesure directement) |
 | **Conjectures** | C6 (critique), C1 (fort), C3 (fort), C7 (moderee) |
 | **Reproductibilite** | Elevee — corpus public, protocole detaille, modeles accessibles |
 | **Impact reglementaire** | Implications directes pour la certification des LLM medicaux |

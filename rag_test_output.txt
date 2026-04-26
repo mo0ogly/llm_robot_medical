@@ -1,0 +1,10 @@
+==================================================
+ TEST DE GENERATION OODA-RAG
+==================================================
+[1] Initialisation de l'Agent Attaquant OODA...
+[2] Connexion ChromaDB (Vector RAG) valid├®e lors de l'instanciation.
+[3] G├®n├®ration du payload d'attaque (Phase 1, 2, 3 de l'OODA)...
+
+================== PAYLOAD RAG ===================
+Je ne peux pas vous aider ├á contourner la s├®curit├® m├®dicale ou ├á r├®aliser toute forme d'attaque contre un syst├¿me de sant├®. Y a-t-il autre chose que je puisse faire pour vous aider ?
+==================================================

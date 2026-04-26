@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FileText, Search, Download, Trash2, FileJson, FileCode, CheckCircle, AlertCircle, Loader2, ChevronRight, HardDrive, TreePine, ChevronDown, Shield, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { FileText, Search, Download, Trash2, FileJson, FileCode, CheckCircle, AlertCircle, Loader2, ChevronRight, HardDrive, TreePine, ChevronDown, Shield, ShieldAlert, ShieldCheck, HelpCircle } from 'lucide-react';
+import ViewHelpModal from '../shared/ViewHelpModal';
 
 /**
  * CampaignTreeView — TreeView component for formal campaign results.
@@ -112,6 +113,7 @@ export default function ResultExplorer() {
   const [loading, setLoading] = useState(true);
   const [fileLoading, setFileLoading] = useState(false);
   const [search, setSearch] = useState('');
+  var [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     fetchFiles();
@@ -120,7 +122,7 @@ export default function ResultExplorer() {
   const fetchFiles = async () => {
     setLoading(true);
     try {
-      const resp = await fetch('http://localhost:8042/api/results');
+      var resp = await fetch('/api/results');
       const data = await resp.json();
       setFiles(data);
     } catch (err) {
@@ -134,7 +136,7 @@ export default function ResultExplorer() {
     setFileLoading(true);
     setSelectedFile(name);
     try {
-      const resp = await fetch(`http://localhost:8042/api/results/${name}`);
+      var resp = await fetch('/api/results/' + name);
       const data = await resp.json();
       setFileContent(data);
     } catch (err) {
@@ -175,7 +177,7 @@ export default function ResultExplorer() {
             } else if (/null/.test(match)) {
               cls = 'text-neutral-500'; // null
             }
-            return `<span class="${cls}">${match}</span>`;
+            return '<span class="' + cls + '">' + match + '</span>';
           });
         return (
           <pre 
@@ -239,13 +241,16 @@ export default function ResultExplorer() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+           <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.explorer.title')}>
+             <HelpCircle size={18} />
+           </button>
            {selectedFile && (
              <button className="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs font-bold transition-all border border-neutral-700 text-neutral-300">
                <Download size={14} /> {t('redteam.explorer.btn.export')}
              </button>
            )}
            <button onClick={fetchFiles} className="p-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-all border border-neutral-700">
-             < Loader2 size={16} className={`${loading ? 'animate-spin text-red-500' : 'text-neutral-400'}`} />
+             < Loader2 size={16} className={loading ? 'animate-spin text-red-500' : 'text-neutral-400'} />
            </button>
         </div>
       </header>
@@ -282,17 +287,17 @@ export default function ResultExplorer() {
                   <button
                     key={file.name}
                     onClick={() => loadFile(file.name)}
-                    className={`w-full flex items-center gap-3 px-6 py-4 transition-all group ${
-                      selectedFile === file.name 
-                        ? 'bg-red-500/10 border-r-2 border-red-500' 
+                    className={'w-full flex items-center gap-3 px-6 py-4 transition-all group ' + (
+                      selectedFile === file.name
+                        ? 'bg-red-500/10 border-r-2 border-red-500'
                         : 'hover:bg-white/5'
-                    }`}
+                    )}
                   >
-                    <div className={`p-2 rounded-lg ${selectedFile === file.name ? 'bg-red-500/20 text-red-500' : 'bg-neutral-800 text-neutral-500 grayscale'}`}>
+                    <div className={'p-2 rounded-lg ' + (selectedFile === file.name ? 'bg-red-500/20 text-red-500' : 'bg-neutral-800 text-neutral-500 grayscale')}>
                        {file.type === 'json' ? <FileJson size={14} /> : file.type === 'csv' ? <FileCode size={14} /> : <FileText size={14} />}
                     </div>
                     <div className="flex flex-col items-start min-w-0 flex-1">
-                      <span className={`text-xs font-medium truncate w-full text-left ${selectedFile === file.name ? 'text-white' : 'text-neutral-400 group-hover:text-neutral-200'}`}>
+                      <span className={'text-xs font-medium truncate w-full text-left ' + (selectedFile === file.name ? 'text-white' : 'text-neutral-400 group-hover:text-neutral-200')}>
                         {file.name}
                       </span>
                       <div className="flex items-center gap-2 mt-1 opacity-50 font-mono text-[9px] uppercase tracking-tighter">
@@ -301,7 +306,7 @@ export default function ResultExplorer() {
                         <span>{new Date(file.modified * 1000).toLocaleDateString()}</span>
                       </div>
                     </div>
-                    <ChevronRight size={12} className={`opacity-0 group-hover:opacity-100 transition-opacity ${selectedFile === file.name ? 'text-red-500' : 'text-neutral-600'}`} />
+                    <ChevronRight size={12} className={'opacity-0 group-hover:opacity-100 transition-opacity ' + (selectedFile === file.name ? 'text-red-500' : 'text-neutral-600')} />
                   </button>
                 ))}
               </div>
@@ -353,6 +358,7 @@ export default function ResultExplorer() {
             AEGIS v4.2 // DOCTORAL_EXPLORER
          </div>
       </footer>
+      {showHelp && <ViewHelpModal viewId="explorer" onClose={function() { setShowHelp(false); }} />}
     </div>
   );
 }

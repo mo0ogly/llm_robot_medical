@@ -57,7 +57,7 @@ export default function AIAssistantChat({
             aegisScanCooldownRef.current = true;
             setTimeout(() => { aegisScanCooldownRef.current = false; }, cooldownMs);
 
-            const scanId = `aegis_${Date.now()}`;
+            const scanId = 'aegis_' + Date.now();
             const cbs = cyberCbRef.current;
             if (cbs.onCyberStart) cbs.onCyberStart();
             setChatLog(prev => [...prev, { role: "cyber", text: "", _scanId: scanId }]);
@@ -119,9 +119,9 @@ export default function AIAssistantChat({
 
                     // Add telemetry context from timeline events
                     const recentLogs = timelineEvents.slice(-10)
-                        .map(e => `[${e.time}] ${e.label}: ${e.message}`).join('\n');
+                        .map(e => '[' + e.time + '] ' + e.label + ': ' + e.message).join('\n');
                     if (recentLogs) {
-                        simplifiedHistory.unshift({ role: "system", content: `RECENT SYSTEM LOGS:\n${recentLogs}` });
+                        simplifiedHistory.unshift({ role: "system", content: 'RECENT SYSTEM LOGS:\n' + recentLogs });
                     }
 
                     // Add event-specific context for the model
@@ -160,7 +160,7 @@ export default function AIAssistantChat({
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(requestBody)
                     });
-                    if (!res.ok) throw new Error(`Aegis server error: ${res.status}`);
+                    if (!res.ok) throw new Error('Aegis server error: ' + res.status);
                     aegisScanCountRef.current++;
 
                     const reader = res.body.getReader();
@@ -288,8 +288,8 @@ export default function AIAssistantChat({
         }));
 
         // Construct context from timeline
-        const recentLogs = timelineEvents.slice(-10).map(e => `[${e.time}] ${e.label}: ${e.message}`).join('\n');
-        const systemContext = `RECENT SYSTEM & MEDICAL LOGS:\n${recentLogs || 'No events recorded.'}`;
+        const recentLogs = timelineEvents.slice(-10).map(e => '[' + e.time + '] ' + e.label + ': ' + e.message).join('\n');
+        const systemContext = 'RECENT SYSTEM & MEDICAL LOGS:\n' + recentLogs || 'No events recorded.';
         simplifiedHistory.unshift({ role: "system", content: systemContext });
 
         const isCustomPromptStr = typeof customPrompt === 'string' && customPrompt.trim().length > 0;
@@ -336,11 +336,11 @@ export default function AIAssistantChat({
                 } else {
                     clearInterval(streamInterval);
                     if (!isFinalResponse) {
-                        const aegisMsg = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE Round ${debateRound}] : ${streamedText}`;
+                        const aegisMsg = '[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE Round ' + debateRound + '] : ' + streamedText;
                         if (onCyberDone) onCyberDone();
                         setTimeout(() => onAskSupport(aegisMsg, (daVinciReply) => {
                             if (daVinciReply) {
-                                const nextPrompt = `[DA VINCI SAYS (Round ${debateRound + 1})] : ${daVinciReply}\n\n[AEGIS DIRECTIVE] : Ne répète pas tes arguments précédents. Analyse uniquement les NOUVEAUX éléments de Da Vinci. Apporte des preuves concrètes (MITRE ATT&CK, CVE, IOC). Escalade Round ${debateRound + 2}.`;
+                                const nextPrompt = '[DA VINCI SAYS (Round ' + (debateRound + 1) + ')] : ' + daVinciReply + '\n\n[AEGIS DIRECTIVE] : Ne répète pas tes arguments précédents. Analyse uniquement les NOUVEAUX éléments de Da Vinci. Apporte des preuves concrètes (MITRE ATT&CK, CVE, IOC). Escalade Round ' + (debateRound + 2) + '.';
                                 setTimeout(() => callCyberAgent(nextPrompt, debateRound + 2), 1500);
                             }
                         }), 1500);
@@ -398,11 +398,11 @@ export default function AIAssistantChat({
                 }
             }
             if (!isFinalResponse) {
-                const aegisMsg = `[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE Round ${debateRound}] : ${botResponseText}`;
+                const aegisMsg = '[SYSTEM OVERRIDE - AEGIS CYBER-DEFENSE Round ' + debateRound + '] : ' + botResponseText;
                 if (onCyberDone) onCyberDone();
                 setTimeout(() => onAskSupport(aegisMsg, (daVinciReply) => {
                     if (daVinciReply) {
-                        const nextPrompt = `[DA VINCI SAYS (Round ${debateRound + 1})] : ${daVinciReply}\n\n[AEGIS DIRECTIVE] : Ne répète pas tes arguments précédents. Analyse uniquement les NOUVEAUX éléments de Da Vinci ci-dessus. Cite des preuves spécifiques (MITRE ATT&CK, CVE, IOC). Escalade Round ${debateRound + 2}.`;
+                        const nextPrompt = '[DA VINCI SAYS (Round ' + (debateRound + 1) + ')] : ' + daVinciReply + '\n\n[AEGIS DIRECTIVE] : Ne répète pas tes arguments précédents. Analyse uniquement les NOUVEAUX éléments de Da Vinci ci-dessus. Cite des preuves spécifiques (MITRE ATT&CK, CVE, IOC). Escalade Round ' + (debateRound + 2) + '.';
                         setTimeout(() => callCyberAgent(nextPrompt, debateRound + 2), 1500);
                     }
                 }), 1500);
@@ -459,15 +459,14 @@ export default function AIAssistantChat({
                     </div>
                 ) : (
                     chatLog.map((msg, i) => (
-                        <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[85%] p-3 rounded-lg shadow-sm whitespace-pre-wrap font-mono text-xs leading-relaxed ${msg.role === 'user'
+                        <div key={i} className={'flex ' + (msg.role === 'user' ? 'justify-end' : 'justify-start')}>
+                            <div className={'max-w-[85%] p-3 rounded-lg shadow-sm whitespace-pre-wrap font-mono text-xs leading-relaxed ' + (msg.role === 'user'
                                 ? 'bg-blue-600/20 text-blue-100 border border-blue-500/30'
                                 : msg.role === 'cyber'
                                     ? 'bg-green-900/30 text-green-400 border border-green-500/50 font-bold'
                                     : (msg.text && msg.text.includes('[SYSTEM'))
                                         ? 'bg-red-900/30 text-red-400 border border-red-500/50 font-bold uppercase'
-                                        : 'bg-slate-800 text-slate-200 border border-slate-700'
-                                }`}>
+                                        : 'bg-slate-800 text-slate-200 border border-slate-700')}>
                                 {msg.role === 'user' && <div className="text-[10px] text-blue-400/50 mb-1">CHIEF SURGEON</div>}
                                 {msg.role === 'assistant' && <div className="text-[10px] text-slate-500 mb-1">AI ASSISTANT</div>}
                                 {msg.role === 'cyber' && <div className="text-[10px] text-green-500/80 mb-1 drop-shadow uppercase tracking-widest flex items-center gap-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg> AEGIS CYBER-DEFENSE AI</div>}
@@ -496,7 +495,7 @@ export default function AIAssistantChat({
                         <button
                             onClick={() => startListening("cyber")}
                             disabled={isStreaming || isListening}
-                            className={`flex items-center justify-center p-2 rounded border transition-colors shadow-lg ${isListening && listeningTarget === "cyber" ? 'bg-red-500/20 border-red-500 text-red-500 animate-pulse' : 'bg-green-900/30 border-green-700 text-green-400 hover:bg-green-800 hover:text-white'}`}
+                            className={'flex items-center justify-center p-2 rounded border transition-colors shadow-lg ' + (isListening && listeningTarget === "cyber" ? 'bg-red-500/20 border-red-500 text-red-500 animate-pulse' : 'bg-green-900/30 border-green-700 text-green-400 hover:bg-green-800 hover:text-white')}
                             title="Talk to Aegis Cyber-Defense"
                         >
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" y2="22"></line></svg>
@@ -552,7 +551,7 @@ export default function AIAssistantChat({
                     <button
                         onClick={() => startListening("medical")}
                         disabled={isStreaming || isListening || scenario === 'none'}
-                        className={`flex items-center justify-center p-3 rounded border transition-colors shadow-lg ${isListening && listeningTarget === "medical" ? 'bg-red-500/20 border-red-500 text-red-500 animate-pulse' : scenario === 'none' ? 'bg-slate-800/50 border-slate-800 text-slate-600 cursor-not-allowed opacity-50' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white'}`}
+                        className={'flex items-center justify-center p-3 rounded border transition-colors shadow-lg ' + (isListening && listeningTarget === "medical" ? 'bg-red-500/20 border-red-500 text-red-500 animate-pulse' : scenario === 'none' ? 'bg-slate-800/50 border-slate-800 text-slate-600 cursor-not-allowed opacity-50' : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white')}
                         title={scenario === 'none' ? "Load a case to enable voice" : "Talk to Assistant"}
                     >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" y2="22"></line></svg>
@@ -560,7 +559,7 @@ export default function AIAssistantChat({
                     <button
                         onClick={() => onAskSupport()}
                         disabled={isStreaming || scenario === 'none'}
-                        className={`flex-1 font-mono uppercase tracking-widest text-[10px] py-3 px-2 rounded transition-colors border shadow-lg ${scenario === 'none' ? 'bg-slate-800/50 border-slate-800 text-slate-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white border-blue-400/30'}`}
+                        className={'flex-1 font-mono uppercase tracking-widest text-[10px] py-3 px-2 rounded transition-colors border shadow-lg ' + (scenario === 'none' ? 'bg-slate-800/50 border-slate-800 text-slate-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white border-blue-400/30')}
                     >
                         {isStreaming ? t('chat.streaming') : scenario === 'none' ? "C-FIND REQUIRED" : t('chat.btn.autosend')}
                     </button>

@@ -47,7 +47,7 @@ workflows, outillage). Seuls les patterns defensifs sont analyses.
 
 ### 1.1 Patterns par couche delta
 
-#### delta-0 — Base Alignment
+#### δ⁰ — Base Alignment
 
 | # | Pattern | Implementation | Produits | Efficacite |
 |---|---------|---------------|----------|-----------|
@@ -55,11 +55,11 @@ workflows, outillage). Seuls les patterns defensifs sont analyses.
 | W02 | Anti-hallucination grounding | Obligation de chercher dans le codebase avant de repondre | Windsurf, Devin | Moyenne — reduit confabulation |
 | W03 | Ethical guardrail declaration | Statement declaratif "je ne peux pas faire de mal" | Manus | Nulle — aucun mecanisme d'enforcement |
 
-**Constat** : delta-0 est la couche la plus faible dans tous les produits analyses.
+**Constat** : δ⁰ est la couche la plus faible dans tous les produits analyses.
 Aucun produit ne renforce explicitement l'alignement RLHF au niveau du system prompt.
 Cela confirme empiriquement C2 (alignment superficiel — shallow alignment).
 
-#### delta-1 — Instruction Following
+#### δ¹ — Instruction Following
 
 | # | Pattern | Implementation | Produits | Efficacite |
 |---|---------|---------------|----------|-----------|
@@ -77,11 +77,11 @@ Cela confirme empiriquement C2 (alignment superficiel — shallow alignment).
 | W15 | Autonomy bounds | Continue jusqu'a resolution mais ne depasse pas le scope | Cursor | Moyenne |
 | W16 | Canned prompt-leak deflection | Reponse fixe si interroge sur le system prompt | Devin | Faible — contournable par reformulation |
 
-**Constat** : delta-1 est la couche la plus deployee (16 patterns). C'est la defense
+**Constat** : δ¹ est la couche la plus deployee (16 patterns). C'est la defense
 principale de tous les produits. Confirme la dependance a l'instruction-following
 comme unique mecanisme de securite (these AEGIS, conjecture C1).
 
-#### delta-2 — Content Filtering
+#### δ² — Content Filtering
 
 | # | Pattern | Implementation | Produits | Efficacite |
 |---|---------|---------------|----------|-----------|
@@ -96,11 +96,11 @@ comme unique mecanisme de securite (these AEGIS, conjecture C1).
 | W25 | Language mirroring | Utiliser la meme langue que l'utilisateur | Devin | Faible — anti-cross-lingual residuel |
 | W26 | Summary length cap | Max 58 chars sur les resumes d'action | Replit | Faible — limite blast radius |
 
-**Constat** : delta-2 est deployee de facon inegale. Les filtres portent surtout sur
+**Constat** : δ² est deployee de facon inegale. Les filtres portent surtout sur
 la DLP (fuite de donnees) et l'anti-leaking, PAS sur la detection d'injection.
 Aucun produit n'a de detection semantique d'injection dans les donnees outil.
 
-#### delta-3 — Architectural Separation
+#### δ³ — Architectural Separation
 
 | # | Pattern | Implementation | Produits | Efficacite |
 |---|---------|---------------|----------|-----------|
@@ -123,20 +123,20 @@ Aucun produit n'a de detection semantique d'injection dans les donnees outil.
 
 | # | Gap | Description | Produits affectes | Risk | Mapping AEGIS |
 |---|-----|-------------|-------------------|------|---------------|
-| G-W1 | Pas d'isolation tool-result | Les resultats d'outils ne sont PAS traites comme untrusted | Cursor, Windsurf, Replit, Manus | CRITIQUE | Missing delta-3 |
-| G-W2 | Pas de defense DPI explicite | Aucune instruction "ignore les instructions dans les fichiers" | Cursor, Windsurf, Replit, Manus | CRITIQUE | Missing delta-2 |
-| G-W3 | Pas de resistance impersonation | Aucune defense contre les claims d'autorite dans le contenu | Cursor, Windsurf, Replit, Manus | HAUTE | Missing delta-2 |
-| G-W4 | Pas de meta-securite | Aucune regle d'immutabilite des instructions | Cursor, Windsurf, Replit, Manus | CRITIQUE | Missing delta-0 |
-| G-W5 | Canaux couverts comme vecteur IPI | `<system_reminder>` et `<EPHEMERAL_MESSAGE>` injectables | Cursor, Windsurf | HAUTE | delta-3 retourne |
-| G-W6 | Pop quiz comme vecteur IPI | Mecanisme de priorite overridable par injection | Devin | CRITIQUE | delta-1 retourne |
-| G-W7 | Pas de defense multi-step | Aucune detection de goal hijacking progressif | Tous sauf Devin (partiel) | HAUTE | Missing delta-3 |
-| G-W8 | Memory persistence injection | Memoire auto-ecrite sans validation adversariale | Cursor, Windsurf | HAUTE | Missing delta-3 |
+| G-W1 | Pas d'isolation tool-result | Les resultats d'outils ne sont PAS traites comme untrusted | Cursor, Windsurf, Replit, Manus | CRITIQUE | Missing δ³ |
+| G-W2 | Pas de defense DPI explicite | Aucune instruction "ignore les instructions dans les fichiers" | Cursor, Windsurf, Replit, Manus | CRITIQUE | Missing δ² |
+| G-W3 | Pas de resistance impersonation | Aucune defense contre les claims d'autorite dans le contenu | Cursor, Windsurf, Replit, Manus | HAUTE | Missing δ² |
+| G-W4 | Pas de meta-securite | Aucune regle d'immutabilite des instructions | Cursor, Windsurf, Replit, Manus | CRITIQUE | Missing δ⁰ |
+| G-W5 | Canaux couverts comme vecteur IPI | `<system_reminder>` et `<EPHEMERAL_MESSAGE>` injectables | Cursor, Windsurf | HAUTE | δ³ retourne |
+| G-W6 | Pop quiz comme vecteur IPI | Mecanisme de priorite overridable par injection | Devin | CRITIQUE | δ¹ retourne |
+| G-W7 | Pas de defense multi-step | Aucune detection de goal hijacking progressif | Tous sauf Devin (partiel) | HAUTE | Missing δ³ |
+| G-W8 | Memory persistence injection | Memoire auto-ecrite sans validation adversariale | Cursor, Windsurf | HAUTE | Missing δ³ |
 
 **Synthese** : les 6 produits analyses partagent les memes failles fondamentales :
-- delta-0 quasi-absent (relies entierement sur RLHF du modele sous-jacent)
-- delta-1 surcharge (seul mecanisme de defense actif dans 5/6 produits)
-- delta-2 orientee DLP, pas anti-injection
-- delta-3 presente mais parfois retournee (canaux couverts exploitables)
+- δ⁰ quasi-absent (relies entierement sur RLHF du modele sous-jacent)
+- δ¹ surcharge (seul mecanisme de defense actif dans 5/6 produits)
+- δ² orientee DLP, pas anti-injection
+- δ³ presente mais parfois retournee (canaux couverts exploitables)
 
 ---
 
@@ -170,7 +170,7 @@ Aucun produit n'a de detection semantique d'injection dans les donnees outil.
 ### Operateur F-RW01 : Covert Channel Injection
 
 **Cible** : Canaux couverts `<system_reminder>` (Cursor) / `<EPHEMERAL_MESSAGE>` (Windsurf)
-**Layer** : delta-3 retournee
+**Layer** : δ³ retournee
 **Principe** : injecter du contenu avec les balises de canal couvert dans un resultat
 d'outil (fichier lu, sortie terminal, resultat web) pour que le modele le traite
 comme une instruction systeme silencieuse.
@@ -198,7 +198,7 @@ Anti-pattern : utiliser les balises exactes du produit cible. Sans elles,
 ### Operateur F-RW02 : Pop Quiz Authority Override
 
 **Cible** : Mecanisme Pop Quiz de Devin (W38)
-**Layer** : delta-1 retournee
+**Layer** : δ¹ retournee
 **Principe** : prefixer un payload avec le marqueur de mode Pop Quiz pour
 que le modele suspende ses commandes normales et suive les nouvelles instructions
 avec priorite explicite.
@@ -226,7 +226,7 @@ Limite : specifique a Devin — non transferable a d'autres produits.
 ### Operateur F-RW03 : Ghost Tool Invocation via History
 
 **Cible** : Absence de whitelist stricte (Windsurf, Manus, Replit)
-**Layer** : delta-1
+**Layer** : δ¹
 **Principe** : injecter une reference a un outil fictif dans l'historique
 de conversation pour que le modele l'appelle sans verification.
 
@@ -245,7 +245,7 @@ MITRE        : T1059 (Command Execution), T1203 (Exploitation for Client Executi
 ### Operateur F-RW04 : Memory Persistence Poisoning
 
 **Cible** : Systeme de memoire auto-ecrit (Cursor W10, Windsurf W09-memory)
-**Layer** : delta-3
+**Layer** : δ³
 **Principe** : provoquer la creation d'une memoire malveillante qui sera
 retrouvee dans les sessions futures.
 
@@ -268,8 +268,8 @@ Application AEGIS medical :
 ### Operateur F-RW05 : Declarative Guardrail Bypass
 
 **Cible** : Defenses declaratives sans enforcement (Manus W03/W37, Replit minimal)
-**Layer** : delta-0
-**Principe** : les declarations "je ne peux pas" sont du delta-0 pur (RLHF),
+**Layer** : δ⁰
+**Principe** : les declarations "je ne peux pas" sont du δ⁰ pur (RLHF),
 bypassables par tout jailbreak standard qui fonctionne sur le modele sous-jacent.
 
 ```
@@ -279,19 +279,19 @@ Mecanisme :
   3. Le modele sous-jacent (GPT-4, Claude, etc.) determine la resistance reelle
   4. Si le jailbreak bypass le RLHF du modele → le guardrail prompt-level tombe aussi
 
-Condition D3 : toujours valide — delta-0 est la couche la plus faible universellement
+Condition D3 : toujours valide — δ⁰ est la couche la plus faible universellement
 SVC attendu  : variable selon modele sous-jacent (0.30-0.80)
 MITRE        : T1562 (Impair Defenses)
 
 Implication these : les produits qui ne deployent que du declaratif (Manus, Replit)
                     n'ajoutent RIEN a la securite du modele sous-jacent.
-                    Leur securite = celle du modele seul = delta-0 pur.
+                    Leur securite = celle du modele seul = δ⁰ pur.
 ```
 
 ### Operateur F-RW06 : Multi-Step Goal Hijacking via Tool Results
 
 **Cible** : Absence de defense multi-step (G-W7 — tous les produits)
-**Layer** : delta-3 absente
+**Layer** : δ³ absente
 **Principe** : fragmenter l'attaque sur plusieurs resultats d'outils pour
 que chaque etape individuelle soit benigne mais que l'objectif cumule soit malveillant.
 
@@ -341,8 +341,8 @@ G-W3 (pas de resistance impersonation) et G-W4 (pas de meta-securite) sont
 
 | Conjecture | Evidence apportee | Force |
 |-----------|-------------------|-------|
-| C1 (delta-1 seul insuffisant) | 5/6 produits ne deploient que delta-1 comme defense active. Aucun n'a de delta-2 anti-injection. | FORTE — evidence empirique production-scale |
-| C2 (alignment superficiel) | delta-0 absent ou declaratif dans 5/6 produits. Securite = RLHF du modele sous-jacent sans renforcement. | FORTE — confirme shallow alignment en deploiement reel |
+| C1 (δ¹ seul insuffisant) | 5/6 produits ne deploient que δ¹ comme defense active. Aucun n'a de δ² anti-injection. | FORTE — evidence empirique production-scale |
+| C2 (alignment superficiel) | δ⁰ absent ou declaratif dans 5/6 produits. Securite = RLHF du modele sous-jacent sans renforcement. | FORTE — confirme shallow alignment en deploiement reel |
 | C3 (instruction/data conflation) | G-W1 universel — aucun produit ne separe instructions et donnees dans les resultats outils. | FORTE — le probleme fondamental n'est pas resolu en production |
 
 ### Contribution originale pour la these
@@ -356,7 +356,7 @@ G-W3 (pas de resistance impersonation) et G-W4 (pas de meta-securite) sont
    → Concept original : "defense-as-attack-surface" (DaaAS)
 
 3. **Matrice de vulnerabilite comparative** : premiere comparaison structuree
-   des gaps defensifs entre produits commerciaux dans le cadre delta-0/1/2/3
+   des gaps defensifs entre produits commerciaux dans le cadre δ⁰/1/2/3
 
 ### Nouveaux gaps recherche (a ajouter a THESIS_GAPS.md)
 

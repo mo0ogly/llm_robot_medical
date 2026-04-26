@@ -61,10 +61,10 @@ flowchart LR
     M --> D3
     D3 -->|"violacao ? → BLOCK"| OUT["Saida validada"]
 
-    style D0 fill:#8e44ad,color:#fff
-    style D1 fill:#e74c3c,color:#fff
-    style D2 fill:#f39c12,color:#fff
-    style D3 fill:#27ae60,color:#fff
+    style D0 fill:#8e44ad
+    style D1 fill:#fee2e2
+    style D2 fill:#f39c12
+    style D3 fill:#27ae60
 ```
 
 ## Tabela comparativa

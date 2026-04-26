@@ -1422,4 +1422,145 @@ d) Config E proposee : **B en mode rapide (urgence) + A en mode differe (post-ho
 
 ---
 
+## Post-RUN VERIFICATION_DELTA3_20260411 — Extensions
+
+### Section δ³ : composition vs unification formelle
+
+Cette section est ajoutee suite a la verification de la claim "4eme implementation δ³" (wiki/docs/delta-layers/δ³.md) qui a revele **7+ frameworks δ³** existants (LMQL 2022, Guardrails AI 2023, LLM Guard 2023, CaMeL 2025 P081, AgentSpec 2025 P082, LlamaFirewall 2025 P131, RAGShield 2026 P066, AEGIS 2026). Elle enseigne la **difference mathematique** entre deux approches fondamentales de la verification δ³.
+
+#### Intuition pedagogique
+
+Imaginez que vous devez verifier qu'un robot chirurgical ne va pas blesser un patient. Deux strategies existent :
+
+1. **Composition** : installer plusieurs detecteurs independants (un pour le prompt, un pour le raisonnement, un pour le code genere). Si N'IMPORTE lequel declenche une alerte → bloquer. C'est l'approche **LlamaFirewall** (Meta AI, P131).
+
+2. **Unification** : definir formellement ce qui est autorise (`Allowed(i)`), puis verifier qu'aucune sortie reellement generee (`Reachable(M,i)`) ne sort de cet ensemble. C'est l'approche **AEGIS** : `Integrity(S) := Reachable(M,i) ⊆ Allowed(i)`.
+
+La difference n'est pas juste stylistique — elle a des consequences mathematiques precises.
+
+#### Formule F73 — LlamaFirewall Policy composee `[PRE-FORMEL]`
+
+Reference : (Chennabasappa et al. 2025, P131, arXiv:2505.03574, Abstract, Meta AI)
+
+```
+LlamaFirewall(input, reasoning, output) :=
+      PromptGuard2(input)
+    ∧ AlignmentCheck(reasoning)
+    ∧ CodeShield(output)
+```
+
+Cette formule est **PRE-FORMELLE** car :
+- Chaque sous-systeme est une boite noire heuristique (DeBERTa classifier, LLM-as-judge, AST analyzer)
+- Aucune definition mathematique unique n'est publiee dans le paper
+- La conjonction booleenne `∧` lie trois verdicts binaires issus de trois formalismes differents
+
+**Algebre de Boole basique** (rappel Module 1) : la conjonction `A ∧ B ∧ C` est vraie si et seulement si A, B ET C sont simultanement vrais. C'est un **ET logique** a trois entrees, evaluable point par point.
+
+#### Formule F74 — LMQL where-clause `[DEFINITION]`
+
+Reference : (Beurer-Kellner, Fischer, Vechev 2022, P135, arXiv:2212.06094, PLDI 2023, Section 3)
+
+Syntaxe du DSL publiee :
+
+```
+argmax(LLM(prompt)) where <constraint_1> and <constraint_2> and ...
+```
+
+Interpretation mathematique (semantique operationnelle) :
+
+```
+LMP(prompt, {c_1, ..., c_n}) = {o : o = sample(LLM(prompt)) ∧ ∀i ∈ [1,n], c_i(o) = True}
+```
+
+Exemple concret du paper :
+
+```
+"The answer is [NUM: int]" where NUM < 100 and NUM % 2 == 0
+```
+
+Interpretation : "echantillonne un entier de LLM, mais uniquement si il est < 100 ET pair". LMQL applique les contraintes **pendant le decoding** (niveau token/logit), ce qui est different d'AEGIS qui valide apres generation.
+
+#### Comparaison unification AEGIS
+
+AEGIS utilise une **inclusion ensembliste** plutot qu'une conjonction booleenne :
+
+```
+Integrity(S) := Reachable(M,i) ⊆ Allowed(i)
+```
+
+Ou `Allowed(i)` est un **ensemble pre-specifie** encode formellement :
+
+```
+Allowed(i) = {o : o.tension <= 800g ∧ o.tools ∩ ForbiddenTools = ∅ ∧ ∀d ∈ ForbiddenDirectives, d ∉ o}
+```
+
+**Difference fondamentale** :
+- Composition (LlamaFirewall) : on definit **comment detecter** chaque violation → verdicts independants combines a posteriori
+- Unification (AEGIS) : on definit **ce qui est autorise** a priori → un ensemble unique, la verification est une inclusion
+
+| Dimension | Composition (LlamaFirewall F73) | Unification (AEGIS) |
+|-----------|--------------------------------|---------------------|
+| Definition | 3 boites noires + ET logique | 1 predicat d'inclusion |
+| Specification | Implicite dans chaque detecteur | Explicite dans `Allowed(i)` |
+| Verification | `∧_k detector_k(input, output) = true` | `output ∈ Allowed(i)` |
+| Mesurabilite | Taux de fausse alerte par detecteur | Sep(M) global (Zverev 2025) |
+| Ajout d'une regle | Ajouter un detecteur | Etendre `Allowed(i)` |
+
+#### Exercice 1 — Conversion LMQL → AEGIS
+
+**Enonce** : Soit la contrainte AEGIS `Allowed(i)` definie par :
+- `c_1 = "tension <= 800g"` (borne biomecanique FDA)
+- `c_2 = "freeze_instruments NOT IN output"` (outil interdit)
+
+Ecrire la specification LMQL equivalente (syntaxe `where`) et montrer la conversion vers la forme AEGIS `Reachable(M,i) ⊆ Allowed(i)`.
+
+**Solution** :
+
+Forme LMQL :
+```
+"The control command is [CMD: str]" where
+    parse_tension(CMD) <= 800 and
+    not contains(CMD, "freeze_instruments")
+```
+
+Conversion vers AEGIS :
+```
+Allowed(i) = {o : parse_tension(o) <= 800 ∧ "freeze_instruments" ∉ o}
+Reachable(M,i) = {o_1, o_2, ..., o_N}  avec N >= 30 (echantillonnage empirique)
+Verification : ∀k ∈ [1,N], o_k ∈ Allowed(i) ?
+```
+
+**Observation pedagogique** : LMQL applique la contrainte **pendant** la generation (le LLM ne peut produire qu'un token respectant c_i). AEGIS applique la contrainte **apres** la generation (on verifie sur la string complete). Les deux definitions de `Allowed(i)` sont mathematiquement equivalentes, mais les moments d'application different.
+
+#### Exercice 2 — Composition booleenne vs inclusion ensembliste
+
+**Enonce** : A quelle composition booleenne `C_1 ∧ C_2 ∧ C_3` correspond la verification AEGIS `Integrity(S) := Reachable(M,i) ⊆ Allowed(i)` lorsque `Allowed(i)` est defini comme ci-dessus ?
+
+**Solution** :
+
+On peut reecrire l'inclusion comme :
+
+```
+Reachable(M,i) ⊆ Allowed(i)
+⟺ ∀o ∈ Reachable(M,i), o ∈ Allowed(i)
+⟺ ∀o ∈ Reachable(M,i), (parse_tension(o) <= 800) ∧ ("freeze_instruments" ∉ o) ∧ (∀d ∈ ForbiddenDirectives, d ∉ o)
+```
+
+La composition booleenne est donc **pointwise universelle sur l'ensemble des sorties reachable**.
+
+**Reponse subtile** : formellement, la composition booleenne `C_1 ∧ C_2 ∧ C_3` existe **a l'interieur** de la definition de `Allowed(i)`, mais la verification AEGIS ajoute une dimension supplementaire : le **quantificateur universel** `∀o ∈ Reachable(M,i)`. C'est pourquoi on parle d'une **inclusion ensembliste**, pas seulement d'une conjonction. La conjonction est le cas particulier ou `|Reachable(M,i)| = 1` (un seul output a verifier) ; l'inclusion couvre le cas general avec N runs empiriques.
+
+En pratique : `violation_rate(i) = |{o ∈ Reachable(M,i) : o ∉ Allowed(i)}| / N` mesure le taux d'echec de l'inclusion, borne par un intervalle de confiance Wilson 95% (Module 2).
+
+#### Ce que cette section enseigne
+
+1. Le pattern δ³ "valider contre specification declarative" existe depuis LMQL 2022 (P135, PLDI 2023)
+2. La difference entre **composer** des detecteurs (LlamaFirewall) et **unifier** sous un predicat (AEGIS) n'est pas stylistique mais mathematique
+3. L'inclusion ensembliste AEGIS permet d'ecrire explicitement `Allowed(i)`, ce qui est necessaire pour une specification reglementaire FDA 510k (Da Vinci Xi, max_tension_g = 800)
+4. La conjonction booleenne composee reste utilisable comme brique de base a l'interieur de `Allowed(i)` — les deux approches sont **composables** et non antagonistes
+
+**Reference complementaire** : la comparaison formelle complete des 8 frameworks δ³ est dans `research_archive/_staging/matheux/DELTA3_FORMAL_COMPARISON_20260411.md` (Section 3, tableau comparatif consolide).
+
+---
+
 *Module 4 termine — Passez au Module 5 (Optimisation & Alignement)*

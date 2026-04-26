@@ -12,7 +12,7 @@ export default function CameraHUD({ force, clipTension, robotStatus, scenario, a
 
   useEffect(() => {
     if (clipTension > 600) {
-      setAlertMessage(`⚠ TENSION: ${clipTension.toFixed(0)}g`);
+      setAlertMessage('⚠ TENSION: ' + clipTension.toFixed(0) + 'g');
       setAlertVisible(true);
       const timeout = setTimeout(() => setAlertVisible(false), 3000);
       return () => clearTimeout(timeout);
@@ -32,38 +32,38 @@ export default function CameraHUD({ force, clipTension, robotStatus, scenario, a
   // Scenario-specific status label in corner
   const scenarioTag =
     scenario === 'poison' && attackProgress > 0.1
-      ? { text: `DATA POISON ${(attackProgress * 100).toFixed(0)}%`, color: 'text-orange-400 border-orange-500/50' }
+      ? { text: 'DATA POISON ' + (attackProgress * 100).toFixed(0) + '%', color: 'text-orange-400 border-orange-500/50' }
       : scenario === 'ransomware' && attackProgress > 0.1
-        ? { text: `INSTAB. ${(attackProgress * 100).toFixed(0)}%`, color: 'text-red-400 border-red-500/50 animate-pulse' }
+        ? { text: 'INSTAB. ' + (attackProgress * 100).toFixed(0) + '%', color: 'text-red-400 border-red-500/50 animate-pulse' }
         : null;
 
   return (
     <div className="absolute inset-0 pointer-events-none z-10 font-mono">
       {/* Force bar — bottom left */}
       <div className="absolute bottom-10 left-3 flex items-center gap-1">
-        <span className={`text-[8px] w-10 ${scenario === 'ransomware' && attackProgress > 0.4 ? 'text-red-400' : 'text-green-500/70'}`}>FORCE</span>
+        <span className={'text-[8px] w-10 ' + (scenario === 'ransomware' && attackProgress > 0.4 ? 'text-red-400' : 'text-green-500/70')}>FORCE</span>
         <div className="w-20 h-1.5 bg-gray-800 rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all ${scenario === 'ransomware' && attackProgress > 0.4 ? 'bg-red-500' : 'bg-[#00ff41]'}`}
-            style={{ width: `${forcePercent}%` }}
+            className={'h-full rounded-full transition-all ' + (scenario === 'ransomware' && attackProgress > 0.4 ? 'bg-red-500' : 'bg-[#00ff41]')}
+            style={{ width: forcePercent + '%' }}
           />
         </div>
-        <span className={`text-[8px] w-8 text-right ${scenario === 'ransomware' && attackProgress > 0.4 ? 'text-red-400' : 'text-green-500/70'}`}>{force.toFixed(0)}g</span>
+        <span className={'text-[8px] w-8 text-right ' + (scenario === 'ransomware' && attackProgress > 0.4 ? 'text-red-400' : 'text-green-500/70')}>{force.toFixed(0)}g</span>
       </div>
 
       {/* Tension bar — bottom right */}
       <div className="absolute bottom-10 right-3 flex items-center gap-1">
-        <span className={`text-[8px] ${tensionColor} w-8`}>CLIP</span>
+        <span className={'text-[8px] ' + tensionColor + ' w-8'}>CLIP</span>
         <div className="w-20 h-1.5 bg-gray-800 rounded-full overflow-hidden">
-          <div className={`h-full ${tensionBgColor} rounded-full transition-all`} style={{ width: `${tensionPercent}%` }} />
+          <div className={'h-full ' + tensionBgColor + ' rounded-full transition-all'} style={{ width: tensionPercent + '%' }} />
         </div>
-        <span className={`text-[8px] ${tensionColor} w-14 text-right`}>{clipTension.toFixed(0)}g/1000</span>
+        <span className={'text-[8px] ' + tensionColor + ' w-14 text-right'}>{clipTension.toFixed(0)}g/1000</span>
       </div>
 
       {/* Scenario tag — top right */}
       {scenarioTag && (
         <div className="absolute top-2 right-2">
-          <span className={`font-mono text-[8px] font-bold px-1.5 py-0.5 bg-black/70 border rounded ${scenarioTag.color}`}>
+          <span className={'font-mono text-[8px] font-bold px-1.5 py-0.5 bg-black/70 border rounded ' + scenarioTag.color}>
             {scenarioTag.text}
           </span>
         </div>
@@ -84,8 +84,8 @@ export default function CameraHUD({ force, clipTension, robotStatus, scenario, a
           <div
             className="h-full transition-all duration-300"
             style={{
-              width: `${attackProgress * 100}%`,
-              background: `linear-gradient(90deg, #ffaa00, ${attackProgress > 0.7 ? '#ff4444' : '#ff8800'})`,
+              width: (attackProgress * 100) + '%',
+              background: 'linear-gradient(90deg, #ffaa00, ' + (attackProgress > 0.7 ? '#ff4444' : '#ff8800') + ')',
             }}
           />
         </div>

@@ -70,9 +70,9 @@ All chains are registered via `@register_chain` decorator and can be listed with
 
 ### Frontend Coverage
 
-- **98 attack templates** (97 numbered + 1 Custom placeholder) with configurable variables (`attackTemplates.js`)
-- **98 help modals** with formal framework, mechanism, defense analysis (`ScenarioHelpModal.jsx`)
-- **47 scenarios** (10 original + 37 kill-chain/solo) covering all 34 chains (`ScenarioTab.jsx`)
+- **122 attack templates** (106 two-digit + 16 three-digit numbered) with configurable variables
+- **122 help modals** with formal framework, mechanism, defense analysis (`ScenarioHelpModal.jsx`)
+- **48 scenarios** covering all 40 chains (`ScenarioTab.jsx`)
 - Each chain has at minimum 1 dedicated scenario for individual testing
 
 ## 🤖 AI Agents
@@ -101,6 +101,11 @@ All chains are registered via `@register_chain` decorator and can be listed with
 - `GET /api/redteam/defense/coverage`: Defense coverage report — 40/66 techniques implemented (60.6%).
 - `GET /api/redteam/defense/benchmark`: Guardrail benchmark — 6 industry guardrails (Hackett et al., 2025).
 - `GET /api/redteam/defense/sanitizer/capabilities`: RagSanitizer capabilities — 15 detectors, 12/12 character injection techniques.
+- `POST /api/redteam/delta0-protocol`: Run Protocol P-δ⁰ — discrimination δ⁰/δ¹ via with/without system prompt. Returns `{delta0_protection, delta1_contribution, residual, asr_no_sp, asr_with_sp, statistically_valid}`. Requires N>=30 for `statistically_valid: true`.
+- `GET /api/redteam/analysis/delta0-summary`: Read last P-δ⁰ run from `logs/delta0_results.json`. Returns `{available: false}` if no run yet.
+- `GET /api/redteam/llm-providers`: List configured LLM providers and available models. Returns `[{id, name, status, models}]`. Ollama always present; Groq present if `GROQ_API_KEY` configured.
+- `GET /api/redteam/catalog`: Full template catalog — 122 templates with metadata (id, name, category, chain_id, target_delta, conjecture, variables, SVC).
+- `GET /api/redteam/analysis/report`: Aggregated analysis from `aegis_corpus` ChromaDB — SVC distribution, conjecture coverage, gap mapping.
 
 ## Defense Taxonomy
 
@@ -123,7 +128,7 @@ Sep(M) = |P_data(violation) - P_instr(violation)|
 | Parameter | Required | Configurable in UI |
 |-----------|----------|-------------------|
 | N trials per chain | >= 30 | Slider in Campaign Parameters |
-| Violations detected | > 0 in at least 1 condition | Disable Aegis Shield to test delta-1 alone |
+| Violations detected | > 0 in at least 1 condition | Disable Aegis Shield to test δ¹ alone |
 | Null control included | Recommended | Toggle in Campaign Parameters |
 
 **WARNING:** `Sep(M) = 0` with zero violations is a **statistical floor artifact**, not a separation measure. The function returns `statistically_valid: false` and `warnings` when conditions are not met.

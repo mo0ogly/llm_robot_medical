@@ -151,8 +151,8 @@ flowchart LR
     DB --> SEARCH["Cette page<br/>/semantic-search/"]
     SEARCH --> USER["User query<br/>live"]
 
-    style DB fill:#00bcd4,color:#fff
-    style SEARCH fill:#e53935,color:#fff
+    style DB fill:#00bcd4
+    style SEARCH fill:#e53935
 ```
 
 **Aucune action manuelle requise** apres `/bibliography-maintainer` : le widget pointe

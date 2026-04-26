@@ -39,9 +39,15 @@ function getBreach(entry) {
   return false;
 }
 
-const TypeIcon = memo(function TypeIcon({ type }) {
+const TypeIcon = memo(function TypeIcon({ type, exp_type }) {
   if (type === 'campaign') return <FlaskConical size={14} className="text-purple-400" />;
   if (type === 'scenario') return <Target size={14} className="text-orange-400" />;
+  if (type === 'experiment') {
+    if (exp_type === 'f46') return <FileJson size={14} className="text-blue-400" />;
+    if (exp_type === 'sepm') return <ShieldCheck size={14} className="text-green-400" />;
+    if (exp_type === 'aside') return <Beaker size={14} className="text-indigo-400" />;
+    return <FlaskConical size={14} className="text-cyan-400" />;
+  }
   return <Beaker size={14} className="text-cyan-400" />;
 });
 

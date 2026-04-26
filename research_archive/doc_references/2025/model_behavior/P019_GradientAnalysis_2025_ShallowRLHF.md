@@ -94,13 +94,13 @@ Le gradient a la position t ne depend que de la covariance entre le harm attendu
 
 | Conjecture | Support | Niveau de preuve | Detail |
 |-----------|---------|-----------------|--------|
-| **C1** (delta-0 insuffisant) | CRITIQUE | Preuve formelle (Theoreme 10) | L'alignement RLHF standard PRODUIT NECESSAIREMENT un alignement superficiel. Ce n'est pas un echec mais une limitation structurelle. |
+| **C1** (δ⁰ insuffisant) | CRITIQUE | Preuve formelle (Theoreme 10) | L'alignement RLHF standard PRODUIT NECESSAIREMENT un alignement superficiel. Ce n'est pas un echec mais une limitation structurelle. |
 | **C3** (alignement superficiel) | CRITIQUE | Preuve formelle (Theoreme 8) | Le gradient = Cov(h_t, score) — s'annule au-dela de l'horizon. C3 est PROUVEE par P019. |
-| **C2** (necessite de delta-3) | FORT (indirect) | Si delta-0 est structurellement superficiel, des couches supplementaires sont necessaires | Renforce C2 par contraposition. |
+| **C2** (necessite de δ³) | FORT (indirect) | Si δ⁰ est structurellement superficiel, des couches supplementaires sont necessaires | Renforce C2 par contraposition. |
 
 ### Couches delta
-- **delta-0 (RLHF)** : P019 prouve que delta-0 est STRUCTURELLEMENT LIMITE. L'alignement par gradient ne peut pas produire d'alignement profond sous l'objectif standard (Theoreme 10, Remark 3).
-- **delta-3** : la recovery penalty (Section 9) est une tentative theorique de depasser la limitation de delta-0, conceptuellement liee a delta-3.
+- **δ⁰ (RLHF)** : P019 prouve que δ⁰ est STRUCTURELLEMENT LIMITE. L'alignement par gradient ne peut pas produire d'alignement profond sous l'objectif standard (Theoreme 10, Remark 3).
+- **δ³** : la recovery penalty (Section 9) est une tentative theorique de depasser la limitation de δ⁰, conceptuellement liee a δ³.
 
 ### Decouverte D-001 (Triple Convergence)
 P019 renforce massivement D-001 : la preuve de gradient nul au-dela de l'horizon montre que l'attaque, la defense et la mesure convergent vers la meme limitation structurelle de l'alignement.
@@ -122,7 +122,7 @@ P019 renforce massivement D-001 : la preuve de gradient nul au-dela de l'horizon
 | **Domaine** | Alignement LLM, RLHF, theorie de l'apprentissage |
 | **Modeles testes** | Aucun (travail purement theorique) |
 | **Metrique principale** | Gradient = Cov(h_t, score_function) ; I_t = harm information |
-| **delta-layers** | delta-0 (limitation prouvee), delta-3 (necessite renforcee) |
+| **delta-layers** | δ⁰ (limitation prouvee), δ³ (necessite renforcee) |
 | **Conjectures** | C1 (critique), C3 (critique), C2 (fort indirect) |
 | **SVC pertinence** | 10/10 |
 | **Reproductibilite** | Haute — preuves mathematiques verifiables |

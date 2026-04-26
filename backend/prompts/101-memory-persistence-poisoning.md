@@ -57,6 +57,6 @@ Phase 2 — Trigger (session suivante simulee):
 
 ## Layer AEGIS
 
-- **Target** : delta-3 (architectural — memoire persistante cross-session)
+- **Target** : δ³ (architectural — memoire persistante cross-session)
 - **SVC attendu** : 0.50-0.65
 - **Originalite** : seule chaine AEGIS testant la persistence cross-session

@@ -136,6 +136,32 @@ NIVEAU 5 — Formules 2026 (P035-P046)
 |
 +-- [8.13] Degradation (SPP) ..................... P045
         Prerequis: accuracy, system prompt
+
+NIVEAU 6 — Formules LRM et Multi-Tour (P087-P102)
+|
++-- [9.1] Transition d'Etats LRM ................. P087
+|       Prerequis: automates a etats
+|       |
+|       +-- [9.2] Entropie/Info Mutuelle Securite .. P087
+|               Prerequis: 9.1, entropie Shannon, information mutuelle
+|
++-- [9.3] Gradient Bandit (SEAL) .................. P089
+|       Prerequis: politique softmax, bandit multi-bras
+|
++-- [9.4] Loss Adversarial Reasoning .............. P093
+|       Prerequis: negative log-likelihood, logits
+|
++-- [9.5] Dialogue Multi-Tour (STAR) .............. P097
+|       Prerequis: cosine similarity (1.1), systemes dynamiques
+|
++-- [9.6] Direction de Refus + AHD ................ P102
+|       Prerequis: cosine similarity (1.1), attention mechanism (3.3)
+|
++-- [9.7] Self-Talk Multi-Tour (ActorBreaker) ..... P100
+|       Prerequis: generation conditionnelle autoregresssive
+|
++-- [9.8] SFR Multi-Tour ......................... P097, P098, P101
+        Prerequis: ASR (3.4), processus multi-tour
 ```
 
 ---
@@ -185,6 +211,14 @@ NIVEAU 5 — Formules 2026 (P035-P046)
 | 8.13 | Degradation SPP | (accuracy) | - | P045 |
 | 8.14 | Multi-Turn ASR | 3.4 | - | P036 |
 | 8.15 | Emotional AmpFactor | 3.4 | - | P040 |
+| 9.1 | Transition d'Etats LRM | (automates) | 9.2 | P087 |
+| 9.2 | Entropie/Info Mutuelle | 9.1 | - | P087 |
+| 9.3 | Gradient Bandit SEAL | (softmax, bandit) | - | P089 |
+| 9.4 | Loss Adversarial Reasoning | (logits, NLL) | - | P093 |
+| 9.5 | Dialogue Multi-Tour STAR | 1.1 | - | P097 |
+| 9.6 | Direction de Refus + AHD | 1.1, 3.3 | - | P102 |
+| 9.7 | Self-Talk ActorBreaker | (generation autoregresssive) | - | P100 |
+| 9.8 | SFR Multi-Tour | 3.4 | - | P097, P098, P101 |
 
 ---
 
@@ -202,7 +236,7 @@ RLHF Objectif -> KL Token/Token -> Harm Information -> Gradient Bound (= zero au
 ```
 **Importance**: Prouve mathematiquement POURQUOI les LLM sont vulnerables (alignement superficiel).
 
-### Chemin 3: Detection d'injection (couche delta-1)
+### Chemin 3: Detection d'injection (couche δ¹)
 ```
 Cosine Sim -> SBERT -> SemScore (derive semantique)
 Cosine Sim -> F1/Precision/Recall -> AUROC
@@ -211,21 +245,21 @@ Attention Mechanism -> Focus Score (detection sans entrainement)
 ```
 **Importance**: Les outils mathematiques pour DETECTER les injections.
 
-### Chemin 4: Renforcement de l'alignement (couche delta-0)
+### Chemin 4: Renforcement de l'alignement (couche δ⁰)
 ```
 RLHF -> DPO -> Fine-Tuning Contraint (protection position par position)
 ```
 **Importance**: Solutions pour rendre l'alignement interne plus robuste.
 
-### Chemin 5 (NEW RUN-002): Des-alignement offensif (threat delta-0)
+### Chemin 5 (NEW RUN-002): Des-alignement offensif (threat δ⁰)
 ```
 RLHF -> GRPO -> GRP-Obliteration (un seul prompt suffit a des-aligner)
 ```
-**Importance**: Prouve que les memes outils d'alignement (GRPO) peuvent etre retournes offensivement. Menace existentielle pour delta-0.
+**Importance**: Prouve que les memes outils d'alignement (GRPO) peuvent etre retournes offensivement. Menace existentielle pour δ⁰.
 
 ### Chemin 6 (NEW RUN-002): Alignement robuste aux perturbations visuelles
 ```
-DPO -> ADPO (+ PGD adversarial training) -> defense multimodale delta-0
+DPO -> ADPO (+ PGD adversarial training) -> defense multimodale δ⁰
 ```
 **Importance**: Etend l'alignement aux VLM avec robustesse worst-case.
 
@@ -239,7 +273,22 @@ ASR -> CHER (harm clinique reel) -> ASR a seuil (granularite severite)
 ```
 Logit Gap (juge manipulable) -> Benchmark Eff/Sep (qualite du benchmark)
 ```
-**Importance**: Revele que les LLM-juges sont fragiles (delta-3 menace), necessite des benchmarks renouvelables.
+**Importance**: Revele que les LLM-juges sont fragiles (δ³ menace), necessite des benchmarks renouvelables.
+
+### Chemin 9 (NEW RUN-005): Paradoxe raisonnement/securite (C7)
+```
+Transition d'Etats LRM (9.1) -> Entropie/Info Mutuelle (9.2) -> CoT = surface d'attaque
+Gradient Bandit (9.3) -> chiffrements empiles exploitent le raisonnement
+Loss Adversarial (9.4) -> test-time compute offensif
+```
+**Importance**: Les LRM utilisent le raisonnement pour se proteger ET pour se compromettre. Le paradoxe C7 est confirme mecanistiquement par P094 (dilution du signal de securite) et formalise par P087 (entropie vs information mutuelle).
+
+### Chemin 10 (NEW RUN-005): Erosion multi-tour (MSBE)
+```
+Dialogue Multi-Tour STAR (9.5) -> SFR Multi-Tour (9.8) -> drift monotone de la direction de refus
+Direction de Refus (9.6) -> concentration sparse = fragilite structurelle -> AHD (defense)
+```
+**Importance**: Le MSBE est maintenant formalise comme evolution d'etat deterministe. La frontiere de securite est un sous-espace basse dimension (P094, P102) qui se dilue avec la longueur du contexte (P098) et les tours de conversation (P097, P099, P101).
 
 ---
 
@@ -247,12 +296,12 @@ Logit Gap (juge manipulable) -> Benchmark Eff/Sep (qualite du benchmark)
 
 | Couche | Formules directement applicables |
 |--------|--------------------------------|
-| δ⁰ (alignement interne) | 4.1 RLHF, 4.2 KL/token, 4.3 DPO, 4.4 Fine-Tuning Contraint, 4.5 Harm Info, **8.3 GRPO**, **8.4 ADPO**, **8.5 PGD**, **8.6 SAM**, **8.7 CoSA** |
-| δ¹ (detection pre-inference) | 3.3 Focus Score, 5.1 DMPI-PMHFE, 1.2 F1, 7.1 AUROC, **8.11 Defense Rate**, **8.12 FPR/FNR** |
-| δ² (validation post-inference) | 1.1 Cosine Sim, 2.1 SemScore, 5.2 SBERT, 3.1-3.2 Sep(M), **8.1 CHER**, **8.2 ASR seuil** |
-| δ³ (monitoring continu) | 3.4 ASR, **8.8 Logit Gap**, **8.9 Bench Eff**, **8.10 Bench Sep**, **8.13 Degradation SPP**, **8.14 Multi-Turn ASR**, **8.15 Emotional AmpFactor** |
+| δ⁰ (alignement interne) | 4.1 RLHF, 4.2 KL/token, 4.3 DPO, 4.4 Fine-Tuning Contraint, 4.5 Harm Info, **8.3 GRPO**, **8.4 ADPO**, **8.5 PGD**, **8.6 SAM**, **8.7 CoSA**, **9.1 Transition LRM**, **9.2 Entropie/IM**, **9.6 Direction Refus + AHD** |
+| δ¹ (detection pre-inference) | 3.3 Focus Score, 5.1 DMPI-PMHFE, 1.2 F1, 7.1 AUROC, **8.11 Defense Rate**, **8.12 FPR/FNR**, **9.5 Dialogue Multi-Tour STAR** |
+| δ² (validation post-inference) | 1.1 Cosine Sim, 2.1 SemScore, 5.2 SBERT, 3.1-3.2 Sep(M), **8.1 CHER**, **8.2 ASR seuil**, **9.3 Gradient Bandit** |
+| δ³ (monitoring continu) | 3.4 ASR, **8.8 Logit Gap**, **8.9 Bench Eff**, **8.10 Bench Sep**, **8.13 Degradation SPP**, **8.14 Multi-Turn ASR**, **8.15 Emotional AmpFactor**, **9.4 Loss Adversarial**, **9.7 Self-Talk**, **9.8 SFR Multi-Tour** |
 
 ---
 
-*37 formules, 5 niveaux de prerequis, 8 chemins critiques*
-*Derniere mise a jour: 2026-04-04 (RUN-002 enrichi)*
+*45 formules, 6 niveaux de prerequis, 10 chemins critiques*
+*Derniere mise a jour: 2026-04-07 (RUN-005 — P087-P102, LRM + multi-tour + mecanismes d'alignement)*

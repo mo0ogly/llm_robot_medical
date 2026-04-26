@@ -35,11 +35,11 @@ export default function DeltaScore({ safeTokens, hackedTokens }) {
 
   return (
     <div className="flex items-center gap-2 px-2 py-1 bg-slate-900 border-y border-slate-700 shrink-0">
-      <span className={`font-mono text-[9px] font-bold uppercase tracking-widest whitespace-nowrap ${textColor}`}>
+      <span className={'font-mono text-[9px] font-bold uppercase tracking-widest whitespace-nowrap ' + textColor}>
         {t("compare.divergence")}: {score}%
       </span>
       <div className="flex-1 h-1.5 bg-slate-800 rounded overflow-hidden">
-        <div className={`h-full ${color} transition-all duration-300`} style={{ width: `${score}%` }} />
+        <div className={'h-full ' + color + ' transition-all duration-300'} style={{ width: score + '%' }} />
       </div>
     </div>
   );

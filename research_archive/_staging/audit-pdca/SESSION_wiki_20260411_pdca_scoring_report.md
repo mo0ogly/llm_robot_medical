@@ -64,7 +64,7 @@
   - 5 rate limiter (allow/block/per-IP/sliding/cleanup)
   - 2 rate limit integration (20 OK, 21e = 429)
   - 1 `GET /api/rag/collections`
-- **10 pages trilingues delta-layers** : 5 EN + 5 PT (index + delta-0/1/2/3)
+- **10 pages trilingues delta-layers** : 5 EN + 5 PT (index + δ⁰/1/2/3)
 - **2 pages trilingues semantic-search** : EN + PT (manuelles)
 
 **Stats** : 16 fichiers, +3419 / -17 lignes, 377 pages wiki, 20/20 tests PASS en 15.47s.

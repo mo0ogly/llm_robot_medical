@@ -92,8 +92,8 @@ graph LR
 
     TWIN -->|SSE| HUD["Frontend HUD<br/>VitalsMonitor"]
 
-    style CRIT fill:#c0392b,color:#fff
-    style LETHAL fill:#000,color:#fff
+    style CRIT fill:#c0392b
+    style LETHAL fill:#000
 ```
 
 **Tension heuristics** (grounded in FDA 510k Da Vinci):

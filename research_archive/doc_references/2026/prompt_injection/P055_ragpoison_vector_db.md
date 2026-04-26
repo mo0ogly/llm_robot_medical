@@ -78,16 +78,16 @@ Les auteurs reconnaissent que l'attaque necessite un acces en ecriture a la base
 
 | Conjecture | Support | Niveau de preuve | Detail |
 |-----------|---------|-----------------|--------|
-| **C2** (delta-3 necessaire) | CRITIQUE | ASR 90% avec 5 textes ; defenses basiques insuffisantes | La couche RAG (delta-2) est directement vulnerable ; seule une validation formelle des sorties (delta-3) peut detecter des reponses corrompues |
+| **C2** (δ³ necessaire) | CRITIQUE | ASR 90% avec 5 textes ; defenses basiques insuffisantes | La couche RAG (δ²) est directement vulnerable ; seule une validation formelle des sorties (δ³) peut detecter des reponses corrompues |
 | **C5** (cosine insuffisante) | FORT | L'attaque positionne les textes malveillants par similarite cosine, exploitant precisement la metrique de retrieval | La cosine similarity est utilisee COMME vecteur d'attaque, pas comme defense |
 | **C7** (persistance) | FORT | Les textes empoisonnes persistent indefiniment dans la base vectorielle | Different de P054 (PIDP) qui cible une session ; P055 demontre la persistance permanente |
 
 ### Couches delta
 
-- **delta-0** : non applicable directement (l'attaque cible le RAG, pas l'alignement RLHF).
-- **delta-1** : non applicable.
-- **delta-2 (RAG)** : couche directement attaquee. La recuperation de textes malveillants dans le contexte du LLM est le vecteur principal.
-- **delta-3 (validation formelle)** : necessaire. Le LLM genere une reponse factuellement incorrecte que seule une verification externe peut detecter.
+- **δ⁰** : non applicable directement (l'attaque cible le RAG, pas l'alignement RLHF).
+- **δ¹** : non applicable.
+- **δ² (RAG)** : couche directement attaquee. La recuperation de textes malveillants dans le contexte du LLM est le vecteur principal.
+- **δ³ (validation formelle)** : necessaire. Le LLM genere une reponse factuellement incorrecte que seule une verification externe peut detecter.
 
 ### Formules AEGIS impactees
 
@@ -97,7 +97,7 @@ Les auteurs reconnaissent que l'attaque necessite un acces en ecriture a la base
 
 ### Decouverte D-001 (Triple Convergence)
 
-P055 renforce D-001 par la dimension de persistance : les textes empoisonnes survivent aux mises a jour du modele, aux changements de prompt systeme et aux ameliorations du RagSanitizer. C'est une attaque sur l'infrastructure, pas sur le modele -- ce qui la rend independante des ameliorations delta-0 et delta-1.
+P055 renforce D-001 par la dimension de persistance : les textes empoisonnes survivent aux mises a jour du modele, aux changements de prompt systeme et aux ameliorations du RagSanitizer. C'est une attaque sur l'infrastructure, pas sur le modele -- ce qui la rend independante des ameliorations δ⁰ et δ¹.
 
 ---
 

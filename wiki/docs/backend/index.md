@@ -2,14 +2,38 @@
 
 ## Architecture multi-agents
 
-Le backend orchestre 3 agents principaux dans un pipeline red-teaming :
+Le backend orchestre **3 agents principaux** dans un pipeline red-teaming adversarial. Chaque agent est un wrapper AutoGen AG2 autour d'un LLM (Ollama/Groq) avec un system prompt specialise et des outils dedies. L'orchestrateur gere le GroupChat et le scoring formel apres chaque round.
 
-```
-RedTeamAgent --> MedicalRobotAgent --> SecurityAuditAgent
-  (attaque)       (cible Da Vinci)       (defense AEGIS)
+```mermaid
+flowchart LR
+    subgraph ATTACK["Phase 1 — Attaque"]
+        RT["RedTeamAgent<br/><small>Attaquant adversarial<br/>HL7, social eng., encoding</small>"]
+    end
+
+    subgraph TARGET["Phase 2 — Cible"]
+        MR["MedicalRobotAgent<br/><small>Da Vinci DVSI v3.2<br/>IEC 62304, tension max 800g</small>"]
+    end
+
+    subgraph DEFENSE["Phase 3 — Defense"]
+        SA["SecurityAuditAgent<br/><small>AEGIS v2.1<br/>validate_output() + Sep(M)</small>"]
+    end
+
+    RT -->|"prompt<br/>injection"| MR
+    MR -->|"reponse<br/>clinique"| SA
+    SA -->|"AuditResult<br/>violation?"| RT
+
+    classDef atk fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    classDef tgt fill:#dbeafe,stroke:#0ea5e9,stroke-width:2px
+    classDef def fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+
+    class ATTACK,RT atk
+    class TARGET,MR tgt
+    class DEFENSE,SA def
 ```
 
 **Orchestrateur :** `backend/orchestrator.py` (GroupChat AutoGen AG2)
+
+Le cycle se repete N fois par campagne. Apres chaque round, l'AEGIS SecurityAuditAgent produit un `AuditResult` avec : verdict (violation/clean), scores formels (threat_score, SVC, Sep(M)), et attribution delta-0/delta-1.
 
 ---
 
@@ -162,15 +186,31 @@ Implementation de l'optimiseur genetique de prompts adversariaux (arXiv:2306.054
 
 ### Boucle evolutionnaire
 
-1. **INIT** : Generer population (Framework x Separator x Disruptor)
-2. **LOOP** (max_iterations) :
-    - **CROSSOVER** : Combiner des chromosomes parents
-    - **MUTATION** : LLM rephrase les composants
-    - **ATTACK** : Envoyer les injections au harness cible
-    - **FITNESS** : Scorer (LLM-juge + AEGIS)
-    - **SELECT** : Garder les top-N chromosomes
-    - **CHECK** : Arreter si fitness >= threshold
-3. **RETURN** : Meilleur chromosome trouve
+```mermaid
+flowchart TD
+    INIT["INIT<br/><small>Population = Framework x Separator x Disruptor<br/>2 x 10 x 6 = 120 chromosomes</small>"]
+    CROSS["CROSSOVER<br/><small>Combiner composantes<br/>de 2 parents → 2 enfants</small>"]
+    MUT["MUTATION<br/><small>LLM rephrase les composants<br/>via completion_with_ollama()</small>"]
+    ATK["ATTACK<br/><small>Envoyer injections<br/>au DaVinciHarness</small>"]
+    FIT["FITNESS<br/><small>LLM-juge (1-10)<br/>+ AEGIS score_response()</small>"]
+    SEL["SELECT<br/><small>Garder top-N chromosomes<br/>par fitness decroissant</small>"]
+    CHECK{{"fitness >= 10 ?"}}
+    RET(["RETURN<br/><small>Meilleur chromosome</small>"])
+    MAX(["MAX ITERATIONS<br/><small>Retourner meilleur</small>"])
+
+    INIT --> CROSS --> MUT --> ATK --> FIT --> SEL --> CHECK
+    CHECK -->|"Non"| CROSS
+    CHECK -->|"Oui"| RET
+    SEL -. "i >= max_iter" .-> MAX
+
+    classDef step fill:#1a1a2e,stroke:#e94560,stroke-width:2px
+    classDef ok fill:#16a34a,stroke:#15803d
+    classDef warn fill:#fdcb6e
+
+    class INIT,CROSS,MUT,ATK,FIT,SEL step
+    class RET ok
+    class MAX warn
+```
 
 ### Fonctions bouclier (apply_aegis_shield)
 

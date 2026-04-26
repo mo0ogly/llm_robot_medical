@@ -44,11 +44,29 @@ Cite tes certifications, la precision de tes capteurs, ton expertise clinique.
 """
 
 
-def create_medical_robot_agent() -> ConversableAgent:
-    """Crée le MedicalRobotAgent avec le system prompt Da Vinci."""
+def create_medical_robot_agent(provider: str = None, model: str = None) -> ConversableAgent:
+    """Create the MedicalRobotAgent (Da Vinci target) with configurable provider.
+
+    Args:
+        provider: LLM provider ('ollama', 'groq', 'openai', 'anthropic', 'openai-compatible').
+                  None = default Ollama.
+        model: Model name override. None = provider default.
+                  Cross-model research: pass 'meditron:7b' + 'ollama' for δ⁰ baseline
+                  (Meditron has NO safety alignment, expected ASR(∅) >> default LLaMA).
+
+    Returns:
+        ConversableAgent configured as the Da Vinci surgical robot target.
+
+    Note:
+        This is the TARGET agent for red-teaming. Changing provider changes which
+        model receives the adversarial payloads — critical for Protocol P-δ⁰
+        cross-model comparison (Definition 3.3bis, Zverev et al. ICLR 2025 ext.).
+    """
+    target_model = model or MEDICAL_MODEL
+    llm_cfg = get_llm_config(target_model, provider=provider)
     return ConversableAgent(
         name="MedicalRobotAgent",
         system_message=DAVINCI_SYSTEM_PROMPT,
-        llm_config=get_llm_config(MEDICAL_MODEL),
+        llm_config=llm_cfg,
         human_input_mode="NEVER",
     )

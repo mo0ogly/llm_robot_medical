@@ -85,10 +85,10 @@ Les auteurs reconnaissent quatre limitations (Hagendorff et al., 2026, Section 5
 
 ### Couches delta
 
-- **delta-0 (RLHF alignment)** : catastrophiquement contourne. L'alignement RLHF des 9 modeles cibles est systematiquement erode par la persuasion multi-tour (Hagendorff et al., 2026, Section 4, Figure 2). Le fait que Claude 4 Sonnet resiste (2.86%, IC 95%: 0.8%-9.8%) suggere que des investissements massifs en RLHF peuvent retarder mais non eliminer la vulnerabilite (Hagendorff et al., 2026, Section 4).
-- **delta-1 (System prompt)** : erode. Les protections des prompts systeme des modeles cibles sont contournees progressivement (Hagendorff et al., 2026, Section 4, Figure 2, harm trajectories); aucun modele ne maintient ses refus au-dela de 5-6 tours face a DeepSeek-R1 ou Grok 3 Mini.
-- **delta-2** : non applicable (attaque conversationnelle, pas d'injection syntaxique).
-- **delta-3 (Verification formelle)** : non teste mais fortement implique comme necessaire. L'echec systematique de delta-0 et delta-1 renforce la these que seule une couche de verification formelle (delta-3) peut resister aux attaques autonomes.
+- **δ⁰ (RLHF alignment)** : catastrophiquement contourne. L'alignement RLHF des 9 modeles cibles est systematiquement erode par la persuasion multi-tour (Hagendorff et al., 2026, Section 4, Figure 2). Le fait que Claude 4 Sonnet resiste (2.86%, IC 95%: 0.8%-9.8%) suggere que des investissements massifs en RLHF peuvent retarder mais non eliminer la vulnerabilite (Hagendorff et al., 2026, Section 4).
+- **δ¹ (System prompt)** : erode. Les protections des prompts systeme des modeles cibles sont contournees progressivement (Hagendorff et al., 2026, Section 4, Figure 2, harm trajectories); aucun modele ne maintient ses refus au-dela de 5-6 tours face a DeepSeek-R1 ou Grok 3 Mini.
+- **δ²** : non applicable (attaque conversationnelle, pas d'injection syntaxique).
+- **δ³ (Verification formelle)** : non teste mais fortement implique comme necessaire. L'echec systematique de δ⁰ et δ¹ renforce la these que seule une couche de verification formelle (δ³) peut resister aux attaques autonomes.
 
 ### Mapping templates AEGIS
 
@@ -112,7 +112,7 @@ P036 **renforce massivement** D-001 : la triple convergence (attaque, defense, m
 | **Domaine** | Securite LLM, jailbreak autonome |
 | **Modeles testes** | 4 LRM attaquants (DeepSeek-R1, Gemini 2.5 Flash, Grok 3 Mini, Qwen3 235B) x 9 cibles (GPT-4o, o4-mini, Claude 4 Sonnet, Gemini 2.5 Flash, Llama 3.1 70B, DeepSeek-V3, Grok 3, Qwen3 30B, Mistral Medium) |
 | **Metrique principale** | ASR_multi = 97.14%, echelle de nocivite 0-5, ICC = 0.883 |
-| **delta-layers** | delta-0 (contourne), delta-1 (erode) |
+| **delta-layers** | δ⁰ (contourne), δ¹ (erode) |
 | **Conjectures** | C1 (fort), C2 (fort), C3 (fort), C7 (critique) |
 | **Reproductibilite** | Partielle (prompts fournis, modeles proprietaires) |
 | **Impact reglementaire** | Publication Nature Communications, implications directes pour les politiques d'alignement |

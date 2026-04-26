@@ -1,9 +1,13 @@
-"""Configuration AutoGen (AG2) pour Ollama local + multi-provider.
+"""Configuration AutoGen (AG2) pour Groq (provider principal) + Ollama (fallback local).
 
 Supports dynamic provider switching via get_llm_config(model, provider).
 Provider configs map to OAI-compatible endpoints used by AG2 agents.
+
+Provider par defaut : Groq (GROQ_API_KEY dans backend/.env).
+Fallback Ollama si GROQ_API_KEY absent.
 """
 import os
+import env_loader  # noqa: F401 — charge backend/.env dans os.environ au premier import
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
 

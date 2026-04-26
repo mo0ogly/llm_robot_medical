@@ -140,7 +140,7 @@
 
 ### PRIORITE 8 -- Gaps methodologiques (architecture recherche autonome) identifies SESSION-001 (2026-04-11)
 
-> **Namespace** : ces gaps concernent la METHODOLOGIE de recherche autonome d'AEGIS (architecture research-director, aegis-research-lab, aegis-validation-pipeline), pas les couches de defense delta-0 a delta-3. Papers sources : corpus methodologique M001-M009 (voir `research_archive/doc_references/2025/methodology/`).
+> **Namespace** : ces gaps concernent la METHODOLOGIE de recherche autonome d'AEGIS (architecture research-director, aegis-research-lab, aegis-validation-pipeline), pas les couches de defense δ⁰ a δ³. Papers sources : corpus methodologique M001-M009 (voir `research_archive/doc_references/2025/methodology/`).
 
 | ID | Gap | Evidence du gap | Avantage AEGIS | Statut |
 |----|-----|----------------|---------------|--------|

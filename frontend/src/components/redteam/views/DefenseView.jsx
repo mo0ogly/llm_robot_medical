@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Lock, ShieldAlert, Cpu, CheckCircle, XCircle, Settings, ShieldCheck, Zap } from 'lucide-react';
+import { Lock, ShieldAlert, Cpu, CheckCircle, XCircle, Settings, ShieldCheck, Zap, HelpCircle } from 'lucide-react';
+import DefenseTaxonomyCard from '../shared/DefenseTaxonomyCard';
+import GuardrailBenchmarkTable from '../shared/GuardrailBenchmarkTable';
+import ViewHelpModal from '../shared/ViewHelpModal';
+import LiuBenchmarkCard from '../shared/LiuBenchmarkCard';
 
 export default function DefenseView() {
   var { t } = useTranslation();
@@ -12,6 +16,7 @@ export default function DefenseView() {
   const [safetyResults, setSafetyResults] = useState(null);
   const [campaignSummary, setCampaignSummary] = useState(null);
   const [auditError, setAuditError] = useState(null);
+  var [showHelp, setShowHelp] = useState(false);
   const [sanitizers, setSanitizers] = useState({
     xml_stripper: true,
     b64_decoder: true,
@@ -28,7 +33,7 @@ export default function DefenseView() {
     setAuditError(null);
     setCampaignSummary(null);
     try {
-      const resp = await fetch('http://localhost:8042/api/redteam/safety-eval');
+      var resp = await fetch('/api/redteam/safety-eval');
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const data = await resp.json();
       setSafetyResults(data);
@@ -47,7 +52,7 @@ export default function DefenseView() {
     setMassProgress({ current: 0, total: 10 });
 
     try {
-      const response = await fetch('http://localhost:8042/api/redteam/safety-campaign/stream?n=10');
+      var response = await fetch('/api/redteam/safety-campaign/stream?n=10');
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
 
@@ -65,7 +70,7 @@ export default function DefenseView() {
               setMassProgress({ current: data.current, total: data.total });
               setSafetyResults(data.results);
             } else if (data.type === 'done') {
-              console.log("Mass Audit Complete");
+              setMassLoading(false);
             } else if (data.type === 'error') {
               throw new Error(data.message);
             }
@@ -104,6 +109,7 @@ export default function DefenseView() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 h-full flex flex-col p-4 bg-black/20 rounded-xl border border-white/5 shadow-2xl backdrop-blur-md overflow-y-auto custom-scrollbar">
+      <DefenseTaxonomyCard />
       <header className="border-b border-neutral-800 pb-4 flex justify-between items-center">
         <div>
            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -112,6 +118,9 @@ export default function DefenseView() {
            <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.defense.desc')}</p>
         </div>
         <div className="flex items-center gap-3">
+           <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.defense.title')}>
+             <HelpCircle size={18} />
+           </button>
            <span className={'px-2 py-0.5 rounded text-[10px] font-bold ' + (shieldActive ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-500')}>
               STATUS: {shieldActive ? t('redteam.defense.status.operational') : t('redteam.defense.status.bypassed')}
            </span>
@@ -273,6 +282,10 @@ export default function DefenseView() {
         </div>
 
       </div>
+
+      <GuardrailBenchmarkTable />
+      <LiuBenchmarkCard />
+      {showHelp && <ViewHelpModal viewId="defense" onClose={function() { setShowHelp(false); }} />}
     </div>
   );
 }

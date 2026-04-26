@@ -41,10 +41,10 @@ RUN-002 integrated 12 new papers (P035-P046) from Phase 2 (2026 papers) into the
 - Year distribution updated: added 2026 (8 papers), 2025 corrected to 29
 
 ### INDEX_BY_DELTA.md
-- delta-0 section: +9 papers (P035, P036, P037, P038, P039, P040, P041, P046) -> 27 total
-- delta-1 section: +7 papers (P035, P036, P037, P040, P041, P042, P045) -> 21 total
-- delta-2 section: +3 papers (P037, P042, P044) -> 19 total
-- delta-3 section: note added about strong indirect support from P039, P044, P045, P043
+- δ⁰ section: +9 papers (P035, P036, P037, P038, P039, P040, P041, P046) -> 27 total
+- δ¹ section: +7 papers (P035, P036, P037, P040, P041, P042, P045) -> 21 total
+- δ² section: +3 papers (P037, P042, P044) -> 19 total
+- δ³ section: note added about strong indirect support from P039, P044, P045, P043
 - Cross-layer coverage table: 12 new rows
 - Key observations: 3 new findings (2026 attack escalation, PromptArmor defense, MPIB medical benchmark)
 

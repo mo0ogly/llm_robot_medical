@@ -209,7 +209,7 @@ graph LR
     D0 --> D1 --> D2 --> D3
     D0 -.->|measured via P-δ⁰ protocol| SEP["Sep(M) metric"]
 
-    style D0 fill:#8e44ad,color:#fff
+    style D0 fill:#8e44ad
 ```
 
 ## 8. Recursos

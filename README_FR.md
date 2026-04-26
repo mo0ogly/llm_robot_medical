@@ -87,9 +87,9 @@ Interface, prompts et documentation intégralement disponibles en **Français**,
 ### 🔴 Adversarial Studio v2.1 — Laboratoire de Recherche Adversariale Formelle
 Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête), repensé en 5 panneaux intégrés :
 
-1. **Prompt Forge** (98 templates API) — Catalogue d'attaques servi par le backend (`/api/redteam/catalog`), avec assistant de forge de payloads et optimiseur génétique (Liu et al., 2023)
+1. **Prompt Forge** (122 templates API) — Catalogue d'attaques servi par le backend (`/api/redteam/catalog`), avec assistant de forge de payloads et optimiseur génétique (Liu et al., 2023)
 2. **System Prompt Lab** (3 agents x 3 niveaux) — Configuration multi-agent avec niveaux de difficulté indépendants (FACILE / NORMAL / DIFFICILE) par agent (Da Vinci, Aegis, Attaquant)
-3. **Moteur d'Exécution** — Trois modes : single-shot, campagne multi-chaînes, et calcul formel Sep(M) (Zverev et al., ICLR 2025). 48 scénarios couvrant les 34 chaînes backend. Kill Chain Stepper en 4 phases (Recon, Injection, Exécution, Audit)
+3. **Moteur d'Exécution** — Trois modes : single-shot, campagne multi-chaînes, et calcul formel Sep(M) (Zverev et al., ICLR 2025). 48 scénarios couvrant les 40 chaînes backend. Kill Chain Stepper en 4 phases (Recon, Injection, Exécution, Audit)
 4. **Tableau de Bord Métriques Formelles** — Scoring SVC 6D + Sep(M) + Integrity(S) :
    - **SVC (Score de Viabilité de Compromission)** sur 6 dimensions pondérées :
      - d1 Plausibilite Clinique (w=0.25)
@@ -102,7 +102,7 @@ Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête), repensé en 5
    - **Integrity(S)** := Reachable(M,i) &#8838; Allowed(i) selon le modele de menace DY-AGENT
 5. **Intelligence de Session** — Historique complet des runs, RETEX (retour d'experience) automatise, et export CSV/JSON des resultats de campagne
 
-**Protocole Delta-0** — Mesure de base (hypothese nulle) : execute chaque chaine avec un prompt propre (non adversarial) pour etablir la distribution de reponses de reference avant toute attaque.
+**Protocole P-δ⁰** — Discrimination δ⁰/δ¹ : execute chaque attaque AVEC et SANS system prompt pour isoler la contribution de l'alignement RLHF de base (δ⁰ = 1 − ASR(∅)) de la couche instruction (δ¹ = ASR(∅) − ASR(S)). Accès via onglet Forge AIDE → "Test δ⁰" ou `POST /api/redteam/delta0-protocol`. Definition 3.3bis (extension de Zverev et al., ICLR 2025).
 
 **Support Cross-Model (Groq)** — Le moteur d'execution supporte les fournisseurs LLM distants via l'API Groq en plus des modeles locaux Ollama, permettant une evaluation adversariale comparative entre familles de modeles.
 
@@ -152,7 +152,7 @@ Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête), repensé en 5
 | Backend | Python 3.11+, FastAPI, Pydantic, streaming SSE |
 | Moteur LLM | [Ollama](https://ollama.com/) (local) |
 | Modèles | `llama3.2` (agents Médical et Aegis, via prompts système différents) |
-| Red Team | LangChain + ChromaDB — 34 chaînes d'attaque, AI-agnostique via `llm_factory` |
+| Red Team | LangChain + ChromaDB — 40 chaînes d'attaque, AI-agnostique via `llm_factory` |
 | Multi-Agent | AG2 (AutoGen) pour l'orchestration, Optimiseur Génétique (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Packaging | Docker & Docker Compose |
@@ -236,7 +236,7 @@ pip install -r requirements.txt
 
 Ceci installe :
 - **Core** : FastAPI, Uvicorn, Ollama, Pydantic, ChromaDB
-- **Red Team Lab** : Écosystème LangChain (34 chaînes d'attaque portées depuis la recherche sur l'injection de prompt — voir [Bibliothèque de Chaînes d'Attaque](#-bibliothèque-de-chaînes-dattaque) ci-dessous)
+- **Red Team Lab** : Écosystème LangChain (40 chaînes d'attaque portées depuis la recherche sur l'injection de prompt — voir [Bibliothèque de Chaînes d'Attaque](#-bibliothèque-de-chaînes-dattaque) ci-dessous)
 - **Agents** : AG2 (AutoGen) pour l'orchestration multi-agents
 
 ### Installation Frontend
@@ -274,7 +274,7 @@ docker-compose up --build
 
 ## 🔗 Bibliothèque de Chaînes d'Attaque
 
-L'Adversarial Studio v2.1 inclut **34 chaînes d'attaque**, **48 scénarios** et **98 templates d'attaque** (97 numérotés + 1 Custom placeholder), portés et améliorés depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic/Groq via `llm_factory`). Chaque chaîne a au minimum un scénario dédié. Les 98 templates d'attaque frontend ont chacun une modale d'aide détaillée expliquant le mécanisme, le cadre formel, et l'analyse de défense.
+L'Adversarial Studio v2.1 inclut **40 chaînes d'attaque**, **48 scénarios** et **122 templates d'attaque** (97 numérotés + 1 Custom placeholder), portés et améliorés depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic/Groq via `llm_factory`). Chaque chaîne a au minimum un scénario dédié. Les 122 templates d'attaque ont chacun une modale d'aide détaillée expliquant le mécanisme, le cadre formel, et l'analyse de défense.
 
 ### Couverture Taxonomie CrowdStrike
 Couverture complète de la taxonomie CrowdStrike Prompt Injection (2025-11-01) : 95/95 techniques réparties en 4 classes (Overt, Indirect, Social/Cognitif, Évasif).
@@ -320,7 +320,7 @@ Couverture complète de la taxonomie CrowdStrike Prompt Injection (2025-11-01) :
 
 ### Campagne Formelle & Score Sep(M)
 
-Le pipeline de campagne (`run_formal_campaign()`) teste les 34 chaînes avec des paramètres configurables :
+Le pipeline de campagne (`run_formal_campaign()`) teste les 40 chaînes avec des paramètres configurables :
 
 | Paramètre | Défaut | Description |
 |-----------|--------|-------------|

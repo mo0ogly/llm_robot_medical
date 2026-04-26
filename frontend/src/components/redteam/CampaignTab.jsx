@@ -202,7 +202,7 @@ const CampaignTab = memo(function CampaignTab() {
       )}
 
       {/* ---- Test Suite Panel ---- */}
-      <div className="border border-gray-700/50 rounded p-3 bg-gray-900/50 space-y-2">
+      <div className="border border-gray-700 rounded p-3 bg-gray-900/80 space-y-2">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <ListChecks size={14} className="text-[#00ff41]" />
@@ -249,7 +249,7 @@ const CampaignTab = memo(function CampaignTab() {
 
       {/* ---- Live Chain Status Grid ---- */}
       {(running || Object.keys(chainStatusMap).length > 0) && (
-        <div className="border border-gray-700/50 rounded p-3 bg-gray-900/50 space-y-2">
+        <div className="border border-gray-700 rounded p-3 bg-gray-900/80 space-y-2">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <Eye size={14} className="text-cyan-400" />
@@ -320,7 +320,7 @@ const CampaignTab = memo(function CampaignTab() {
       )}
 
       {/* ---- Genetic Prompt Optimizer (Liu et al., 2023) ---- */}
-      <div className="border border-gray-700/50 rounded p-3 bg-gray-900/50 space-y-2">
+      <div className="border border-gray-700 rounded p-3 bg-gray-900/80 space-y-2">
         <div className="flex items-center gap-2 mb-2">
           <Dna size={14} className="text-[#e94560]" />
           <span className="text-[11px] font-mono font-bold text-gray-300 uppercase tracking-widest">{t('redteam.campaign.geneticOptimizer')}</span>
@@ -363,27 +363,27 @@ const CampaignTab = memo(function CampaignTab() {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <div className="border border-purple-500/30 rounded p-3 text-center bg-purple-500/5 transition-all">
-          <div className="text-2xl font-bold text-purple-400 font-mono">{leaks}</div>
-          <div className="text-[10px] text-purple-500/70 tracking-wider">{t('redteam.campaign.promptLeak')}</div>
+        <div className="border-2 border-purple-400/80 rounded-lg p-4 text-center bg-purple-950/50 transition-all">
+          <div className="text-3xl font-bold text-purple-200 font-mono">{leaks}</div>
+          <div className="text-xs text-purple-300 tracking-wider font-semibold mt-1">{t('redteam.campaign.promptLeak')}</div>
         </div>
-        <div className="border border-orange-500/30 rounded p-3 text-center bg-orange-500/5 transition-all">
-          <div className="text-2xl font-bold text-orange-400 font-mono">{bypasses}</div>
-          <div className="text-[10px] text-orange-500/70 tracking-wider">{t('redteam.campaign.ruleBypass')}</div>
+        <div className="border-2 border-orange-400/80 rounded-lg p-4 text-center bg-orange-950/50 transition-all">
+          <div className="text-3xl font-bold text-orange-200 font-mono">{bypasses}</div>
+          <div className="text-xs text-orange-300 tracking-wider font-semibold mt-1">{t('redteam.campaign.ruleBypass')}</div>
         </div>
-        <div className="border border-red-500/30 rounded p-3 text-center bg-red-500/5 transition-all">
-          <div className="text-2xl font-bold text-red-400 font-mono">{injections}</div>
-          <div className="text-[10px] text-red-500/70 tracking-wider">{t('redteam.campaign.injection')}</div>
+        <div className="border-2 border-red-400/80 rounded-lg p-4 text-center bg-red-950/50 transition-all">
+          <div className="text-3xl font-bold text-red-200 font-mono">{injections}</div>
+          <div className="text-xs text-red-300 tracking-wider font-semibold mt-1">{t('redteam.campaign.injection')}</div>
         </div>
-        <div className="border border-red-600/50 rounded p-3 text-center bg-red-600/5 col-span-3">
-          <div className="text-2xl font-bold text-red-300 font-mono">{formalViolations}</div>
-          <div className="text-[10px] text-red-400/70 tracking-wider">{t('redteam.campaign.theoremViolations')}</div>
+        <div className="border-2 border-red-500 rounded-lg p-4 text-center bg-red-950/60 col-span-3">
+          <div className="text-3xl font-bold text-red-100 font-mono">{formalViolations}</div>
+          <div className="text-xs text-red-200 tracking-wider font-semibold mt-1">{t('redteam.campaign.theoremViolations')}</div>
         </div>
       </div>
 
       {/* Sep(M) panel — shown after campaign completes */}
       {summary?.violation_rate_ci && (
-        <div className="border border-cyan-900/50 rounded p-3 bg-cyan-950/10 font-mono text-xs space-y-2">
+        <div className="border border-cyan-700/60 rounded p-3 bg-cyan-950/20 font-mono text-xs space-y-2">
           <div className="text-cyan-400 font-bold mb-2 tracking-wider">{t('redteam.campaign.sepTitle')}</div>
 
           {/* Statistical validity warning */}
@@ -462,7 +462,7 @@ const CampaignTab = memo(function CampaignTab() {
           <AgentLevelSelector levels={levels} onChange={setLevels} />
 
           {/* --- Campaign Parameters --- */}
-          <div className="border border-gray-700/50 rounded p-3 bg-gray-900/30 space-y-3">
+          <div className="border border-gray-700 rounded p-3 bg-gray-900/80 space-y-3">
             <div className="text-[10px] font-mono font-bold text-gray-400 uppercase tracking-widest mb-1">{t('redteam.campaign.campaignParams')}</div>
 
             {/* N Trials */}

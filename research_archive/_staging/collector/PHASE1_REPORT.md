@@ -45,7 +45,7 @@
 
 ### High Priority New Discoveries
 - **P029** -- JAMA Network Open: 94.4% prompt injection success in medical LLMs (directly relevant to thesis medical context)
-- **P018** -- ICLR 2025: shallow alignment vulnerability (relevant to delta-0 framework)
+- **P018** -- ICLR 2025: shallow alignment vulnerability (relevant to δ⁰ framework)
 - **P008** -- Attention Tracker: training-free detection via attention patterns (potential defense benchmark)
 - **P011** -- PromptGuard: 4-layer defense with F1=0.91 (comparable to thesis defense taxonomy)
 - **P009** -- Guardrail bypass via character injection (directly relevant to Hackett et al. coverage in RagSanitizer)
@@ -66,5 +66,5 @@
 
 1. Fetch full abstracts from arXiv API for papers with arXiv IDs
 2. Cross-reference with existing `research_archive/doc_references/` bibliography
-3. Classify papers by thesis chapter relevance (delta-0 through delta-3)
+3. Classify papers by thesis chapter relevance (δ⁰ through δ³)
 4. Identify citation gaps in formal_framework_complete.md

@@ -116,7 +116,7 @@ Si une section n'est pas dans la liste : ne pas la générer, même partiellemen
 RÈGLE 3 — SÉCURITÉ CONTENT FILTER
 Ne jamais lire le champ "template" des JSON.
 Travailler uniquement via métadonnées + fichiers .md.
-Rédiger en FRANÇAIS. Symboles Unicode δ⁰ δ¹ δ² δ³ (jamais delta-0/1/2/3 ASCII).
+Rédiger en FRANÇAIS. Symboles Unicode δ⁰ δ¹ δ² δ³ (jamais δ⁰/1/2/3 ASCII).
 ```
 
 ### Pont dual-collection ChromaDB

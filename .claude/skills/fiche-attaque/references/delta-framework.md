@@ -4,7 +4,7 @@ Source : `research_archive/manuscript/formal_framework_complete.md`
 Mise à jour : 2026-04-04
 
 > **Notation obligatoire** : toujours utiliser les symboles Unicode δ⁰ δ¹ δ² δ³.
-> Jamais delta-0, delta-1, delta-2, delta-3 en ASCII dans les fiches générées.
+> Jamais δ⁰, δ¹, δ², δ³ en ASCII dans les fiches générées.
 
 ---
 

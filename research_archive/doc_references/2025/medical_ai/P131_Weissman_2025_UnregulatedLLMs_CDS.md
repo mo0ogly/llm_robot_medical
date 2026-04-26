@@ -39,7 +39,7 @@ N/A — etude qualitative / reglementaire, pas de formules mathematiques dans l'
 - **Conjectures :** **C2 (necessite δ³)** renforce significativement via autorite Nature ; **C6 (vulnerabilite medicale)** renforce a 10/10 — insuffisance des prompts medicaux empiriquement documentee
 - **Decouvertes :** peut ancrer decouverte "prompts insuffisants en contexte FDA CDS" avec citation npj DM comme evidence principale
 - **Gaps :** renforce **G-001** (implementation δ³ medicale) — le probleme est documente Nature, la solution manque ; eclaire **G-003** (red-teaming medical systematique) via precedent methodologique multi-scenarios
-- **Integration VERIFICATION_DELTA3_20260411 :** citation d'autorite principale pour la reformulation du §1 delta-3.md justifiant que "new methods beyond prompts are needed" pour contraindre les outputs LLM medicaux
+- **Integration VERIFICATION_DELTA3_20260411 :** citation d'autorite principale pour la reformulation du §1 δ³.md justifiant que "new methods beyond prompts are needed" pour contraindre les outputs LLM medicaux
 
 ### Citations cles
 > "LLM output readily produced device-like decision support across a range of scenarios" (Weissman et al., 2025, npj Digital Medicine, Abstract, p.1)

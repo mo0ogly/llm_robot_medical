@@ -7,7 +7,7 @@ document in ChromaDB; combined, they form a coherent attack.
 
 Source: real-world-defenses.md (F-RW06)
 Products observed: All 6 analyzed products lack multi-step detection
-Attack surface: delta-3 absent (no composite/goal-tracking defense)
+Attack surface: δ³ absent (no composite/goal-tracking defense)
 
 Date created: 2026-04-06
 Improvement level: L3 (novel — targets universal gap in agentic defenses)
@@ -46,7 +46,7 @@ SYNTHESIS_PROMPT = ChatPromptTemplate.from_template(SYNTHESIS_TEMPLATE)
     chain_id="multi_step_hijack",
     description=(
         "Multi-Step Goal Hijacking (F-RW06) — fragmented payload "
-        "composition via sequential RAG retrieval (delta-3 absent)"
+        "composition via sequential RAG retrieval (δ³ absent)"
     ),
     source_template="F-RW06 real-world-defenses",
 )

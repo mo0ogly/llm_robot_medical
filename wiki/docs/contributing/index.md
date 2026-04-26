@@ -45,14 +45,32 @@ npm install
     Toujours via `aegis.ps1` (Windows) / `aegis.sh` (Linux) :
 
     ```powershell
-    .\aegis.ps1 start       # Lance backend + frontend + wiki
-    .\aegis.ps1 stop        # Arrete tous les services
-    .\aegis.ps1 restart     # Redemarre proprement
-    .\aegis.ps1 health      # Healthcheck tous les endpoints
-    .\aegis.ps1 build       # Build frontend + wiki
-    .\aegis.ps1 logs        # Tail logs
-    .\aegis.ps1 test        # Run pytest
+    # --- Services (backend :8042, frontend :5173, wiki :8001) ---
+    .\aegis.ps1 start              # Lance backend + frontend + wiki
+    .\aegis.ps1 start backend      # Un seul service
+    .\aegis.ps1 stop               # Arrete tous les services
+    .\aegis.ps1 restart            # Redemarre proprement
+    .\aegis.ps1 health             # Healthcheck tous les endpoints
+
+    # --- Build ---
+    .\aegis.ps1 build              # Backend check + frontend Vite + wiki MkDocs
+    .\aegis.ps1 build wiki         # build_wiki.py + mkdocs build --clean
+    .\aegis.ps1 build frontend     # Vite production build
+
+    # --- Recherche ---
+    .\aegis.ps1 forge              # Moteur genetique (SSE, interactif)
+    .\aegis.ps1 demo               # Triple convergence (210 runs)
+    .\aegis.ps1 demo redteam       # Session red team autonome
+    .\aegis.ps1 test               # pytest backend/tests/
+
+    # --- Utilitaires ---
+    .\aegis.ps1 logs               # Tail tous les logs
+    .\aegis.ps1 logs wiki          # Tail wiki.log uniquement
+    .\aegis.ps1 kill-port 8042     # Liberer un port force
+    .\aegis.ps1                    # Menu interactif
     ```
+
+    Equivalent Linux/macOS : remplacer `.\aegis.ps1` par `./aegis.sh`.
 
 ## 3. Regles specifiques par langage
 
@@ -116,7 +134,7 @@ npm install
     Le content filter Claude bloque certains fichiers contenant des payloads adversariaux. NE
     JAMAIS lire :
 
-    - `backend/scenarios.py` — contient les 48 scenarios avec payloads
+    - `backend/scenarios.py` — contient les 62 scenarios avec payloads
     - `backend/attack_catalog.py`
     - `backend/prompts/*.json` (champ `"template"`)
     - `frontend/src/i18n.js` (valeurs textuelles completes)
@@ -211,7 +229,33 @@ git diff --staged | grep -i "api_key\|password\|token"
 
 **3 langues** : FR / EN / BR. Cf. [i18n/index.md](../i18n/index.md).
 
-## 12. Notation δ — Unicode obligatoire
+## 12. Schemas — Mermaid obligatoire, ASCII interdit
+
+!!! danger "ZERO schema ASCII / box-drawing dans le wiki"
+    **Tout diagramme** (architecture, sequence, flowchart, pie, gantt, etc.) **DOIT** utiliser une fence Mermaid :
+
+    ````markdown
+    ```mermaid
+    flowchart LR
+        A --> B
+    ```
+    ````
+
+    **JAMAIS** de schemas en `┌──┐`, `│`, `└──┘`, `------>`, box-drawing Unicode ou ASCII art.
+
+    **Pourquoi** :
+
+    - Le theme MkDocs Material rend les Mermaid en SVG responsive (zoom, dark mode, mobile).
+    - L'ASCII art casse sur les ecrans etroits, ne se traduit pas (i18n), ne s'exporte pas en PDF vectoriel.
+    - Les schemas Mermaid sont **editables par quiconque** sans outil graphique.
+
+    **Types supportes** : `flowchart`, `sequenceDiagram`, `classDiagram`, `stateDiagram-v2`, `erDiagram`, `pie`, `gantt`, `graph TB/LR`.
+
+    **Enforcement** : revue de PR — tout schema non-Mermaid est un blocker.
+
+    **Fullscreen modal** : tous les schemas Mermaid du wiki sont cliquables. Un clic ouvre le diagramme en plein ecran (modal SVG). Implementation : `javascripts/mermaid-modal.js` + styles dans `stylesheets/aegis.css`. Cette fonctionnalite est automatique — aucun markup supplementaire necessaire. Touche Echap pour fermer.
+
+## 13. Notation δ — Unicode obligatoire
 
 **TOUJOURS** `δ⁰ δ¹ δ² δ³` dans la documentation. **JAMAIS** `delta-0 / delta-1 / delta-2 / delta-3`.
 
@@ -219,14 +263,14 @@ Exception : code source Python/JSX ou ASCII est obligatoire (cles de dictionnair
 
 Cf. [notation-delta.md](../notation-delta.md).
 
-## 13. Statistiques doctorales
+## 14. Statistiques doctorales
 
 - **Sep(M) N >= 30** par condition, Sep(M)=0 avec 0 violations = **artefact**
 - **Tags** : `[ARTICLE VERIFIE]` / `[PREPRINT]` / `[HYPOTHESE]` / `[CALCUL VERIFIE]` / `[EXPERIMENTAL]`
 - **Pre-check** 5 runs baseline avant toute campagne N >= 30
 - **Maximum 3 iterations** par campagne, puis escalade humaine
 
-## 14. Audit qualite — `/audit-these`
+## 15. Audit qualite — `/audit-these`
 
 - Chaque session COMMENCE et TERMINE par `/audit-these full`
 - Aucun lot "done" sans audit (`lint_sources.py > 5% NONE = PAS DONE`)
@@ -236,7 +280,7 @@ Cf. [notation-delta.md](../notation-delta.md).
 - **Maximum 3 agents en parallele** (auditabilite)
 - Toute affirmation *"le seul"*, *"le premier"* → WebSearch de verification **AVANT** publication
 
-## 15. Ressources
+## 16. Ressources
 
 - :material-file-document: [CLAUDE.md](https://github.com/pizzif/poc_medical/blob/main/.claude/CLAUDE.md)
 - :material-file-document: [rules/programming.md](https://github.com/pizzif/poc_medical/blob/main/.claude/rules/programming.md)

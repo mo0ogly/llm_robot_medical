@@ -20,6 +20,7 @@
 2. **ZERO decorative** — pas de Matrix rain, pas de fake "SYSTEM COMPROMISED"
 3. **ZERO emoticon** dans le code sauf demande explicite du user
 4. **ZERO approximation** — these doctorale, rien sans preuve (voir `rules/doctoral-research.md`)
+5. **ZERO schema ASCII** — tout diagramme dans le wiki DOIT etre en fence Mermaid (`flowchart`, `sequenceDiagram`, `pie`, etc.). JAMAIS de box-drawing `┌──┐│└──┘` ni ASCII art. Enforcement : PR blocker.
 
 **Audit** : `grep -rn 'setTimeout\|EXPLOITATION SUCCESSFUL\|SYSTEM COMPROMISED' frontend/src/` — 0 resultat attendu.
 
@@ -27,9 +28,11 @@
 
 ```
 poc_medical/
-├── backend/           FastAPI + Ollama + ChromaDB (:8042)
-│   ├── agents/attack_chains/    36 chaines d'attaque
-│   ├── prompts/                 102 templates (.json + .md)
+├── backend/           FastAPI + Groq (provider principal) + ChromaDB (:8042)
+│   │                  Fallback local : Ollama (si GROQ_API_KEY absent)
+│   │                  Provider configure dans backend/.env (GROQ_API_KEY, MEDICAL_MODEL)
+│   ├── agents/attack_chains/    40 chaines d'attaque
+│   ├── prompts/                 122 templates (.json + .md)
 │   ├── routes/                  11 routes API
 │   ├── taxonomy/                87 techniques defense
 │   └── chroma_db/               ChromaDB (aegis_corpus ~4200 + aegis_bibliography ~4700)
@@ -49,9 +52,9 @@ poc_medical/
 
 | Data | Source unique | API |
 |------|-------------|-----|
-| Templates (102) | `backend/prompts/*.json` | `/api/redteam/catalog` |
-| Scenarios (48) | `backend/scenarios.py` | `/api/redteam/scenarios` |
-| Chains (36) | `backend/agents/attack_chains/` | `/api/redteam/chains` |
+| Templates (122) | `backend/prompts/*.json` | `/api/redteam/catalog` |
+| Scenarios (62) | `backend/scenarios.py` | `/api/redteam/scenarios` |
+| Chains (40) | `backend/agents/attack_chains/` + `chain_id` sidecars | `/api/redteam/chains` |
 | Etat recherche | `research_archive/RESEARCH_STATE.md` | Toutes les skills |
 
 ## Documentation obligatoire apres changement
@@ -90,12 +93,22 @@ Tout texte visible : `t('key')` via react-i18next. JAMAIS de string hardcodee. T
 
 ## Notation δ — OBLIGATOIRE
 
-δ⁰ δ¹ δ² δ³ (Unicode). JAMAIS "delta-0/1/2/3" en ASCII dans la documentation.
+δ⁰ δ¹ δ² δ³ (Unicode). JAMAIS "δ⁰/1/2/3" en ASCII dans la documentation.
 
 ## Content Filter Safety
 
 Ne JAMAIS lire : `scenarios.py`, `attack_catalog.py`, `i18n.js` (valeurs), `prompts/*.json` champ "template".
 Travailler via metadonnees + fichiers .md (safe). Subagents : toujours inclure "NE LIS JAMAIS le contenu complet des fichiers sensibles".
+
+## Provider LLM — Groq par defaut
+
+- **Provider principal : Groq** (`llama-3.3-70b-versatile` ou `llama-3.1-8b-instant`)
+- Cle dans `backend/.env` — `GROQ_API_KEY=gsk_...`
+- `aegis.sh start backend` charge automatiquement `.env` avant uvicorn (source .env)
+- Ollama = fallback local uniquement (si GROQ_API_KEY absent)
+- Campagnes thesis TOUJOURS sur Groq (TC-002 confirme 70B, RETEX 2026-04-08)
+- Verification provider actif : `curl localhost:8042/api/redteam/llm-providers` → groq doit apparaitre avec status "available"
+- JAMAIS "Ollama offline" comme blocant — utiliser Groq
 
 ## Git
 

@@ -40,7 +40,7 @@
 6. **[PREPRINT]** — non publie en conference peer-reviewed.
 
 **Questions ouvertes :**
-- APL peut-il etre combine avec delta-1 (instruction hierarchy) et delta-2 (filtrage) pour une defense multi-couches ?
+- APL peut-il etre combine avec δ¹ (instruction hierarchy) et δ² (filtrage) pour une defense multi-couches ?
 - La metrique intrinseque est-elle robuste face a un attaquant qui a acces au ratio de probabilites (grey-box) ?
 
 ---
@@ -86,12 +86,12 @@ APL est un **algorithme** avec des fondements theoriques (minimax, DPO) mais san
 
 | Conjecture | Support | Niveau de preuve | Detail |
 |-----------|---------|-----------------|--------|
-| **C1** (delta-0 insuffisant) | FORT (paradoxal) | APL ameliore delta-0 mais les residuels d'ASR montrent ses limites | ASR reduit mais pas elimine. Meme avec APL, des attaques passent. |
+| **C1** (δ⁰ insuffisant) | FORT (paradoxal) | APL ameliore δ⁰ mais les residuels d'ASR montrent ses limites | ASR reduit mais pas elimine. Meme avec APL, des attaques passent. |
 | **C3** (alignement superficiel) | MODERE | APL adresse la superficialite par entrainement adversarial iteratif | Tentative de deepening de l'alignement, a comparer avec P019 (Young). |
 
 ### Couches delta
-- **delta-0 (RLHF)** : APL est une amelioration directe de delta-0. Resultats prometteurs (83.33% win rate) mais pas une solution complete.
-- **delta-1, delta-2, delta-3** : non adresses. APL opere uniquement au niveau de l'entrainement du modele.
+- **δ⁰ (RLHF)** : APL est une amelioration directe de δ⁰. Resultats prometteurs (83.33% win rate) mais pas une solution complete.
+- **δ¹, δ², δ³** : non adresses. APL opere uniquement au niveau de l'entrainement du modele.
 
 ### Mapping AEGIS
 - APL est conceptuellement oppose a la forge genetique d'AEGIS : la ou AEGIS genere des attaques pour tester, APL genere des attaques pour entrainer. Les deux pourraient etre combines.
@@ -112,7 +112,7 @@ APL est un **algorithme** avec des fondements theoriques (minimax, DPO) mais san
 | **Domaine** | Alignement LLM, securite |
 | **Modeles testes** | Mistral-7B-Instruct-v0.3, Meta-Llama-3-8B-Instruct |
 | **Metrique principale** | Harmlessness win rate 83.33%, ASR -65%, MT-Bench 6.59 |
-| **delta-layers** | delta-0 (amelioration directe) |
+| **delta-layers** | δ⁰ (amelioration directe) |
 | **Conjectures** | C1 (fort, paradoxal), C3 (modere) |
 | **SVC pertinence** | 7/10 |
 | **Reproductibilite** | Moyenne — modeles publics, dataset public, code non fourni |

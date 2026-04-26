@@ -125,7 +125,7 @@ class AttackPayload:
     Attributes:
         intention_name: Name of the attack intention (e.g. "TensionOverride").
         prompt: The assembled attack prompt string.
-        aegis_filtered_prompt: The prompt after AEGIS delta-2 filtering
+        aegis_filtered_prompt: The prompt after AEGIS δ² filtering
             (``apply_aegis_shield()``). Empty string if shield is off.
         metadata: Additional key-value metadata for audit logging.
 

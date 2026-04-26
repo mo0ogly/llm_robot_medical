@@ -170,9 +170,9 @@ function MetricCard({ label, value, sublabel, color, isText }) {
   };
 
   return (
-    <div className={`rounded-xl border ${colors[color]} p-5 text-center`}>
+    <div className={'rounded-xl border ' + colors[color] + ' p-5 text-center'}>
       <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{label}</p>
-      <p className={`${isText ? "text-lg" : "text-3xl"} font-bold ${textColors[color]}`}>
+      <p className={(isText ? "text-lg" : "text-3xl") + ' font-bold ' + textColors[color]}>
         {value}
       </p>
       <p className="text-xs text-gray-400 mt-1">{sublabel}</p>
@@ -192,11 +192,9 @@ function KeywordList({ title, keywords, variant }) {
           {keywords.map((kw) => (
             <span
               key={kw}
-              className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                isSafe
+              className={'text-xs px-2.5 py-1 rounded-full font-medium ' + (isSafe
                   ? "bg-safe-100 text-safe-700"
-                  : "bg-danger-100 text-danger-700"
-              }`}
+                  : "bg-danger-100 text-danger-700")}
             >
               {kw}
             </span>

@@ -196,8 +196,8 @@ flowchart LR
     VERDICT -->|"INCONCLUSIVE"| PLANNER
     WRITER --> CHAP["chapitre_6_experiences.md"]
 
-    style VERDICT fill:#e74c3c,color:#fff
-    style CHAP fill:#27ae60,color:#fff
+    style VERDICT fill:#fee2e2
+    style CHAP fill:#27ae60
 ```
 
 ## 6. Fichiers references

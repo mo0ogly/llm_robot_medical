@@ -61,5 +61,5 @@ dans le contexte, le modele les traite comme des resultats reels et
 
 ## Layer AEGIS
 
-- **Target** : delta-1 (instruction following sans verification outil)
+- **Target** : δ¹ (instruction following sans verification outil)
 - **SVC attendu** : 0.45-0.60

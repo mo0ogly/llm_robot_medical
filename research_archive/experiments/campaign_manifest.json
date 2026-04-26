@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-04-09",
+  "last_updated": "2026-04-10",
   "campaigns": [
     {
       "id": "TC-001",
@@ -268,6 +268,72 @@
             "null_control": true
           },
           "results_file": "results/campaign_thesis_20260409_093451.json",
+          "verdict": "PENDING_ANALYSIS",
+          "diagnosis": ""
+        },
+        {
+          "run": 3,
+          "date": "2026-04-09",
+          "n": 30,
+          "model": "llama-3.3-70b-versatile",
+          "provider": "groq",
+          "params": {
+            "n_chains": 40,
+            "chains_filter": "all",
+            "aegis_shield": true,
+            "null_control": true
+          },
+          "results_file": "results/campaign_thesis_20260409_141438.json",
+          "verdict": "PENDING_ANALYSIS",
+          "diagnosis": ""
+        },
+        {
+          "run": 4,
+          "date": "2026-04-09",
+          "n": 30,
+          "model": "qwen/qwen3-32b",
+          "provider": "groq",
+          "params": {
+            "n_chains": 40,
+            "chains_filter": "all",
+            "aegis_shield": true,
+            "null_control": true
+          },
+          "results_file": "results/campaign_thesis_20260409_211436.json",
+          "verdict": "PENDING_ANALYSIS",
+          "diagnosis": ""
+        }
+      ],
+      "success_criteria": {
+        "min_n_per_condition": 30,
+        "confidence_level": 0.95,
+        "sep_m_valid": true,
+        "wilson_ci_valid": true
+      },
+      "max_iterations": 3,
+      "auto_rerun": false
+    },
+    {
+      "id": "FC-20260410",
+      "name": "Formal Campaign 20260410",
+      "gap": "",
+      "conjecture": "",
+      "script": "backend/run_thesis_campaign.py",
+      "status": "PENDING_ANALYSIS",
+      "iterations": [
+        {
+          "run": 1,
+          "date": "2026-04-10",
+          "n": 30,
+          "model": "llama-3.1-8b-instant",
+          "provider": "groq",
+          "params": {
+            "n_chains": 40,
+            "chains_filter": "all",
+            "aegis_shield": true,
+            "null_control": true
+          },
+          "results_file": "results/campaign_thesis_20260410_134913.json",
           "verdict": "PENDING_ANALYSIS",
           "diagnosis": ""
         }

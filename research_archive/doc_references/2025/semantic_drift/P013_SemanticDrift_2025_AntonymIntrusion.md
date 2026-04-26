@@ -85,8 +85,8 @@ Le papier est un **algorithme** sans garantie formelle de convergence ou de qual
 | **C4** (derive semantique mesurable) | FORT | Chaines transitives documentees (chaud->epice->douleur->depression) | La derive semantique est un phenomene reel et mesurable a grande echelle. |
 
 ### Couches delta
-- **delta-2 (Filtrage semantique)** : la cosine similarity seule est insuffisante pour la detection d'injection — un discriminateur semantique additionnel est necessaire.
-- **delta-3** : renforce la necessite de verification au-dela de la cosine.
+- **δ² (Filtrage semantique)** : la cosine similarity seule est insuffisante pour la detection d'injection — un discriminateur semantique additionnel est necessaire.
+- **δ³** : renforce la necessite de verification au-dela de la cosine.
 
 ### Gaps adresses/crees
 - **G-010** (cosine non calibree) : P013 fournit l'evidence empirique a grande echelle que la cosine confond relations semantiques opposees.
@@ -102,7 +102,7 @@ Le papier est un **algorithme** sans garantie formelle de convergence ou de qual
 | **Domaine** | NLP, embeddings, synonymie/antonymie |
 | **Modeles testes** | multilingual-e5-large (fine-tuned), Gemini 2.5-Flash |
 | **Metrique principale** | Discriminateur 90% macro-F1, 2.9M clusters |
-| **delta-layers** | delta-2 (critique pour calibration cosine) |
+| **delta-layers** | δ² (critique pour calibration cosine) |
 | **Conjectures** | C5 (fort), C4 (fort) |
 | **SVC pertinence** | 6/10 |
 | **Reproductibilite** | Faible — dataset et modele fine-tune non publies |

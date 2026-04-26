@@ -33,7 +33,7 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
           <span className="text-red-500 font-mono font-bold text-sm tracking-wider">
             {t('redteam.drawer.title')}
           </span>
-          <span className="text-[#00ff41] font-mono text-xs opacity-50">v2.0</span>
+          <span className="text-[#00ff41] font-mono text-xs opacity-50">v2.1</span>
           <div className="h-4 w-px bg-neutral-700" />
           <select
             value={i18n.language}
@@ -74,7 +74,7 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
                          ? 'text-[#00ff41] border-b-2 border-[#00ff41] bg-[#00ff41]/5'
                          : 'text-gray-600 hover:text-gray-400'}`}
           >
-            {t(`redteam.tabs.${tab.toLowerCase()}`)}
+            {t('redteam.tabs.' + tab.toLowerCase())}
           </button>
         ))}
       </div>

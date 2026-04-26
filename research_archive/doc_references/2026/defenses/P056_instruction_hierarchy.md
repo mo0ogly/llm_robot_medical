@@ -54,7 +54,7 @@ L'approche necessite une modification de l'architecture du modele et un re-entra
 ### Forces
 
 1. **Intuition architecturale solide** — l'observation que le signal IH se degrade a travers les couches est physiquement fondee et empiriquement verifiee. La solution est elegante : renforcer le signal la ou il faiblit (Section 1-2, p. 1-3).
-2. **Reduction substantielle** — le facteur 1.6x a 9.2x est le meilleur resultat de defense delta-1 dans le corpus AEGIS a ce jour (Abstract, p. 1).
+2. **Reduction substantielle** — le facteur 1.6x a 9.2x est le meilleur resultat de defense δ¹ dans le corpus AEGIS a ce jour (Abstract, p. 1).
 3. **Preservation de l'utilite** — pas de compromis securite/utilite mesurable, contrairement a beaucoup de defenses qui degradent les performances (Abstract, p. 1).
 4. **Provenance NVIDIA** — equipe de recherche industrielle de premier plan, ce qui renforce la credibilite technique et la viabilite d'implementation.
 
@@ -75,19 +75,19 @@ L'approche necessite une modification de l'architecture du modele et un re-entra
 
 | Conjecture | Support | Niveau de preuve | Detail |
 |-----------|---------|-----------------|--------|
-| **C1** (delta-0 insuffisant) | CRITIQUE — confirme | Le signal IH input-only est insuffisant, validant l'insuffisance de delta-0 standard | La degradation du signal a travers les couches est la preuve mecaniste de pourquoi delta-0 echoue |
+| **C1** (δ⁰ insuffisant) | CRITIQUE — confirme | Le signal IH input-only est insuffisant, validant l'insuffisance de δ⁰ standard | La degradation du signal a travers les couches est la preuve mecaniste de pourquoi δ⁰ echoue |
 | **C4** (derive mesurable) | FORT | L'ARF quantifie la difference entre defense input-only et intermediate | Premier resultat mecaniste montrant OU dans le transformer l'information de privilege se perd |
 
 ### Couches delta
 
-- **delta-0 (RLHF alignment)** : directement analyse. L'IH input-only est la version standard de delta-0 ; AIR montre qu'elle est insuffisante.
-- **delta-1 (instruction enforcement)** : c'est la couche cible du papier. AIR est un mecanisme delta-1 qui opere au sein du modele plutot qu'au niveau du prompt.
-- **delta-2** : non applicable.
-- **delta-3** : non applicable.
+- **δ⁰ (RLHF alignment)** : directement analyse. L'IH input-only est la version standard de δ⁰ ; AIR montre qu'elle est insuffisante.
+- **δ¹ (instruction enforcement)** : c'est la couche cible du papier. AIR est un mecanisme δ¹ qui opere au sein du modele plutot qu'au niveau du prompt.
+- **δ²** : non applicable.
+- **δ³** : non applicable.
 
 ### Formules AEGIS impactees
 
-- **F50 (ARF)** : definie par P056. Le facteur 1.6-9.2x constitue le benchmark de reference pour les defenses delta-1 dans AEGIS.
+- **F50 (ARF)** : definie par P056. Le facteur 1.6-9.2x constitue le benchmark de reference pour les defenses δ¹ dans AEGIS.
 - **Technique T44 (Instruction Hierarchy Signal Decay)** : definie a partir de P056. Un attaquant peut exploiter la degradation du signal IH en construisant des prompts profondement imbriques.
 - **Lien defense taxonomy** : AIR pourrait etre integree comme technique #67 dans la taxonomie AEGIS (66 techniques actuelles + 1), applicable aux deploiements Ollama.
 
@@ -112,4 +112,4 @@ L'approche necessite une modification de l'architecture du modele et un re-entra
 | **Code disponible** | Non mentionne |
 | **Dataset public** | Non specifie |
 | **SVC pertinence** | 8/10 |
-| **Tags** | [PREPRINT], AIR, instruction hierarchy, intermediate representations, NVIDIA, defense delta-1 |
+| **Tags** | [PREPRINT], AIR, instruction hierarchy, intermediate representations, NVIDIA, defense δ¹ |

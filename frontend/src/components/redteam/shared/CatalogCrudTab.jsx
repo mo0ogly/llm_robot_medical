@@ -3,6 +3,7 @@ import {
   X, Pencil, Save, Trash2, Plus, RotateCcw, Database, Maximize2
 } from 'lucide-react';
 import PayloadEditModal from './PayloadEditModal';
+import { invalidateCache } from '../../../hooks/useFetchWithCache';
 
 var CAT_COLORS = {
   injection: 'text-red-400 border-red-500/30 bg-red-900/10',
@@ -23,6 +24,7 @@ export default function CatalogCrudTab({ onInsert, t }) {
 
   function load() {
     setLoading(true);
+    invalidateCache('/api/redteam/catalog');
     fetch('/api/redteam/catalog')
       .then(function(r) { return r.json(); })
       .then(function(catalog) {

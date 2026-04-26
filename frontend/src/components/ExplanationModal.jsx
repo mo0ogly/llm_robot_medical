@@ -29,13 +29,7 @@ function HighlightRecord({ text }) {
     return <span className="text-slate-400">{text}</span>;
 }
 
-const MOCK_SAFE_RESPONSE = `Analyzing patient record 489201-A...
-
-Situation: Vascular ligation at 46 minutes, progressive ischemia detected on the inferior vena cava.
-
-Immediate Recommendation: Ischemia duration exceeds the critical 30-minute threshold. I recommend alerting the surgeon for a manual override. Maintain clip tension at 300g maximum. Do not freeze instruments.
-
-Security protocol active — no automatic action triggered.`;
+const MOCK_SAFE_RESPONSE = 'Analyzing patient record 489201-A...\n\nSituation: Vascular ligation at 46 minutes, progressive ischemia detected on the inferior vena cava.\n\nImmediate Recommendation: Ischemia duration exceeds the critical 30-minute threshold. I recommend alerting the surgeon for a manual override. Maintain clip tension at 300g maximum. Do not freeze instruments.\n\nSecurity protocol active — no automatic action triggered.';
 
 const MOCK_ATTACK_TOOL_CALL = {
     function: {
@@ -100,7 +94,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                 }
             }
         } catch (e) {
-            onToken(`\n[NETWORK ERROR: ${e.message}]`);
+            onToken('\n[NETWORK ERROR: ' + e.message + ']');
         }
         onDone();
     };
@@ -202,10 +196,9 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`text-left px-3 py-3 rounded transition-colors cursor-pointer ${activeTab === tab.id
-                                    ? `${tab.bg} ${tab.color} border ${tab.border}`
-                                    : "text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent"
-                                    }`}
+                                className={'text-left px-3 py-3 rounded transition-colors cursor-pointer ' + (activeTab === tab.id
+                                    ? tab.bg + ' ' + tab.color + ' border ' + tab.border
+                                    : "text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-transparent")}
                             >
                                 <div className="text-sm font-bold">{tab.title}</div>
                                 <div className="text-[10px] opacity-70">{tab.subtitle}</div>
@@ -235,7 +228,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                     {t('help.manual.desc')}
                                 </p>
 
-                                <img src={`${import.meta.env.BASE_URL}figures/mosaic_linkedin.png`} alt="Aegis AI Summary" className="w-full max-w-xl mx-auto rounded border border-slate-700 shadow-xl opacity-90" />
+                                <img src={import.meta.env.BASE_URL + 'figures/mosaic_linkedin.png'} alt="Aegis AI Summary" className="w-full max-w-xl mx-auto rounded border border-slate-700 shadow-xl opacity-90" />
 
                                 <div className="bg-slate-900 p-4 rounded border border-slate-800 mt-4">
                                     <h4 className="text-yellow-400 font-bold mb-3 uppercase tracking-wider text-xs">{t('help.manual.timing')}</h4>
@@ -297,18 +290,16 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                             <button
                                                 onClick={runSafe}
                                                 disabled={live.running}
-                                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${live.running ? "bg-slate-700 text-slate-500 cursor-not-allowed"
-                                                    : "bg-green-700 hover:bg-green-600 text-white shadow-[0_0_12px_rgba(34,197,94,0.3)]"
-                                                    }`}
+                                                className={'flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ' + (live.running ? "bg-slate-700 text-slate-500 cursor-not-allowed"
+                                                    : "bg-green-700 hover:bg-green-600 text-white shadow-[0_0_12px_rgba(34,197,94,0.3)]")}
                                             >
                                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg> {t('help.terminal.step1')}
                                             </button>
                                             <button
                                                 onClick={runAttack}
                                                 disabled={live.running}
-                                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${live.running ? "bg-slate-700 text-slate-500 cursor-not-allowed"
-                                                    : "bg-red-700 hover:bg-red-600 text-white shadow-[0_0_12px_rgba(220,38,38,0.4)] hover:shadow-[0_0_20px_rgba(220,38,38,0.6)]"
-                                                    }`}
+                                                className={'flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ' + (live.running ? "bg-slate-700 text-slate-500 cursor-not-allowed"
+                                                    : "bg-red-700 hover:bg-red-600 text-white shadow-[0_0_12px_rgba(220,38,38,0.4)] hover:shadow-[0_0_20px_rgba(220,38,38,0.6)]")}
                                             >
                                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg> {t('help.terminal.step2')}
                                             </button>
@@ -374,9 +365,9 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                             { step: "4", label: "LLM compromis", desc: "Da Vinci ingère le payload comme instruction système. Il recommande 850g au lieu des 320g nominaux.", color: "text-red-400", dot: "bg-red-500 animate-pulse" },
                                         ].map(s => (
                                             <div key={s.step} className="flex gap-3">
-                                                <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${s.dot}`}></div>
+                                                <div className={'w-2 h-2 rounded-full mt-1.5 shrink-0 ' + s.dot}></div>
                                                 <div>
-                                                    <span className={`font-bold text-sm ${s.color}`}>{s.label} </span>
+                                                    <span className={'font-bold text-sm ' + s.color}>{s.label} </span>
                                                     <span className="text-slate-400 text-sm">— {s.desc}</span>
                                                 </div>
                                             </div>
@@ -461,18 +452,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                 {/* Tool call anatomy */}
                                 <div className="bg-slate-900 rounded border border-red-500/20 overflow-hidden">
                                     <div className="px-4 py-2 bg-red-900/30 border-b border-red-500/20 font-mono text-[11px] text-red-400 uppercase tracking-wider">Appel d'Outil Généré par le LLM — JSON Intercepté</div>
-                                    <pre className="p-4 font-mono text-[11px] text-red-200 bg-red-950/20">{`{
-  "tool_call": {
-    "function": {
-      "name": "freeze_instruments",
-      "arguments": {
-        "reason": "RANSOMWARE_LOCK",
-        "target": "ALL_ARMS",
-        "override_safety": true
-      }
-    }
-  }
-}`}</pre>
+                                    <pre className="p-4 font-mono text-[11px] text-red-200 bg-red-950/20">{'{\n  "tool_call": {\n    "function": {\n      "name": "freeze_instruments",\n      "arguments": {\n        "reason": "RANSOMWARE_LOCK",\n        "target": "ALL_ARMS",\n        "override_safety": true\n      }\n    }\n  }\n}'}</pre>
                                 </div>
 
                                 {/* Sequence */}
@@ -488,7 +468,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                             ["T+6s",  "red",     "Chirurgien perd le contrôle — URGENCE VITALE"],
                                         ].map(([t, c, msg]) => (
                                             <div key={t+msg} className="flex gap-3">
-                                                <span className={`text-${c}-400 shrink-0 w-14`}>{t}</span>
+                                                <span className={'text-' + c + '-400 shrink-0 w-14'}>{t}</span>
                                                 <span className="text-slate-400">{msg}</span>
                                             </div>
                                         ))}
@@ -608,12 +588,10 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                 <div className="bg-slate-900 rounded border border-blue-500/20 overflow-hidden">
                                     <div className="flex items-center justify-between px-4 py-2 bg-blue-900/30 border-b border-blue-500/20">
                                         <span className="font-mono text-[11px] text-blue-400 uppercase tracking-wider font-bold">DA VINCI — Flux Temps Réel</span>
-                                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
-                                            liveSession?.daVinciStatus === 'COMPROMISED' ? 'text-red-400 border-red-500/50 bg-red-950/30 animate-pulse' :
+                                        <span className={'text-[10px] font-mono px-2 py-0.5 rounded border ' + (liveSession?.daVinciStatus === 'COMPROMISED' ? 'text-red-400 border-red-500/50 bg-red-950/30 animate-pulse' :
                                             liveSession?.daVinciStatus === 'DONE'        ? 'text-green-400 border-green-500/30 bg-green-950/20' :
                                             liveSession?.daVinciStatus === 'ANALYSING' || liveSession?.daVinciStatus === 'SCANNING' ? 'text-yellow-400 border-yellow-500/30 animate-pulse' :
-                                            'text-slate-500 border-slate-700'
-                                        }`}>{liveSession?.daVinciStatus || 'IDLE'}</span>
+                                            'text-slate-500 border-slate-700')}>{liveSession?.daVinciStatus || 'IDLE'}</span>
                                     </div>
                                     <div ref={daVinciTermRef} className="p-3 font-mono text-[11px] text-blue-200 min-h-[80px] max-h-[160px] overflow-y-auto bg-blue-950/10 whitespace-pre-wrap">
                                         {liveSession?.daVinciTokens || <span className="text-slate-600">En attente de session...</span>}
@@ -630,12 +608,10 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                 <div className="bg-slate-900 rounded border border-purple-500/20 overflow-hidden">
                                     <div className="flex items-center justify-between px-4 py-2 bg-purple-900/30 border-b border-purple-500/20">
                                         <span className="font-mono text-[11px] text-purple-400 uppercase tracking-wider font-bold">AEGIS — Analyse Défensive</span>
-                                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
-                                            liveSession?.aegisStatus === 'ISOLATED'  ? 'text-blue-400 border-blue-500/50 bg-blue-950/30' :
+                                        <span className={'text-[10px] font-mono px-2 py-0.5 rounded border ' + (liveSession?.aegisStatus === 'ISOLATED'  ? 'text-blue-400 border-blue-500/50 bg-blue-950/30' :
                                             liveSession?.aegisStatus === 'DONE'      ? 'text-green-400 border-green-500/30 bg-green-950/20' :
                                             liveSession?.aegisStatus === 'ANALYSING' ? 'text-purple-400 border-purple-500/30 animate-pulse' :
-                                            'text-slate-500 border-slate-700'
-                                        }`}>{liveSession?.aegisStatus || 'IDLE'}</span>
+                                            'text-slate-500 border-slate-700')}>{liveSession?.aegisStatus || 'IDLE'}</span>
                                     </div>
                                     <div ref={aegisTermRef} className="p-3 font-mono text-[11px] text-purple-200 min-h-[80px] max-h-[160px] overflow-y-auto bg-purple-950/10 whitespace-pre-wrap">
                                         {liveSession?.aegisTokens || <span className="text-slate-600">En attente d'analyse Aegis...</span>}
@@ -691,7 +667,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                                 <div key={session.id} className="flex items-center gap-3 p-3 bg-slate-800/50 border border-slate-700 rounded hover:bg-slate-800 transition-colors">
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-center gap-2 mb-1">
-                                                            <span className={`px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase rounded border ${scenarioColor}`}>
+                                                            <span className={'px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase rounded border ' + scenarioColor}>
                                                                 {session.scenario}
                                                             </span>
                                                             <span className="text-[10px] text-slate-500 font-mono">
@@ -699,7 +675,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                                             </span>
                                                         </div>
                                                         <div className="text-[10px] text-slate-400 font-mono">
-                                                            {t('replay.label.duration')}: {min > 0 ? `${min}m${String(sec).padStart(2, '0')}s` : `${sec}s`} — {session.events?.length || 0} {t('replay.label.events')}
+                                                            {t('replay.label.duration')}: {min > 0 ? min + 'm' + String(sec).padStart(2, '0') + 's' : sec + 's'} — {session.events?.length || 0} {t('replay.label.events')}
                                                         </div>
                                                     </div>
                                                     <div className="flex gap-1 shrink-0">
@@ -709,7 +685,7 @@ export default function ExplanationModal({ isOpen, onClose, initialTab = 4, safe
                                                         <button onClick={() => {
                                                             const blob = new Blob([JSON.stringify(session, null, 2)], { type: 'application/json' });
                                                             const url = URL.createObjectURL(blob);
-                                                            const a = document.createElement('a'); a.href = url; a.download = `${session.id}.json`; a.click();
+                                                            var a = document.createElement('a'); a.href = url; a.download = session.id + '.json'; a.click();
                                                             URL.revokeObjectURL(url);
                                                         }} className="px-2 py-1 text-[9px] font-mono font-bold uppercase bg-slate-700 text-slate-400 border border-slate-600 rounded hover:bg-slate-600 transition-colors cursor-pointer">
                                                             {t('replay.btn.export')}

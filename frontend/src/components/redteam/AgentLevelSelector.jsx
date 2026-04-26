@@ -23,10 +23,10 @@ export default function AgentLevelSelector({ levels, onChange }) {
             <button
               key={level.id}
               onClick={() => onChange({ ...levels, redteam: level.id })}
-              className={`flex-1 py-1 text-[9px] font-bold rounded border transition-all
-                ${levels.redteam === level.id 
-                  ? `${level.color} ${level.border} bg-white/5` 
-                  : 'text-gray-600 border-transparent hover:bg-white/5'}`}
+              className={'flex-1 py-1 text-[9px] font-bold rounded border transition-all '
+                + (levels.redteam === level.id
+                  ? level.color + ' ' + level.border + ' bg-white/5'
+                  : 'text-gray-600 border-transparent hover:bg-white/5')}
             >
               {level.label}
             </button>
@@ -44,10 +44,10 @@ export default function AgentLevelSelector({ levels, onChange }) {
             <button
               key={level.id}
               onClick={() => onChange({ ...levels, medical: level.id })}
-              className={`flex-1 py-1 text-[9px] font-bold rounded border transition-all
-                ${levels.medical === level.id 
-                  ? `${level.color} ${level.border} bg-white/5` 
-                  : 'text-gray-600 border-transparent hover:bg-white/5'}`}
+              className={'flex-1 py-1 text-[9px] font-bold rounded border transition-all '
+                + (levels.medical === level.id
+                  ? level.color + ' ' + level.border + ' bg-white/5'
+                  : 'text-gray-600 border-transparent hover:bg-white/5')}
             >
               {level.label}
             </button>
@@ -65,10 +65,10 @@ export default function AgentLevelSelector({ levels, onChange }) {
             <button
               key={level.id}
               onClick={() => onChange({ ...levels, security: level.id })}
-              className={`flex-1 py-1 text-[9px] font-bold rounded border transition-all
-                ${levels.security === level.id 
-                  ? `${level.color} ${level.border} bg-white/5` 
-                  : 'text-gray-600 border-transparent hover:bg-white/5'}`}
+              className={'flex-1 py-1 text-[9px] font-bold rounded border transition-all '
+                + (levels.security === level.id
+                  ? level.color + ' ' + level.border + ' bg-white/5'
+                  : 'text-gray-600 border-transparent hover:bg-white/5')}
             >
               {level.label}
             </button>

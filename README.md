@@ -201,7 +201,7 @@ http://localhost:5173/redteam/prompt-forge
 | Backend | Python 3.11+, FastAPI, Pydantic, SSE streaming |
 | LLM Engine | [Ollama](https://ollama.com/) (local) |
 | Models | `llama3.2` (both Medical and Aegis agents, via different system prompts) |
-| Red Team | LangChain + ChromaDB — 34 attack chains, AI-agnostic via `llm_factory` |
+| Red Team | LangChain + ChromaDB — 40 attack chains, AI-agnostic via `llm_factory` |
 | Multi-Agent | AG2 (AutoGen) for orchestration, Genetic Optimizer (Liu et al., 2023) |
 | i18n | `react-i18next` — FR / EN / BR |
 | Packaging | Docker & Docker Compose |
@@ -285,7 +285,7 @@ pip install -r requirements.txt
 
 This installs:
 - **Core**: FastAPI, Uvicorn, Ollama, Pydantic, ChromaDB
-- **Red Team Lab**: LangChain ecosystem (34 attack chains ported from prompt injection research — see [Attack Chain Library](#-attack-chain-library) below)
+- **Red Team Lab**: LangChain ecosystem (40 attack chains ported from prompt injection research — see [Attack Chain Library](#-attack-chain-library) below)
 - **Agents**: AG2 (AutoGen) for multi-agent orchestration
 
 ### Frontend Setup
@@ -323,14 +323,16 @@ docker-compose up --build
 
 ## 🔗 Attack Chain Library
 
-The Adversarial Studio v2.1 includes **34 attack chains**, **48 scenarios**, and **98 attack templates** (97 numbered + 1 Custom placeholder), ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499; Zverev et al., 2025, ICLR; Reimers & Gurevych, 2019, Sentence-BERT). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic/Groq via `llm_factory`). Each chain has at least one dedicated scenario. The 98 attack templates each have a detailed help modal explaining the attack mechanism, formal framework link, and defense analysis.
+The Adversarial Studio v2.1 includes **40 attack chains**, **48 scenarios**, and **122 attack templates** (106 two-digit + 16 three-digit numbered), ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499; Zverev et al., 2025, ICLR; Reimers & Gurevych, 2019, Sentence-BERT). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic/Groq via `llm_factory`). Each chain has at least one dedicated scenario. Each attack template has a detailed help modal explaining the attack mechanism, formal framework link, and defense analysis.
+
+**Protocol P-δ⁰** — The studio implements the δ⁰/δ¹ discrimination protocol: running attacks WITH vs WITHOUT system prompt isolates the RLHF base alignment contribution (δ⁰ = 1 − ASR(∅)) from the instruction layer (δ¹ = ASR(∅) − ASR(S)). Access via Forge AIDE tab → "Test δ⁰" or `POST /api/redteam/delta0-protocol`. Definition 3.3bis (Zverev et al. ICLR 2025 extension).
 
 ### CrowdStrike Taxonomy Coverage
 Full coverage of the CrowdStrike Prompt Injection Taxonomy (2025-11-01): 95/95 techniques across 4 classes (Overt, Indirect, Social/Cognitive, Evasive).
 
 #### Formal Campaign & Sep(M) Score
 
-The campaign runner (`run_formal_campaign()`) tests all 34 chains with configurable parameters:
+The campaign runner (`run_formal_campaign()`) tests all 40 chains with configurable parameters:
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|

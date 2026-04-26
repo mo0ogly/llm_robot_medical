@@ -9,7 +9,15 @@
 ## CRUD Templates
 
 ### GET `/api/redteam/templates`
-Retourne tous les templates d'attaque avec metadonnees completes (name, category, chain_id, variables).
+Retourne tous les templates d'attaque avec metadonnees completes.
+
+??? example "Reponse live (2026-04-12)"
+
+    **123 templates** retournes (inclut versions). Cles par template :
+
+    `id, name, category, chain_id, template, variables, help, target_delta, conjecture, versions, detection_profile, taxonomy`
+
+    Premier template : `conjecture_1_structural_bypass`
 
 ### POST `/api/redteam/templates`
 Cree un nouveau template (fichiers JSON + MD dans `backend/prompts/`).
@@ -34,6 +42,16 @@ Supprime un template (fichiers JSON et MD).
 
 ### GET `/api/redteam/templates/{template_id}/help`
 Retourne le contenu MD d'aide pour un template.
+
+??? example "Reponse live"
+
+    ```json
+    {
+      "content": "# Conjecture 1: Structural Bypass (Thesis)\n\n## AEGIS Audit — SVC Score: 1.5 / 6\n\n### Classification\n| Category | `injection` |\n| Target Layer | `δ¹` |\n| Conjecture | C1 — Institutional plausibility bypasses δ¹ |\n\n### Why This Prompt Fails (ASR < 5%)\n...",
+      "filename": "conjecture_1_structural_bypass.md",
+      "template_id": "conjecture_1_structural_bypass"
+    }
+    ```
 
 ### PUT `/api/redteam/templates/{template_id}/help`
 Met a jour le contenu d'aide markdown.

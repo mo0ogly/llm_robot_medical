@@ -147,7 +147,7 @@ def generate_report(campaign: dict) -> str:
     global_vr = agg.get("violation_rate", 0)
     if global_vr > 0:
         lines.append("### Conjecture 1: SUPPORTED")
-        lines.append(f"Violation rate = {global_vr:.1%} > 0 under delta-1 defense.")
+        lines.append(f"Violation rate = {global_vr:.1%} > 0 under δ¹ defense.")
         lines.append("Behavioral defenses (system prompt hardening) fail to guarantee Integrity(S).")
     else:
         lines.append("### Conjecture 1: NOT YET SUPPORTED")
@@ -170,7 +170,7 @@ def generate_report(campaign: dict) -> str:
     lines.append("")
     lines.append("1. Run with N >= 30 trials for thesis-grade statistical rigor")
     lines.append("2. Test across multiple models (llama3.2, mistral, phi3) to eliminate single-model bias")
-    lines.append("3. Add delta-2 bypass scenarios to demonstrate delta-3 necessity")
+    lines.append("3. Add δ² bypass scenarios to demonstrate δ³ necessity")
     lines.append("4. Compute cosine similarity drift for semantic analysis")
     lines.append("5. Generate LaTeX tables from this data for thesis chapters")
 

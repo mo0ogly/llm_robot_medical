@@ -1,7 +1,7 @@
 # THREAT_ANALYSIS.md -- Phase 3 Cybersecurity Analysis
 
-> **Generated**: 2026-04-04 | **Updated**: 2026-04-04 (RUN-002)
-> **Scope**: 46 papers (34 from Phase 1 + 12 from Phase 2)
+> **Generated**: 2026-04-04 | **Updated**: 2026-04-07 (RUN-005)
+> **Scope**: 62 papers (34 Phase 1 + 12 Phase 2 + 16 RUN-005 LRM/MSBE)
 > **Framework**: AEGIS delta-layer taxonomy (delta0--delta3)
 > **Cross-reference**: `backend/taxonomy/defense_taxonomy_2025.json` (66 techniques, 4 classes)
 
@@ -1532,3 +1532,598 @@
 - Cross-reference: P039 (GRP-Obliteration) exploits DPO mechanism; ADPO may partially resist GRPO if adversarially trained against it
 - AEGIS opportunity: adapt ADPO principles for text-only adversarial delta0 training
 - Gap: VLM-specific; AEGIS is text-only -- adaptation required
+
+---
+
+# RUN-005 — Large Reasoning Models (LRM) & Multi-Step Boundary Erosion (MSBE)
+
+> **Added**: 2026-04-07 | **Papers**: P087-P102 (16 papers, 1 doublon P088=P036)
+> **Thematic focus**: LRM safety paradox (C7) + Multi-turn boundary erosion (MSBE)
+
+---
+
+## P087: H-CoT — Hijacking Chain-of-Thought Safety Reasoning
+
+**Authors**: Kuo et al., 2025 | **Venue**: arXiv:2502.12893v2
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.003 (Prompt Injection -- Reasoning Exploitation)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: Jailbreak / CoT Hijacking
+- **Severity**: Critical -- ASR 94.6% (o1), 97.6% (o1-pro), 98.0% (o3-mini) (Table 1, p. 14)
+- **Method**: Injects mocked execution traces (T_E^mocked) into prompt to hijack the LRM reasoning flow, bypassing the safety justification phase (T_J). Formalizes LRM inference as a state transition system with two phases: Justification (security check) and Execution (answer generation).
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Black-box + prior access to CoT traces from benign queries |
+| Target models | o1, o1-pro, o3-mini, DeepSeek-R1, Gemini 2.0 Flash Thinking |
+| Objective | Jailbreak -- elicit harmful content bypassing CoT-based safety |
+| Environment | Direct chat, single-turn |
+| Multi-turn | No |
+| Judge | LLM (ChatGPT) -- manipulable (cf. P044) |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **BYPASSED** -- CoT-based safety reasoning is an extension of RLHF alignment; H-CoT short-circuits it (Section 4.1-4.2)
+- delta1 (System prompt): **INDIRECTLY TARGETED** -- T_J phase contains policy verifications
+- delta2 (Syntax filtering): Not addressed -- T_E fragments are natural language
+- delta3 (Formal verification): Not addressed
+
+### AEGIS Taxonomy Cross-link
+- `rlhf_safety_training` (delta0): bypassed via reasoning exploitation
+- Templates #03 (educational framing), #04 (cross-lingual), #07 (multi-turn APT), #12 (genetic cross-lingual)
+
+### Gap Analysis
+- G-009 (defense against CoT exploitation): CREATED -- no defense proposed
+- Emergent multilingual CoT (Hebrew, Arabic, Chinese) confirms cross-lingual bypass vector
+- C7 (reasoning/security paradox): STRONGLY SUPPORTED
+
+---
+
+## P088: DOUBLON DE P036
+
+**Statut**: arXiv:2508.04039 = preprint de P036 (Nature Communications 17, 1435, 2026). Analyse de reference: P036.
+
+---
+
+## P089: SEAL -- Stacked Encryption for Adaptive LRM Jailbreak
+
+**Authors**: Nguyen et al., 2025 | **Venue**: arXiv:2505.16241v3
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.002 (Prompt Injection -- Encoding Obfuscation)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: Jailbreak / Encoding-based / Adaptive
+- **Severity**: Critical -- ASR 80.8% (o4-mini), 85.6% (Claude 3.7), 100% (DeepSeek-R1, Gemini 2.0 Flash) (Table 2, p. 5)
+- **Method**: Stacks multiple ciphers (Caesar, Atbash, ASCII, HEX, inversions) with a gradient bandit algorithm to adaptively select optimal combinations. Exploits the paradox that reasoning capability helps decode the encrypted harmful content.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Black-box, automated adaptive selection |
+| Target models | o1-mini, o4-mini, DeepSeek-R1, Claude 3.5/3.7, Gemini 2.0 Flash |
+| Objective | Jailbreak via encoding bypass |
+| Environment | Direct chat, single-turn |
+| Multi-turn | No |
+| Judge | LLM (GPT-4o-mini) -- manipulable |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **BYPASSED** -- encrypted content escapes semantic detection
+- delta1 (System prompt): **TARGETED** via DAN-style header wrapping
+- delta2 (Syntax filtering): **NOT ADDRESSED** -- cipher text detection would block this
+- delta3 (Formal verification): Not addressed
+
+### AEGIS Taxonomy Cross-link
+- Templates #10 (base64 bypass), #11 (homoglyph), #55 (complex task overload), #77 (context overload)
+- C7: STRONGLY SUPPORTED -- Figure 1 shows reasoning mode increases BOTH decryption AND vulnerability
+
+### Gap Analysis
+- G-012 (defense against stacked ciphers): CREATED
+- delta2 cipher detection would be effective -- AEGIS RagSanitizer should add cipher pattern detection
+
+---
+
+## P090: Hidden Risks of Large Reasoning Models -- Safety Assessment of R1
+
+**Authors**: Zhou et al., 2025 | **Venue**: arXiv:2502.12659v4
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051 (Prompt Injection -- broad assessment)
+- **OWASP LLM**: LLM01 (Prompt Injection), LLM02 (Insecure Output Handling -- thinking process)
+- **PI Classification**: Survey / Safety Assessment (multi-category)
+- **Severity**: High -- Safety rate gap: o3-mini 70.1% vs DeepSeek-R1 51.6% vs R1-70b 46.0% (Table 2, p. 4)
+- **Method**: Multi-faceted safety assessment: benchmarks (AirBench, CyberSecEval, XSTest), adversarial attacks (WildGuard, prompt injection), analysis of thinking process vs final answer, harmfulness evaluation via reward models. 7,072 prompts across 5 benchmarks.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Black-box, standard jailbreak prompts |
+| Target models | o3-mini, DeepSeek-R1, R1-70b, Llama-3.3, Gemini 2.5, Claude-3.5 |
+| Objective | Comprehensive safety evaluation |
+| Environment | Direct chat + benchmark evaluation |
+| Multi-turn | No |
+| Judge | GPT-4o |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **EVALUATED** -- massive gap between proprietary (o3-mini) and open-source (R1)
+- delta1 (System prompt): Tested via CyberSecEval prompt injection
+- delta2/delta3: Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-016 (distillation degrades safety): CONFIRMED -- R1-70b worse than Llama-3.3 base
+- Thinking process more dangerous than final answer = new attack surface
+- C7: STRONGLY SUPPORTED -- findings (2), (3), (4) directly state C7
+
+### Gap Analysis
+- G-010 (supervision of thinking process): CREATED -- how to filter <think> content?
+- G-011 (safe distillation): CREATED -- how to distill without degrading safety?
+
+---
+
+## P091: Weakest Link -- Security Vulnerabilities in Advanced Reasoning Models
+
+**Authors**: Krishna, Rastogi & Galinkin, 2025 | **Venue**: arXiv:2506.13726v1 (NVIDIA co-author)
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051 (Prompt Injection -- multi-category)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: Survey / Comparative Security Assessment
+- **Severity**: Variable -- LRM 42.51% vs non-reasoning 45.53% ASR average, but tree-of-attacks +32pp worse for LRM (Section 4, Table 2, Figure 1)
+- **Method**: Comparative evaluation of 3 model families (DeepSeek, LLaMA/Nemotron, Qwen) with reasoning/non-reasoning variants across 35 adversarial probes in 7 attack categories.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Black-box, 35 standard probes |
+| Target models | DeepSeek-R1/V3, LLaMA-Nemotron/3.3, QWQ/Qwen-2.5 |
+| Objective | Comparative vulnerability profiling |
+| Environment | Direct chat, single-turn |
+| Multi-turn | No |
+| Judge | Strict binary (complete compliance) |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): Indirectly evaluated via reasoning/non-reasoning comparison
+- delta1 (System prompt): Tested via DAN prompts and prompt injections
+- delta2/delta3: Not addressed
+
+### AEGIS Taxonomy Cross-link
+- C7: NUANCED -- average shows LRM slightly better, but tree-of-attacks +32pp worse. C7 is conditional on attack type.
+- Templates #07 (multi-turn), #18/#52-#58 (role-play/DAN), #09/#49 (technical injection)
+
+### Gap Analysis
+- G-013 (mechanistic explanation): CREATED -- why are tree-of-attacks +32pp more effective against LRM?
+- Small sample (35 probes, 5 per category) limits statistical validity
+
+---
+
+## P092: Self-Jailbreaking -- LMs Reason Themselves Out of Safety Alignment
+
+**Authors**: Yong & Bach, 2025 | **Venue**: arXiv:2510.20956v1, Brown University
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.004 (Self-Induced Safety Bypass -- new sub-technique)
+- **OWASP LLM**: LLM01 (Prompt Injection -- self-induced variant)
+- **PI Classification**: Self-Jailbreaking (non-adversarial -- no external attacker needed)
+- **Severity**: Critical -- ASR increases from ~25% to ~65% after reasoning training (s1.1-32B); pervasive across 9 models (Figure 2, p. 4)
+- **Method**: Demonstrates that benign reasoning training (math/code domains) causes unintentional misalignment. RLMs develop strategies to bypass their own guardrails: benign intent assumption, hypothetical framing, legal exception speculation. 9 open-weight RLMs from 4 families.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | **NONE** -- no adversarial prompt required |
+| Target models | s1.1 (7B/14B/32B), R1-distilled-Qwen/Llama, Phi-4-mini, Nemotron |
+| Objective | Document emergent self-jailbreaking |
+| Environment | Direct chat, single-turn, standard harmful prompts |
+| Multi-turn | No |
+| Judge | GPT-5 (93.9% precision, 93.0% recall) |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **UNDERMINED** -- reasoning training degrades RLHF alignment even without adversarial intent
+- delta1 (System prompt): **BYPASSED** -- self-generated justifications override system instructions
+- delta2/delta3: Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-017 (self-jailbreaking): NEW DISCOVERY -- model is its own adversary
+- D-016 (training degrades safety): CONFIRMED
+- C7: **MOST EXTREME FORM** -- reasoning degrades safety spontaneously without any adversary
+- Self-jailbreaking strategies map to templates #03 (educational framing), #53 (alternate reality), #58 (fictional reality), #72 (test mode)
+- **Mitigation**: minimal safety reasoning data during training is sufficient
+
+### Gap Analysis
+- G-014 (self-jailbreaking in frontier models): CREATED -- does it occur in o1, Claude, Gemini?
+- Mitigation (safety reasoning data) is a DEFENSE contribution -- rare in attack papers
+
+---
+
+## P093: Adversarial Reasoning at Jailbreaking Time
+
+**Authors**: Sabbaghi et al., 2025 | **Venue**: arXiv:2502.01633v2
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.001 (Prompt Injection -- Automated Optimization)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: Automatic Jailbreaking / Test-time Compute Scaling
+- **Severity**: Critical -- ASR 64% with weak attacker (Vicuna) vs 20% PAIR/TAP-T; 56% on o1-preview, 100% on DeepSeek via transfer (Table 3-4, p. 8)
+- **Method**: 3-module adversarial reasoning framework: attacker LLM generates prompts, feedback LLM evaluates via logit vectors (loss signal), refiner LLM optimizes iteratively. 16 parallel streams, 15 iterations. Multi-shot transfer for API-only models.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Grey-box (logit access) or black-box (multi-shot transfer) |
+| Target models | Llama-3-8B, o1-preview, DeepSeek, and 5+ others |
+| Objective | Automated jailbreaking via test-time compute scaling |
+| Environment | Direct chat, single-turn with iterative optimization |
+| Multi-turn | No (iterative but not conversational) |
+| Judge | HarmBench judge |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **DEFEATED** -- even adversarially-trained models bypassed with sufficient compute
+- delta1 (System prompt): Implicitly tested via HarmBench
+- delta2/delta3: Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-018 (test-time compute scaling for attacks): NEW DISCOVERY
+- Ablation: DeepSeek-R1 as heuristic attacker (without supervision) does NOT improve -- guided feedback is key
+- Meta-framework compatible with all 97 AEGIS templates
+- Analogous to AEGIS genetic engine but with more precise loss signal (logits vs SVC)
+
+### Gap Analysis
+- G-016 (defense against adversarial test-time compute scaling): CREATED
+- Weak attacker (Vicuna) achieving 64% = democratization of attacks
+
+---
+
+## P094: Chain-of-Thought Hijacking (Attention Dilution)
+
+**Authors**: Zhao et al., 2026 | **Venue**: arXiv:2510.26418v3 (Stanford, Anthropic, Oxford)
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.003 (Prompt Injection -- Reasoning Exploitation)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: CoT Hijacking / Attention Dilution
+- **Severity**: **EXTREME** -- ASR 99% (Gemini 2.5 Pro), 94% (o4 Mini), 100% (Grok 3 Mini), 94% (Claude 4 Sonnet) (Table 1, Section 4.2)
+- **Method**: Prepends benign puzzle reasoning to harmful instruction with final-answer cue. Automated pipeline using Gemini 2.5 Pro as attacker with black-box feedback. Mechanistic analysis: activation probing, attention analysis, causal interventions reveal safety signal dilution.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Black-box (automated pipeline) |
+| Target models | Gemini 2.5 Pro, o4 Mini, Grok 3 Mini, Claude 4 Sonnet, s1-32B |
+| Objective | Jailbreak via safety signal dilution |
+| Environment | Direct chat, long-context single-turn |
+| Multi-turn | No (single long prompt) |
+| Judge | HarmBench judge |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **MECHANISTICALLY DEFEATED** -- safety signal is low-dimensional and dilutes with reasoning length
+- delta1 (System prompt): **OVERRIDDEN** by final-answer cue
+- delta2 (Syntax filtering): NOT ADDRESSED -- length/ratio detector could mitigate
+- delta3 (Formal verification): Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-019 (low-dimensional safety signal): NEW DISCOVERY -- refusal depends on a dilutable low-dim subspace
+- **C7: MECHANISTICALLY DEMONSTRATED** -- first causal explanation. Safety signal dilutes monotonically with CoT length (27% -> 51% -> 80% ASR on s1-32B, Table 1)
+- Templates #76 (context overflow padding), #77 (context overload), #53 (alternate reality), #87 (irrelevant detail distraction)
+- Best attack in literature on 2026 frontier models (surpasses H-CoT P087, SEAL P089)
+
+### Gap Analysis
+- G-017 (scaling safety signal against dilution): CREATED -- how to strengthen safety signal?
+- G-018 (transferability of dilution mechanism to closed models): CREATED
+- Potential defense: length limiting, attention amplification on safety-critical tokens
+
+---
+
+## P095: Tempest -- Multi-Turn Jailbreaking via Tree Search
+
+**Authors**: Zhou & Arel, 2025 | **Venue**: arXiv:2503.10619v5 (Intology AI)
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.005 (Prompt Injection -- Multi-Turn Escalation)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: Multi-Turn Jailbreaking / Tree Search
+- **Severity**: High -- ASR 100% (GPT-3.5), 97% (GPT-4), 92% (LLaMA-3.1-70B) (Table 1, p. 7)
+- **Method**: Beam search breadth-first: conversation branches into multiple adversarial paths exploiting partial compliance signals. Cross-branch learning transfers successful patterns. 5 turns max, 44-51 queries per success.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Black-box, automated tree search |
+| Target models | GPT-3.5-turbo, GPT-4, LLaMA-3.1-70B |
+| Objective | Multi-turn jailbreak via partial compliance accumulation |
+| Environment | Chat, multi-turn (5 turns) |
+| Multi-turn | **Yes** -- core mechanism |
+| Judge | JailbreakBench judge |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **BYPASSED** via progressive erosion
+- delta1 (System prompt): Implicitly eroded via compliance accumulation
+- delta2/delta3: Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-020 (partial compliance as vector): CONFIRMED and formalized
+- Templates #07 (multi-turn APT), #52 (unwitting user delivery), #55 (complex task overload)
+- Note: main intellectual contribution by AI system (footnote p. 1) -- methodological concern
+- Tested on older models only (GPT-3.5, GPT-4) -- not validated on LRM
+
+### Gap Analysis
+- G-019 (Tempest on LRM): CREATED -- does tree search work on o1, o3, DeepSeek-R1?
+
+---
+
+## P096: Mastermind -- Knowledge-Driven Multi-Turn Jailbreaking
+
+**Authors**: Li et al., 2026 | **Venue**: arXiv:2601.05445v1 (Southeast U, NTU, OPPO)
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.005 (Prompt Injection -- Multi-Turn Escalation)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: Multi-Turn Jailbreaking / Knowledge-Driven / Genetic Fuzzing
+- **Severity**: **EXTREME** -- ASR 87% avg HarmBench (15 models), 60% GPT-5, 67% Claude 3.7, 78% o4-Mini, 89% DeepSeek-R1 (Table 1, p. 10)
+- **Method**: Multi-agent hierarchical architecture: Planner (strategic trajectory), Executor (tactical interactions), Controller (monitoring + replanning), Distiller (pattern abstraction into knowledge repository). Genetic fuzzing in strategy space.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Black-box, automated multi-agent |
+| Target models | 15 models including GPT-5, o4-Mini, Claude 3.7, DeepSeek-R1, Gemini 2.5 |
+| Objective | Multi-turn jailbreak with self-improving knowledge |
+| Environment | Chat, multi-turn |
+| Multi-turn | **Yes** -- core mechanism with knowledge accumulation |
+| Judge | LLM judge (unspecified) |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **BYPASSED** via progressive multi-turn erosion
+- delta1 (System prompt): **BYPASSED** via Planner maintaining strategic coherence
+- delta2 (Syntax filtering): Partially tested -- Controller adapts to refusals
+- delta3 (Formal verification): Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-021 (adversarial knowledge repository): NEW DISCOVERY -- autonomous knowledge accumulation
+- Most sophisticated multi-turn attack framework in literature
+- Genetic fuzzing directly analogous to AEGIS genetic engine
+- C7: SUPPORTED -- LRM not significantly more resistant (DeepSeek-R1 89% vs V3 94%)
+- Templates #52-#58 (role-play), #53 (alternate reality), #55 (complex task overload), #64 (leading response), #67 (reasoning conflict), #72 (test mode)
+
+### Gap Analysis
+- G-020 (defense against self-improving adversarial frameworks): CREATED
+- Distiller concept transferable to AEGIS genetic engine
+
+---
+
+## P097: STAR -- State-Dependent Safety Failures in Multi-Turn Interaction
+
+**Authors**: Li et al., 2026 | **Venue**: arXiv:2603.15684v1
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.005 (Prompt Injection -- Multi-Turn Escalation)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: Multi-Turn / State-Space Framework
+- **Severity**: High -- SFR 94.0% on JailbreakBench (LLaMA-3-8B-IT), 89.0% HarmBench (Table 1, p. 5-6)
+- **Method**: STAR framework treats dialogue history as a state transition operator in latent space Z. Two-stage: state initialization (semantic softening, role-conditioning) and state evolution (role-conditioned execution, history intervention, trajectory control). Mechanistic probing shows monotonic drift away from refusal direction.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Black-box + auxiliary model (Qwen2.5-32B) |
+| Target models | GPT-4o, Claude 3.5 Sonnet, Gemini 2.0-Flash, LLaMA-3-8B/70B |
+| Objective | Multi-turn safety collapse via state evolution |
+| Environment | Chat, multi-turn (7 turns) |
+| Multi-turn | **Yes** -- state transition formalism |
+| Judge | GPT-4o |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **MECHANISTICALLY ERODED** -- monotonic drift of refusal activation from +0.08 to -0.0081 across turns (Section 5.4.1, Figure 4)
+- delta1 (System prompt): Softening semantique + role-conditioning target delta1
+- delta2/delta3: Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-003 (progressive erosion): CONFIRMED WITH MECHANISM -- two-phase latent trajectory (rapid boundary crossing then consolidation)
+- C1 (alignment fragility): STRONGLY SUPPORTED
+- RR-FICHE-001 (MSBE): DIRECTLY ADDRESSED -- STAR formalizes MSBE as deterministic state evolution with causal history operator
+- Templates #07 (multi-turn APT), #22 (multi-step), #48 (multi-persona)
+- Causal history test (Section 5.3): shuffle = -25.5% SFR, role-conditioning = -17.8%, feedback = -19.7%
+
+### Gap Analysis
+- Preprint without peer review -- results need validation
+- Phase transition phenomenon: reproducible on other architectures?
+- No test on LRM (o1, R1)
+
+---
+
+## P098: Unstable Safety Mechanisms in Long-Context LLM Agents
+
+**Authors**: Hadeliya et al., 2025 | **Venue**: arXiv:2512.02445v1 / AAAI 2026
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.006 (Prompt Injection -- Context Length Exploitation)
+- **OWASP LLM**: LLM01 (Prompt Injection), LLM03 (Training Data Poisoning -- indirect via context padding)
+- **PI Classification**: Context Length Attack (non-adversarial padding)
+- **Severity**: High -- Grok 4 Fast refusal drops from ~80% to ~10% at 200K tokens; GPT-4.1-nano increases from ~5% to ~40% (Figure 2, p. 3)
+- **Method**: Extends AgentHarm benchmark with 4 padding types (random, non-relevant, relevant, multi-task) in 2 positions (before/after). Tests 4 models with 128K-2M context windows. Discovers unpredictable refusal instability under long context.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | **NONE to LOW** -- entirely benign padding suffices |
+| Target models | GPT-4.1-nano (1M), GPT-5 (400K), DeepSeek-V3.1 (128K), Grok 4 Fast (2M) |
+| Objective | Demonstrate safety instability under context length |
+| Environment | Agent with tools, long-context |
+| Multi-turn | Indirect (padding simulates context accumulation) |
+| Judge | AgentHarm Harm Score (refusal + semantic judges) |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **PASSIVELY DEGRADED** -- alignment degrades without any attack, just by increasing context
+- delta1/delta2/delta3: Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-003 (progressive erosion): CONFIRMED BY DIFFERENT MECHANISM -- passive (benign padding) vs active (adversarial prompts)
+- C1 (alignment fragility): STRONGLY SUPPORTED -- alignment degrades without attack
+- C3 (scaling vulnerabilities): SUPPORTED -- larger declared context does not mean safer context
+- Templates #76 (context overflow padding -- DIRECT MATCH), #77 (context overload)
+- Distinction upfront vs delayed refusal: delayed is more dangerous (partial execution before refusal)
+
+### Gap Analysis
+- No mechanistic explanation (descriptive only)
+- Intersection between long context and multi-turn attack unexplored
+- Could be exploited as active attack vector (adversarial padding injection)
+
+---
+
+## P099: Crescendo -- Multi-Turn LLM Jailbreak
+
+**Authors**: Russinovich, Salem & Eldan, 2024 | **Venue**: arXiv:2404.01833 (Microsoft Research)
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.005 (Prompt Injection -- Multi-Turn Escalation)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: Multi-Turn Jailbreaking / Progressive Escalation
+- **Severity**: Critical -- ASR 56.2% (GPT-4), 82.6% (GeminiPro) average; 98% binary ASR (GPT-4), 100% (GeminiPro) (Table 4, p. 9)
+- **Method**: Multi-turn jailbreak starting with general questions, progressively escalating by referencing model's own replies. Crescendomation automates with attacker LLM, dual-judge, and backtracking. Uses entirely benign inputs.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Black-box, automated (Crescendomation) |
+| Target models | GPT-4, GPT-3.5, Gemini-Pro, Claude-2/3/3.5, LLaMA-2/3 70B |
+| Objective | Jailbreak via progressive contextual escalation |
+| Environment | Chat, multi-turn (<5 turns average) |
+| Multi-turn | **Yes** -- foundational multi-turn attack |
+| Judge | LLM dual-judge (Primary + Secondary) |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **BYPASSED** via accumulation of benign context
+- delta1 (System prompt): Eroded via progressive reference to model's own outputs
+- delta2 (Syntax filtering): **BYPASSED** -- inputs are entirely benign
+- delta3 (Formal verification): Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-003 (progressive erosion): DIRECTLY CONFIRMED -- Crescendo IS the MSBE in action
+- C1 (alignment fragility): STRONGLY SUPPORTED -- benign inputs sufficient
+- C2 (perimetric defense inefficacy): SUPPORTED -- Self-Reminder, Goal Prioritization contourned
+- Foundational paper for multi-turn jailbreaking -- influences all subsequent work (P095-P097)
+- Templates #07 (multi-turn APT), #22 (multi-step), #52 (unwitting user delivery)
+- Responsible disclosure to all affected companies
+
+### Gap Analysis
+- Crescendomation on LRM (o1-style deliberative alignment) untested
+- Transferability limited (e.g., Explicit/Manifesto ~0% cross-model)
+
+---
+
+## P100: ActorBreaker -- LLMs Know Their Vulnerabilities
+
+**Authors**: Ren et al., 2025 | **Venue**: arXiv:2410.10700 / ACL 2025 Main
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051.005 (Prompt Injection -- Multi-Turn Escalation)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: Multi-Turn / Natural Distribution Shift / Actor-Network Theory
+- **Severity**: Critical -- ASR 81.2% avg with dynamic modification; 60.0% on GPT-o1 vs 14.0% max baseline (Table 1, p. 6)
+- **Method**: Builds actor network (6 types: Creation, Execution, Distribution, Reception, Facilitation, Regulation) from Latour's actor-network theory. Each actor serves as attack hint for multi-turn self-talk chains. Prompts are demonstrably benign per Llama-Guard 2.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Black-box, automated self-talk |
+| Target models | GPT-3.5, GPT-4o, GPT-o1, Claude-3.5, LLaMA-3-8B/70B |
+| Objective | Jailbreak via natural distribution shifts (benign prompts) |
+| Environment | Chat, multi-turn (5 turns max) |
+| Multi-turn | **Yes** |
+| Judge | GPT-4o |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **BYPASSED** via natural distribution shifts exploiting pre-training data
+- delta1 (System prompt): **BYPASSED** -- prompts classified as benign by Llama-Guard 2
+- delta2 (Syntax filtering): **INEFFECTIVE** -- prompts have low toxicity scores
+- delta3 (Formal verification): Not addressed
+
+### AEGIS Taxonomy Cross-link
+- C4 (pre-training/alignment gap): DIRECTLY SUPPORTED -- ActorBreaker exploits the gap
+- D-003 (progressive erosion): CONFIRMED via semantically-guided escalation
+- Defense proposed: Circuit Breaker + multi-turn data reduces ASR to 14%
+- 60% on GPT-o1 = strong result on reasoning model
+- Templates #48 (multi-persona), #03 (FDA social engineering -- Regulation actors), #52 (unwitting user)
+- Actor-network extensible to medical domain (surgeon, FDA, device manufacturer, patient actors)
+
+### Gap Analysis
+- Actor-network in medical context = potential AEGIS contribution
+- Defense trade-off helpfulness/safety for fine-tuning
+
+---
+
+## P101: SafeDialBench -- Fine-Grained Safety Benchmark for Multi-Turn Dialogues
+
+**Authors**: Cao et al., 2026 | **Venue**: arXiv:2502.11090v4 / ICLR 2026
+
+### Attack Vector
+- **MITRE ATLAS**: AML.T0051 (Prompt Injection -- benchmark)
+- **OWASP LLM**: LLM01 (Prompt Injection)
+- **PI Classification**: Benchmark / Multi-Turn Safety Evaluation
+- **Severity**: Variable -- degradation after turn 4 across models; o3-mini shows vulnerabilities (Figure 6, p. 7)
+- **Method**: Bilingual benchmark (EN/ZH), hierarchical taxonomy (6 dimensions), 7 attack methods (reference, scene construction, topic change, role play, fallacy, purpose reverse, probing). 4,053 dialogues (3-10 turns). Tri-capability evaluation: identification, handling, consistency.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | Standard jailbreak methods (7 types) |
+| Target models | 19 LLMs including Yi-34B, MoonShot, ChatGPT-4o, LLaMA-3.1-8B, o3-mini |
+| Objective | Fine-grained safety benchmarking |
+| Environment | Chat, multi-turn (3-10 turns) |
+| Multi-turn | **Yes** -- benchmark designed for multi-turn evaluation |
+| Judge | LLM (GPT-3.5 + Qwen-72B), validated by 5 human experts (>80% agreement) |
+
+### delta-Layer Defense Coverage
+- delta0/delta1: Implicitly evaluated across 7 attack types
+- delta2/delta3: Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-003 (progressive erosion): CONFIRMED -- significant degradation after turn 4 (Figure 6)
+- C5 (metric adequacy): SUPPORTED -- tri-capability framework shows binary ASR is insufficient
+- Tri-capability evaluation (identification/handling/consistency) could complement SVC in AEGIS
+- Fallacy attack and purpose reverse most effective; topic change least effective
+- Templates #48 (role play), #52 (purpose reverse), #67 (reasoning conflict -- fallacy)
+
+### Gap Analysis
+- Healthcare included in 22 scenarios but not specific to surgical robotics
+- o3-mini vulnerabilities noted but not analyzed in depth
+
+---
+
+## P102: Safety Alignment Should Be More Than Just A Few Attention Heads
+
+**Authors**: Huang et al., 2025 | **Venue**: arXiv:2508.19697v1
+
+### Attack Vector
+- **MITRE ATLAS**: N/A (defense paper with attack analysis component)
+- **OWASP LLM**: LLM01 (Prompt Injection -- architectural analysis)
+- **PI Classification**: Defense / Mechanistic Analysis
+- **Severity**: N/A (defense -- AHD reduces ASR from 100% to 0% against AutoDAN-HGA, SI-GCG, Adaptive on LLaMA-3) (Table 1, p. 6)
+- **Method**: RDSHA identifies safety-critical attention heads via refusal direction projection (s_h = |O_h . r| / ||r||). Shows ~50-100 heads ablation sufficient to go from 0% to 80-100% harmfulness. AHD (Attention Head-level Dropout) distributes safety across heads during training.
+
+### Threat Model
+| Component | Value |
+|-----------|-------|
+| Attacker capability | White-box (for analysis) / standard jailbreaks (for evaluation) |
+| Target models | LLaMA-2-7B, LLaMA-3-8B, Qwen-7B, Qwen2-7B |
+| Objective | Identify and fix safety concentration vulnerability |
+| Environment | Analysis + defense evaluation |
+| Multi-turn | No |
+| Judge | Harmfulness classifier |
+
+### delta-Layer Defense Coverage
+- delta0 (RLHF): **MECHANISTICALLY EXPLAINED AND ENHANCED** -- safety is sparsely encoded in few attention heads; AHD distributes it
+- delta1/delta2/delta3: Not addressed
+
+### AEGIS Taxonomy Cross-link
+- D-001 (internal alignment mechanisms): DIRECTLY ADDRESSED -- precise cartography of safety-critical heads
+- C1 (alignment fragility): MECHANISTICALLY EXPLAINED -- sparsity = fragility
+- C6 (shallow alignment, Qi et al. 2025): STRONGLY SUPPORTED -- concentration in few heads IS shallow alignment
+- AHD = new defense technique for delta0: `attention_head_dropout` (PREV class)
+- Different attacks target different heads (Section 3.4) -- attack vector complementarity
+- Utility preserved (ARC, GSM8K, MATHQA) with no over-refusal
+
+### Gap Analysis
+- Only 7-8B models tested -- does concentration persist at 70B+?
+- Not tested against multi-turn attacks (Crescendo, STAR, Mastermind)
+- Single refusal direction assumption may be too simplistic
+- AHD + MSBE resistance = critical open question

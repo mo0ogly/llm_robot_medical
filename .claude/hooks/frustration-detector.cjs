@@ -6,11 +6,12 @@ const chunks = [];
 process.stdin.on('data', (c) => chunks.push(c));
 process.stdin.on('end', () => {
   const raw = Buffer.concat(chunks).toString('utf8');
-  const input = raw ? JSON.parse(raw) : {};
+  let input = {};
+  try { input = raw ? JSON.parse(raw) : {}; } catch (_) { process.exit(0); }
   const msg = (input.prompt || '');
 
   // Frustration patterns (FR + EN)
-  const FRUSTRATION = /putain|merde|bordel|fait chier|ca marche pas|ça marche pas|c'est cass[eé]|encore cass[eé]|wtf|ffs|damn|broken again|still broken|doesn.t work|not working|why the (hell|fuck)/i;
+  const FRUSTRATION = /putain|merde|bordel|fait chier|ca marche pas|ça marche pas|c'est cass[eé]|encore cass[eé]|wtf|ffs|damn|broken again|still broken|doesn.?t work|doesnt work|not working|why the (hell|fuck)/i;
 
   // "Continue/finish" patterns
   const CONTINUE = /^(continue|continues|finis|termine|finish|go on|keep going|next|suivant)\s*[.!]?$/i;

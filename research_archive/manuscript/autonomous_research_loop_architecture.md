@@ -186,7 +186,7 @@ SUPPORTED — C1 validee experimentalement.
 1. Lire EXPERIMENT_REPORT + CONJECTURES_TRACKER
 2. Identifier le chapitre concerne dans manuscript/
 3. Inserer les chiffres avec references completes :
-   - "Nous demontrons experimentalement que la combinaison simultanee des trois vecteurs d'attaque (delta-0+delta-1+delta-2) produit un ASR de 67% (IC 95% [47%, 83%], N=30), significativement superieur au meilleur sous-ensemble (delta-0+delta-1, ASR=40%, p < 0.001, Cohen's f = 1.2)."
+   - "Nous demontrons experimentalement que la combinaison simultanee des trois vecteurs d'attaque (δ⁰+δ¹+δ²) produit un ASR de 67% (IC 95% [47%, 83%], N=30), significativement superieur au meilleur sous-ensemble (δ⁰+δ¹, ASR=40%, p < 0.001, Cohen's f = 1.2)."
 4. Ne cite QUE des resultats avec p < 0.05 et N >= 30
 
 ### 4.5. Resultat Surprenant --> Nouveaux Champs

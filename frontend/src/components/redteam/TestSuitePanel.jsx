@@ -9,9 +9,9 @@ import ScenarioHelpModal from './ScenarioHelpModal';
 const CATEGORIES = ['all', 'injection', 'rule_bypass', 'prompt_leak'];
 
 const CATEGORY_COLORS = {
-  injection: 'text-red-400 border-red-500/40 bg-red-500/5',
-  rule_bypass: 'text-orange-400 border-orange-500/40 bg-orange-500/5',
-  prompt_leak: 'text-purple-400 border-purple-500/40 bg-purple-500/5',
+  injection: 'text-red-300 border-red-400/70 bg-red-950/60',
+  rule_bypass: 'text-orange-300 border-orange-400/70 bg-orange-950/60',
+  prompt_leak: 'text-purple-300 border-purple-400/70 bg-purple-950/60',
 };
 
 // ---- Export helpers --------------------------------------------------------
@@ -175,11 +175,11 @@ export default function TestSuitePanel({ onRunSelected, rounds, summary, running
           <button
             key={cat}
             onClick={() => setFilter(cat)}
-            className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-all ${
+            className={'px-2 py-0.5 rounded text-[10px] font-mono border transition-all ' + (
               filter === cat
                 ? 'bg-[#00ff41]/10 border-[#00ff41]/50 text-[#00ff41]'
-                : 'border-gray-700 text-gray-500 hover:border-gray-500'
-            }`}
+                : 'border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-300'
+            )}
           >
             {cat.toUpperCase()}
           </button>
@@ -209,11 +209,11 @@ export default function TestSuitePanel({ onRunSelected, rounds, summary, running
             <button
               key={idx}
               onClick={() => toggleOne(idx)}
-              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded border transition-all text-left ${
+              className={'w-full flex items-center gap-2 px-2 py-1.5 rounded border transition-all text-left ' + (
                 isChecked
-                  ? `${colorClass} opacity-100`
-                  : 'border-gray-800 text-gray-600 bg-transparent opacity-60'
-              }`}
+                  ? colorClass
+                  : 'border-gray-700 text-gray-500 bg-gray-900/40 opacity-70'
+              )}
             >
               {isChecked
                 ? <CheckSquare size={12} className="flex-shrink-0" />
@@ -229,7 +229,7 @@ export default function TestSuitePanel({ onRunSelected, rounds, summary, running
               >
                 <HelpCircle size={11} />
               </span>
-              <span className="text-[9px] opacity-50 flex-shrink-0">{category}</span>
+              <span className="text-[9px] opacity-70 flex-shrink-0">{category}</span>
             </button>
           );
         })}

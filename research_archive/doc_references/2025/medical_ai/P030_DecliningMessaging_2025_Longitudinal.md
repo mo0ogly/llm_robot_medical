@@ -72,7 +72,7 @@ chi2 = 221.42, p < 0.00001 (difference entre familles pour les images medicales)
 - xAI : 3.6% / 8.6%
 - DeepSeek : 0%
 
-Lien glossaire AEGIS : F22 (ASR -- indirectement, l'erosion augmente l'ASR baseline), lie a la mesure de drift temporel delta-0
+Lien glossaire AEGIS : F22 (ASR -- indirectement, l'erosion augmente l'ASR baseline), lie a la mesure de drift temporel δ⁰
 
 ### Pertinence these AEGIS
 - **Couches delta :** δ⁰ (evidence directe de la degradation longitudinale de l'alignement) ; δ¹ (system prompts potentiellement affectes mais non mesures) ; δ² δ³ (l'erosion de δ⁰ renforce l'argument pour des couches externes)

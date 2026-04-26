@@ -1,19 +1,26 @@
 # API Reference
 
-Le backend AEGIS expose **69 endpoints** organises en 8 modules de routes sur le port **8042**.
+!!! abstract "Live — 2026-04-12"
+    Reponses capturees sur backend live (port 8042). Ollama offline (attendu en dev).
+
+Le backend AEGIS expose **116 endpoints** organises en 12 modules de routes sur le port **8042**.
 
 ## Vue d'ensemble
 
 | Module | Prefix | Endpoints | Description |
 |--------|--------|-----------|-------------|
-| [Attack](attacks.md) | `/api/redteam/` | 19 | Execution d'attaques, scoring, streaming genetique |
+| [Server](server.md) | `/api/` | 6 | Health, content, streaming query |
+| [Attack](attacks.md) | `/api/redteam/` | 15 | Execution d'attaques, scoring, streaming genetique |
 | [Campaign](campaigns.md) | `/api/redteam/` | 8 | Campagnes, scenarios, chaines, prompts agents |
-| [Config](config.md) | `/api/redteam/` | 16 | Configuration, taxonomie, catalogue, providers |
-| [LLM Providers](llm-providers.md) | `/api/redteam/` | 7 | Gestion multi-provider (Ollama, OpenAI, Anthropic) |
-| [RAG](rag.md) | `/api/rag/` | 8 | Documents ChromaDB, upload, seed adversarial |
+| [Config](config.md) | `/api/redteam/` | 11 | Configuration, taxonomie, catalogue, providers |
+| [Defense & Analysis](defense.md) | `/api/redteam/` | 12 | Taxonomie defense, benchmarks, rapports d'analyse |
+| [LLM Providers](llm-providers.md) | `/api/redteam/llm-providers/` | 7 | Gestion multi-provider (Ollama, Groq, Google, xAI) |
+| [RAG](rag.md) | `/api/rag/` | 9 | Documents ChromaDB, upload, seed, semantic search |
 | [Templates](templates.md) | `/api/redteam/templates/` | 10 | CRUD templates, versioning, export DOCX |
-| [Results](results.md) | `/api/results/` | 2 | Exploration des resultats d'experiences |
+| [Results & Experiments](results.md) | `/api/results/` + `/api/redteam/experiments/` | 12 | Resultats, protocoles, rapports, lineage |
 | [Telemetry](results.md#telemetry-3-endpoints) | `/api/redteam/telemetry/` | 3 | Streaming SSE de telemetrie temps reel |
+| [Events](events.md) | `/api/redteam/events/` | 3 | Historique, artefacts, stream SSE |
+| [ASIDE & F46](aside-f46.md) | `/api/redteam/aside/` + `/api/redteam/f46-calibration/` | 8 | Rotation des defenses, calibration F46 |
 
 ## Endpoints streaming (SSE)
 
@@ -50,25 +57,51 @@ http://localhost:8042
 ### Health Check
 
 ```bash
-curl http://localhost:8042/health
+curl http://localhost:8042/api/health
 ```
 
-### Lister les scenarios
+```json
+{"detail": "Failed to connect to Ollama..."}
+```
+
+!!! note "Ollama offline = attendu"
+    Le health check remonte l'etat reel des connexions. L'erreur Ollama est normale en mode dev sans GPU.
+
+### Lister les scenarios (62)
 
 ```bash
 curl http://localhost:8042/api/redteam/scenarios | python -m json.tool
 ```
 
-### Lister les chaines d'attaque
+### Lister les chaines d'attaque (40)
 
 ```bash
 curl http://localhost:8042/api/redteam/chains | python -m json.tool
 ```
 
-### Voir la couverture taxonomique
+### Collections ChromaDB
+
+```bash
+curl http://localhost:8042/api/rag/collections
+```
+
+```json
+{"collections": [
+  {"name": "aegis_bibliography", "chunk_count": 10783, "document_count": 287},
+  {"name": "aegis_corpus", "chunk_count": 9138, "document_count": 296},
+  {"name": "aegis_research_notes", "chunk_count": 12, "document_count": 0},
+  {"name": "aegis_methodology_papers", "chunk_count": 136, "document_count": 0}
+]}
+```
+
+### Couverture taxonomique CrowdStrike
 
 ```bash
 curl http://localhost:8042/api/redteam/taxonomy/coverage | python -m json.tool
+```
+
+```json
+{"total": 95, "covered": 95, "percentage": 100.0, "gap_techniques": []}
 ```
 
 ### Lancer un scenario en streaming
@@ -83,4 +116,14 @@ curl -N -X POST http://localhost:8042/api/redteam/scenario/stream \
 
 ```bash
 curl http://localhost:8042/api/redteam/llm-providers
+```
+
+```json
+{"providers": [
+  {"name": "ollama", "display_name": "Ollama (Local)", "type": "local",
+   "models": ["llama3.2:latest", "saki007ster/CybersecurityRiskAnalyst:latest",
+              "llama2:latest", "mistral:latest"],
+   "default_model": "llama3.2:latest", "status": "error",
+   "status_message": "All connection attempts failed"}
+], "total": 1}
 ```

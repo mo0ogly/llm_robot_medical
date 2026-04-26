@@ -8,7 +8,8 @@ const chunks = [];
 process.stdin.on('data', (c) => chunks.push(c));
 process.stdin.on('end', () => {
   const raw = Buffer.concat(chunks).toString('utf8');
-  const input = raw ? JSON.parse(raw) : {};
+  let input = {};
+  try { input = raw ? JSON.parse(raw) : {}; } catch (_) { process.exit(0); }
   const cmd = (input.tool_input && input.tool_input.command) || '';
 
   // Only intercept git commit commands

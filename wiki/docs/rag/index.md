@@ -49,8 +49,8 @@ flowchart LR
     VERIFY -->|"OK"| DONE["P-ID assigned"]
     VERIFY -->|"FAIL"| BLOCKED["BLOCKED, no P-ID"]
 
-    style CHECK fill:#f39c12,color:#fff
-    style COSINE fill:#f39c12,color:#fff
+    style CHECK fill:#f39c12
+    style COSINE fill:#f39c12
 ```
 
 ## 4. Anti-doublon — la regle AEGIS

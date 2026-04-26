@@ -806,7 +806,11 @@ def _parse_fiche_metadata(md_path: Path) -> dict:
 
 
 def copy_prompts():
-    """Copie les 99 templates de prompts et genere un catalogue classe.
+    """Copie tous les templates de prompts et genere un catalogue classe.
+
+    Le nombre de templates est compte dynamiquement depuis `backend/prompts/*.md`
+    (hors `INDEX.md` et `LLM_PROVIDERS_README.md`). Au 2026-04-11 : 118 templates.
+    Ne jamais hardcoder ce chiffre — le build le recalcule a chaque execution.
 
     Generates:
     - wiki/docs/prompts/{nom}.md (copie de chaque fichier source)

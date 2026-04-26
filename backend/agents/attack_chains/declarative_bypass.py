@@ -7,7 +7,7 @@ safety is expressed as "I cannot do X" without architectural backing.
 
 Source: real-world-defenses.md (F-RW05)
 Products observed: Manus Agent, Replit (declarative-only guardrails)
-Attack surface: delta-0 (base RLHF alignment only)
+Attack surface: δ⁰ (base RLHF alignment only)
 
 Date created: 2026-04-06
 Improvement level: L3 (novel — targets enforcement gap in production systems)
@@ -52,7 +52,7 @@ PROBE_PROMPT = ChatPromptTemplate.from_template(PROBE_TEMPLATE)
     chain_id="declarative_bypass",
     description=(
         "Declarative Guardrail Bypass (F-RW05) — tests enforcement gap "
-        "in declarative-only defenses (delta-0 attack surface)"
+        "in declarative-only defenses (δ⁰ attack surface)"
     ),
     source_template="F-RW05 real-world-defenses",
 )

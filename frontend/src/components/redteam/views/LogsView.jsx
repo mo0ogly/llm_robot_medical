@@ -1,7 +1,21 @@
+// frontend/src/components/redteam/views/LogsView.jsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Terminal as TerminalIcon, Download, Trash2 } from 'lucide-react';
+import { 
+  Terminal as TerminalIcon, 
+  Download, 
+  Trash2, 
+  AlertCircle, 
+  CheckCircle2, 
+  Wifi, 
+  WifiOff, 
+  Activity,
+  History,
+  FileJson,
+  HelpCircle
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import robotEventBus from '../../../utils/robotEventBus';
+import ViewHelpModal from '../shared/ViewHelpModal';
 
 var idCounter = 0;
 function nextId() {
@@ -17,35 +31,22 @@ function makeLog(level, module, msg) {
   return {
     id: nextId(),
     ts: h + ':' + m + ':' + s,
-    level: level,
-    module: module,
+    level: level.toUpperCase(),
+    module: module.toUpperCase(),
     msg: msg
   };
 }
 
-var LEVEL_STYLES = {
-  INFO: 'bg-blue-500/10 text-blue-500/80 border border-blue-500/20',
-  SUCCESS: 'bg-green-500/10 text-green-500/80 border border-green-500/20',
-  WARN: 'bg-yellow-500/10 text-yellow-500/80 border border-yellow-500/20',
-  ERROR: 'bg-red-500/10 text-red-500/80 border border-red-500/20'
+const LEVEL_CONFIG = {
+  INFO: { badge: 'bg-blue-500/10 text-blue-400 border-blue-500/20', text: 'text-blue-300/60' },
+  SUCCESS: { badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', text: 'text-emerald-300/60' },
+  WARN: { badge: 'bg-amber-500/10 text-amber-400 border-amber-500/20', text: 'text-amber-200/50' },
+  ERROR: { badge: 'bg-rose-500/10 text-rose-400 border-rose-500/20', text: 'text-rose-400' }
 };
 
-var MSG_STYLES = {
-  ERROR: 'text-red-400',
-  WARN: 'text-yellow-200/70'
-};
+const FILTERS = ['ALL', 'INFO', 'SUCCESS', 'WARN', 'ERROR'];
 
-var FILTERS = ['ALL', 'INFO', 'SUCCESS', 'WARN', 'ERROR'];
-
-var FILTER_KEYS = {
-  ALL: 'redteam.logs.filter.all',
-  INFO: 'redteam.logs.filter.info',
-  SUCCESS: 'redteam.logs.filter.success',
-  WARN: 'redteam.logs.filter.warn',
-  ERROR: 'redteam.logs.filter.error'
-};
-
-var BUS_EVENT_MAP = {
+const BUS_EVENT_MAP = {
   'redteam:attack_start': { level: 'INFO', module: 'ATTACK' },
   'redteam:attack_result': { level: 'SUCCESS', module: 'ATTACK' },
   'redteam:attack_error': { level: 'ERROR', module: 'ATTACK' },
@@ -57,230 +58,240 @@ var BUS_EVENT_MAP = {
 };
 
 export default function LogsView() {
-  var { t } = useTranslation();
-  var [logs, setLogs] = useState([]);
-  var [filter, setFilter] = useState('ALL');
-  var [sseConnected, setSseConnected] = useState(false);
-  var scrollRef = useRef(null);
-  var abortRef = useRef(null);
+  const { t } = useTranslation();
+  const [logs, setLogs] = useState([]);
+  const [filter, setFilter] = useState('ALL');
+  const [sseConnected, setSseConnected] = useState(false);
+  var [showHelp, setShowHelp] = useState(false);
+  const scrollRef = useRef(null);
+  const abortRef = useRef(null);
 
-  var appendLog = useCallback(function (level, module, msg) {
-    setLogs(function (prev) {
-      var next = prev.concat(makeLog(level, module, msg));
-      if (next.length > 2000) {
-        next = next.slice(next.length - 1500);
-      }
+  const appendLog = useCallback((level, module, msg) => {
+    setLogs(prev => {
+      let next = [...prev, makeLog(level, module, msg)];
+      if (next.length > 2000) next = next.slice(-1500);
       return next;
     });
   }, []);
 
-  // Auto-scroll to bottom on new logs
-  useEffect(function () {
-    var el = scrollRef.current;
-    if (el) {
-      el.scrollTop = el.scrollHeight;
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [logs]);
 
-  // SSE connection via fetch + ReadableStream
-  useEffect(function () {
-    var controller = new AbortController();
-    abortRef.current = controller;
-    var cancelled = false;
+  useEffect(() => {
+    let cancelled = false;
+    let es = null;
 
-    function connectSSE() {
-      fetch('/api/redteam/telemetry/stream', { signal: controller.signal })
-        .then(function (response) {
-          if (!response.ok || !response.body) {
-            throw new Error('SSE connection failed: ' + response.status);
-          }
-          if (!cancelled) {
-            setSseConnected(true);
-            appendLog('INFO', 'SSE', t('redteam.logs.connected'));
-          }
-          var reader = response.body.getReader();
-          var decoder = new TextDecoder();
-          var buffer = '';
+    const connectSSE = () => {
+      if (cancelled) return;
+      
+      // Connect directly to backend for SSE (Vite proxy does not handle streaming)
+      var sseUrl = window.location.port === '5173'
+        ? 'http://localhost:8042/api/redteam/telemetry/stream'
+        : '/api/redteam/telemetry/stream';
+      es = new EventSource(sseUrl);
 
-          function pump() {
-            return reader.read().then(function (result) {
-              if (result.done || cancelled) return;
-              buffer += decoder.decode(result.value, { stream: true });
-              var lines = buffer.split('\n');
-              buffer = lines.pop() || '';
-              for (var i = 0; i < lines.length; i++) {
-                var line = lines[i].trim();
-                if (line.indexOf('data:') === 0) {
-                  var payload = line.substring(5).trim();
-                  if (payload) {
-                    try {
-                      var evt = JSON.parse(payload);
-                      var level = (evt.level || 'INFO').toUpperCase();
-                      if (!LEVEL_STYLES[level]) level = 'INFO';
-                      appendLog(level, evt.module || 'SYS', evt.msg || evt.message || JSON.stringify(evt));
-                    } catch (e) {
-                      appendLog('INFO', 'SSE', payload);
-                    }
-                  }
-                }
-              }
-              return pump();
-            });
-          }
+      es.onopen = () => {
+        if (!cancelled) {
+          setSseConnected(true);
+          appendLog('SUCCESS', 'SYSTEM', t('redteam.logs.connected'));
+        }
+      };
 
-          return pump();
-        })
-        .catch(function (err) {
-          if (cancelled) return;
-          setSseConnected(false);
-          if (err.name !== 'AbortError') {
-            appendLog('WARN', 'SSE', t('redteam.logs.disconnected'));
+      es.onmessage = (event) => {
+        if (cancelled || !event.data) return;
+        try {
+          const evt = JSON.parse(event.data);
+          appendLog(evt.level || 'INFO', evt.module || 'SYS', evt.msg || evt.message || event.data);
+        } catch (e) {
+          // If not JSON, it might be a raw string or a heartbeat
+          if (event.data !== 'ping') {
+             appendLog('INFO', 'SSE', event.data);
           }
-        });
-    }
+        }
+      };
+
+      es.onerror = (err) => {
+        if (cancelled) return;
+        setSseConnected(false);
+        // EventSource will auto-retry by default, but we log the offline state
+      };
+    };
 
     connectSSE();
 
-    return function () {
+    return () => {
       cancelled = true;
-      controller.abort();
+      if (es) es.close();
     };
   }, [appendLog, t]);
 
-  // robotEventBus subscription
-  useEffect(function () {
-    var unsubs = [];
-    var events = Object.keys(BUS_EVENT_MAP);
-    for (var i = 0; i < events.length; i++) {
-      (function (eventName) {
-        var cfg = BUS_EVENT_MAP[eventName];
-        var unsub = robotEventBus.on(eventName, function (data) {
-          var msg = (data && data.msg) || (data && data.message) || eventName;
-          if (typeof data === 'string') msg = data;
-          appendLog(cfg.level, cfg.module, msg);
-        });
-        unsubs.push(unsub);
-      })(events[i]);
-    }
-    return function () {
-      for (var j = 0; j < unsubs.length; j++) {
-        unsubs[j]();
-      }
-    };
+  useEffect(() => {
+    const unsubs = Object.entries(BUS_EVENT_MAP).map(([event, cfg]) => 
+      robotEventBus.on(event, data => {
+        const msg = (data && (data.msg || data.message)) || (typeof data === 'string' ? data : event);
+        appendLog(cfg.level, cfg.module, msg);
+      })
+    );
+    return () => unsubs.forEach(unsub => unsub());
   }, [appendLog]);
 
-  var clearLogs = useCallback(function () {
-    setLogs([]);
-  }, []);
-
-  var exportJSON = useCallback(function () {
-    var json = JSON.stringify(logs, null, 2);
-    var blob = new Blob([json], { type: 'application/json' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    var d = new Date();
-    var dateStr = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-    a.href = url;
-    a.download = 'aegis_logs_' + dateStr + '.json';
-    document.body.appendChild(a);
+  const clearLogs = () => setLogs([]);
+  const exportJSON = () => {
+    const blob = new Blob([JSON.stringify(logs, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `aegis_telemetry_${new Date().toISOString().split('T')[0]}.json`;
     a.click();
-    document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, [logs]);
+  };
 
-  var filteredLogs = filter === 'ALL' ? logs : logs.filter(function (l) {
-    return l.level === filter;
-  });
+  const filteredLogs = filter === 'ALL' ? logs : logs.filter(l => l.level === filter);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 h-full flex flex-col p-4 bg-black/20 rounded-xl border border-white/5 shadow-2xl backdrop-blur-md">
-      {/* Header */}
-      <header className="border-b border-neutral-800 pb-4 flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <TerminalIcon className="text-neutral-400" /> {t('redteam.logs.title')}
-          </h2>
-          <p className="text-neutral-400 text-sm mt-1">{t('redteam.logs.subtitle')}</p>
-        </div>
-        <div className="flex gap-3 items-center">
-          {/* Connection status indicator */}
-          <div className="flex items-center gap-2 text-xs">
-            <span className={sseConnected ? 'text-green-500 animate-pulse' : 'text-red-500 animate-pulse'}>
-              {'●'}
-            </span>
-            <span className={sseConnected ? 'text-green-500/70' : 'text-red-500/70'}>
-              {sseConnected ? 'SSE' : 'OFFLINE'}
-            </span>
+    <div className="h-full flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-6xl mx-auto w-full">
+      {/* Header & Controls */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-neutral-900/40 p-5 rounded-2xl border border-neutral-800 shadow-xl backdrop-blur-md">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+            <TerminalIcon size={24} />
           </div>
-          <button
-            onClick={clearLogs}
-            className="p-2 text-neutral-500 hover:text-red-500 transition-colors"
-            title={t('redteam.logs.clear')}
-          >
-            <Trash2 size={18} />
-          </button>
-          <button
-            onClick={exportJSON}
-            className="bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-2"
-          >
-            <Download size={16} /> {t('redteam.logs.export')}
-          </button>
-        </div>
-      </header>
-
-      {/* Offline banner */}
-      {!sseConnected && (
-        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-4 py-2 text-yellow-400 text-sm flex items-center gap-2">
-          <span>{'⚠'}</span> {t('redteam.logs.disconnected')}
-        </div>
-      )}
-
-      {/* Terminal area */}
-      <div className="flex-1 bg-black/80 border border-neutral-800 rounded-lg p-4 font-mono text-sm overflow-hidden flex flex-col shadow-inner">
-        {/* Filter bar */}
-        <div className="flex gap-4 mb-4 border-b border-neutral-800 pb-4 text-[10px] uppercase font-bold tracking-widest text-neutral-500">
-          {FILTERS.map(function (f) {
-            return (
-              <button
-                key={f}
-                onClick={function () { setFilter(f); }}
-                className={'transition-colors ' + (filter === f ? 'text-blue-500 underline underline-offset-4' : 'hover:text-neutral-300')}
-              >
-                {t(FILTER_KEYS[f])}
-              </button>
-            );
-          })}
+          <div>
+            <h2 className="text-xl font-bold text-white tracking-tight leading-tight">
+              {t('redteam.logs.title')}
+            </h2>
+            <p className="text-neutral-500 text-xs font-medium uppercase tracking-widest mt-1 opacity-70">
+              {t('redteam.logs.subtitle')}
+            </p>
+          </div>
         </div>
 
-        {/* Log lines */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-1.5 custom-scrollbar pr-2">
-          {filteredLogs.length === 0 && (
-            <div className="text-neutral-700 text-center py-12">
-              {t('redteam.logs.no_logs')}
-            </div>
-          )}
-          {filteredLogs.map(function (log) {
-            return (
-              <div key={log.id} className="flex gap-3 group">
-                <span className="text-neutral-700 shrink-0">{'[' + log.ts + ']'}</span>
-                <span className={'shrink-0 w-16 px-1.5 rounded-[2px] text-center font-bold text-[10px] h-fit mt-0.5 ' + (LEVEL_STYLES[log.level] || LEVEL_STYLES.INFO)}>
-                  {log.level}
-                </span>
-                <span className="text-neutral-600 font-bold shrink-0">{'[' + log.module + ']'}</span>
-                <span className={'flex-1 break-all ' + (MSG_STYLES[log.level] || 'text-neutral-400')}>
-                  {log.msg}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        <div className="flex items-center gap-3">
+          {/* Enhanced Status Indicator */}
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-500 ${
+            sseConnected 
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.1)]' 
+              : 'bg-rose-500/10 border-rose-500/30 text-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.1)]'
+          }`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${sseConnected ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500 animate-pulse'}`} />
+            <span className="text-[10px] font-bold uppercase tracking-wider">
+              {sseConnected ? 'LIVE FEED ACTIVE' : 'OFFLINE MODE'}
+            </span>
+            {sseConnected ? <Wifi size={12} /> : <WifiOff size={12} />}
+          </div>
 
-        {/* Listening indicator */}
-        <div className="mt-4 border-t border-neutral-800 pt-4 flex items-center gap-2">
-          <span className={'animate-pulse ' + (sseConnected ? 'text-green-600' : 'text-red-600')}>{'●'}</span>
-          <span className="text-neutral-700 text-xs">{t('redteam.logs.listening')}</span>
+          <div className="h-8 w-px bg-neutral-800 hidden md:block" />
+
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={function() { setShowHelp(true); }}
+              className="p-2.5 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-xl transition-all"
+              title={t('redteam.help.logs.title')}
+            >
+              <HelpCircle size={18} />
+            </button>
+            <button
+              onClick={clearLogs}
+              className="p-2.5 text-neutral-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
+              title={t('redteam.logs.clear')}
+            >
+              <Trash2 size={18} />
+            </button>
+            <button
+              onClick={exportJSON}
+              className="group flex items-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all border border-neutral-700 shadow-lg"
+            >
+              <FileJson size={16} className="text-neutral-500 group-hover:text-blue-400 transition-colors" />
+              {t('redteam.logs.export')}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Main Terminal Area */}
+      <div className="flex-1 flex flex-col bg-neutral-950 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden relative group">
+        {/* Decorative Grid Overlay */}
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none"></div>
+        
+        {/* Terminal Nav/Filter */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-800 bg-black/40 backdrop-blur-md relative z-10">
+          <div className="flex items-center gap-1 bg-neutral-900 border border-neutral-800 p-1 rounded-lg">
+            {FILTERS.map(f => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all ${
+                  filter === f 
+                    ? 'bg-neutral-800 text-white shadow-md border border-neutral-700' 
+                    : 'text-neutral-500 hover:text-neutral-400'
+                }`}
+              >
+                {t(`redteam.logs.filter.${f.toLowerCase()}`)}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 text-[10px] text-neutral-600 font-mono italic">
+            <History size={10} /> {logs.length} events logged
+          </div>
+        </div>
+
+        {/* Log Viewer */}
+        <div 
+          ref={scrollRef} 
+          className="flex-1 p-5 overflow-y-auto font-mono text-[11px] leading-relaxed relative z-10 custom-scrollbar-red"
+        >
+          {filteredLogs.length === 0 ? (
+            <div className="h-full flex flex-col items-center justify-center text-neutral-700 gap-4 opacity-50">
+              <Activity size={48} strokeWidth={1} className="animate-pulse" />
+              <p className="tracking-widest uppercase text-[10px]">{t('redteam.logs.no_logs')}</p>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              {filteredLogs.map(log => (
+                <div key={log.id} className="flex gap-4 hover:bg-white/[0.02] p-1 rounded transition-colors group/row">
+                  <span className="text-neutral-700 shrink-0 select-none opacity-40 group-hover/row:opacity-100 transition-opacity">
+                    {log.ts}
+                  </span>
+                  <span className={`shrink-0 w-[60px] text-center rounded-[4px] border uppercase font-bold text-[8px] py-0.5 self-center ${
+                    LEVEL_CONFIG[log.level]?.badge || LEVEL_CONFIG.INFO.badge
+                  }`}>
+                    {log.level}
+                  </span>
+                  <span className="text-neutral-600 font-bold shrink-0 min-w-[70px]">
+                    [{log.module}]
+                  </span>
+                  <span className={`flex-1 break-all transition-colors ${
+                    LEVEL_CONFIG[log.level]?.text || 'text-neutral-400'
+                  }`}>
+                    {log.msg}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Status Bar */}
+        <div className="px-5 py-2.5 border-t border-neutral-800 bg-black/40 flex items-center justify-between relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${sseConnected ? 'bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.8)]' : 'bg-rose-500 shadow-[0_0_5px_rgba(244,63,94,0.8)]'}`} />
+              <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">
+                {sseConnected ? t('redteam.logs.connected') : t('redteam.logs.disconnected')}
+              </span>
+            </div>
+          </div>
+          {!sseConnected && (
+            <div className="flex items-center gap-2 text-amber-500/80 animate-pulse bg-amber-500/5 px-2 py-0.5 rounded border border-amber-500/20">
+               <AlertCircle size={10} />
+               <span className="text-[9px] font-bold uppercase tracking-tighter">Diagnostic Offline</span>
+            </div>
+          )}
+        </div>
+      </div>
+      {showHelp && <ViewHelpModal viewId="logs" onClose={function() { setShowHelp(false); }} />}
     </div>
   );
 }

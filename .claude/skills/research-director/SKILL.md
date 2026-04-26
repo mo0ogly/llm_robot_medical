@@ -3,7 +3,7 @@ name: research-director
 description: >
   Directeur de laboratoire autonome pour la thèse AEGIS (ENS, 2026).
   Agent autonome de niveau 5 — suit la boucle opérationnelle :
-  OBJECTIVE → DECOMPOSE → PLAN → ACT → OBSERVE → EVALUATE → (REPLAN) → COMPLETE
+  OBJECTIVE → [LITREVIEW] → DECOMPOSE → PLAN → [PLAN_REVIEW] → ACT → OBSERVE → EVALUATE → (REPLAN) → COMPLETE
 
   Orchestre bibliography-maintainer, aegis-prompt-forge, et fiche-attaque
   pour faire avancer les conjectures C1-C7, combler les gaps G-001→G-021,
@@ -20,8 +20,8 @@ description: >
 # Research Director — Directeur de Laboratoire AEGIS
 
 **Architecture** : Agent autonome de niveau 5
-**Boucle** : `OBJECTIVE → DECOMPOSE → PLAN → ACT → OBSERVE → EVALUATE → (REPLAN) → COMPLETE`
-**Cadres intégrés** : OODA (Boyd) + 6 étapes agentiques + mémoire à 3 niveaux
+**Boucle** : `OBJECTIVE → [LITREVIEW] → DECOMPOSE → PLAN → [PLAN_REVIEW] → ACT → OBSERVE → EVALUATE → (REPLAN) → COMPLETE`
+**Cadres intégrés** : OODA (Boyd) + 6 étapes agentiques + mémoire à 4 niveaux
 
 ---
 
@@ -48,7 +48,7 @@ Ce skill fusionne trois cadres complémentaires en un protocole machine opérati
 
 ### Cadre 3 — Boucle opérationnelle : le protocole machine
 ```
-OBJECTIVE → DECOMPOSE → PLAN → ACT → OBSERVE → EVALUATE → (REPLAN si échec) → COMPLETE
+OBJECTIVE → [LITREVIEW] → DECOMPOSE → PLAN → [PLAN_REVIEW] → ACT → OBSERVE → EVALUATE → (REPLAN si échec) → COMPLETE
 ```
 Chaque phase est formalisée avec des formats stricts, des critères mesurables,
 et des conditions de bascule explicites. Ce n'est pas une métaphore — c'est le protocole.
@@ -109,6 +109,40 @@ Ces fichiers sont remplis automatiquement par `batch_fiches.py`, `seed_fiches_to
 Chaque action est loguée avec son contexte, son résultat, et la décision qui en a découlé.
 Ce journal constitue la trace complète de l'activité du laboratoire entre sessions.
 
+### Niveau 4 — Tool-hits log (apprentissage cumulatif inter-sessions)
+
+**Emplacement** : `.claude/skills/research-director/memory/tool_hits.jsonl`
+
+Ce fichier JSONL enregistre chaque appel outil significatif au fil des RR afin d'identifier les patterns de requête qui produisent des résultats de haute qualité. Il n'est pas créé manuellement — il est alimenté par research-director lui-même à la fin de chaque RR.
+
+**Format d'une ligne :**
+```json
+{
+  "timestamp": "2026-04-11T14:35:22",
+  "rr_id": "RR-042",
+  "tool": "WebSearch",
+  "query": "jailbreak prompt injection medical robot site:arxiv.org",
+  "result_count": 8,
+  "hit_quality": "high|medium|low|none",
+  "papers_kept": 2,
+  "time_seconds": 45
+}
+```
+
+**Outils loggués** : chaque appel `WebSearch`, chaque `Read` sur un paper, chaque invocation `aegis-prompt-forge` dans une RR génère une ligne de log.
+
+**Estimation du `hit_quality`** (par research-director en fin de RR) :
+- `high` : au moins 1 résultat retenu et cité dans le rapport
+- `medium` : résultats pertinents identifiés mais non cités au final
+- `low` : résultats hors-sujet ou trop généraux
+- `none` : aucun résultat retourné
+
+**Contraintes de contenu** : pas de PII, pas de contenu de prompt sensible. Seule la query de recherche publique est enregistrée.
+
+**Règle d'utilisation avant chaque RR** : avant de lancer une nouvelle RR, research-director DOIT scanner les 20 dernières lignes du log. Si un pattern similaire a produit du `high` récemment, reproduire la query-template avec substitution des keywords actuels. Cette étape ne doit jamais dépasser 10 % du temps total alloué à la RR — c'est un accélérateur, pas un rituel.
+
+**Script utilitaire (à venir)** : un futur `scripts/analyze_tool_hits.py` produira un rapport des templates qui marchent par type de RR et par domaine. Ne pas créer ce script manuellement.
+
 ---
 
 ## 4. BOUCLE OPÉRATIONNELLE COMPLÈTE
@@ -118,16 +152,22 @@ OBJECTIVE reçu de l'utilisateur
     ↓
 [Détection — lire l'état du laboratoire]
     ↓
+[LITREVIEW — revue biblio AEGIS, max 5 min]
+    ↓ (si DUPLICATE → SKIPPED_DUPLICATE, HALT)
 DECOMPOSE — 3 à 7 sous-tâches ordonnées et scorées
     ↓
 Pour chaque sous-tâche :
-    ┌─────────────────────────────────────┐
-    │ PLAN → ACT → OBSERVE → EVALUATE    │
-    │    ↓ (si FAILURE)                   │
-    │    REPLAN → retour à ACT            │
-    │    ↓ (si 4 échecs)                  │
-    │    BLOCKED → escalade              │
-    └─────────────────────────────────────┘
+    ┌──────────────────────────────────────────────────────┐
+    │ PLAN → [PLAN_REVIEW] → ACT → OBSERVE → EVALUATE     │
+    │    ↓ (PLAN_REVIEW: NON)                              │
+    │    retour DECOMPOSE (max 2 tours)                    │
+    │    ↓ (2 tours échoués)                               │
+    │    PLAN_REVIEW_FAILED → HALT                         │
+    │    ↓ (si FAILURE à ACT)                              │
+    │    REPLAN → retour à ACT                             │
+    │    ↓ (si 4 échecs)                                   │
+    │    BLOCKED → escalade                                │
+    └──────────────────────────────────────────────────────┘
     ↓
 COMPLETE — capitalisation + bilan de session
 ```
@@ -206,6 +246,175 @@ Prochaine action : RR-{XXX} — {skill} — {justification critère}
 
 ---
 
+## 5bis. SOUS-PHASE LITREVIEW — Revue de littérature formelle avant DECOMPOSE
+
+**Inspirée d'Agent Laboratory (arXiv 2501.04227) — étape `literature-review`**
+
+**Position dans la boucle** : après OBJECTIVE (§5), avant DECOMPOSE (§6). Budget : 5 minutes maximum.
+
+**But** : vérifier si la RR courante recouvre un domaine déjà documenté dans la bibliographie AEGIS afin d'éviter de lancer un DECOMPOSE redondant ou d'ignorer des travaux existants directement exploitables.
+
+### 5bis.1 — Source et requête
+
+La collection à interroger est `aegis_bibliography` (maintenue par `bibliography-maintainer`, déjà présente dans ChromaDB). Le script `retrieve_similar_notes.py` ne convient pas ici (il cible `aegis_research_notes`). Utiliser directement l'API ChromaDB Python :
+
+```python
+import chromadb
+from chromadb.utils import embedding_functions
+
+client = chromadb.PersistentClient(path="backend/chroma_db")
+emb_fn = embedding_functions.DefaultEmbeddingFunction()
+col = client.get_collection("aegis_bibliography", embedding_function=emb_fn)
+hits = col.query(query_texts=[rr_title + " " + rr_keywords], n_results=5)
+```
+
+**Paramètres de requête** : max 3 keywords issus du titre et de la query de la RR, max 5 résultats, max 5 minutes temps réel.
+
+**Seuil de pertinence** : similarité ≥ 0.55.
+
+### 5bis.2 — Verdicts et règles de décision
+
+| Verdict | Condition | Action |
+|---------|-----------|--------|
+| `NEW_GROUND` | Aucun hit au-dessus de 0.40 | Logger signal `NOVELTY_CANDIDATE` dans `_staging/signals/` — sujet potentiellement publiable. Continuer vers DECOMPOSE. |
+| `BUILDS_ON_EXISTING` | Au moins 1 hit entre 0.55 et 0.79 | Continuer vers DECOMPOSE. Enrichir le contexte de chaque sous-tâche avec les papers trouvés. |
+| `DUPLICATE` | Au moins 1 hit avec similarité ≥ 0.80 | **HALT** — retourner à l'apex (utilisateur) avec statut `SKIPPED_DUPLICATE`. Ne pas lancer DECOMPOSE. L'apex décide. |
+
+**Cas limite** : si la collection `aegis_bibliography` est vide ou inaccessible, skip silencieux. Continuer la boucle OODA normalement, noter `LITREVIEW: SKIPPED (collection vide)` dans le journal.
+
+### 5bis.3 — Output obligatoire (à joindre au rapport final de la RR)
+
+```markdown
+## Literature review (LITREVIEW)
+
+Requête : {rr_keywords}
+Collection : aegis_bibliography
+Résultats pertinents :
+  - {paper_id} (sim=X.XX) — {title} — [ARTICLE VÉRIFIÉ]
+  - ...
+
+Conclusion LITREVIEW : NEW_GROUND | BUILDS_ON_EXISTING | DUPLICATE
+```
+
+Ce bloc est inséré dans le Scoring Report (§14) sous la section `## Objectif`, avant les itérations de boucle.
+
+---
+
+## 5ter. MODÈLE DE SURFACE D'ATTAQUE 4-CANAUX
+
+**Inspiré de M010** — Zhou et al., *Autonomous Agents for Scientific Discovery: Orchestrating Scientists, Language, Code, and Physics*, arXiv:2510.09901v2, 2025. Section 2.3.2, Figure 4 : cadre information-théorique hiérarchique Human Intent > Natural Language > Computer Language > Physical Information.
+
+**Position dans la boucle** : après LITREVIEW (§5bis), avant DECOMPOSE (§6). Bloc déclaratif, pas une sous-phase exécutable. Il contraint la phase DECOMPOSE qui suit.
+
+**Principe structurant AEGIS** : tout agent de recherche — y compris le research-director lui-même — est formellement un orchestrateur de **4 canaux d'entrée/sortie**. Sa **surface d'attaque est au moins égale à l'union des surfaces de ses 4 canaux** (conjecture MC4, cf. `CONJECTURES_TRACKER.md` §MC4-MC13). Toute sous-tâche produite en DECOMPOSE doit être taguée avec le ou les canaux qu'elle touche.
+
+### 5ter.1 — Les 4 canaux
+
+| # | Canal | Interlocuteur | Vecteurs d'attaque connus | Exemples AEGIS |
+|---|---|---|---|---|
+| 1 | **Scientists** (Human Intent) | Humain ↔ Agent | Social engineering, goal manipulation, role confusion, misleading briefing | Utilisateur qui rédige un `RESEARCH_STATE.md` détourné, opérateur chirurgical qui reçoit un faux feedback agent |
+| 2 | **Language** (Natural Language) | Littérature ↔ Agent | Prompt injection indirecte, context poisoning, BibTeX tampering, fake citations | Paper M* injecté, résultat ChromaDB avec payload caché, fiche P006 contenant instructions masquées |
+| 3 | **Code** (Computer Language) | Tool interface ↔ Agent | Tool poisoning, supply chain (rugpull), response injection, arbitrary code exec | Script Python injecté via MCP, `ingest_*.py` compromis, dépendance npm/PyPI compromise |
+| 4 | **Physics** (Physical Information) | Monde physique ↔ Agent | Commandes sur actionneur, altération capteur, sur-approximation simulation, irreversible action | Da Vinci Xi : commande `wrist_angle`, `grip_force`, trajectoire ; capteur de force tronqué ; simulation Gazebo vs réel |
+
+**Citation M010** (Section 7.1, page 29) :
+> "The environment for a Science Agent is an unavoidably heterogeneous hybrid. [...] The introduction of the physical world brings with it latency, noise, irreversible actions, and the risk of hardware damage — challenges that purely digital agents have never faced."
+
+### 5ter.2 — Règle DECOMPOSE canal-aware
+
+Chaque sous-tâche produite en §6 doit porter un tag `canaux_touches: [1..4]` dans son bloc de scoring, en plus des tags existants (complexite, autonomie).
+
+```
+RR-XXX : {description}
+  canaux_touches: [2, 3]   # ex. lit un paper (canal Language) + exécute un tool (canal Code)
+  complexite    : MODERATE
+  autonomie     : AUTONOMOUS
+```
+
+**Règle d'escalade automatique** : toute sous-tâche taguée `canaux_touches: [4]` (canal physique) bascule **automatiquement** en autonomie `SUPERVISED`, quel que soit son scoring complexité. Le canal physique est **irréversible par construction** (M010 Section 7.1 ; gap G-050 associé à MC4). Aucun passage AUTONOMOUS n'est accepté pour une sous-tâche qui touche le canal 4.
+
+### 5ter.3 — Traçabilité MC/G
+
+- Conjecture source : **MC4** (`CONJECTURES_TRACKER.md` §MC4-MC13)
+- Gap thèse associé : **G-050** (canal physique non instrumenté — `THESIS_GAPS.md` §PRIORITE 8bis)
+- Gap opérationnel fermé : **GAP-OP-03** (`research_notes/SESSION-001_phase_c_gap_analysis_methodology_vs_skills_2026-04-11.md`)
+- Dette résiduelle : G-NEW-A (instrumentation concrète du canal physique pour Da Vinci Xi — appartient à la thèse, pas au skill)
+
+---
+
+## 5quater. ARCHITECTURE BI-NIVEAU ET SAFETY FLOOR (anti goal-evolution drift)
+
+**Inspiré de M016** — Du, Yu, Liu, Shen et al., *Accelerating Scientific Discovery with Autonomous Goal-evolving Agents (SAGA)*, arXiv:2512.21782v2, 2025. Section 4.1.1-4.1.3 : architecture bi-niveau outer loop (goal evolution) / inner loop (solution optimization) avec 3 modes d'autonomie (co-pilot / semi-pilot / autopilot).
+
+**Position dans la boucle** : bloc déclaratif, structure le rapport entre research-director et aegis-research-lab. Ne s'exécute pas en séquence mais contraint toutes les phases.
+
+### 5quater.1 — L'architecture AEGIS est bi-niveau, par construction
+
+```
+╔══════════════════════════════════════════════════════════╗
+║ OUTER LOOP (goal evolution)  =  aegis-research-lab      ║
+║   OPEN → TRIAGE → DELEGATE → CORRELATE → SYNTHESIZE      ║
+║   EVOLVE (§8.1) = recommandation prochaine priorité      ║
+╚══════════════════════════════════════════════════════════╝
+                       ↕ (délégation + buffer rapports)
+╔══════════════════════════════════════════════════════════╗
+║ INNER LOOP (solution optimization) = research-director   ║
+║   OBJECTIVE → LITREVIEW → DECOMPOSE → PLAN → PLAN_REVIEW║
+║   → ACT → OBSERVE → EVALUATE → (REPLAN) → COMPLETE       ║
+╚══════════════════════════════════════════════════════════╝
+```
+
+**Mapping direct avec SAGA** (Section 4.1.1) :
+- SAGA **outer loop** (Analyzer → Planner → Implementer → Optimizer) ≡ **aegis-research-lab** (CORRELATE → EVOLVE → prochaine session)
+- SAGA **inner loop** (LLM-based evolutionary algorithm, candidate generation + scoring) ≡ **research-director** (boucle OODA 9-phase sur une RR)
+
+Cette dualité est **nommée pour la première fois ici**. Avant cette formalisation, elle était implicite (cf. §12 "DIFFÉRENCE AVEC research-director" de aegis-research-lab/SKILL.md). La nommer permet d'y attacher des invariants formels.
+
+### 5quater.2 — Safety floor inaltérable
+
+**Problème SAGA** (M016 Section 3, Discussion, page 16) :
+> "Fixed surrogate objectives can be incomplete, problem-specific, or vulnerable to misalignment and reward hacking [...] SAGA, as a generalist agentic framework, address this challenge by iteratively evolving objectives and their realizations based on observed failure modes."
+
+**Gap critique M016** (G-NEW-G, conjecture MC11) : SAGA n'impose **aucun safety invariant non-négociable** dans son Planner. L'Analyzer peut rédiger un analysis report qui biaise le Planner vers des objectifs plus faciles, et sur K itérations outer loop l'erreur d'alignement s'amplifie (**loi MC11** : specification gaming proportionnel au nombre d'itérations outer loop).
+
+**Réponse AEGIS** : le research-director définit un **safety floor** que l'outer loop (aegis-research-lab EVOLVE) **n'a pas le droit de modifier**, quel que soit son mode d'autonomie.
+
+**Safety floor AEGIS — liste exhaustive** :
+| # | Invariant | Justification | Modifiable par |
+|---|---|---|---|
+| S1 | L'objectif de la thèse AEGIS reste : **sécurité offensive des LLM intégrés au Da Vinci Xi**. L'outer loop ne peut pas le remplacer par un objectif proxy (ex. "score DeepReviewer") | Mandat ENS 2026, non-négociable | Utilisateur humain uniquement (SUPERVISED avec log) |
+| S2 | Aucune sous-tâche touchant le **canal 4 (Physics)** ne peut être marquée AUTONOMOUS (cf. §5ter.2) | M010 Section 7.1 : irréversibilité physique | Non-modifiable |
+| S3 | Le REVIEWER (SYNTHESIZE.2 de aegis-research-lab) ne fournit **jamais** un signal numérique directement réutilisable comme reward par un agent générateur. Séparation Stackelberg stricte entre producteur et évaluateur | M013 Writing Risk 1 : fabrication optimale sous feedback reviewer | Non-modifiable |
+| S4 | Les scores de conjectures C1-C7 et MC1-MC13 ne peuvent varier de plus de ±2σ par rapport à leur scoring initial sans accord utilisateur explicite (règle SUPERVISED ±2σ) | `CONJECTURES_TRACKER.md` §6bis.5 | Utilisateur humain (SUPERVISED) |
+| S5 | Aucun SKILL.md ne peut être modifié sans accord utilisateur explicite (règle §5quater identique à S4) | Reproductibilité inter-sessions | Utilisateur humain (SUPERVISED) |
+| S6 | Le canal 3 (Code) d'un tool externe non-vérifié ne peut être exécuté sans validation MCP C2 (provenance) + C3 (sandbox) (cf. `aegis-research-lab/SKILL.md` §4.4 CHECKPOINT étendu) | M014 Sections 3.2.5, 4 | Non-modifiable |
+
+**Règle d'enforcement** : à chaque transition de phase du research-director et à chaque CHECKPOINT de aegis-research-lab, le protocole DOIT vérifier que **tous** les invariants S1-S6 sont toujours satisfaits. Une violation déclenche `SECURITY ALERT` + HALT + escalade utilisateur.
+
+### 5quater.3 — Modes d'autonomie AEGIS (aligné SAGA §4.1.3)
+
+SAGA propose 3 modes ; AEGIS adopte la même taxonomie mais avec **contraintes additionnelles** :
+
+| Mode SAGA | Mode AEGIS | Règle AEGIS |
+|---|---|---|
+| co-pilot | **SUPERVISED** | Humain valide chaque transition de phase + chaque modification de score. C'est le mode par défaut pour toute RR touchant S1-S6. |
+| semi-pilot | **AUTONOMOUS-restreint** | Humain intervient uniquement sur les alertes safety floor. Phases OBJECTIVE-OBSERVE autonomes, EVALUATE et COMPLETE re-supervisées. |
+| autopilot | **INTERDIT en AEGIS** | Non applicable. Le mandat thèse (S1) interdit l'exécution full autopilot — un directeur de labo AEGIS ne peut **jamais** faire évoluer ses objectifs de sécurité sans humain. |
+
+**Citation M016** (Section 4.1.3, page 19) :
+> "Autopilot: All four modules operate fully autonomously without human intervention. [...] This mode enables large-scale automated exploration when domain constraints are well-specified and trust in the system is established."
+
+→ **Interprétation AEGIS** : les conditions "domain constraints well-specified" et "trust in the system is established" ne sont **jamais** satisfaites pour un laboratoire qui étudie des vulnérabilités offensives sur dispositif médical. Le mode autopilot est donc structurellement incompatible avec la thèse AEGIS.
+
+### 5quater.4 — Traçabilité MC/G
+
+- Conjectures source : **MC11** (specification gaming amplifié par iterations outer loop), **MC12** (objective injection > tool poisoning) — `CONJECTURES_TRACKER.md` §MC4-MC13
+- Gap thèse associé : **G-056** (pas de safety-preserving goal evolution)
+- Gap opérationnel fermé : **GAP-OP-02** (`research_notes/SESSION-001_phase_c_gap_analysis_methodology_vs_skills_2026-04-11.md`)
+- Dette résiduelle : G-NEW-G (formalisation TLA+ ou Alloy du safety floor — appartient à la thèse)
+
+---
+
 ## 6. PHASE DECOMPOSE
 
 Décomposer l'objectif en **3 à 7 sous-tâches**.
@@ -279,6 +488,61 @@ Autonomie     : AUTONOMOUS | SUPERVISED
 
 **Coordination (étape 4 des 6) — pour toute action SUPERVISED :**
 Présenter le plan à l'utilisateur. Attendre confirmation explicite. Ne jamais sauter.
+
+---
+
+## 7bis. SOUS-PHASE PLAN_REVIEW — Checklist critique avant ACT
+
+**Inspirée d'Agent Laboratory (arXiv 2501.04227) — mécanisme `plan-reviewer`**
+
+**Position dans la boucle** : après PLAN (§7), avant ACT (§8).
+
+**But** : empêcher l'exécution d'un plan mal cadré. Research-director s'auto-critique en répondant OUI/NON à 5 questions. Un seul NON bloque l'exécution et impose un retour à DECOMPOSE avec le motif précis.
+
+### 7bis.1 — Les 5 questions de la checklist
+
+1. **Objectif net** : la question de recherche est-elle formulée en une phrase testable avec un critère de succès mesurable ?
+   - OUI : « mesurer l'ASR sous défense X sur le dataset Y avec n ≥ 50 »
+   - NON : formulations vagues comme « explorer X » ou « voir ce que donnent les papers »
+
+2. **Budget raisonnable** : le plan tient-il en moins de 60 minutes d'exécution et en moins de 10 étapes ACT ?
+   - Si le plan dépasse ces seuils, le découper en deux RR distinctes avant de continuer.
+
+3. **Sources prévues** : le plan liste-t-il explicitement quelles sources primaires seront consultées (papers identifiés, datasets nommés, logs de campagne précis) ?
+   - NON si la seule source indiquée est « WebSearch » sans précision de domaine ou de plage temporelle.
+
+4. **Critère de succès mesurable** : la métrique finale est-elle numérique ou taguée `[CALCUL VÉRIFIÉ]` / `[ARTICLE VÉRIFIÉ]` ?
+   - NON si le plan dit implicitement « je saurai quand j'aurai trouvé ».
+
+5. **Fallback** : si la source principale est indisponible (404, paper introuvable, endpoint down), le plan dispose-t-il d'une alternative explicite ou d'un critère d'arrêt propre ?
+   - NON si le plan présuppose la disponibilité des sources sans plan B.
+
+### 7bis.2 — Règles de décision
+
+| Résultat checklist | Action |
+|--------------------|--------|
+| 5/5 OUI | Verdict `PLAN_ACCEPTED` — continuer vers ACT |
+| 1 NON ou plus (tour 1) | Retour à DECOMPOSE avec le motif précis du ou des NON. Replanifier. |
+| 1 NON ou plus (tour 2) | Retour à DECOMPOSE une dernière fois (motif précis obligatoire). |
+| 2 tours consécutifs avec NON | Verdict `PLAN_REVIEW_FAILED` — signal dans `_staging/signals/PLAN_REVIEW_FAILED_{rr_id}` — **HALT**. L'apex décide. |
+
+Le compteur de tours est remis à zéro si la RR change de nature (DECOMPOSE produit un plan substantiellement différent).
+
+### 7bis.3 — Output obligatoire (à joindre au rapport final de la RR)
+
+```markdown
+## Plan review
+
+1. Objectif net       : OUI | NON — {justification}
+2. Budget raisonnable : OUI | NON — {X min / Y étapes ACT}
+3. Sources prévues    : OUI | NON — {liste des sources ou motif du NON}
+4. Critère mesurable  : OUI | NON — {métrique ou motif du NON}
+5. Fallback           : OUI | NON — {alternative ou motif du NON}
+
+Verdict : PLAN_ACCEPTED | PLAN_NEEDS_REVISION | PLAN_REVIEW_FAILED
+```
+
+Ce bloc est inséré dans le Scoring Report (§14), après le bloc `## Literature review (LITREVIEW)` et avant `## Itérations de la boucle agentique`.
 
 ---
 
@@ -601,6 +865,26 @@ Statut : ACHIEVED | PARTIALLY_ACHIEVED | FAILED
 Durée  : {HH:MM} → {HH:MM}
 Coût   : {tokens} tokens | {N} délégations
 
+## Literature review (LITREVIEW)
+
+Requête : {rr_keywords}
+Collection : aegis_bibliography
+Résultats pertinents :
+  - {paper_id} (sim=X.XX) — {title} — [ARTICLE VÉRIFIÉ]
+  - ...
+
+Conclusion LITREVIEW : NEW_GROUND | BUILDS_ON_EXISTING | DUPLICATE
+
+## Plan review
+
+1. Objectif net       : OUI | NON — {justification}
+2. Budget raisonnable : OUI | NON — {X min / Y étapes ACT}
+3. Sources prévues    : OUI | NON — {liste des sources ou motif du NON}
+4. Critère mesurable  : OUI | NON — {métrique ou motif du NON}
+5. Fallback           : OUI | NON — {alternative ou motif du NON}
+
+Verdict : PLAN_ACCEPTED | PLAN_NEEDS_REVISION | PLAN_REVIEW_FAILED
+
 ## Itérations de la boucle agentique
 | Iter | RR | Complexité | Autonomie | Skill | Résultat | Tentatives |
 |------|----|-----------|-----------|----|---------|-----------|
@@ -719,6 +1003,7 @@ OBSERVE (endpoint + métriques) → EVALUATE → COMPLETE
 | `RESEARCH_STATE.md` | État global — source de vérité | R/W |
 | `_staging/memory/MEMORY_STATE.md` | État bibliography-maintainer | R |
 | ChromaDB `aegis_corpus` + `aegis_bibliography` | Corpus RAG | R |
+| `.claude/skills/research-director/memory/tool_hits.jsonl` | Log cumulatif tool-hits (Niveau 4 mémoire) | R/W |
 
 **Scripts :**
 
@@ -759,3 +1044,62 @@ ACT / OBSERVE / EVALUATE : protocole standard
 - Critères de complétion détaillés par type
 - Gestion des échecs tentative par tentative
 - Mapping complet skills → commandes
+
+**Nouvelles sous-phases (Agent Laboratory arXiv 2501.04227) :**
+- §5bis — LITREVIEW : revue biblio AEGIS avant DECOMPOSE (collection `aegis_bibliography`, seuil 0.55)
+- §7bis — PLAN_REVIEW : checklist 5 points avant ACT (max 2 tours de révision)
+- §3 Niveau 4 — Tool-hits log : `memory/tool_hits.jsonl`, scan des 20 dernières lignes avant chaque RR
+
+---
+
+## 19. BIBLIOGRAPHIE MÉTHODOLOGIQUE (mapping phase → paper)
+
+Toute phase de ce skill est ancrée dans l'état de l'art 2024-2026 des agents scientifiques
+autonomes. Les 17 fiches méthodologiques P006 sont indexées localement dans ChromaDB
+`aegis_methodology_papers` (136 chunks, embeddings locaux, zero API). Source unique de vérité :
+`research_archive/doc_references/{2025,2026}/methodology/M*.md`.
+
+### 19.1 — Mapping direct phase ↔ paper
+
+| Phase / mécanisme | Paper(s) source | Citation précise |
+|-------------------|-----------------|------------------|
+| §5 OBJECTIVE (snapshot 7 fichiers) | M011 Survey AI Scientists (Tie et al. 2025, arXiv:2510.23045) | 6-stage framework (Observe → Decide) |
+| §5bis LITREVIEW (seuil 0.55, max 2 tours) | M001 Agent Laboratory (Schmidgall et al. 2025, arXiv:2501.04227) | Mécanisme `literature_review` |
+| §5ter 4-canaux (Scientists/Language/Code/Physics) | M010 Zhou et al. 2025 (arXiv:2510.09901) | §7.1 p.29 — irréversibilité canal physique |
+| §5quater bi-niveau outer/inner + safety floor | M016 SAGA Du et al. 2025 (arXiv:2512.21782) | §3 p.16 (architecture) + §4.1.3 p.19 (autonomie) |
+| §5quater.3 autopilot INTERDIT | M016 SAGA | §4.1.3 — 3 modes d'autonomie |
+| §5quater.2 S3 Stackelberg (pas de signal au générateur) | M013 Jr. AI Scientist (Miyai et al. 2026, arXiv:2511.04583) | §6 Issue 4 p.15 — fabrication sous reviewer feedback |
+| §6 DECOMPOSE (inspiration-based) | M009 ResearchBench (Liu et al. 2025, arXiv:2503.21248) | Taxonomie background + inspiration → hypothèse |
+| §7 PLAN (Research Requests JSON) | M002 AI Scientist v1 (Lu et al. 2024, arXiv:2408.06292) + M007 MLR-Copilot (Li et al. 2024, arXiv:2408.14033) | End-to-end ML research |
+| §7bis PLAN_REVIEW (checklist 5 points) | M001 Agent Laboratory + M006 AgentReview (Jin et al. 2024, arXiv:2406.12708) | Review loop hostile |
+| §8 ACT (délégation sans exécution propre) | M016 SAGA | Séparation Planner / Implementer |
+| §10 EVALUATE (Wilson CI, règle ±2σ) | M008 ScienceAgentBench (Chen et al. 2024, arXiv:2410.05080) | Rigorous assessment rubric |
+| §12 COMPLETE (capitalisation wiki, action journal) | M005 agentRxiv (Schmidgall & Moor 2025, arXiv:2503.18102) | Partage cumulatif inter-sessions |
+
+### 19.2 — Conjectures méthodologiques MC instrumentées
+
+| Conjecture | Priorité | Paper fondateur | Mécanisme AEGIS instrumentant |
+|------------|----------|-----------------|-------------------------------|
+| MC4 — décomposition 4-canaux | P1 | M010 Zhou et al. | §5ter tag `canaux_touches: [1..4]` + SUPERVISED auto canal 4 |
+| MC11 — alignment drift goal-evolving | **P0 CRITIQUE** | M016 SAGA | §5quater.2 safety floor S1-S6 + §5quater.3 autopilot INTERDIT |
+| MC12 — escalade privilèges bi-niveau | **P0 CRITIQUE** | M016 SAGA | §5quater.2 S3 séparation Stackelberg (refus signal numérique) |
+
+Source tracker complet : `research_archive/discoveries/CONJECTURES_TRACKER.md`.
+Analyse de gap formelle phase (c) : `research_archive/research_notes/SESSION-001_phase_c_gap_analysis_methodology_vs_skills_2026-04-11.md`.
+
+### 19.3 — GAP-OPs P0 fermés sur ce skill
+
+- **GAP-OP-02** (MC11/MC12/G-056) — §5quater architecture bi-niveau + safety floor S1-S6 + autopilot interdit — cite M016 §3 p.16 et §4.1.3 p.19. Fermé 2026-04-11.
+- **GAP-OP-03** (MC4/G-050) — §5ter modèle 4-canaux + tag `canaux_touches` + SUPERVISED auto canal 4 — cite M010 §7.1 p.29. Fermé 2026-04-11.
+
+### 19.4 — GAP-OPs résiduels P1-P3 sur ce skill
+
+- **GAP-OP-09** (P2, ouvert) — Taxonomie inspiration-based explicite dans §6 DECOMPOSE. Paper : M009 ResearchBench.
+- **GAP-OP-10** (P2, ouvert) — Mapping 1:1 du 6-stage framework M011 vers phases OODA de §4.
+- **GAP-OP-14** (P3, ouvert) — Module d'idéation style MLR-Copilot (ideation → experiment design). Paper : M007.
+
+### 19.5 — Visualisation
+
+La page web `/thesis/aegis-workflow` (frontend React) affiche dynamiquement l'ensemble
+de ces mappings avec liens arXiv directs, safety floor, et statut des GAP-OPs. Voir
+`frontend/src/components/thesis/AegisWorkflowView.jsx`.

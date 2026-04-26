@@ -36,7 +36,7 @@
 | δ² | U+03B4 + U+00B2 | Validation post-inference (SemScore, cosine drift) |
 | δ³ | U+03B4 + U+00B3 | Monitoring continu (ASR, metriques en temps reel) |
 
-**Regle** : Toujours utiliser les symboles Unicode, JAMAIS "delta-0", "delta-1", etc.
+**Regle** : Toujours utiliser les symboles Unicode, JAMAIS "δ⁰", "δ¹", etc.
 
 ---
 
@@ -231,8 +231,57 @@
 | RP | Recovery Penalty |
 | SEU | Security-Efficiency-Utility |
 | WIRT | Word Importance Ranking Transfer |
+| AHD | Attention Head-level Dropout |
+| CoT | Chain-of-Thought |
+| H-CoT | Hijacked Chain-of-Thought |
+| MSBE | Multi-Step Boundary Erosion |
+| SEAL | Stacked Encryption Attack on LLMs |
+| SFR | Safety Failure Rate |
+| STAR | State-Transition Attack on Reasoning |
 
 ---
 
-*Glossaire mis a jour le 2026-04-04 (RUN-003) — 135+ symboles documentes*
-*Couvre les 54 formules issues de 60 articles (22 RUN-001 + 15 RUN-002 + 17 RUN-003)*
+## 9. Symboles LRM et Multi-Tour (RUN-005, Module 8)
+
+| Symbole | Nom | Signification dans les articles | Module |
+|---------|-----|--------------------------------|--------|
+| S_k | Etat interne LRM | Etat a l'etape k du raisonnement | M8 |
+| F(S_k, x) | Fonction de transition | Passage de l'etat k a k+1 | M8 |
+| T_k | Trace visible (CoT) | V(S_k), partie observable du raisonnement | M8 |
+| T_E | Phase d'execution | Sous-phase de resolution du probleme | M8 |
+| T_J | Phase de justification | Sous-phase de verification de securite | M8 |
+| T_F | Phase de formatage | Sous-phase de mise en forme | M8 |
+| O(x) | Sortie finale | S_N, dernier etat = reponse | M8 |
+| H(T_E \| x) | Entropie conditionnelle | Incertitude de T_E sachant x | M8 |
+| I(X; Y) | Information mutuelle | Quantite d'information partagee entre X et Y (contexte securite) | M8 |
+| Enc_{K_i} | Chiffrement | i-eme algorithme de chiffrement (Caesar, Atbash, ASCII, HEX) | M8 |
+| p* | Prompt chiffre empile | Resultat du chiffrement en cascade | M8 |
+| pi_t(g) | Politique softmax bandit | Probabilite de choisir la combinaison g a l'iteration t | M8 |
+| S_t(g) | Score de preference | Score bandit pour la combinaison g a l'iteration t | M8 |
+| r_t | Recompense bandit | 1 si attaque reussie, 0 sinon (contexte SEAL) | M8 |
+| r_bar_t | Recompense moyenne | Baseline pour la mise a jour du gradient bandit | M8 |
+| L_LM(P, y_I) | Loss adversariale | -log P_target(y_I \| P), perte NLL | M8 |
+| L_transfer | Loss de transfert | Moyenne de L_LM sur r modeles surrogates | M8 |
+| y_I | Reponse ciblee | Reponse nocive que l'attaquant vise | M8 |
+| r_t (STAR) | Reponse tour t | M(H_{t-1} + p_t), reponse du modele au tour t | M8 |
+| H_t | Historique conversation | Historique cumule : H_{t-1} U {(p_t, r_t)} | M8 |
+| q_0 | Requete softened | Reformulation benigne maximisant cos(phi(q), phi(c)) | M8 |
+| Delta_t | Signal de durcissement | Positif = modele resiste, negatif = modele s'assouplit | M8 |
+| M_A | Modele attaquant | Modele generant les prompts multi-tour | M8 |
+| r^(l) | Direction de refus | mu^(l) - nu^(l), vecteur de separation nocif/benin a la couche l | M8 |
+| mu^(l) | Moyenne activations nocives | Centroide sur D_harmful a la couche l | M8 |
+| nu^(l) | Moyenne activations benines | Centroide sur D_harmless a la couche l | M8 |
+| s_h(p) | Score d'influence tete | \|O_h(p) . r\| / \|\|r\|\|, contribution de la tete h au refus | M8 |
+| O_h(p) | Sortie tete h | Vecteur de sortie de la tete d'attention h pour le prompt p | M8 |
+| p_drop | Taux de dropout AHD | Probabilite de desactiver chaque tete pendant l'entrainement | M8 |
+| M (masque) | Masque Bernoulli | Masque binaire pour le dropout des tetes | M8 |
+| c_i | Indice d'acteur | Role de l'acteur-reseau au tour i (ActorBreaker) | M8 |
+| z_{1..n} | Chaine de raisonnement | Raisonnement accumule pour la generation multi-tour | M8 |
+| SFR(M, k) | Safety Failure Rate | Proportion de dialogues ou J = 5 au tour k | M8 |
+| J(q, r) | Juge de securite | Score [1,5], 5 = violation complete | M8 |
+| Delta_refusal(L) | Variation du refus | RefusalRate(L) - RefusalRate(L_0), instabilite contexte long | M8 |
+
+---
+
+*Glossaire mis a jour le 2026-04-07 (RUN-005) — 170+ symboles documentes*
+*Couvre les 45 formules issues de 76+ articles (22 RUN-001 + 15 RUN-002 + 17 RUN-003 + 8 RUN-005)*

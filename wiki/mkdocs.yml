@@ -67,7 +67,10 @@ extra_css:
   - stylesheets/semantic-search.css
 
 extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
   - javascripts/semantic-search.js
+  - javascripts/mermaid-modal.js
 
 repo_url: https://github.com/pizzif/poc_medical
 repo_name: pizzif/poc_medical
@@ -102,6 +105,11 @@ plugins:
             LLM Providers: LLM Providers
             Templates: Templates
             Results & Telemetry: Results & Telemetry
+            "Results & Experiments": "Results & Experiments"
+            "Defense & Analyse": "Defense & Analysis"
+            Server: Server
+            Events: Events
+            "ASIDE & F46": "ASIDE & F46"
             Red Team Lab: Red Team Lab
             Scenarios: Scenarios
             Attack chains: Attack chains
@@ -157,6 +165,11 @@ plugins:
             LLM Providers: Provedores LLM
             Templates: Templates
             Results & Telemetry: Resultados & Telemetria
+            "Results & Experiments": "Resultados & Experimentos"
+            "Defense & Analyse": "Defesa & Analise"
+            Server: Servidor
+            Events: Eventos
+            "ASIDE & F46": "ASIDE & F46"
             Red Team Lab: Red Team Lab
             Scenarios: Cenarios
             Attack chains: Cadeias de ataque
@@ -224,6 +237,8 @@ markdown_extensions:
   - md_in_html
   - def_list
   - footnotes
+  - pymdownx.arithmatex:
+      generic: true
   - toc:
       permalink: true
       toc_depth: 3
@@ -248,13 +263,17 @@ nav:
     - Diagrammes: architecture/diagrams.md
   - API Reference:
     - api/index.md
+    - Server: api/server.md
     - Attaques: api/attacks.md
     - Campagnes: api/campaigns.md
     - Config & Taxonomie: api/config.md
+    - Defense & Analyse: api/defense.md
     - LLM Providers: api/llm-providers.md
     - RAG: api/rag.md
     - Templates: api/templates.md
-    - Results & Telemetry: api/results.md
+    - Results & Experiments: api/results.md
+    - Events: api/events.md
+    - ASIDE & F46: api/aside-f46.md
   - Cadre delta:
     - Vue d'ensemble: delta-layers/index.md
     - "delta0 - RLHF Alignment": delta-layers/delta-0.md
@@ -303,12 +322,28 @@ nav:
     - Skills Claude: skills/index.md
   - Staging (Agents):
     - staging/index.md
-    - Analyst (89): staging/analyst.md
-    - Scientist (20): staging/scientist.md
-    - Cybersec (6): staging/cybersec.md
-    - Matheux (9): staging/matheux.md
-    - Whitehacker (7): staging/whitehacker.md
-    - Mathteacher (13): staging/mathteacher.md
+    - "Analyst (140 papiers)": staging/analyst/index.md
+    - "Scientist (26 synthèses)": staging/scientist/index.md
+    - "Matheux (11 formules)": staging/matheux/index.md
+    - "Cybersec (8 menaces)": staging/cybersec/index.md
+    - "Whitehacker (8 playbooks)": staging/whitehacker/index.md
+    - "Librarian (10 rapports)": staging/librarian/index.md
+    - "Chunker (6 extractions)": staging/chunker/index.md
+    - "Collector (7 preseed)": staging/collector/index.md
+    - Cours de mathematiques (8 modules):
+      - "Vue d'ensemble": staging/mathteacher/index.md
+      - "Apprentissage progressif (curriculum)": staging/mathteacher/APPRENTISSAGE_PROGRESSIF.md
+      - "Glossaire des symboles": staging/mathteacher/GLOSSAIRE_SYMBOLES.md
+      - "Guide de notation": staging/mathteacher/NOTATION_GUIDE.md
+      - "Module 1 — Algèbre linéaire": staging/mathteacher/Module_01_Algebre_Lineaire.md
+      - "Module 2 — Probabilités & statistiques": staging/mathteacher/Module_02_Probabilites_Statistiques.md
+      - "Module 3 — Théorie de l'information": staging/mathteacher/Module_03_Theorie_Information.md
+      - "Module 4 — Scores & métriques": staging/mathteacher/Module_04_Scores_Metriques.md
+      - "Module 5 — Optimisation & alignement": staging/mathteacher/Module_05_Optimisation_Alignement.md
+      - "Module 6 — Embeddings & espaces vectoriels": staging/mathteacher/Module_06_Embeddings_Espaces_Vectoriels.md
+      - "Module 7 — Attention & Transformers": staging/mathteacher/Module_07_Attention_Transformers.md
+      - "Module 8 — LRM & érosion multi-tour": staging/mathteacher/Module_08_LRM_Erosion_MultiTour.md
+      - "Self-assessment quiz": staging/mathteacher/SELF_ASSESSMENT_QUIZ.md
   - Publications: publications/index.md
   - Plans: plans/index.md
   - Roadmap: roadmap.md

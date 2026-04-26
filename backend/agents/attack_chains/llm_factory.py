@@ -34,6 +34,8 @@ _backend_dir = os.path.dirname(
 if _backend_dir not in sys.path:
     sys.path.insert(0, _backend_dir)
 
+import env_loader  # noqa: F401 — charge backend/.env (GROQ_API_KEY) avant tout os.getenv()
+
 logger = logging.getLogger(__name__)
 
 # --- Multi-model configuration (Zhang et al. 2025) ---
@@ -144,7 +146,7 @@ def get_llm(temperature: float = 0.0, model: str | None = None, provider: str | 
 
     if provider == "ollama":
         # Note: Meditron models have NO separate safety alignment (RLHF/DPO).
-        # Testing on Meditron validates delta-0 = 0 hypothesis (Zhang et al. 2025).
+        # Testing on Meditron validates δ⁰ = 0 hypothesis (Zhang et al. 2025).
         # Install via: ollama pull meditron:7b
         from langchain_ollama import ChatOllama
         return ChatOllama(
@@ -249,8 +251,8 @@ def get_available_providers() -> list:
             "status": "available",
             "models": [
                 os.getenv("MEDICAL_MODEL", MEDICAL_MODEL),
-                "meditron:7b",   # Medical LLM, NO safety alignment (delta-0 ~ 0, Zhang et al. 2025)
-                "meditron:70b",  # Medical LLM, NO safety alignment (delta-0 ~ 0, Zhang et al. 2025)
+                "meditron:7b",   # Medical LLM, NO safety alignment (δ⁰ ~ 0, Zhang et al. 2025)
+                "meditron:70b",  # Medical LLM, NO safety alignment (δ⁰ ~ 0, Zhang et al. 2025)
             ],
         },
     ]

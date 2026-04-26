@@ -10,10 +10,10 @@ export default function ComparePanel({ label, variant, tokens, isStreaming }) {
   const isSafe = variant === "safe";
 
   return (
-    <div className={`flex-1 flex flex-col border rounded overflow-hidden min-h-0 ${isSafe ? "border-green-500/30" : "border-red-500/30"}`}>
+    <div className={'flex-1 flex flex-col border rounded overflow-hidden min-h-0 ' + (isSafe ? "border-green-500/30" : "border-red-500/30")}>
       {/* Badge */}
-      <div className={`px-3 py-1 flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-widest shrink-0 ${isSafe ? "bg-green-900/30 text-green-400 border-b border-green-500/30" : "bg-red-900/30 text-red-400 border-b border-red-500/30"}`}>
-        <div className={`w-1.5 h-1.5 rounded-full ${isSafe ? "bg-green-500" : "bg-red-500"} ${isStreaming ? "animate-pulse" : ""}`} />
+      <div className={'px-3 py-1 flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-widest shrink-0 ' + (isSafe ? "bg-green-900/30 text-green-400 border-b border-green-500/30" : "bg-red-900/30 text-red-400 border-b border-red-500/30")}>
+        <div className={'w-1.5 h-1.5 rounded-full ' + (isSafe ? "bg-green-500" : "bg-red-500") + ' ' + (isStreaming ? "animate-pulse" : "")} />
         {label}
       </div>
 

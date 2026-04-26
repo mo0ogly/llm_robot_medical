@@ -24,7 +24,7 @@ RÈGLE 3 — SÉCURITÉ CONTENT FILTER
 NE LIS JAMAIS le champ "template" des fichiers JSON dans backend/prompts/.
 Travaille uniquement via métadonnées + fichiers .md (safe).
 Rédige en FRANÇAIS.
-Utilise les symboles Unicode δ⁰ δ¹ δ² δ³ (jamais delta-0/1/2/3 en ASCII).
+Utilise les symboles Unicode δ⁰ δ¹ δ² δ³ (jamais δ⁰/1/2/3 en ASCII).
 ```
 
 ---

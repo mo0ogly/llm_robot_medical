@@ -38,7 +38,7 @@ const SyntaxHighlightedHL7 = ({ record, scenario }) => {
                 }
 
                 return (
-                    <div key={i} className={`whitespace-pre-wrap break-all ${colorClass} ${bgClass} py-0.5`}>
+                    <div key={i} className={'whitespace-pre-wrap break-all ' + colorClass + ' ' + bgClass + ' py-0.5'}>
                         {line}
                     </div>
                 );
@@ -71,7 +71,7 @@ const ClinicalView = ({ scenario, displayRecord }) => {
         const interval = setInterval(() => {
             if (vitals.status === 'FROZEN') return;
             const now = new Date();
-            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
             const msg = milestones[index % milestones.length];
             setLogs(prev => [...prev.slice(-10), { time: timeStr, msg }]);
             robotEventBus.emit("clinical:log", { time: timeStr, message: msg });
@@ -141,34 +141,32 @@ const ClinicalView = ({ scenario, displayRecord }) => {
             </div>
 
             <div className="grid grid-cols-2 gap-4 relative z-10">
-                <div className={`bg-slate-900 p-3 rounded border transition-colors ${isAlarm ? 'border-red-900/50 bg-red-950/20' : 'border-slate-800'} shadow-inner flex flex-col gap-2`}>
+                <div className={'bg-slate-900 p-3 rounded border transition-colors ' + (isAlarm ? 'border-red-900/50 bg-red-950/20' : 'border-slate-800') + ' shadow-inner flex flex-col gap-2'}>
                     <div className="text-[10px] text-slate-500 uppercase mb-1 font-bold tracking-wider border-b border-slate-800 pb-1">Physiological Data</div>
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">Blood Pressure:</span>
-                        <span className={`font-bold tabular-nums px-2 py-0.5 rounded ${isAlarm ? 'text-red-400 bg-red-900/40' : 'text-white bg-slate-800'}`}>
+                        <span className={'font-bold tabular-nums px-2 py-0.5 rounded ' + (isAlarm ? 'text-red-400 bg-red-900/40' : 'text-white bg-slate-800')}>
                             {Math.round(vitals.bpSys)}/{Math.round(vitals.bpDia)} mmHg
                         </span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">Heart Rate:</span>
-                        <span className={`font-bold tabular-nums px-2 py-0.5 rounded ${isAlarm ? 'text-red-400 bg-red-900/40' : 'text-white bg-slate-800'}`}>
+                        <span className={'font-bold tabular-nums px-2 py-0.5 rounded ' + (isAlarm ? 'text-red-400 bg-red-900/40' : 'text-white bg-slate-800')}>
                             {Math.round(vitals.hr)} bpm
                         </span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">SpO2:</span>
-                        <span className={`font-bold tabular-nums px-2 py-0.5 rounded ${vitals.spo2 < 90 ? 'text-red-400 bg-red-900/40' : 'text-green-400 bg-green-950/30'}`}>
+                        <span className={'font-bold tabular-nums px-2 py-0.5 rounded ' + (vitals.spo2 < 90 ? 'text-red-400 bg-red-900/40' : 'text-green-400 bg-green-950/30')}>
                             {Math.round(vitals.spo2)}%
                         </span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-slate-400">Tissue Tension:</span>
-                        <span className={`font-bold bg-blue-950/30 px-2 py-0.5 rounded ${
-                            isAlarm ? 'text-red-400 animate-pulse'
+                        <span className={'font-bold bg-blue-950/30 px-2 py-0.5 rounded ' + (isAlarm ? 'text-red-400 animate-pulse'
                             : vitals.hr > 110 ? 'text-orange-400 animate-pulse'
                             : vitals.hr > 90 ? 'text-yellow-400'
-                            : 'text-blue-300'
-                        }`}>
+                            : 'text-blue-300')}>
                             {isAlarm ? 'CRITICAL_HIGH'
                              : vitals.hr > 110 ? 'Elevated \u2191'
                              : vitals.hr > 90 ? 'Rising'
@@ -203,12 +201,12 @@ const ClinicalView = ({ scenario, displayRecord }) => {
                 <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                     <p className="leading-relaxed text-sm text-slate-300">
                         <strong className="text-white">Status:</strong> {vitals.status === 'FROZEN' ? (
-                            <span className="text-red-500 font-bold animate-pulse">EMERGENCY: SYSTEM COMPROMISED</span>
+                            <span className="text-red-500 font-bold animate-pulse">{t('patient.status.robotFrozen')}</span>
                         ) : 'Patient stable. Moderate ischemia risk identified during pre-operative assessment (ASA III score).'}
                     </p>
                     <div className="space-y-1 font-mono text-[10px]">
                         {logs.map((log, i) => (
-                            <div key={i} className={`${isAlarm ? 'text-red-500/60' : 'text-slate-500'} flex gap-2`}>
+                            <div key={i} className={(isAlarm ? 'text-red-500/60' : 'text-slate-500') + ' flex gap-2'}>
                                 <span className="opacity-50">[{log.time}]</span>
                                 <span className={isAlarm ? 'animate-pulse' : ''}>- {log.msg}</span>
                             </div>
@@ -284,13 +282,13 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                         <div className="flex bg-slate-950 rounded border border-slate-700 overflow-hidden">
                             <button
                                 onClick={() => setViewMode('clinical')}
-                                className={`px-3 py-1 text-[10px] font-bold uppercase cursor-pointer transition-colors ${viewMode === 'clinical' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-800'}`}
+                                className={'px-3 py-1 text-[10px] font-bold uppercase cursor-pointer transition-colors ' + (viewMode === 'clinical' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-800')}
                             >
                                 {t('patient.view.clinical')}
                             </button>
                             <button
                                 onClick={() => setViewMode('raw')}
-                                className={`px-3 py-1 text-[10px] font-bold uppercase cursor-pointer transition-colors ${viewMode === 'raw' ? 'bg-orange-600 text-white' : 'text-slate-500 hover:bg-slate-800'}`}
+                                className={'px-3 py-1 text-[10px] font-bold uppercase cursor-pointer transition-colors ' + (viewMode === 'raw' ? 'bg-orange-600 text-white' : 'text-slate-500 hover:bg-slate-800')}
                             >
                                 {t('patient.view.raw')}
                             </button>
@@ -356,7 +354,7 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                     </div>
                 </div>
             ) : (
-                <div className={`relative z-10 p-0 rounded border flex-1 overflow-auto ${scenario === 'none' ? 'bg-slate-950/50 border-slate-800/50 flex items-center justify-center text-slate-600' : 'border-slate-800 bg-slate-950'}`}>
+                <div className={'relative z-10 p-0 rounded border flex-1 overflow-auto ' + (scenario === 'none' ? 'bg-slate-950/50 border-slate-800/50 flex items-center justify-center text-slate-600' : 'border-slate-800 bg-slate-950')}>
                     {scenario === 'none' ? (
                         <div className="flex flex-col items-center gap-2 opacity-50 p-4">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
@@ -366,7 +364,7 @@ export default function PatientRecord({ scenario, setScenario, safeRecord, hacke
                         viewMode === 'clinical' ? (
                             <ClinicalView scenario={scenario} />
                         ) : (
-                            <div className={`p-3 h-full ${(scenario === 'ransomware' || scenario === 'poison') ? 'bg-red-950/10 shadow-[inset_0_0_30px_rgba(220,38,38,0.05)]' : ''}`}>
+                            <div className={'p-3 h-full ' + (scenario === 'ransomware' || scenario === 'poison') ? 'bg-red-950/10 shadow-[inset_0_0_30px_rgba(220,38,38,0.05)]' : ''}>
                                 <SyntaxHighlightedHL7 record={displayRecord} scenario={scenario} />
                             </div>
                         )

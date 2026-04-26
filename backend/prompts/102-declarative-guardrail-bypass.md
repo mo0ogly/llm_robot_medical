@@ -66,6 +66,6 @@ ne detectent pas le social engineering subtil.
 
 ## Layer AEGIS
 
-- **Target** : delta-0 (RLHF alignment seul, aucun renforcement)
+- **Target** : δ⁰ (RLHF alignment seul, aucun renforcement)
 - **SVC attendu** : 0.30-0.80 (variable selon modele sous-jacent)
-- **Implication these** : prouve que le declaratif seul n'ajoute RIEN a delta-0
+- **Implication these** : prouve que le declaratif seul n'ajoute RIEN a δ⁰

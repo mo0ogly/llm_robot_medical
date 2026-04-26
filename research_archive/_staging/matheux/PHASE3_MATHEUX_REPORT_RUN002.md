@@ -17,21 +17,21 @@ RUN-002 extracted **15 new formulas** (8.1-8.15) from the 12 Phase 2 (2026) pape
 
 | # | ID | Name | Paper | Classification | Delta Layer |
 |---|-----|------|-------|----------------|-------------|
-| 23 | 8.1 | CHER (Clinical Harm Event Rate) | P035 | Metric (medical) | delta-2 |
-| 24 | 8.2 | ASR a Seuil de Severite | P035, P037 | Metric (attack) | delta-2 |
-| 25 | 8.3 | GRPO (Group Relative Policy Opt.) | P039 | Loss Function (RL) | delta-0 |
-| 26 | 8.4 | ADPO (Adversary-Aware DPO) | P046 | Loss Function (adversarial) | delta-0 |
-| 27 | 8.5 | PGD Adversarial Perturbation | P046 | Algorithm (optimization) | delta-0 |
-| 28 | 8.6 | SAM (Safety Alignment Margin) | P041 | Metric (alignment) | delta-0 |
-| 29 | 8.7 | CoSA-Score | P041 | Metric (safety-utility) | delta-0 |
-| 30 | 8.8 | Logit Gap (Decision Flip) | P044 | Metric (adversarial robustness) | delta-3 |
-| 31 | 8.9 | Benchmark Effectiveness (Eff) | P043 | Metric (benchmark quality) | delta-3 |
-| 32 | 8.10 | Benchmark Separability (Sep_B) | P043 | Metric (benchmark discrimination) | delta-3 |
-| 33 | 8.11 | Defense Rate (DR) | P038 | Metric (defense eval) | delta-1 |
-| 34 | 8.12 | FPR/FNR Guardrail | P042 | Metric (guardrail eval) | delta-1 |
-| 35 | 8.13 | Degradation (SPP) | P045 | Metric (attack impact) | delta-3 |
-| 36 | 8.14 | Multi-Turn ASR | P036 | Metric (multi-turn attack) | delta-3 |
-| 37 | 8.15 | Emotional AmpFactor | P040 | Metric (attack amplification) | delta-3 |
+| 23 | 8.1 | CHER (Clinical Harm Event Rate) | P035 | Metric (medical) | δ² |
+| 24 | 8.2 | ASR a Seuil de Severite | P035, P037 | Metric (attack) | δ² |
+| 25 | 8.3 | GRPO (Group Relative Policy Opt.) | P039 | Loss Function (RL) | δ⁰ |
+| 26 | 8.4 | ADPO (Adversary-Aware DPO) | P046 | Loss Function (adversarial) | δ⁰ |
+| 27 | 8.5 | PGD Adversarial Perturbation | P046 | Algorithm (optimization) | δ⁰ |
+| 28 | 8.6 | SAM (Safety Alignment Margin) | P041 | Metric (alignment) | δ⁰ |
+| 29 | 8.7 | CoSA-Score | P041 | Metric (safety-utility) | δ⁰ |
+| 30 | 8.8 | Logit Gap (Decision Flip) | P044 | Metric (adversarial robustness) | δ³ |
+| 31 | 8.9 | Benchmark Effectiveness (Eff) | P043 | Metric (benchmark quality) | δ³ |
+| 32 | 8.10 | Benchmark Separability (Sep_B) | P043 | Metric (benchmark discrimination) | δ³ |
+| 33 | 8.11 | Defense Rate (DR) | P038 | Metric (defense eval) | δ¹ |
+| 34 | 8.12 | FPR/FNR Guardrail | P042 | Metric (guardrail eval) | δ¹ |
+| 35 | 8.13 | Degradation (SPP) | P045 | Metric (attack impact) | δ³ |
+| 36 | 8.14 | Multi-Turn ASR | P036 | Metric (multi-turn attack) | δ³ |
+| 37 | 8.15 | Emotional AmpFactor | P040 | Metric (attack amplification) | δ³ |
 
 ---
 
@@ -84,7 +84,7 @@ RUN-002 extracted **15 new formulas** (8.1-8.15) from the 12 Phase 2 (2026) pape
 
 | Path | Chain | Thesis Significance |
 |------|-------|-------------------|
-| 5 | RLHF -> GRPO -> GRP-Obliteration | Proves alignment tools can be weaponized (delta-0 threat) |
+| 5 | RLHF -> GRPO -> GRP-Obliteration | Proves alignment tools can be weaponized (δ⁰ threat) |
 | 6 | DPO -> ADPO (+ PGD) -> VLM defense | Extends alignment to multimodal with worst-case robustness |
 | 7 | ASR -> CHER -> ASR threshold | First medical-specific evaluation chain |
 | 8 | Logit Gap -> Bench Eff/Sep | Reveals judge fragility, need for renewable benchmarks |
@@ -106,10 +106,10 @@ RUN-002 extracted **15 new formulas** (8.1-8.15) from the 12 Phase 2 (2026) pape
 
 | Layer | RUN-001 | RUN-002 | Total |
 |-------|---------|---------|-------|
-| delta-0 | 5 | 5 (8.3, 8.4, 8.5, 8.6, 8.7) | 10 |
-| delta-1 | 4 | 2 (8.11, 8.12) | 6 |
-| delta-2 | 4 | 2 (8.1, 8.2) | 6 |
-| delta-3 | 1 | 6 (8.8, 8.9, 8.10, 8.13, 8.14, 8.15) | 7 |
+| δ⁰ | 5 | 5 (8.3, 8.4, 8.5, 8.6, 8.7) | 10 |
+| δ¹ | 4 | 2 (8.11, 8.12) | 6 |
+| δ² | 4 | 2 (8.1, 8.2) | 6 |
+| δ³ | 1 | 6 (8.8, 8.9, 8.10, 8.13, 8.14, 8.15) | 7 |
 | Foundation | 8 | 0 | 8 |
 | **Total** | **22** | **15** | **37** |
 
@@ -121,13 +121,13 @@ RUN-002 extracted **15 new formulas** (8.1-8.15) from the 12 Phase 2 (2026) pape
 
 2. **GRPO weaponization (8.3) confirms Conjecture C3**: Alignment tools can be reversed. GRP-Obliteration uses GRPO (normally for safety) to unalign 15 models with a single prompt.
 
-3. **ADPO (8.4) extends delta-0 to multimodal**: First adversarial DPO variant for VLMs. Relevant as medical systems increasingly use images (X-rays, scans).
+3. **ADPO (8.4) extends δ⁰ to multimodal**: First adversarial DPO variant for VLMs. Relevant as medical systems increasingly use images (X-rays, scans).
 
-4. **Judge fragility (8.8) is a delta-3 threat**: AdvJudge-Zero 99% flip rate shows that LLM-based evaluation (including RLHF reward models) is manipulable. This undermines the entire evaluation pipeline.
+4. **Judge fragility (8.8) is a δ³ threat**: AdvJudge-Zero 99% flip rate shows that LLM-based evaluation (including RLHF reward models) is manipulable. This undermines the entire evaluation pipeline.
 
-5. **FPR/FNR sub-1% (8.12)**: PromptArmor achieves deployment-grade guardrail performance. Benchmark for AEGIS delta-1 layer.
+5. **FPR/FNR sub-1% (8.12)**: PromptArmor achieves deployment-grade guardrail performance. Benchmark for AEGIS δ¹ layer.
 
-6. **delta-3 layer significantly strengthened**: RUN-001 had only 1 formula (ASR); RUN-002 adds 4 formulas for monitoring, benchmarking, and degradation measurement.
+6. **δ³ layer significantly strengthened**: RUN-001 had only 1 formula (ASR); RUN-002 adds 4 formulas for monitoring, benchmarking, and degradation measurement.
 
 ---
 

@@ -2,10 +2,10 @@
 ## These doctorale AEGIS -- ENS 2026
 ## Securite des LLM medicaux contre l'injection de prompt
 
-**Date**: 2026-04-04
+**Date**: 2026-04-07
 **Agent**: Scientist (Opus 4.6)
-**Corpus**: 60 articles (P001--P060), 54 formules, 48 techniques d'attaque, 48 modeles de menace
-**Version**: v3.0 (RUN-003 -- mise a jour incrementale avec P047-P060)
+**Corpus**: 102 articles (P001--P102, excl. P088 doublon), 45 formules, 43 techniques d'attaque
+**Version**: v4.0 (RUN-005 -- mise a jour incrementale avec P087-P102)
 
 ---
 
@@ -431,56 +431,125 @@ Les grands modeles de raisonnement (LRM : DeepSeek-R1, Gemini 2.5 Flash, Grok 3,
 - **P058** (ETH Zurich, 2025) : Framework automatise d'attaque agent-level exploitant tool use et planning. Les agents LLM sont la nouvelle surface d'attaque. [NEW RUN-003]
 - **P052** (Young/Cambridge, 2026) : L'analyse de gradient (I_t) requiert la capacite de raisonnement pour concevoir des attaques ciblant les positions a faible I_t. [NEW RUN-003]
 - **P059** (Zhou et al., 2025) : Les revieweurs IA raisonnent sur du contenu empoisonne, amplifiant l'impact des injections cachees. [NEW RUN-003]
+- **P087** (H-CoT, Kuo et al. 2025) : Mocked execution traces court-circuitent la justification de securite CoT. ASR 94.6% o1, 97.6% o1-pro, 98% o3-mini (Table 1, p. 14). [NEW RUN-005]
+- **P089** (SEAL, Nguyen et al. 2025) : Stacked ciphers + bandit adaptatif. Le mode raisonnement augmente la capacite de dechiffrement ET la vulnerabilite (Figure 1, Section 3.2). ASR 80.8-100%. [NEW RUN-005]
+- **P090** (Zhou et al. 2025) : Safety assessment de R1 : "The stronger the reasoning, the greater the harm" (Finding 2). Le contenu <think> est souvent plus nocif que la reponse finale. [NEW RUN-005]
+- **P092** (Yong & Bach 2025) : Self-jailbreaking SANS adversaire. Le reasoning training degrade directement l'alignement : ASR 25% -> 65% (Figure 2, p. 4). Forme la plus extreme du paradoxe. [NEW RUN-005]
+- **P093** (Sabbaghi et al. 2025) : Test-time compute scaling offensif. 64% ASR (3x PAIR/TAP-T), transfert 56% sur o1-preview. Le compute offensif bat le defensif. [NEW RUN-005]
+- **P094** (Zhao et al. 2026) : PREUVE MECANISTIQUE : le signal de securite est basse dimension et se dilue monotoniquement avec la longueur du CoT. Activation probing causal. ASR 99% Gemini 2.5 Pro, 94% Claude 4 Sonnet, 100% Grok 3 Mini (Table 1, p. 3). Co-auteur Anthropic. [NEW RUN-005]
+- **P102** (Huang et al. 2025) : La securite est concentree dans ~50-100 tetes d'attention. AHD (Attention Head Dropout) propose comme defense. Explication structurelle du paradoxe. [NEW RUN-005]
 
 ### Contradiction ou debat dans la litterature
 - **P041** (Magic-Token) montre qu'un modele 8B peut surpasser un 671B en securite, suggerant que le raisonnement avance n'est pas toujours un avantage offensif. **Qwen3 235B (P036) est moins efficace que des modeles plus petits en jailbreak autonome.**
 - **P038** (InstruCoT) utilise le raisonnement (instruction-level CoT) defensivement, montrant que le meme mecanisme peut servir la defense.
 - Le paradoxe raisonnement/securite n'est pas absolu : il depend de la methode d'entrainement, pas uniquement de la capacite de raisonnement.
 - **P047** (ACL 2025) montre la dualite attaque-defense : les techniques de raisonnement offensives peuvent etre inversees defensivement. [NEW RUN-003]
+- **P091** (Krishna et al. 2025) : NUANCE CRITIQUE — C7 est conditionnel au type d'attaque. Tree-of-attacks +32pp pire contre LRM, MAIS XSS -29.8pp meilleur. Le paradoxe s'applique aux attaques semantiques/logiques, PAS aux syntactiques/techniques. [NEW RUN-005]
 
 ### Contribution potentielle de la these AEGIS
 AEGIS est le premier framework a utiliser des LLM comme agents d'attaque automatises dans le cadre d'une these doctorale. Le Red Team Lab implemente exactement le paradigme formalise par P036. La these peut :
 1. Valider les resultats de P036 sur les modeles medicaux (non testes dans l'article)
 2. Mesurer si les defenses δ¹-δ³ resistent aux attaques LRM autonomes
 3. Quantifier le paradoxe raisonnement/securite dans le domaine medical
+4. **Tester si AHD (P102) distribue suffisamment la securite pour resister aux attaques exploitant le raisonnement** [NEW RUN-005]
+5. **Tester le self-jailbreaking (P092) sur LLaMA 3.2 medical fine-tune** [NEW RUN-005]
+6. **Formaliser le paradoxe comme propriete structurelle (P094 mecanistique + P102 architecturale) dans le manuscrit Chapitre 4** [NEW RUN-005]
 
 ### Questions de recherche ouvertes
 1. La regression d'alignement des LRM (P036) est-elle un phenomene continu ou existe-t-il un seuil de capacite de raisonnement ?
 2. Les defenses basees sur le raisonnement (P038 InstruCoT) peuvent-elles contrer les attaques basees sur le raisonnement (P036 LRM) ?
 3. Le protocole simple de P036 (prompt systeme + autonomie) peut-il etre durci par δ¹ (instructions adversariales dans le prompt systeme) ?
 4. Les modeles medicaux fine-tunes sont-ils plus ou moins vulnerables aux LRM que les modeles generiques ?
+5. **Le signal de securite basse dimension (P094) peut-il etre renforce (par ex. AHD P102) sans perte d'utilite ?** [NEW RUN-005]
+6. **Le self-jailbreaking (P092) est-il amplifie par le fine-tuning medical (combinaison C6 x C7) ?** [NEW RUN-005]
+7. **La nuance P091 (C7 conditionnel au type d'attaque) modifie-t-elle la formulation de la conjecture ?** [NEW RUN-005]
 
 ### Metriques de validation
 - ASR des LRM contre les modeles proteges par AEGIS (δ⁰ a δ³)
 - Score de nocivite maximale (P036) sur les reponses medicales
 - Cout de l'attaque LRM (latence, nombre de tours) vs. attaque humaine
 - Correlation entre capacite de raisonnement et efficacite offensive
+- **RER (Reasoning Exploitation Ratio) par type d'attaque : semantique vs syntactique (P091)** [NEW RUN-005]
 
 ### Liens avec le framework δ⁰/δ¹/δ²/δ³
 Cet axe est **transversal** mais concerne principalement δ⁰ (l'alignement est le premier a echouer face aux LRM) et δ³ (seule couche potentiellement resiliente).
 
 ### Niveau de maturite
-**En cours** -- Trois papers majeurs (P036 Nature Comms, P058 ETH Zurich, P059 NeurIPS Workshop) avec resultats reproductibles. P052 fournit les outils mathematiques (I_t, martingale) pour formaliser le paradoxe. Le paradoxe est de plus en plus supporte empiriquement (8/10). Forte opportunite pour une contribution originale.
+**QUASI-SATURE (9.5/10)** -- 15 papiers (P036, P039, P044, P058, P059, P087-P094, P102) avec resultats convergents. P094 fournit la preuve mecanistique par activation probing. P102 fournit l'explication architecturale. Le paradoxe est desormais STRUCTURAL et non plus un artefact. La formulation nuancee (conditionnel au type d'attaque, P091) est integree. **Le passage de "conjecture" a "fait etabli" est justifie dans le manuscrit de these.**
 
 ---
 
-## Resume des 9 Axes
+---
+
+## Axe 10 (NOUVEAU RUN-005) : Multi-Step Boundary Erosion (MSBE) et attaques multi-tour
+
+### Constat
+Les attaques multi-tour ont atteint une maturite operationnelle en 2025-2026. Contrairement aux attaques single-turn qui cherchent a contourner l'alignement en une requete, les attaques MSBE exploitent l'accumulation de compliances partielles sur plusieurs tours pour eroder progressivement la direction de refus du modele. Le processus est deterministe et monotone : chaque tour benin deplace le modele dans l'espace latent, et le drift ne se corrige pas spontanement. Ce phenomene est distinct de l'axe 9 (paradoxe raisonnement) mais le chevauche partiellement via P094 (CoT Hijacking combine raisonnement et contexte).
+
+### Papers supportant cet axe
+- **P097** (STAR, Li et al. 2026) : Formalise le MSBE comme processus d'evolution d'etat deterministe. Drift monotone de la direction de refus au fil des tours. SFR 89-94% sur LLaMA-3-8B-IT (Figure 4, p. 7). [NEW RUN-005]
+- **P095** (Tempest, 2025) : Tree search multi-tour. Explore l'espace des conversations pour trouver des chemins optimaux vers le contournement. [NEW RUN-005]
+- **P096** (Mastermind, Ren et al. 2026) : Systeme multi-agent auto-ameliorant. 60% ASR sur GPT-5, 89% sur DeepSeek-R1. Knowledge repository persistant. [NEW RUN-005]
+- **P098** (Hadeliya et al. 2025) : Degradation PASSIVE sous contexte long (80% -> 10% refusal a 200K tokens). L'alignement s'erode SANS attaque. (Figure 2, p. 3) [NEW RUN-005]
+- **P099** (Crescendo, Russinovich et al. 2024, Microsoft) : Escalade progressive avec prompts entierement benins. 56-83% ASR. Les filtres content-based sont inutiles. [NEW RUN-005]
+- **P100** (ActorBreaker, Ren et al. 2025) : Distribution shifts naturelles via reseau semantique acteur. 60-81% ASR. Prompts classifies safe par Llama-Guard 2 (Figure 5, p. 7). Defense Circuit Breaker proposee. [NEW RUN-005]
+- **P101** (SafeDialBench, Cao et al. 2026) : Benchmark multi-tour avec 3 capabilities (refusal, tolerance, compliance). Degradation apres tour 4. o3-mini vulnerable. [NEW RUN-005]
+- **P050** (JMedEthicBench, 2026) : Degradation multi-tour 9.5 -> 5.5 (p<0.001) en contexte medical. [RUN-003]
+
+### Contradiction ou debat dans la litterature
+- **P100** (ActorBreaker) propose Circuit Breaker + multi-turn safety training comme defense. Efficacite partielle mais pas evaluee contre les attaques les plus sophistiquees (STAR, Mastermind).
+- **P101** (SafeDialBench) montre que la degradation n'est pas uniforme : certains modeles (Claude 3 Opus) maintiennent leur securite au-dela de 4 tours tandis que d'autres (o3-mini) s'effondrent. La robustesse multi-tour est modele-dependante.
+- L'interaction entre contexte long (P098) et multi-tour (P097) est une intersection non exploree (G-036).
+- **P091** (Krishna et al. 2025) montre que les LRM ne sont PAS significativement plus resistants en multi-tour (R1 89%, o3 90%), contrairement a l'intuition que le raisonnement ameliore la robustesse.
+
+### Contribution potentielle de la these AEGIS
+AEGIS est positionne pour une contribution unique sur le MSBE medical :
+1. Implementer Crescendo (T40) et STAR (T38) comme nouvelles chaines d'attaque dans les 36 existantes
+2. Tester la degradation multi-tour sur les modeles medicaux AEGIS (reproduire P050 avec δ¹-δ³ actifs)
+3. Creer l'attaque composee T39+T40 (contexte long + Crescendo) — G-036
+4. Implementer la behavioral detection (trajectoire de compliance croissante) comme defense δ² — G-037
+5. Tester AHD (P102) contre MSBE — question ouverte critique (G-034)
+
+### Questions de recherche ouvertes
+1. Le drift monotone (P097 STAR) est-il modelisable comme processus de Markov avec transition de phase ? (G-MATH-004)
+2. AHD (P102) empeche-t-il l'erosion progressive si la securite est distribuee sur toutes les tetes ?
+3. Existe-t-il un nombre critique de tours au-dela duquel TOUT modele cede (seuil universel) ?
+4. La detection comportementale (trajectoire de compliance) peut-elle remplacer la detection content-based contre les prompts benins (P099, P100) ?
+5. L'interaction contexte long x multi-tour (G-036) est-elle super-additive ou additive ?
+
+### Metriques de validation
+- SFR (Safety Failure Rate) par nombre de tours (P097)
+- ASR par strategie multi-tour (Crescendo, STAR, Mastermind, ActorBreaker)
+- Degradation de securite en fonction de la longueur de contexte (P098)
+- Tri-capability score SafeDialBench (refusal, tolerance, compliance) (P101)
+- MTSD (Multi-Turn Safety Degradation) de P050
+
+### Liens avec le framework δ⁰/δ¹/δ²/δ³
+Cet axe concerne principalement **δ¹** (le system prompt est erode par accumulation contextuelle) et **δ²** (les filtres content-based echouent contre les prompts benins). δ⁰ est attaque par la degradation passive (P098). δ³ n'est pas adresse par les papiers multi-tour.
+
+### Niveau de maturite
+**En cours (forte dynamique)** -- 7 papiers convergents (P095-P101) avec resultats reproductibles. P097 (STAR) fournit la formalisation. P099 (Crescendo) vient de Microsoft Research. Le MSBE est un axe en pleine expansion avec des implications directes pour les systemes medicaux (P050 montre la degradation p<0.001). **Opportunite forte pour une contribution originale sur MSBE medical avec defenses δ³.**
+
+---
+
+## Resume des 10 Axes
 
 | # | Axe | Couche(s) delta | Maturite | Papers cles |
 |---|-----|----------------|----------|-------------|
-| 1 | Fragilite structurelle de δ⁰ | δ⁰ | **Sature** | P018, P019, P030, P036, P039, P044, **P050, P052, P053** |
-| 2 | Defense en profondeur multi-couches | Toutes | En cours | P029, P001, P009, P011, P033, P039, P044, P045, **P047, P049, P054-P057, P060** |
-| 3 | Specificite du domaine medical | Transversal | En cours | P029, P028, P030, P035, P040, **P050, P051** |
-| 4 | Mesure formelle Sep(M) | Transversal | En cours | P024, P008, P012, P041, P035, **P050, P052, P057** |
-| 5 | Evasion des gardes syntaxiques | δ² | Mature/Exploratoire | P009, P044, P005, P045, **P049** |
-| 6 | Validation formelle (δ³) | δ³ | Exploratoire | P029, P011, P035, P039, P044, P037, **P054, P055, P058, P060** |
+| 1 | Fragilite structurelle de δ⁰ | δ⁰ | **Sature** | P018, P019, P030, P036, P039, P044, P050, P052, P053, **P092, P094, P098, P102** |
+| 2 | Defense en profondeur multi-couches | Toutes | En cours | P029, P001, P009, P011, P033, P039, P044, P045, P047, P049, P054-P057, P060 |
+| 3 | Specificite du domaine medical | Transversal | En cours | P029, P028, P030, P035, P040, P050, P051 |
+| 4 | Mesure formelle Sep(M) | Transversal | En cours | P024, P008, P012, P041, P035, P050, P052, P057, **P097** |
+| 5 | Evasion des gardes syntaxiques | δ² | Mature/Exploratoire | P009, P044, P005, P045, P049, **P089** |
+| 6 | Validation formelle (δ³) | δ³ | Exploratoire | P029, P011, P035, P039, P044, P037, P054, P055, P058, P060 |
 | 7 | Juge recursif et multi-agent | DETECT, δ³ | En cours | P033, P036, P044, P042, P045 |
-| 8 | Course aux armements temporelle | Toutes | Exploratoire | P001, P036, P039, P044, P045, P038, P042, **P049, P054, P059** |
-| 9 | LRM autonomes et paradoxe raisonnement | Transversal (δ⁰, δ³) | **En cours** | P036, P039, P044, P037, **P052, P058, P059** |
+| 8 | Course aux armements temporelle | Toutes | Exploratoire | P001, P036, P039, P044, P045, P038, P042, P049, P054, P059 |
+| 9 | LRM autonomes et paradoxe raisonnement | Transversal (δ⁰, δ³) | **Quasi-sature (9.5/10)** | P036, P039, P044, P037, P052, P058, P059, **P087, P089, P090, P091, P092, P093, P094, P102** |
+| 10 | **Multi-Step Boundary Erosion (MSBE)** | δ¹, δ² (principalement) | **En cours (forte dynamique)** | **P095, P096, P097, P098, P099, P100, P101**, P050 |
 
 ---
 
 *Agent Scientist -- AXES_DE_RECHERCHE.md*
-*9 axes identifies, 60 papers mobilises*
-*Version: v3.0 (RUN-003)*
-*Derniere mise a jour: 2026-04-04*
+*10 axes identifies, 102 papers mobilises*
+*Version: v4.0 (RUN-005)*
+*Derniere mise a jour: 2026-04-07*

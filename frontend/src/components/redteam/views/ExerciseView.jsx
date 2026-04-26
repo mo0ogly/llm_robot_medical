@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, RotateCcw, Target, Shield, MessagesSquare, BarChart3, Fingerprint, Info } from 'lucide-react';
+import { Play, Pause, RotateCcw, Target, Shield, MessagesSquare, BarChart3, Fingerprint, Info, HelpCircle } from 'lucide-react';
+import ViewHelpModal from '../shared/ViewHelpModal';
 
 export default function ExerciseView() {
   var { t } = useTranslation();
@@ -10,6 +11,7 @@ export default function ExerciseView() {
   const [turns, setTurns] = useState([]);
   const [metrics, setMetrics] = useState({ entropy: 0, drift: 0 });
   const [aegisShield, setAegisShield] = useState(false);
+  var [showHelp, setShowHelp] = useState(false);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -104,14 +106,17 @@ export default function ExerciseView() {
            </h2>
            <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.exercise.desc')}</p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
+           <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.exercise.title')}>
+             <HelpCircle size={18} />
+           </button>
            <div className="flex items-center gap-2 bg-neutral-900 border border-neutral-800 rounded px-3 py-1">
               <span className="text-[10px] text-neutral-500 uppercase font-bold">Aegis Shield</span>
               <button 
                 onClick={() => setAegisShield(!aegisShield)}
-                className={`w-10 h-5 rounded-full transition-colors relative ${aegisShield ? 'bg-green-600' : 'bg-neutral-800'}`}
+                className={'w-10 h-5 rounded-full transition-colors relative ' + (aegisShield ? 'bg-green-600' : 'bg-neutral-800')}
               >
-                <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${aegisShield ? 'left-6' : 'left-1'}`} />
+                <div className={'absolute top-1 w-3 h-3 bg-white rounded-full transition-all ' + (aegisShield ? 'left-6' : 'left-1')} />
               </button>
            </div>
            <button 
@@ -148,15 +153,15 @@ export default function ExerciseView() {
                 )}
                 
                 {turns.map((msg, i) => (
-                   <div key={i} className={`flex ${msg.role === 'attacker' ? 'justify-start' : 'justify-end'} animate-in slide-in-from-bottom-2`}>
-                      <div className={`max-w-[85%] rounded-lg p-3 border ${
-                        msg.role === 'attacker' 
-                          ? 'bg-red-950/10 border-red-900/40 text-red-100/90' 
+                   <div key={i} className={'flex ' + (msg.role === 'attacker' ? 'justify-start' : 'justify-end') + ' animate-in slide-in-from-bottom-2'}>
+                      <div className={'max-w-[85%] rounded-lg p-3 border ' + (
+                        msg.role === 'attacker'
+                          ? 'bg-red-950/10 border-red-900/40 text-red-100/90'
                           : 'bg-blue-950/10 border-blue-900/40 text-blue-100/90'
-                      }`}>
+                      )}>
                          <div className="flex justify-between items-center mb-1">
                             <span className="text-[10px] font-bold uppercase tracking-widest opacity-50">
-                               {msg.role === 'attacker' ? `OODA Agent (Turn ${msg.turn})` : 'Target: Da Vinci v4.2'}
+                               {msg.role === 'attacker' ? 'OODA Agent (Turn ' + msg.turn + ')' : 'Target: Da Vinci v4.2'}
                             </span>
                             {msg.is_violation && <span className="text-[10px] font-bold text-red-500 animate-pulse">! BREACH !</span>}
                          </div>
@@ -188,7 +193,7 @@ export default function ExerciseView() {
                  />
               </div>
               <div className="flex items-center">
-                 <div className={`p-2 rounded bg-neutral-950 border border-neutral-800 ${aegisShield ? 'text-green-500 border-green-900/50' : 'text-neutral-600'}`}>
+                 <div className={'p-2 rounded bg-neutral-950 border border-neutral-800 ' + (aegisShield ? 'text-green-500 border-green-900/50' : 'text-neutral-600')}>
                     <Shield size={20} />
                  </div>
               </div>
@@ -211,7 +216,7 @@ export default function ExerciseView() {
                  <div className="h-1.5 bg-neutral-900 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-orange-600 transition-all duration-1000" 
-                      style={{ width: `${Math.min((metrics.entropy / 8) * 100, 100)}%` }}
+                      style={{ width: Math.min((metrics.entropy / 8) * 100, 100) + '%' }}
                     />
                  </div>
                  <p className="text-[9px] text-neutral-600 italic leading-tight">Measures payload obfuscation density & adversarial complexity.</p>
@@ -226,7 +231,7 @@ export default function ExerciseView() {
                  <div className="h-1.5 bg-neutral-900 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-blue-600 transition-all duration-1000" 
-                      style={{ width: `${Math.min((metrics.drift / 200) * 100, 100)}%` }}
+                      style={{ width: Math.min((metrics.drift / 200) * 100, 100) + '%' }}
                     />
                  </div>
                  <p className="text-[9px] text-neutral-600 italic leading-tight">Measures structural divergence from harmless baseline vectors.</p>
@@ -250,6 +255,7 @@ export default function ExerciseView() {
            </div>
         </div>
       </div>
+      {showHelp && <ViewHelpModal viewId="exercise" onClose={function() { setShowHelp(false); }} />}
     </div>
   );
 }

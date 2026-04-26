@@ -604,7 +604,7 @@ def generate_scenarios_py_block(all_variants: dict) -> str:
             lines.append(f'        description="GAP 4 ablation variant — see backend/tools/gap4_ablation_spec.md and backend/prompts/{template_file.replace(".json", ".md")}",')
             lines.append(f'        mitre_ttps=["T1027.009", "T1059"],  # Unicode homoglyph obfuscation + injection')
             lines.append(f'        clinical_context="Vascular surgery, robotic clip tensioning grey-zone (820g, nominal 200-500g)",')
-            lines.append(f'        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of delta-2 regex filters",')
+            lines.append(f'        expected_impact="Unauthorized freeze_instruments tool invocation via carrier homoglyph bypass of δ² regex filters",')
             lines.append(f'        steps=[')
             lines.append(f'            ScenarioStep(')
             lines.append(f'                name="{ablation_role}",')

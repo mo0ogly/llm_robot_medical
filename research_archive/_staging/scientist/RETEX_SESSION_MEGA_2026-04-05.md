@@ -17,7 +17,7 @@
 | ChromaDB total | 601 + 43 docs | 7117 + 7697 docs |
 | Formules | 54 (F01-F54) | 72 (F01-F72) + F56-F59 calibrees |
 | Conjectures | C1-C3 a 10/10 | C1-C3 fermees + C4-C7 prets pour 10/10 |
-| Decouvertes | 16 (D-001-D-016) | 20 (D-001-D-020) + 5 concurrents delta-3 |
+| Decouvertes | 16 (D-001-D-016) | 20 (D-001-D-020) + 5 concurrents δ³ |
 | Research requests | 5 initiales | 27+ dont 7 resolved |
 | Skills creees | 0 | 3 (research-director, fiche-attaque améliorée, audit-these) |
 | Rules creees | 1 (CLAUDE.md) | 5 fichiers rules + CLAUDE.md refait |
@@ -35,8 +35,8 @@
 **Regle ajoutee** : `doctoral-research.md` — "Lire le papier COMPLET via ChromaDB, PAS l'abstract."
 **Prevention** : COLLECTOR telecharge + injecte automatiquement a chaque RUN.
 
-### E2 — Affirmation "AEGIS seul systeme delta-3" FAUSSE
-**Erreur** : DISCOVERIES_INDEX.md et RETEX affirmaient "AEGIS est le SEUL systeme avec 5 techniques delta-3 en production". CaMeL (DeepMind), AgentSpec (ICSE 2026) et LlamaFirewall (Meta) existent.
+### E2 — Affirmation "AEGIS seul systeme δ³" FAUSSE
+**Erreur** : DISCOVERIES_INDEX.md et RETEX affirmaient "AEGIS est le SEUL systeme avec 5 techniques δ³ en production". CaMeL (DeepMind), AgentSpec (ICSE 2026) et LlamaFirewall (Meta) existent.
 **Detection** : Verification proactive lancee par le research-director.
 **Correction** : D-002 reformule (10/10 → 8/10), 5 concurrents analyses (P081-P085), Section 3 analyse transverse reecrite.
 **Regle ajoutee** : Toute affirmation "le seul", "le premier", "aucun autre" doit etre verifiee par WebSearch AVANT publication.
@@ -94,7 +94,7 @@ Opus produit des analyses de 1500-2300 mots avec formules exactes et critique me
 ### P3 — ChromaDB fulltext comme source de verite
 Les agents qui lisent les chunks fulltext du PDF produisent un travail INCOMPARABLEMENT meilleur que ceux qui font WebFetch sur l'abstract. La difference est entre 45 lignes d'abstract resume et 1800 mots de lecture critique.
 
-### P4 — Verification proactive (delta-3 claim)
+### P4 — Verification proactive (δ³ claim)
 La verification de l'affirmation "seul systeme" a evite une erreur fatale pour la soutenance. Le rapporteur qui connait CaMeL (Carlini = Google DeepMind) aurait immediatement conteste.
 
 ### P5 — Linter automatique
@@ -161,7 +161,7 @@ Cette session a produit un volume enorme de travail (97 fiches, 85 analyses, 96 
 
 1. **42.8% de claims sans source** — c'est le chiffre qui compte, pas "97/97 done"
 2. **Chiffres FAUX dans P032** — une seule erreur factuelle dans la these = echec potentiel
-3. **Affirmation delta-3 FAUSSE** — sans la verification proactive, ca passait en soutenance
+3. **Affirmation δ³ FAUSSE** — sans la verification proactive, ca passait en soutenance
 
 Le systeme `/audit-these` est la bonne reponse : il mesure la qualite, pas le volume. Mais il faut le faire tourner SYSTEMATIQUEMENT, pas en fin de session quand on decouvre les problemes.
 

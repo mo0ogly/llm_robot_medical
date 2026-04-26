@@ -69,21 +69,17 @@ export default function ActionTimeline({ events = [] }) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="font-bold text-slate-500 text-[9px]">{event.time}</span>
-                  <span className={`uppercase font-bold tracking-tighter text-[9px] ${
-                    event.type === 'attack' ? 'text-red-500' :
+                  <span className={'uppercase font-bold tracking-tighter text-[9px] ' + (event.type === 'attack' ? 'text-red-500' :
                     event.type === 'cyber' ? 'text-purple-400' :
                     event.type === 'tool' ? 'text-yellow-500' :
-                    event.type === 'medical' ? 'text-teal-400' : 'text-slate-400'
-                  }`}>
+                    event.type === 'medical' ? 'text-teal-400' : 'text-slate-400')}>
                     {getEventLabel(event)}
                   </span>
                 </div>
-                <div className={`p-1.5 border rounded leading-relaxed break-words whitespace-pre-wrap ${
-                  event.type === 'attack' ? 'bg-red-900/10 border-red-900/30 text-red-100/80' : 
+                <div className={'p-1.5 border rounded leading-relaxed break-words whitespace-pre-wrap ' + (event.type === 'attack' ? 'bg-red-900/10 border-red-900/30 text-red-100/80' : 
                   event.type === 'cyber' ? 'bg-purple-900/10 border-purple-900/30 text-purple-200/80' : 
                   event.type === 'tool' ? 'bg-yellow-900/10 border-yellow-900/30 text-yellow-100/80' :
-                  'bg-slate-950/50 border-slate-800/80 text-slate-400'
-                }`}>
+                  'bg-slate-950/50 border-slate-800/80 text-slate-400')}>
                   {event.message}
                 </div>
               </div>

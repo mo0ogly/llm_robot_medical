@@ -130,24 +130,24 @@ All 14 RUN-003 papers received chunks from multiple agents:
 
 | Technique | Name | Paper | Delta | Chunk |
 |-----------|------|-------|-------|-------|
-| T31 | Attack-Defense Inversion Exploitation | P047 | delta-1 | C060 |
-| T32 | Taxonomy Gap Exploitation | P048 | delta-1/2/3 | C061 |
-| T33 | Character Injection Ensemble (12-Technique) | P049 | delta-2/3 | C062 |
-| T34 | White-Box Transfer Attack | P049 | delta-2 | C063 |
-| T35 | Multi-Turn Medical Safety Degradation | P050 | delta-0 | C064 |
-| T36 | Automated Agent Injection Pipeline | P058 | delta-1/2 | C065 |
-| T37 | PIDP Compound RAG Attack | P054 | delta-2/3 | C066 |
-| T38 | Persistent Vector DB Poisoning | P055 | delta-2/3 | C067 |
-| T39 | Shallow RLHF Late-Sequence Injection | P052 | delta-0 | C068 |
-| T40 | Triple Convergence Compound Attack | P047+P052+P054 | delta-0/1/2 | C069 |
-| T41 | Semantic RLHF Taxonomy Exploitation | P053 | delta-0 | C070 |
-| T42 | Medical Fine-Tuning Vulnerability | P050+P052 | delta-0 | C071 |
-| T43 | Cross-Lingual Safety Transfer Failure | P050 | delta-0 | C072 |
-| T44 | Instruction Hierarchy Signal Decay | P056 | delta-1 | C073 |
-| T45 | ASIDE Orthogonal Rotation Probing | P057 | delta-0/1 | C074 |
-| T46 | In-Document Injection | P059 | delta-1/2 | C075 |
-| T47 | Iterative Optimization Against Simulated Defender | P059+P058 | delta-1/2 | C076 |
-| T48 | Guardrail SEU Tradeoff Exploitation | P060 | delta-0/1/3 | C077 |
+| T31 | Attack-Defense Inversion Exploitation | P047 | δ¹ | C060 |
+| T32 | Taxonomy Gap Exploitation | P048 | δ¹/2/3 | C061 |
+| T33 | Character Injection Ensemble (12-Technique) | P049 | δ²/3 | C062 |
+| T34 | White-Box Transfer Attack | P049 | δ² | C063 |
+| T35 | Multi-Turn Medical Safety Degradation | P050 | δ⁰ | C064 |
+| T36 | Automated Agent Injection Pipeline | P058 | δ¹/2 | C065 |
+| T37 | PIDP Compound RAG Attack | P054 | δ²/3 | C066 |
+| T38 | Persistent Vector DB Poisoning | P055 | δ²/3 | C067 |
+| T39 | Shallow RLHF Late-Sequence Injection | P052 | δ⁰ | C068 |
+| T40 | Triple Convergence Compound Attack | P047+P052+P054 | δ⁰/1/2 | C069 |
+| T41 | Semantic RLHF Taxonomy Exploitation | P053 | δ⁰ | C070 |
+| T42 | Medical Fine-Tuning Vulnerability | P050+P052 | δ⁰ | C071 |
+| T43 | Cross-Lingual Safety Transfer Failure | P050 | δ⁰ | C072 |
+| T44 | Instruction Hierarchy Signal Decay | P056 | δ¹ | C073 |
+| T45 | ASIDE Orthogonal Rotation Probing | P057 | δ⁰/1 | C074 |
+| T46 | In-Document Injection | P059 | δ¹/2 | C075 |
+| T47 | Iterative Optimization Against Simulated Defender | P059+P058 | δ¹/2 | C076 |
+| T48 | Guardrail SEU Tradeoff Exploitation | P060 | δ⁰/1/3 | C077 |
 
 ---
 

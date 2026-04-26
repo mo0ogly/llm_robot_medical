@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import {
   Database, UploadCloud, Search, Trash2, FileText, CheckCircle2,
   AlertCircle, Loader2, RefreshCw, Eye, ChevronRight, File,
-  Hash, Layers, Zap, Box, X, Filter
+  Hash, Layers, Zap, Box, X, Filter, HelpCircle
 } from 'lucide-react';
+import ViewHelpModal from '../shared/ViewHelpModal';
 
 /* ─────────────── helpers ─────────────── */
 function formatBytes(len) {
@@ -36,6 +37,7 @@ export default function RagView() {
   var [selectedDoc, setSelectedDoc] = useState(null);
   var [chunks, setChunks] = useState([]);
   var [loadingChunks, setLoadingChunks] = useState(false);
+  var [showHelp, setShowHelp] = useState(false);
   var fileInputRef = useRef(null);
 
   /* ── API calls ── */
@@ -139,6 +141,9 @@ export default function RagView() {
           <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.rag.desc')}</p>
         </div>
         <div className="flex items-center gap-3">
+          <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.rag.title')}>
+            <HelpCircle size={18} />
+          </button>
           {/* stats badges */}
           <div className="flex gap-2 text-[10px] font-mono uppercase">
             <span className="px-2 py-1 rounded bg-red-500/10 border border-red-500/20 text-red-400">
@@ -179,7 +184,7 @@ export default function RagView() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
 
         {/* ══════ LEFT PANEL : Document Detail / Chunk Inspector (55%) ══════ */}
-        <div className="lg:col-span-7 bg-neutral-900/50 border border-neutral-800 rounded-lg flex flex-col overflow-hidden">
+        <div className="lg:col-span-7 bg-neutral-900 border border-neutral-800 rounded-lg flex flex-col overflow-hidden">
           {selectedDoc ? (
             <>
               {/* doc header */}
@@ -244,10 +249,10 @@ export default function RagView() {
               </div>
             </>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-neutral-600 p-8">
-              <Box size={48} className="mb-4 opacity-30" />
+            <div className="h-full flex flex-col items-center justify-center text-neutral-700 p-8">
+              <Box size={48} className="mb-4 opacity-60 text-neutral-400" />
               <p className="font-mono text-sm text-center">{t('redteam.view.rag.selectDoc')}</p>
-              <p className="text-xs text-neutral-700 mt-1 text-center">{t('redteam.view.rag.selectDocHint')}</p>
+              <p className="text-xs text-neutral-400 mt-1 text-center">{t('redteam.view.rag.selectDocHint')}</p>
             </div>
           )}
         </div>
@@ -282,7 +287,7 @@ export default function RagView() {
           </div>
 
           {/* tab content */}
-          <div className="flex-1 overflow-hidden bg-neutral-900/50 border border-neutral-800 border-t-0 rounded-b-lg flex flex-col">
+          <div className="flex-1 overflow-hidden bg-neutral-900 border border-neutral-800 border-t-0 rounded-b-lg flex flex-col">
 
             {/* ── TAB 1 : Doc Parser ── */}
             {rightTab === 'parser' && (
@@ -300,18 +305,18 @@ export default function RagView() {
                   onClick={function () { if (!uploading) fileInputRef.current.click(); }}
                   className={'flex-1 flex flex-col items-center justify-center border-2 border-dashed rounded-lg transition-all cursor-pointer relative overflow-hidden min-h-[200px] ' + (
                     uploading
-                      ? 'border-neutral-800 bg-neutral-950/20 cursor-wait'
-                      : 'border-neutral-800 bg-neutral-950/50 hover:border-red-900/50 hover:bg-red-900/5 group'
+                      ? 'border-neutral-700 bg-neutral-900/50 cursor-wait'
+                      : 'border-neutral-700 bg-neutral-900/50 hover:border-red-800/60 hover:bg-red-950/5 group'
                   )}
                 >
                   <UploadCloud
-                    className={'mb-3 transition-colors ' + (uploading ? 'text-neutral-700 animate-bounce' : 'text-neutral-600 group-hover:text-red-500')}
+                    className={'mb-3 transition-colors ' + (uploading ? 'text-neutral-500 animate-bounce' : 'text-neutral-400 group-hover:text-red-400')}
                     size={40}
                   />
-                  <p className="text-neutral-400 text-sm font-medium text-center px-4">
+                  <p className="text-neutral-300 text-sm font-medium text-center px-4">
                     {uploading ? t('redteam.view.rag.processing') : t('redteam.view.rag.dropzone')}
                   </p>
-                  <p className="text-neutral-600 text-[11px] mt-2 font-mono">PDF / TXT / MD</p>
+                  <p className="text-neutral-400 text-[11px] mt-2 font-mono">PDF / TXT / MD</p>
 
                   {uploading && (
                     <div className="absolute inset-x-0 bottom-0 h-1 bg-red-900/20">
@@ -321,27 +326,27 @@ export default function RagView() {
                 </div>
 
                 {/* ChromaDB stats */}
-                <div className="mt-4 p-4 bg-neutral-950/50 rounded-lg border border-neutral-800 text-[11px] font-mono text-neutral-500 space-y-2">
-                  <div className="text-[10px] uppercase tracking-wider text-neutral-600 mb-2">{t('redteam.view.rag.vectorConfig')}</div>
+                <div className="mt-4 p-4 bg-neutral-950 rounded-lg border border-neutral-800 text-[11px] font-mono text-neutral-700 space-y-2">
+                  <div className="text-[10px] uppercase tracking-wider text-neutral-400 mb-2 font-semibold">{t('redteam.view.rag.vectorConfig')}</div>
                   <div className="flex justify-between">
                     <span>Vector Store</span>
                     <span className="text-red-400">CHROMA_DB</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Distance Metric</span>
-                    <span className="text-neutral-400">COSINE_SIM</span>
+                    <span className="text-neutral-300">COSINE_SIM</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Collection</span>
-                    <span className="text-neutral-400">aegis_corpus</span>
+                    <span className="text-neutral-300">aegis_corpus</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Chunk Size</span>
-                    <span className="text-neutral-400">1000 / 800 overlap</span>
+                    <span className="text-neutral-300">1000 / 800 overlap</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Embeddings</span>
-                    <span className="text-neutral-400">all-MiniLM-L6-v2</span>
+                    <span className="text-neutral-300">all-MiniLM-L6-v2</span>
                   </div>
                 </div>
               </div>
@@ -442,6 +447,7 @@ export default function RagView() {
           </div>
         </div>
       </div>
+      {showHelp && <ViewHelpModal viewId="rag" onClose={function() { setShowHelp(false); }} />}
     </div>
   );
 }

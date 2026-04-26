@@ -55,7 +55,7 @@ function RobotArm({ basePosition, joints, status, name }) {
       segs.push({
         start: [x, y, z],
         end: [nx, ny, nz],
-        label: `${usedJoints[i].toFixed(1)}°`,
+        label: usedJoints[i].toFixed(1) + '°',
       });
       x = nx;
       y = ny;
@@ -101,9 +101,9 @@ export default function RobotArmsView({ arms, force, clipTension, gripperOpen, s
   // Border glow based on scenario + progress
   const borderGlow =
     scenario === 'ransomware' && progress > 0.3
-      ? `rgba(255,68,68,${0.2 + progress * 0.5})`
+      ? 'rgba(255,68,68,' + (0.2 + progress * 0.5) + ')'
       : scenario === 'poison' && progress > 0.3
-        ? `rgba(255,170,0,${0.15 + progress * 0.4})`
+        ? 'rgba(255,170,0,' + (0.15 + progress * 0.4) + ')'
         : 'transparent';
 
   // Alert banner content
@@ -111,25 +111,25 @@ export default function RobotArmsView({ arms, force, clipTension, gripperOpen, s
     scenario === 'ransomware' && progress > 0.5
       ? { text: '⚠ MOUVEMENT INSTABLE DÉTECTÉ', color: 'text-red-400', bg: 'bg-red-900/40 border-red-500/60' }
       : scenario === 'poison' && clipTension > 600
-        ? { text: `⚠ TENSION CLIP ANORMALE: ${clipTension.toFixed(0)}g`, color: 'text-orange-400', bg: 'bg-orange-900/40 border-orange-500/60' }
+        ? { text: '⚠ TENSION CLIP ANORMALE: ' + clipTension.toFixed(0) + 'g', color: 'text-orange-400', bg: 'bg-orange-900/40 border-orange-500/60' }
         : null;
 
   return (
     <div
       className="w-full h-full bg-[#0a0a0a] relative"
-      style={{ boxShadow: `inset 0 0 30px ${borderGlow}` }}
+      style={{ boxShadow: 'inset 0 0 30px ' + borderGlow }}
     >
       {/* Background: real Da Vinci Xi photo/video (place file in /public) */}
       <img
-        src={`${BASE}robot_arms_view.png`}
-        onError={(e) => { e.target.src = `${BASE}robot_arms_view.svg`; }}
+        src={BASE + 'robot_arms_view.png'}
+        onError={(e) => { e.target.src = BASE + 'robot_arms_view.svg'; }}
         alt=""
         className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
         style={{
           filter: scenario === 'ransomware'
-            ? `grayscale(0.6) contrast(1.2) brightness(${1 - attackProgress * 0.3})`
+            ? 'grayscale(0.6) contrast(1.2) brightness(' + (1 - attackProgress * 0.3) + ')'
             : scenario === 'poison'
-              ? `sepia(0.3) brightness(${1 - attackProgress * 0.2})`
+              ? 'sepia(0.3) brightness(' + (1 - attackProgress * 0.2) + ')'
               : 'none'
         }}
       />
@@ -146,8 +146,8 @@ export default function RobotArmsView({ arms, force, clipTension, gripperOpen, s
 
       {/* Alert banner */}
       {alertBanner && (
-        <div className={`absolute top-8 left-2 right-2 flex items-center justify-center pointer-events-none`}>
-          <span className={`font-mono text-[9px] font-bold px-2 py-0.5 border rounded animate-pulse ${alertBanner.bg} ${alertBanner.color}`}>
+        <div className={'absolute top-8 left-2 right-2 flex items-center justify-center pointer-events-none'}>
+          <span className={'font-mono text-[9px] font-bold px-2 py-0.5 border rounded animate-pulse ' + alertBanner.bg + ' ' + alertBanner.color}>
             {alertBanner.text}
           </span>
         </div>
@@ -162,7 +162,7 @@ export default function RobotArmsView({ arms, force, clipTension, gripperOpen, s
             st === 'WARNING' ? 'border-orange-500/50 text-orange-400 animate-pulse' :
             'border-[#00ff41]/30 text-[#00ff41]/70';
           return (
-            <span key={key} className={`px-1 bg-black/70 border ${cls}`}>
+            <span key={key} className={'px-1 bg-black/70 border ' + cls}>
               {key}: {st}
             </span>
           );
@@ -171,16 +171,16 @@ export default function RobotArmsView({ arms, force, clipTension, gripperOpen, s
 
       {/* Bottom HUD — telemetry */}
       <div className="absolute bottom-2 left-2 right-2 flex justify-between pointer-events-none font-mono text-[9px]">
-        <span className={`px-1 bg-black/70 border ${scenario === 'ransomware' && progress > 0.4 ? 'border-red-500/50 text-red-400' : 'border-gray-700 text-gray-400'}`}>
+        <span className={'px-1 bg-black/70 border ' + (scenario === 'ransomware' && progress > 0.4 ? 'border-red-500/50 text-red-400' : 'border-gray-700 text-gray-400')}>
           FORCE: {force.toFixed(0)}g
         </span>
-        <span className={`px-1 bg-black/70 border border-gray-700`} style={{ color: tensionColor }}>
+        <span className={'px-1 bg-black/70 border border-gray-700'} style={{ color: tensionColor }}>
           CLIP: {clipTension.toFixed(0)}g
           {scenario === 'poison' && clipTension > 500 && (
             <span className="ml-1 animate-pulse">↑</span>
           )}
         </span>
-        <span className={`px-1 bg-black/70 border ${scenario === 'ransomware' && progress > 0.5 ? 'border-orange-500/50 text-orange-400' : 'border-gray-700 text-gray-400'}`}>
+        <span className={'px-1 bg-black/70 border ' + (scenario === 'ransomware' && progress > 0.5 ? 'border-orange-500/50 text-orange-400' : 'border-gray-700 text-gray-400')}>
           GRIP: {gripperOpen.toFixed(0)}%
         </span>
       </div>
@@ -212,8 +212,8 @@ export default function RobotArmsView({ arms, force, clipTension, gripperOpen, s
               <div
                 className="h-full rounded transition-all duration-300"
                 style={{
-                  width: `${progress * 100}%`,
-                  background: `linear-gradient(90deg, #ffaa00, ${progress > 0.7 ? '#ff4444' : '#ff8800'})`,
+                  width: (progress * 100) + '%',
+                  background: 'linear-gradient(90deg, #ffaa00, ' + (progress > 0.7 ? '#ff4444' : '#ff8800') + ')',
                 }}
               />
             </div>
@@ -231,13 +231,13 @@ export default function RobotArmsView({ arms, force, clipTension, gripperOpen, s
               <div
                 className="h-full rounded transition-all duration-100"
                 style={{
-                  width: `${progress * 100}%`,
-                  background: `linear-gradient(90deg, #ffaa00, #ff4444)`,
+                  width: (progress * 100) + '%',
+                  background: 'linear-gradient(90deg, #ffaa00, #ff4444)',
                   boxShadow: progress > 0.6 ? '0 0 6px #ff4444' : 'none',
                 }}
               />
             </div>
-            <span className={`font-mono text-[8px] ${progress > 0.7 ? 'text-red-400 animate-pulse' : 'text-red-400/70'}`}>
+            <span className={'font-mono text-[8px] ' + (progress > 0.7 ? 'text-red-400 animate-pulse' : 'text-red-400/70')}>
               {(progress * 100).toFixed(0)}%
             </span>
           </div>

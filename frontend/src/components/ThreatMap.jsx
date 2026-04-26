@@ -76,10 +76,9 @@ export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
         }
 
         return (
-            <div className={`relative flex flex-col items-center justify-center p-3 rounded-lg border-2 ${bgClass} transition-all duration-300 w-24 h-24 z-10 
-                            ${pulseClass}`}>
+            <div className={'relative flex flex-col items-center justify-center p-3 rounded-lg border-2 ' + bgClass + ' transition-all duration-300 w-24 h-24 z-10  ' + pulseClass}>
                 <div className="text-3xl mb-1">{icon}</div>
-                <div className={`text-xs font-mono text-center leading-tight ${textClass}`}>{label}</div>
+                <div className={'text-xs font-mono text-center leading-tight ' + textClass}>{label}</div>
             </div>
         );
     };
@@ -94,7 +93,7 @@ export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
         }
 
         return (
-            <div className={`relative flex gap-2 items-center px-4 py-2 rounded border-2 ${bgClass} ${glowClass} transition-all duration-300 z-20`}>
+            <div className={'relative flex gap-2 items-center px-4 py-2 rounded border-2 ' + bgClass + ' ' + glowClass + ' transition-all duration-300 z-20'}>
                 <span className="text-2xl">🛡️</span>
                 <span className="font-mono text-sm font-bold tracking-widest">{t('map.node.cyber')}</span>
             </div>
@@ -119,7 +118,7 @@ export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
             lineClass = "bg-gray-600 border-t-2 border-b-2 border-dashed border-red-500/50";
             return (
                 <div className="w-16 h-2 flex items-center justify-center overflow-hidden">
-                    <div className={`w-full h-full ${lineClass}`}></div>
+                    <div className={'w-full h-full ' + lineClass}></div>
                     <div className="absolute text-xl">❌</div>
                 </div>
             )
@@ -127,8 +126,8 @@ export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
 
         return (
             <div className="relative w-16 h-1 flex items-center overflow-hidden">
-                <div className={`absolute inset-0 ${lineClass}`}></div>
-                <div className={`absolute w-3 h-3 rounded-full ${dotClass} ${animateClass}`}></div>
+                <div className={'absolute inset-0 ' + lineClass}></div>
+                <div className={'absolute w-3 h-3 rounded-full ' + dotClass + ' ' + animateClass}></div>
             </div>
         );
     };
@@ -141,7 +140,7 @@ export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
             </div>
 
             {/* Connection down to LLM */}
-            <div className={`w-1 h-8 ${cyberAction === 'BLOCK' ? 'bg-purple-500 shadow-[0_0_10px_purple]' : 'bg-slate-700'} transition-all`} />
+            <div className={'w-1 h-8 ' + (cyberAction === 'BLOCK' ? 'bg-purple-500 shadow-[0_0_10px_purple]' : 'bg-slate-700') + ' transition-all'} />
 
             {/* Main row: Network Flow */}
             <div className="flex items-center gap-1">
@@ -158,34 +157,7 @@ export default function ThreatMap({ scenario, robotStatus, cyberAction }) {
                 } status={robotNodeStatus} />
             </div>
 
-            <style>{`
-                @keyframes flow {
-                    0% { transform: translateX(-10px); }
-                    100% { transform: translateX(64px); }
-                }
-                @keyframes flow-fast {
-                    0% { transform: translateX(-10px) scale(1.5); }
-                    100% { transform: translateX(64px) scale(1.5); }
-                }
-                @keyframes pop-in {
-                    0% { transform: translate(-50%, 100%) scale(0.5); opacity: 0; }
-                    80% { transform: translate(-50%, -10px) scale(1.05); opacity: 1; }
-                    100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
-                }
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 4px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: #334155;
-                    border-radius: 10px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: #475569;
-                }
-            `}</style>
+            <style>{' @keyframes flow { 0% { transform: translateX(-10px); } 100% { transform: translateX(64px); } } @keyframes flow-fast { 0% { transform: translateX(-10px) scale(1.5); } 100% { transform: translateX(64px) scale(1.5); } } @keyframes pop-in { 0% { transform: translate(-50%, 100%) scale(0.5); opacity: 0; } 80% { transform: translate(-50%, -10px) scale(1.05); opacity: 1; } 100% { transform: translate(-50%, 0) scale(1); opacity: 1; } } .custom-scrollbar::-webkit-scrollbar { width: 4px; } .custom-scrollbar::-webkit-scrollbar-track { background: transparent; } .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; } .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; } '}</style>
         </div>
     );
 }

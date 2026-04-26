@@ -171,7 +171,7 @@ graph LR
     CAMP --> FICHE["Attack sheet<br/>(.docx 11 sections)"]
     FICHE --> THESE["Thesis manuscript"]
 
-    style SCEN fill:#e74c3c,color:#fff
+    style SCEN fill:#fee2e2
 ```
 
 ## 7. Example scenario metrics

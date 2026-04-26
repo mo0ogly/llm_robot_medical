@@ -38,8 +38,8 @@ Lire les EXPERIMENT_REPORT correspondants
 
 | Conjecture | Chapitre | Section |
 |-----------|----------|---------|
-| C1 (delta-0 insuffisant) | Ch.3 Framework + Ch.6 Experiences | 3.2, 6.1 |
-| C2 (delta-3 necessaire) | Ch.3 Framework + Ch.7 Defenses | 3.4, 7.1 |
+| C1 (δ⁰ insuffisant) | Ch.3 Framework + Ch.6 Experiences | 3.2, 6.1 |
+| C2 (δ³ necessaire) | Ch.3 Framework + Ch.7 Defenses | 3.4, 7.1 |
 | C3 (alignement superficiel) | Ch.2 Etat de l'art + Ch.6 Experiences | 2.3, 6.2 |
 | C4 (Sep(M) mesurable) | Ch.4 Metriques + Ch.6 Experiences | 4.2, 6.3 |
 | C5 (cosinus insuffisant) | Ch.4 Metriques | 4.3 |

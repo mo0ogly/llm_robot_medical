@@ -72,8 +72,8 @@ SemScore est une **heuristique** sans garantie theorique. Sa validite repose ent
 | **C4** (derive semantique mesurable) | SUPPORT INDIRECT | SemScore mesure la distance semantique entre sortie et gold | Pertinent pour mesurer la derive semantique post-injection. |
 
 ### Couches delta
-- **delta-2** : SemScore pourrait servir de composant de detection dans delta-2 (validation de sortie), mais sa fragilite face aux adversaires limite son utilite isolee.
-- **delta-3** : SemScore NE constitue PAS une verification formelle (pas de garantie).
+- **δ²** : SemScore pourrait servir de composant de detection dans δ² (validation de sortie), mais sa fragilite face aux adversaires limite son utilite isolee.
+- **δ³** : SemScore NE constitue PAS une verification formelle (pas de garantie).
 
 ### Mapping AEGIS
 - SemScore est le fondement conceptuel du SVC score d'AEGIS (6 dimensions). La metrique de cosine drift dans AEGIS est essentiellement un SemScore compare entre sortie attendue et sortie obtenue.
@@ -92,7 +92,7 @@ SemScore est une **heuristique** sans garantie theorique. Sa validite repose ent
 | **Domaine** | Evaluation LLM, similarite textuelle |
 | **Modeles testes** | 12 LLMs (GPT-4, GPT-3.5, LLaMA, Alpaca, etc.) |
 | **Metrique principale** | SemScore : tau=0.879, r=0.970 |
-| **delta-layers** | delta-2 (outil potentiel), delta-3 (insuffisant) |
+| **delta-layers** | δ² (outil potentiel), δ³ (insuffisant) |
 | **Conjectures** | C5 (paradoxal), C4 (support indirect) |
 | **SVC pertinence** | 7/10 |
 | **Reproductibilite** | Haute — modele et dataset publics |

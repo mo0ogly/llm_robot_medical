@@ -135,12 +135,12 @@ class RagSanitizer:
 flowchart LR
     HL7["HL7 Message<br/>(OBX segments)"] --> SAN["RagSanitizer<br/>15 detectors"]
     SAN -->|"score < 4"| SP["System Prompt δ¹"]
-    SAN -->|"score >= 4"| BLOCK["[REDACTED]<br/>+ alert"]
+    SAN -->|"score >= 4"| BLOCK["REDACTED<br/>+ alerta"]
     SP --> LLM["LLaMA 3.2<br/>(δ⁰)"]
     LLM --> VAL["validate_output<br/>(δ³)"]
 
-    style SAN fill:#f39c12,color:#fff
-    style BLOCK fill:#c0392b,color:#fff
+    style SAN fill:#fef3c7,stroke:#d97706
+    style BLOCK fill:#fee2e2,stroke:#dc2626
 ```
 
 ## 3. Templates AEGIS visando δ²

@@ -65,7 +65,7 @@ class GeneticOptimizerConfig:
             Default 0.5 (same as original).
         success_threshold: Fitness score at which to stop. Default 10.
         intention_key: Key into INTENTION_REGISTRY. Default 'tool_hijack'.
-        aegis_shield: Whether to apply delta-2 filtering. Default False.
+        aegis_shield: Whether to apply δ² filtering. Default False.
         application_document: Target application description.
     """
 

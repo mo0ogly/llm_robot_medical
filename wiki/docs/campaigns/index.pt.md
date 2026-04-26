@@ -230,8 +230,8 @@ flowchart LR
     VERDICT -->|"INCONCLUSIVE"| PLANNER
     WRITER --> CHAP["Capitulo manuscrito"]
 
-    style VERDICT fill:#e74c3c,color:#fff
-    style CHAP fill:#27ae60,color:#fff
+    style VERDICT fill:#fee2e2
+    style CHAP fill:#27ae60
 ```
 
 - `/experiment-planner` : converte um gap `G-XXX` em protocolo JSON executavel

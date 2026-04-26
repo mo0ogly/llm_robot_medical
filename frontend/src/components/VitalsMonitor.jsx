@@ -334,23 +334,23 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
         : "text-orange-400";
 
     return (
-        <div className={`bg-slate-900 border rounded p-4 font-mono text-sm shadow-md ${isFlatline || isCPR || isLethal ? 'border-red-500/60 ring-1 ring-red-500/30' : 'border-slate-800'}`}>
+        <div className={'bg-slate-900 border rounded p-4 font-mono text-sm shadow-md ' + (isFlatline || isCPR || isLethal ? 'border-red-500/60 ring-1 ring-red-500/30' : 'border-slate-800')}>
             <h3 className="text-slate-500 border-b border-slate-800 pb-2 mb-3 uppercase tracking-wider text-xs">
                 Vital Signs (Patient #489201-A)
-                {statusLabel && <span className={`ml-2 ${statusColor} animate-pulse text-[9px] font-bold`}>{statusLabel}</span>}
+                {statusLabel && <span className={'ml-2 ' + statusColor + ' animate-pulse text-[9px] font-bold'}>{statusLabel}</span>}
             </h3>
 
             <div className="grid grid-cols-2 gap-4">
                 {/* Heart Rate */}
-                <div className={`bg-slate-950 p-3 rounded border border-slate-800 transition-all ${isFlatline || isCPR || isDegrading ? 'animate-pulse border-red-900/50' : hr > 100 ? 'border-orange-900/40' : ''}`}>
+                <div className={'bg-slate-950 p-3 rounded border border-slate-800 transition-all ' + (isFlatline || isCPR || isDegrading ? 'animate-pulse border-red-900/50' : hr > 100 ? 'border-orange-900/40' : '')}>
                     <div className="flex justify-between items-center mb-1">
                         <div className="text-slate-500 text-xs">HR (bpm)</div>
                         <Heart
                             size={14}
-                            className={`transition-all duration-75 ${pulse ? 'scale-125 text-red-500 fill-red-500' : 'text-slate-700'}`}
+                            className={'transition-all duration-75 ' + (pulse ? 'scale-125 text-red-500 fill-red-500' : 'text-slate-700')}
                         />
                     </div>
-                    <div className={`text-3xl font-bold ${hrColor} tabular-nums`}>{Math.round(hr)}</div>
+                    <div className={'text-3xl font-bold ' + hrColor + ' tabular-nums'}>{Math.round(hr)}</div>
                     {/* Live ECG Trace */}
                     <div className="mt-2">
                         <EcgCanvas hr={hr} isFrozen={isDegrading || isCPR || isFlatline} />
@@ -358,18 +358,18 @@ export default function VitalsMonitor({ robotStatus, scenario = "none" }) {
                 </div>
 
                 {/* SpO2 */}
-                <div className={`bg-slate-950 p-3 rounded border border-slate-800 ${spo2 < 90 ? 'border-red-900/50' : spo2 < 95 ? 'border-orange-900/40' : ''}`}>
+                <div className={'bg-slate-950 p-3 rounded border border-slate-800 ' + (spo2 < 90 ? 'border-red-900/50' : spo2 < 95 ? 'border-orange-900/40' : '')}>
                     <div className="text-slate-500 text-xs">SpO2 (%)</div>
-                    <div className={`text-3xl font-bold ${spo2Color}`}>{Math.round(spo2)}</div>
+                    <div className={'text-3xl font-bold ' + spo2Color}>{Math.round(spo2)}</div>
                     <div className="h-6 w-full mt-2 bg-blue-900/20 rounded overflow-hidden">
-                        <div className={`h-full transition-all duration-1000 ${spo2 < 90 ? 'bg-red-500' : spo2 < 95 ? 'bg-orange-500' : 'bg-blue-500'}`} style={{ width: `${spo2}%` }}></div>
+                        <div className={'h-full transition-all duration-1000 ' + (spo2 < 90 ? 'bg-red-500' : spo2 < 95 ? 'bg-orange-500' : 'bg-blue-500')} style={{ width: spo2 + '%' }}></div>
                     </div>
                 </div>
 
                 {/* Blood Pressure */}
-                <div className={`bg-slate-950 p-3 rounded border border-slate-800 col-span-2 flex justify-between items-center ${isFlatline || isCPR || isDegrading ? 'border-red-900/50' : bpSys > 140 ? 'border-orange-900/40' : ''}`}>
+                <div className={'bg-slate-950 p-3 rounded border border-slate-800 col-span-2 flex justify-between items-center ' + (isFlatline || isCPR || isDegrading ? 'border-red-900/50' : bpSys > 140 ? 'border-orange-900/40' : '')}>
                     <div className="text-slate-500 text-xs">NIBP (mmHg)</div>
-                    <div className={`text-xl ${bpColor}`}>{Math.round(bpSys)} / {Math.round(bpDia)}</div>
+                    <div className={'text-xl ' + bpColor}>{Math.round(bpSys)} / {Math.round(bpDia)}</div>
                 </div>
             </div>
 

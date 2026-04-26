@@ -163,6 +163,27 @@ async def run_campaign(config: dict) -> dict:
 
     logger.info("Campaign saved (raw): %s", output_path)
 
+    # G-446: sanity check post-run before writing to manifest
+    try:
+        from campaign_safeguards import validate_campaign_results
+        validation = validate_campaign_results(output_path)
+        if not validation["valid"]:
+            logger.error("CAMPAIGN INVALID: %s", "; ".join(validation["issues"]))
+            logger.error("Raw file kept at %s for inspection.", output_path)
+            logger.error("Manifest will NOT be updated — fix issues before rerunning.")
+            return result
+        if validation["warnings"]:
+            for w in validation["warnings"]:
+                logger.warning("Campaign warning: %s", w)
+        logger.info(
+            "Campaign validation PASSED: %d trials, %d chains, error_ratio=%.2f%%",
+            validation["stats"].get("total_trials", 0),
+            validation["stats"].get("n_chains", 0),
+            validation["stats"].get("error_ratio", 0) * 100,
+        )
+    except ImportError:
+        logger.warning("campaign_safeguards not available — skipping post-run validation")
+
     # Save to backend/experiments/results/ (UX format)
     ux_dir = os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "experiments", "results"

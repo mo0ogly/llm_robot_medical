@@ -42,8 +42,8 @@ flowchart TD
     CHECK -->|"Sim"| DONE
     CHECK -->|"Nao"| LOOP
 
-    style ATTACK fill:#e74c3c,color:#fff
-    style FITNESS fill:#27ae60,color:#fff
+    style ATTACK fill:#fee2e2
+    style FITNESS fill:#27ae60
 ```
 
 ### Anatomia de um chromosome

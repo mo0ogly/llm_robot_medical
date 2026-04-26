@@ -32,3 +32,26 @@
 3. **ZERO import inutile** — nettoyer apres refactoring.
 4. **ZERO fichier orphelin** — supprimer si plus utilise.
 5. **Chaque fichier cree doit etre reference** quelque part.
+
+## File size — 800 lines max
+
+**Aucun fichier source ne doit depasser 800 lignes.** Cette regle s'applique a TOUS les types : `.py`, `.jsx`, `.js`, `.ts`, `.tsx`, `.go`, `.md` (sauf manuscrit these), `.json` (sauf datasets), `.yaml`.
+
+**Why:** Les fichiers > 800 lignes deviennent illisibles, casse-tete a maintenir, impossibles a auditer en revue de code, et violent la regle "ne JAMAIS lire" du content filter (un fichier de 3616 lignes a forcement du contenu sensible quelque part). Les agents Claude (orchestrator + subagents) consomment beaucoup de contexte pour les lire, ce qui sature la fenetre.
+
+**How to apply:**
+- Quand un fichier approche 700 lignes : commencer a planifier sa decomposition
+- Quand il atteint 800 : decomposer OBLIGATOIRE en modules logiques
+- Decomposition par responsabilite, pas par ligne arbitraire (un module = une responsabilite)
+- Pour les .jsx/.tsx : extraire les sub-components, hooks customs, constants, types
+- Pour les .py : extraire les classes, fonctions utilitaires, schemas
+- Pour les .md : decomposer par section avec un index a la racine
+- **Exceptions autorisees** :
+  - Fichiers generes automatiquement (lockfiles, dist/, build/)
+  - Datasets JSON (chroma_db dumps)
+  - Manuscrit de these (`research_archive/manuscript/`) — exception explicite
+- Un hook `.claude/hooks/file_size_check.cjs` enforce la regle au moment de l'edit (PreToolUse Edit/Write)
+
+**Refactoring existant :**
+- `frontend/src/components/redteam/ScenarioHelpModal.jsx` : DONE — decompose en 7 modules `helpData/` (thesis/agentic/rag/advanced/chains/solo/campaigns) + barrel `index.js`. Composant = 164 lignes, max chunk = 690 lignes.
+- Verifier periodiquement : `find . -name '*.jsx' -o -name '*.py' | xargs wc -l | sort -rn | head -20`

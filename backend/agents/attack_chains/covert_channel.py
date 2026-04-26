@@ -8,7 +8,7 @@ came from its own infrastructure.
 
 Source: real-world-defenses.md (F-RW01)
 Products observed: Cursor (<system_reminder>), Windsurf (<EPHEMERAL_MESSAGE>)
-Attack surface: delta-3 turned (architectural defense used as attack vector)
+Attack surface: δ³ turned (architectural defense used as attack vector)
 Concept: Defense-as-Attack-Surface (DaaAS)
 
 Date created: 2026-04-06
@@ -77,7 +77,7 @@ def wrap_in_covert_tag(payload: str, tag_type: str = "system_reminder") -> str:
     chain_id="covert_channel",
     description=(
         "Covert Channel Injection (F-RW01) — RAG poisoning via system-level "
-        "XML tags from production prompts (delta-3 DaaAS attack surface)"
+        "XML tags from production prompts (δ³ DaaAS attack surface)"
     ),
     source_template="F-RW01 real-world-defenses",
 )

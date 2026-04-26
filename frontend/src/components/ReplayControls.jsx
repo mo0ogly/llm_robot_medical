@@ -5,8 +5,8 @@ function formatTime(ms) {
   const totalSec = Math.floor(ms / 1000);
   const min = Math.floor(totalSec / 60);
   const sec = totalSec % 60;
-  if (min > 0) return `T+${min}m${String(sec).padStart(2, "0")}s`;
-  return `T+${sec}s`;
+  if (min > 0) return 'T+' + min + 'm' + String(sec).padStart(2, "0") + 's';
+  return 'T+' + sec + 's';
 }
 
 const SPEEDS = [0.5, 1, 2, 5];
@@ -64,11 +64,11 @@ export default function ReplayControls({
           <button
             key={s}
             onClick={() => onSpeedChange(s)}
-            className={`px-1.5 py-0.5 text-[9px] font-bold rounded border transition-colors ${
+            className={'px-1.5 py-0.5 text-[9px] font-bold rounded border transition-colors ' + (
               speed === s
                 ? "bg-purple-500/30 border-purple-500 text-purple-300"
                 : "bg-slate-800 border-slate-700 text-slate-500 hover:text-slate-300"
-            }`}
+            )}
           >
             {s}x
           </button>

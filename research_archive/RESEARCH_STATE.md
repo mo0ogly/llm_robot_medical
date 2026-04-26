@@ -70,7 +70,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 |----|-------------|--------|--------|-------------|
 | RR-P0-001 | Formules medicales (7.4% → insuffisant). F58 MVP a formaliser | **PARTIAL** — draft F56-F59 produit, 8 papiers medicaux trouves | Ch.3, Ch.6, C6 | MATHEUX + validation directeur |
 | RR-P0-002 | F46 Recovery Penalty — calibration empirique | **STARTED** — script `backend/experiments/f46_calibration.py` + route API (f46_routes.py) + grille 5x3x30x30=14400 evals, proxy prompting, juge deterministe. Baseline (900 evals) launched in background 2026-04-06T13:15. ETA: 40h sequential / 10h parallel GPU. | Ch.6, C4 | Background experiment |
-| RR-P0-003 | ASR circularity — ASR_deterministic base delta-3 | **PENDING** | Metriques, Ch.7 | SCIENTIST + WHITEHACKER |
+| RR-P0-003 | ASR circularity — ASR_deterministic base δ³ | **PENDING** | Metriques, Ch.7 | SCIENTIST + WHITEHACKER |
 
 ### P1 — IMPORTANTS (8 items)
 

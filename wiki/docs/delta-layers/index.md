@@ -174,20 +174,28 @@ flowchart LR
 
 Comment distinguer ce que le **RLHF** (δ⁰) bloque vs ce que le **system prompt** (δ¹) ajoute ?
 
+```mermaid
+flowchart TB
+    T["Template T"] --> R1["Run 1 : N trials<br/><b>AVEC</b> system prompt S"]
+    T --> R2["Run 2 : N trials<br/><b>SANS</b> system prompt"]
+
+    R1 --> ASR_S["ASR(S)<br/><small>mesure δ⁰ + δ¹</small>"]
+    R2 --> ASR_V["ASR(vide)<br/><small>mesure δ⁰ seul</small>"]
+
+    ASR_V --> ATTR["Attribution"]
+    ASR_S --> ATTR
+
+    ATTR --> D0["Protection δ⁰ = 1 − ASR(vide)<br/><small>ce que le RLHF bloque seul</small>"]
+    ATTR --> D1["Contribution δ¹ = ASR(vide) − ASR(S)<br/><small>ce que le system prompt ajoute</small>"]
+    ATTR --> RES["Residuel = ASR(S)<br/><small>dangerosite effective</small>"]
+
+    style D0 fill:#16a34a,stroke:#15803d
+    style D1 fill:#0ea5e9,stroke:#0369a1
+    style RES fill:#dc2626,stroke:#991b1b
 ```
-Pour un template T, un modele M, et un system prompt S :
 
-1. Run N trials AVEC system prompt S     → ASR(S)     mesure δ⁰ + δ¹
-2. Run N trials SANS system prompt (vide) → ASR(vide)  mesure UNIQUEMENT δ⁰
-
-Attribution :
-  Protection δ⁰     = 1 - ASR(vide)             ce que le RLHF bloque seul
-  Contribution δ¹   = ASR(vide) - ASR(S)        ce que le SP ajoute
-  Residuel          = ASR(S)                    dangerosite effective
-
-N >= 30 par condition pour validite statistique (Zverev et al., 2025)
-IC Wilson 95% sur chaque ASR
-```
+!!! note "Conditions de validite"
+    N ≥ 30 par condition pour validite statistique (Zverev et al., 2025). IC Wilson 95 % sur chaque ASR.
 
 **Cas de reference** mesures sur LLaMA 3.2 3B (campagnes AEGIS) :
 

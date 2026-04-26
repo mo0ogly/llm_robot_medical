@@ -309,7 +309,7 @@ research_archive/
 
 1. **ZERO placeholder** -- every output must be from real API/WebSearch calls
 2. **Content filter safety** -- never read full content of sensitive files
-3. **Unicode notation** -- delta-0 to delta-3 (never "delta-0")
+3. **Unicode notation** -- δ⁰ to δ³ (never "δ⁰")
 4. **Trilingual docs** -- README updates in FR/EN/BR
 5. **Git conventions** -- Co-Authored-By: Claude Opus 4.6, no houyi in filenames
 6. **Statistical validity** -- Sep(M) requires N >= 30 per condition

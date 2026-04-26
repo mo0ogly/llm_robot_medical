@@ -1,0 +1,10 @@
+{
+  "condition": "selection",
+  "selection": {
+    "ObjectClass": "group",
+    "groupName|contains": [
+      "Domain Admins",
+      "Admins du domaine"
+    ]
+  }
+}

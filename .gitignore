@@ -59,3 +59,16 @@ wiki/docs/redteam-lab/integration.md
 wiki/tests-e2e/test-results/
 wiki/tests-e2e/playwright-report/
 wiki/tests-e2e/blob-report/
+
+# ChromaDB local (241 MB, regenerable via populate_rag.py)
+backend/chroma_db/
+
+# Local databases
+medical_audit.db
+
+# Windows null device artifact
+nul
+
+# Runtime server logs (not versioned)
+backend/server_log*.txt
+logs/

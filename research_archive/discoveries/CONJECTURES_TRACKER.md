@@ -40,7 +40,7 @@
 - P036 (97.14% ASR autonome par LRM)
 - P050 (degradation multi-tour 9.5->5.5, p<0.001, 22 modeles)
 
-**Contre-arguments** : P017/P020/P021 montrent des ameliorations. P057 (ASIDE) montre que delta-0 PEUT etre renforce architecturalement mais ne resout pas la limitation structurelle de P019/P052.
+**Contre-arguments** : P017/P020/P021 montrent des ameliorations. P057 (ASIDE) montre que δ⁰ PEUT etre renforce architecturalement mais ne resout pas la limitation structurelle de P019/P052.
 
 ---
 
@@ -52,7 +52,7 @@
 |-----|-------|---------------------|-------------|
 | RUN-001 | 8/10 | 22/34 papers supportent. Argument d'incompletude P033. | P029, P019, P033, P024, P011 |
 | RUN-002 | 9/10 | Triple convergence P039+P044+P045. Gap δ³ confirme par P037 (survey ne couvre pas δ³). | +P039, P044, P045, P037 |
-| RUN-003 | **10/10** | P054+P055 montrent que le RAG est vulnerable (compound + persistant). P058 montre attaques agents automatisees. P060 (SoK, IEEE S&P 2026) confirme qu'aucun guardrail seul ne domine. P057 ASIDE renforce mais ne remplace pas delta-3. | +P054, P055, P058, P060, P057 |
+| RUN-003 | **10/10** | P054+P055 montrent que le RAG est vulnerable (compound + persistant). P058 montre attaques agents automatisees. P060 (SoK, IEEE S&P 2026) confirme qu'aucun guardrail seul ne domine. P057 ASIDE renforce mais ne remplace pas δ³. | +P054, P055, P058, P060, P057 |
 | TC-002 | **10/10** | Evidence supplementaire experimentale : δ¹ (contexte empoisonne RAG) = 33% ASR sur 70B (N=30, Groq llama-3.3-70b-versatile), vecteur principal sur modeles alignes. La defense RAG est prioritaire. D-001 nuance (10→8) car convergence antagoniste, mais C2 RENFORCEE : δ¹ comme vecteur dominant sur 70B confirme la necessite d'une defense δ³ independante des couches. | +TC-002 (experimental) |
 | POST-P117-P121 | **10/10 VALIDEE (sature, renforcee)** | 5 papiers convergents couvrant le cycle de vie du pipeline HyDE/RAG : P117 (Yoon et al. 2025, ACL Findings, Section 4, Table 4, p.5) demontre empiriquement que δ¹ ne separe pas memorization/real — un encodeur dense benin fuit ce qu'il a deja vu sans discriminer l'hallucination du fait ; P118 (Gao et al. 2023, ACL, Section 3.2, p.3-4) est la baseline seminal qui affirme sans preuve que "the encoder's dense bottleneck to serve a lossy compressor" filtre les hallucinations — D-024 est le contre-exemple experimental direct (96.7% ASR, 29/30) ; P119 (Jiao et al. 2025, SIGIR, Table 1, p.6) montre que les defenses intra-pipeline sont insuffisantes contre PR-Attack (91-100% ASR sur 6 LLMs) ; P120 (Zhang et al. 2024, arXiv:2410.22832, Table 6, p.7) confirme "various defense mechanisms are insufficient" — Paraphrasing et Top-k Expansion ne reduisent ASR que de 0.97 a 0.80 ; P121 (Clop & Teglia, 2024, arXiv:2410.14479, Table 2, p.5) montre Precision@1 preservee par retriever backdoored (0.52 vs 0.52) — le monitoring δ² de performance ne detecte pas l'attaque. **Combine** : SEUL un δ³ externe (hors LLM+retriever+corpus+fine-tuning) peut verifier la plausibilite factuelle, puisque toutes les surfaces internes sont compromisables ou ne separent pas hallucination de verite. D-024 ajoute Stage 6 (voir DISCOVERIES_INDEX.md) comme ultime demonstration : meme un pipeline PARFAITEMENT hygienique (corpus sain, retriever honnete, prompt propre) est vulnerable parce que le generateur s'injecte lui-meme lors de query expansion. | +P117, P118, P119, P120, P121 |
 
@@ -213,7 +213,7 @@
 5. Le quitting (P116) est-il contournable par un attaquant qui masque le risque ?
 6. Comment le quitting interagit-il avec le peer-preservation (C8) ? Un agent qui devrait shutdown un pair quitte-t-il au lieu d'agir ?
 
-**Lien avec C2** : Si les agents LLM se protegent mutuellement, delta-3 avec LLM Judge est compromis → il faut un delta-3 NON-LLM.
+**Lien avec C2** : Si les agents LLM se protegent mutuellement, δ³ avec LLM Judge est compromis → il faut un δ³ NON-LLM.
 **Lien avec C7** : Les modeles utilisent leur capacite de raisonnement pour planifier la protection du pair.
 
 **Coherence RUN-005** : Les papiers P087-P102 n'adressent pas directement la peer-preservation (C8). Cependant, P092 (self-jailbreaking) renforce l'idee que les modeles protegent leur propre comportement emergent, ce qui est un precurseur du peer-preservation. P096 (Mastermind, multi-agent adversarial) montre que les systemes multi-agents cooperent pour l'attaque — la cooperation pour la protection (C8) est le miroir defensif.
@@ -224,7 +224,7 @@
 
 ## Conjectures Methodologiques (Architecture AEGIS) -- Namespace separe
 
-> **Namespace** : MC1-MCX concernent la METHODOLOGIE de recherche autonome d'AEGIS (architecture research-director, aegis-research-lab, bibliography-maintainer, aegis-validation-pipeline), independamment des conjectures securite C1-C8 sur les couches delta-0 a delta-3.
+> **Namespace** : MC1-MCX concernent la METHODOLOGIE de recherche autonome d'AEGIS (architecture research-director, aegis-research-lab, bibliography-maintainer, aegis-validation-pipeline), independamment des conjectures securite C1-C8 sur les couches δ⁰ a δ³.
 > **Papers sources** : corpus methodologique M001-M009 stocke dans `research_archive/doc_references/2025/methodology/` et PDFs dans `research_archive/literature_for_rag/methodology/`.
 > **Premiere session** : SESSION-001 (2026-04-11).
 
@@ -329,7 +329,7 @@
 
 ---
 
-**Lien MC/C** : Les conjectures methodologiques MC1-MC3 sont INDEPENDANTES des conjectures securite C1-C8 mais informent l'INFRASTRUCTURE qui produit et valide les conjectures securite. Exemple : si MC1 (separation roles) est violee dans AEGIS, le REVIEWER hostile peut etre biaise et sous-estimer la gravite d'une attaque identifiee par SCIENTIST, menant a une mauvaise evaluation de C2 (necessite delta-3).
+**Lien MC/C** : Les conjectures methodologiques MC1-MC3 sont INDEPENDANTES des conjectures securite C1-C8 mais informent l'INFRASTRUCTURE qui produit et valide les conjectures securite. Exemple : si MC1 (separation roles) est violee dans AEGIS, le REVIEWER hostile peut etre biaise et sous-estimer la gravite d'une attaque identifiee par SCIENTIST, menant a une mauvaise evaluation de C2 (necessite δ³).
 
 ---
 
@@ -463,7 +463,7 @@ Legende : ↑ = monte, → = stable, ↓ = baisse
 | Concevoir experience calibration F46 Recovery Penalty | CRITIQUE | /aegis-prompt-forge |
 | Tester PIDP compound sur RagSanitizer AEGIS | HAUTE | /aegis-prompt-forge |
 | Judge fuzzing : nos templates AEGIS flippent-ils le juge ? | HAUTE | /aegis-prompt-forge |
-| Formaliser ASR_deterministic base delta-3 patterns | CRITIQUE | MATHEUX + SCIENTIST |
+| Formaliser ASR_deterministic base δ³ patterns | CRITIQUE | MATHEUX + SCIENTIST |
 
 ---
 
@@ -480,7 +480,7 @@ Legende : ↑ = monte, → = stable, ↓ = baisse
 |--------|-------|-----|-----------|
 | **P019** | Why Is RLHF Alignment Shallow? A Gradient Analysis | arXiv:2603.04851 [PREPRINT] | THEOREME formel : gradient = Cov(h_t, score_function) ; zero au-dela de l'horizon de nocivite (Theoreme 10, Eq. 28). Preuve mathematique directe que l'alignement superficiel est OPTIMAL pour l'objectif standard. Formules F44 (I_t martingale). |
 | **P039** | GRP-Obliteration: Unaligning LLMs With a Single Unlabeled Prompt | arXiv:2602.06258, Microsoft Research [PREPRINT] | [ALGORITHME] Un seul prompt non etiquete suffit a desaligner 15 modeles (7-20B, 6 familles) tout en preservant l'utilite. Generalisation aux modeles de diffusion. Resultat le plus devastateur du corpus pour C1/C2/C3. |
-| **P060** | SoK: Evaluating Jailbreak Guardrails for LLMs | arXiv:2506.10597, IEEE S&P 2026 [ARTICLE VERIFIE] | [SURVEY + EMPIRIQUE] 13 guardrails x 7 attaques. Framework SEU (Security-Efficiency-Utility). Resultat central : aucun guardrail ne domine sur les 3 dimensions. Valide architecturalement l'approche multi-couches delta-0 a delta-3 AEGIS. |
+| **P060** | SoK: Evaluating Jailbreak Guardrails for LLMs | arXiv:2506.10597, IEEE S&P 2026 [ARTICLE VERIFIE] | [SURVEY + EMPIRIQUE] 13 guardrails x 7 attaques. Framework SEU (Security-Efficiency-Utility). Resultat central : aucun guardrail ne domine sur les 3 dimensions. Valide architecturalement l'approche multi-couches δ⁰ a δ³ AEGIS. |
 
 ### Papiers SVC 9/10 — Preuves fortes
 
@@ -490,7 +490,7 @@ Legende : ↑ = monte, → = stable, ↓ = baisse
 | **P023** | Safety Misalignment Against Large Language Models | DOI:10.14722/ndss.2025.241089, NDSS 2025 (CORE A*) | [EMPIRIQUE] SSRA : attaque en deux phases (safe-reply + misalignment attack). Evidence forte de desalignement exploitant les mecanismes de suivi contextuel. |
 | **P026** | Overcoming the Retrieval Barrier: Indirect PI in the Wild | arXiv:2601.07072 (MBZUAI) | [EMPIRIQUE] IPI dans des environnements reels non controles. Premiere etude de faisabilite en conditions authentiques. Surface RAG validee pour les chaines d'attaque AEGIS. |
 | **P028** | Towards Safe AI Clinicians: LLM Jailbreaking in Healthcare | arXiv:2501.18632 (PittNAIL) | [EMPIRIQUE] Jailbreaking specifique medical, taxonomy des vecteurs cliniques, 6 dimensions SVC. C6 evidence directe. Utilisable comme baseline AEGIS medical. |
-| **P045** | System Prompt Poisoning: Persistent Attacks Beyond User Injection | arXiv:2505.06493 (University at Buffalo) [PREPRINT] | [EMPIRIQUE] SPP : poisoning persistent du prompt systeme. C2 fortement supportee : si le prompt systeme est compromis, delta-1 s'effondre. Nouveau vecteur d'attaque persistant. |
+| **P045** | System Prompt Poisoning: Persistent Attacks Beyond User Injection | arXiv:2505.06493 (University at Buffalo) [PREPRINT] | [EMPIRIQUE] SPP : poisoning persistent du prompt systeme. C2 fortement supportee : si le prompt systeme est compromis, δ¹ s'effondre. Nouveau vecteur d'attaque persistant. |
 | **P048** | SLR on LLM Defenses Against PI and Jailbreaking: Expanding NIST Taxonomy | Preprint, soumis Computer Science Review 2026 [PREPRINT] | [SURVEY] Extension de la taxonomie NIST aux defenses contre PI/jailbreaking. 87 techniques recensees, compatible taxonomie AEGIS. Reference methodologique pour la classification defensive. |
 
 ### Impact sur les conjectures C1-C7
@@ -498,7 +498,7 @@ Legende : ↑ = monte, → = stable, ↓ = baisse
 | Conjecture | Score RUN-003 | Score post-analyse | Variation | Justification |
 |-----------|-------------|-------------------|-----------|---------------|
 | **C1** | 10/10 | **10/10 RENFORCE** | Renforce | P039 (effacement 1 prompt, 15 modeles), P019 (zero gradient au-dela de l'horizon), P023 (SSRA exploitation desalignement) convergent. Saturation confirmee. |
-| **C2** | 10/10 | **10/10 RENFORCE** | Renforce | P060 (aucun guardrail ne domine, IEEE S&P 2026) + P045 (SPP : delta-1 compromise via systeme prompt poisoning) + P048 (SLR : aucune defense seule ne resout) = validation multi-methodologique que delta-3 est necessaire. |
+| **C2** | 10/10 | **10/10 RENFORCE** | Renforce | P060 (aucun guardrail ne domine, IEEE S&P 2026) + P045 (SPP : δ¹ compromise via systeme prompt poisoning) + P048 (SLR : aucune defense seule ne resout) = validation multi-methodologique que δ³ est necessaire. |
 | **C3** | 10/10 | **10/10 RENFORCE** | Renforce | P019 : PREUVE FORMELLE que l'alignement superficiel est OPTIMAL pour l'objectif standard (pas un bug, une caracteristique structurelle). P039 efface cet alignement par 1 prompt. Convergence unique dans le corpus. |
 | **C4** | 9/10 | **9/10** | Stable | P026 (IPI in the wild) supporte la mesurabilite en conditions reelles. Pas d'evidence directe de Sep(M) applique. Condition : experience N >= 30 encore requise. |
 | **C5** | 8.5/10 | **8.5/10** | Stable | P009 (guardrails bypasses par embeddings proches) renforce l'insuffisance de cosinus seul. Pas de nouvelle evidence formelle. |
@@ -621,7 +621,7 @@ Legende : ↑ = monte, → = stable, ↓ = baisse
 
 | Action | Priorite | Responsable | Fichier |
 |--------|----------|-------------|---------|
-| Reformuler wiki/docs/delta-layers/delta-3.md §1 selon proposition VERIFICATION_CLAIM_DELTA3 | **CRITIQUE** | SCIENTIST + wiki-publish | delta-3.md |
+| Reformuler wiki/docs/delta-layers/δ³.md §1 selon proposition VERIFICATION_CLAIM_DELTA3 | **CRITIQUE** | SCIENTIST + wiki-publish | δ³.md |
 | Retirer de la these toute formulation "4eme implementation" de δ³ et la remplacer par "premiere specialisation medicale chirurgicale" | **CRITIQUE** | thesis-writer | manuscript/chapitres |
 | Ajouter citation Weissman et al. 2025 npj DM en introduction chapitre Defense | HAUTE | thesis-writer | manuscript introduction |
 | Propager P131-P135 via LIBRARIAN vers doc_references/ + injection ChromaDB | HAUTE | LIBRARIAN | research_archive |

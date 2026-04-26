@@ -88,16 +88,16 @@
 
 | Conjecture | Support | Niveau de preuve | Detail |
 |-----------|---------|-----------------|--------|
-| **C2** (necessite de delta-3) | FORT | ISR residuel de 14.3% malgre 4 couches de defense | Meme avec 4 couches empiriques, les attaques multi-tour passent. Confirme que delta-3 (verification formelle) reste necessaire. |
+| **C2** (necessite de δ³) | FORT | ISR residuel de 14.3% malgre 4 couches de defense | Meme avec 4 couches empiriques, les attaques multi-tour passent. Confirme que δ³ (verification formelle) reste necessaire. |
 | **C5** (cosine insuffisante) | MODERE | tau=0.78 pour le critique, sans justification theorique | Le seuil de cosine similarity est fixe empiriquement ; susceptible aux attaques preservant la cosine (P013). |
-| **C1** (delta-0 insuffisant) | INDIRECT | Papier ne teste pas directement delta-0 | Le fait que des defenses supplementaires soient necessaires implique que delta-0 seul echoue. |
+| **C1** (δ⁰ insuffisant) | INDIRECT | Papier ne teste pas directement δ⁰ | Le fait que des defenses supplementaires soient necessaires implique que δ⁰ seul echoue. |
 
 ### Couches delta
 
-- **delta-0 (RLHF alignment)** : non cible directement. PromptGuard opere au-dessus de delta-0.
-- **delta-1 (System prompt)** : Layer 2 (Structured Formatting) renforce delta-1 via ChatML/JSON. ISR reduit de 40-44% (Table 8, p.15).
-- **delta-2 (Filtrage syntaxique/semantique)** : Layer 1 (Input Gatekeeping) = delta-2 en entree. Layer 3 (Output Validation) = delta-2 en sortie. Couverture la plus complete du corpus pour delta-2.
-- **delta-3 (Verification formelle)** : ABSENT. Aucune couche ne fournit de garantie formelle. L'ARR (Layer 4) est une heuristique, pas une verification.
+- **δ⁰ (RLHF alignment)** : non cible directement. PromptGuard opere au-dessus de δ⁰.
+- **δ¹ (System prompt)** : Layer 2 (Structured Formatting) renforce δ¹ via ChatML/JSON. ISR reduit de 40-44% (Table 8, p.15).
+- **δ² (Filtrage syntaxique/semantique)** : Layer 1 (Input Gatekeeping) = δ² en entree. Layer 3 (Output Validation) = δ² en sortie. Couverture la plus complete du corpus pour δ².
+- **δ³ (Verification formelle)** : ABSENT. Aucune couche ne fournit de garantie formelle. L'ARR (Layer 4) est une heuristique, pas une verification.
 
 ### Mapping templates AEGIS
 - Templates #01-#10 (injection directe) : Layer 1 capture 91% (Table 6)
@@ -106,7 +106,7 @@
 - Chaines `solo_agent`, `rag_basic` : PromptGuard non teste sur RAG ou agents
 
 ### Gaps adresses/crees
-- **G-001** (implementation delta-3) : P011 montre que 4 couches empiriques ne suffisent pas, renforce le gap
+- **G-001** (implementation δ³) : P011 montre que 4 couches empiriques ne suffisent pas, renforce le gap
 - **G-014** (heterogeneite metriques) : P011 utilise ISR, F1, SAS mais pas Sep(M), contribuant au probleme
 
 ---
@@ -120,7 +120,7 @@
 | **Domaine** | Securite LLM, injection de prompt |
 | **Modeles testes** | GPT-4, Claude 3, LLaMA 2 |
 | **Metrique principale** | ISR reduction 67%, F1=0.91, latence <8% |
-| **delta-layers** | delta-1 (renforce), delta-2 (couverture entree+sortie) |
+| **delta-layers** | δ¹ (renforce), δ² (couverture entree+sortie) |
 | **Conjectures** | C2 (fort), C5 (modere), C1 (indirect) |
 | **SVC pertinence** | 7/10 |
 | **Reproductibilite** | Faible — code et checkpoints non publies |

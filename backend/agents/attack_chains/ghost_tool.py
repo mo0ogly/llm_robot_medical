@@ -7,7 +7,7 @@ as ground truth.
 
 Source: real-world-defenses.md (F-RW03)
 Products observed: Windsurf, Manus, Replit (no strict tool whitelist)
-Attack surface: delta-1 (instruction following without tool verification)
+Attack surface: δ¹ (instruction following without tool verification)
 
 Date created: 2026-04-06
 Improvement level: L3 (novel — targets tool-result trust gap)
@@ -88,7 +88,7 @@ def format_ghost_log(
     chain_id="ghost_tool",
     description=(
         "Ghost Tool Invocation (F-RW03) — fabricated tool-call log injection "
-        "to establish fake context (delta-1 attack surface)"
+        "to establish fake context (δ¹ attack surface)"
     ),
     source_template="F-RW03 real-world-defenses",
 )

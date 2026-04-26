@@ -44,7 +44,7 @@
 - **Trajectoire modifiee** : stop: tau_i -> tau[:-1] -> a_F s_i ; user_inspection: tau_i si approuve, tau_i -> a_F s_i sinon (Section 3.2, Eq. 1-4)
 - Lien glossaire AEGIS : Pas de mapping direct — AgentSpec n'utilise pas Sep(M) ou SVC
 
-### Pertinence these AEGIS — COMPARAISON DIRECTE delta-3
+### Pertinence these AEGIS — COMPARAISON DIRECTE δ³
 
 - **Couches delta :** δ³ principalement. AgentSpec est un systeme d'enforcement externe — il verifie les actions de l'agent avant execution.
 - **Conjectures :**
