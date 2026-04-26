@@ -42,7 +42,10 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: ./frontend
-        run: npm ci
+        # npm ci uses the lockfile strictly — on Linux the Windows-generated
+        # lockfile omits @rollup/rollup-linux-x64-gnu (optional native binary).
+        # npm install resolves optional platform deps at install time.
+        run: npm install
 
       # PDCA cycle 3.5: frontend unit tests + build are non-blocking for
       # the wiki deploy. The wiki is the primary publishable artifact of
