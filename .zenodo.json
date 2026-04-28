@@ -1,0 +1,32 @@
+{
+  "title": "Aegis Medical AI Simulator: Dual-AI Cyber Attack and Defense on a Robotic Surgery Interface",
+  "description": "Proof-of-Concept simulation of a Da Vinci-class surgical robot interface compromised by Data Poisoning and Ransomware attacks against an integrated Medical LLM, defended in real-time by a multi-agent Cyber-Security AI architecture (Aegis). Demonstrates 4 attack scenarios (Baseline, Slow Poison, Ransomware, Aegis Defense) mapped to MITRE ATT&CK techniques (T1565.001, T1486, T1059.009). Multilingual support (EN/FR/PT).",
+  "creators": [
+    {
+      "name": "Pizzi, Fabrice",
+      "affiliation": "Universite Paris-Sorbonne"
+    }
+  ],
+  "upload_type": "software",
+  "publication_date": "2026-04-28",
+  "language": "eng",
+  "access_right": "open",
+  "license": "cc-by-nc-4.0",
+  "keywords": [
+    "medical AI security",
+    "LLM cybersecurity",
+    "data poisoning",
+    "prompt injection",
+    "MITRE ATT&CK",
+    "multi-agent defense",
+    "surgical robotics"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/mo0ogly/llm_robot_medical",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ],
+  "notes": "Educational and research proof-of-concept for cybersecurity awareness in clinical AI deployments."
+}

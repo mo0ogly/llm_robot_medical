@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Aegis Medical AI Simulator: Dual-AI Cyber Attack and Defense on a Robotic Surgery Interface"
+authors:
+  - family-names: Pizzi
+    given-names: Fabrice
+    affiliation: "Universite Paris-Sorbonne"
+date-released: 2026-04-28
+version: "1.0.0"
+license: CC-BY-NC-4.0
+repository-code: "https://github.com/mo0ogly/llm_robot_medical"
+keywords:
+  - medical AI security
+  - LLM cybersecurity
+  - data poisoning
+  - prompt injection
+  - MITRE ATT&CK
+  - multi-agent defense
+  - surgical robotics
+abstract: >
+  Proof-of-Concept simulation of a Da Vinci-class surgical robot interface
+  compromised by Data Poisoning and Ransomware attacks against an integrated
+  Medical LLM, defended in real-time by a multi-agent Cyber-Security AI
+  architecture. Demonstrates 4 attack scenarios mapped to MITRE ATT&CK.
+  Multilingual support (EN/FR/PT).
