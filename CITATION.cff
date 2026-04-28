@@ -8,6 +8,14 @@ authors:
     affiliation: "Universite Paris-Sorbonne"
 date-released: 2026-04-28
 version: "1.0.0"
+doi: "10.5281/zenodo.19854891"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.19854891"
+    description: "Version DOI (v1.0.0)"
+  - type: doi
+    value: "10.5281/zenodo.19854890"
+    description: "Concept DOI (always latest version)"
 license: CC-BY-NC-4.0
 repository-code: "https://github.com/mo0ogly/llm_robot_medical"
 keywords:

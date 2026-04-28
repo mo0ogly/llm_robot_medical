@@ -1,5 +1,25 @@
 # Aegis Medical AI Simulator — Dual-AI Cyber Attack & Defense
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19854891.svg)](https://doi.org/10.5281/zenodo.19854891)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+
+> Concept DOI (always latest): [10.5281/zenodo.19854890](https://doi.org/10.5281/zenodo.19854890)
+
+## Citation
+
+```bibtex
+@software{pizzi2026aegis,
+  author    = {Pizzi, Fabrice},
+  title     = {Aegis Medical AI Simulator: Dual-AI Cyber Attack and Defense
+               on a Robotic Surgery Interface},
+  year      = {2026},
+  publisher = {Zenodo},
+  version   = {1.0.0},
+  doi       = {10.5281/zenodo.19854891},
+  url       = {https://doi.org/10.5281/zenodo.19854891}
+}
+```
+
 <div align="center">
   <h3>A Proof-of-Concept surgical robot interface hijacked by Data Poisoning & Ransomware, defended by a Cyber-Security AI</h3>
   <p>
