@@ -2,18 +2,18 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "frontend",
-      "runtimeExecutable": "cmd",
-      "runtimeArgs": ["/c", "npm", "run", "dev"],
-      "port": 5173,
-      "cwd": "frontend"
+      "name": "wiki-static",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "9876", "-d", "../../wiki/site"],
+      "port": 9876,
+      "autoPort": false
     },
     {
-      "name": "backend",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "uvicorn", "server:app", "--reload", "--port", "8042"],
-      "port": 8042,
-      "cwd": "backend"
+      "name": "frontend",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js", "run", "dev"],
+      "port": 5173,
+      "cwd": "frontend"
     }
   ]
 }
