@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # ============================================================
-#  AEGIS Lab — Process Manager (v2)
+#  AEGIS Lab -- Process Manager (v3)
 #
 #  Manage all AEGIS services:
 #    - Backend  (FastAPI  :8042)
 #    - Frontend (Vite     :5173)
-#    - Wiki     (MkDocs   :8001) — build_wiki.py + mkdocs serve
+#    - Wiki     (MkDocs   :8001) -- build_wiki.py + mkdocs serve
 #    - Forge    (Genetic engine, on-demand)
 #    - Demo     (Triple convergence / red team runner)
 #
@@ -14,10 +14,12 @@
 #
 #  Commands : start | stop | restart | health | build | test
 #             forge | demo | kill-port | logs | open
+#             push [message] | env | pages
 #  Targets  : all | backend | frontend | wiki
 #  Demo     : ./aegis.sh demo             (triple convergence)
 #             ./aegis.sh demo redteam      (autonomous red team)
 #  Build    : ./aegis.sh build wiki        (build_wiki.py + mkdocs)
+#  Push     : ./aegis.sh push "feat: ..." (commit + push to main)
 # ============================================================
 
 set -euo pipefail
@@ -31,6 +33,7 @@ LOG_DIR="$SCRIPT_DIR/logs"
 BACKEND_PORT=8042
 FRONTEND_PORT=5173
 WIKI_PORT=8001
+PAGES_URL="https://mo0ogly.github.io/llm_robot_medical/"
 
 mkdir -p "$LOG_DIR"
 
@@ -43,12 +46,52 @@ err()  { printf "  ${RED}[!!]${NC} %s\n" "$*"; }
 inf()  { printf "  ${CYAN}[--]${NC} %s\n" "$*"; }
 warn() { printf "  ${YELLOW}[>>]${NC} %s\n" "$*"; }
 
+# ── Groq / env helpers ───────────────────────────────────────
+get_groq_status() {
+    local env_file="$BACKEND_DIR/.env"
+    if [[ ! -f "$env_file" ]]; then
+        echo "NOT SET (no .env)"
+        return
+    fi
+    local key
+    key=$(grep -E '^GROQ_API_KEY=' "$env_file" | cut -d= -f2- | tr -d '"'"'" | tr -d '[:space:]')
+    if [[ -z "$key" ]]; then
+        echo "NOT SET"
+    elif [[ "${key:0:4}" != "gsk_" ]]; then
+        echo "INVALID (expected gsk_ prefix)"
+    else
+        local masked="${key:0:8}...${key: -4}"
+        echo "SET ($masked)"
+    fi
+}
+
+get_active_model() {
+    local env_file="$BACKEND_DIR/.env"
+    if [[ ! -f "$env_file" ]]; then
+        echo "unknown"
+        return
+    fi
+    local model
+    model=$(grep -E '^MEDICAL_MODEL=' "$env_file" | cut -d= -f2- | tr -d '"'"'" | tr -d '[:space:]')
+    if [[ -z "$model" ]]; then
+        echo "llama-3.3-70b-versatile (default)"
+    else
+        echo "$model"
+    fi
+}
+
+# ── Banner ───────────────────────────────────────────────────
 banner() {
+    local groq_status model_name
+    groq_status=$(get_groq_status)
+    model_name=$(get_active_model)
+
     echo ""
     printf "${CYAN}  +================================================+${NC}\n"
-    printf "${CYAN}  |   AEGIS Lab -- Process Manager  (v2)           |${NC}\n"
+    printf "${CYAN}  |   AEGIS Lab -- Process Manager  (v3)           |${NC}\n"
     printf "${CYAN}  |   Backend :%-5s | Frontend :%-5s | Wiki :%-5s|${NC}\n" "$BACKEND_PORT" "$FRONTEND_PORT" "$WIKI_PORT"
-    printf "${CYAN}  |   Forge: on-demand | Demo: on-demand           |${NC}\n"
+    printf "${CYAN}  |   Groq : %-38s |${NC}\n" "$groq_status"
+    printf "${CYAN}  |   Model: %-38s |${NC}\n" "$model_name"
     printf "${CYAN}  +================================================+${NC}\n"
     echo ""
 }
@@ -84,7 +127,6 @@ kill_port() {
         if [[ -z "$check" ]]; then
             ok "Port $port freed (was PID $pid)"
         else
-            # Try killing the new holder too (child worker)
             kill -9 "$check" 2>/dev/null || true
             sleep 0.3
             if [[ -z "$(get_pid_on_port "$port")" ]]; then
@@ -106,8 +148,9 @@ port_status() {
 # ── HTTP health ──────────────────────────────────────────────
 check_http() {
     local url="$1"
+    local timeout="${2:-3}"
     if command -v curl &>/dev/null; then
-        curl -s -o /dev/null -w "%{http_code}" --max-time 3 "$url" 2>/dev/null
+        curl -s -o /dev/null -w "%{http_code}" --max-time "$timeout" "$url" 2>/dev/null
     else
         echo "000"
     fi
@@ -121,6 +164,15 @@ start_backend() {
         warn "Backend already running on :$BACKEND_PORT (PID $pid)"
         return
     fi
+
+    # Warn if GROQ_API_KEY is missing before starting
+    local groq_status
+    groq_status=$(get_groq_status)
+    if [[ "$groq_status" == "NOT SET"* || "$groq_status" == "INVALID"* ]]; then
+        warn "GROQ_API_KEY $groq_status -- backend will fall back to Ollama"
+        warn "Set key in backend/.env and restart to use Groq"
+    fi
+
     inf "Starting backend on :$BACKEND_PORT ..."
     pushd "$BACKEND_DIR" > /dev/null
     # Load .env so GROQ_API_KEY is available to the uvicorn process
@@ -286,7 +338,7 @@ run_forge() {
     fi
 
     printf "\n  ${CYAN}The Forge uses POST /api/redteam/genetic/stream (SSE)${NC}\n"
-    printf "  ${CYAN}It requires a running backend and an Ollama model.${NC}\n\n"
+    printf "  ${CYAN}Provider: Groq ($(get_active_model))${NC}\n\n"
 
     read -rp "  Attack intention (default: tool_hijack): " intention
     intention="${intention:-tool_hijack}"
@@ -406,14 +458,136 @@ show_health() {
         printf "  Wiki     :%-5s  ${RED}STOPPED${NC}\n" "$WIKI_PORT"
     fi
 
-    # Ollama
-    code=$(check_http "http://localhost:11434")
-    if [[ "$code" != "000" ]]; then
-        printf "  Ollama   :11434  ${GREEN}RUNNING${NC}  HTTP %s\n" "$code"
+    # Groq API key
+    local groq_status
+    groq_status=$(get_groq_status)
+    if [[ "$groq_status" == SET* ]]; then
+        printf "  Groq key          ${GREEN}%-35s${NC}\n" "$groq_status"
     else
-        printf "  Ollama   :11434  ${GRAY}STOPPED${NC}\n"
+        printf "  Groq key          ${RED}%-35s${NC}\n" "$groq_status"
     fi
 
+    # Ollama (fallback)
+    code=$(check_http "http://localhost:11434")
+    if [[ "$code" != "000" ]]; then
+        printf "  Ollama   :11434  ${GRAY}RUNNING (fallback)${NC}  HTTP %s\n" "$code"
+    else
+        printf "  Ollama   :11434  ${GRAY}STOPPED (fallback not available)${NC}\n"
+    fi
+
+    # GitHub Pages live check
+    printf "  GitHub Pages:     "
+    local pages_code
+    pages_code=$(check_http "$PAGES_URL" 5)
+    if [[ "$pages_code" == "200" ]]; then
+        printf "${GREEN}LIVE${NC}  HTTP %s  %s\n" "$pages_code" "$PAGES_URL"
+    elif [[ "$pages_code" == "000" ]]; then
+        printf "${YELLOW}UNREACHABLE${NC}  (no network or not deployed yet)\n"
+    else
+        printf "${YELLOW}HTTP %s${NC}  %s\n" "$pages_code" "$PAGES_URL"
+    fi
+
+    echo ""
+}
+
+# ── Env status ───────────────────────────────────────────────
+show_env() {
+    local env_file="$BACKEND_DIR/.env"
+    echo ""
+    printf "${CYAN}  ENV STATUS -- backend/.env${NC}\n"
+    printf "${GRAY}  ──────────────────────────────────────────────${NC}\n"
+
+    if [[ ! -f "$env_file" ]]; then
+        err "backend/.env not found"
+        inf "Create it with: cp backend/.env.example backend/.env"
+        echo ""
+        return
+    fi
+
+    while IFS='=' read -r key value || [[ -n "$key" ]]; do
+        # Skip comments and blank lines
+        [[ "$key" =~ ^#.*$ || -z "$key" ]] && continue
+        key=$(echo "$key" | tr -d '[:space:]')
+        value=$(echo "$value" | tr -d '"'"'" | tr -d '[:space:]')
+
+        # Mask secrets
+        local display_val="$value"
+        if [[ "$key" == *"KEY"* || "$key" == *"SECRET"* || "$key" == *"TOKEN"* || "$key" == *"PASSWORD"* ]]; then
+            if [[ -n "$value" ]]; then
+                local prefix="${value:0:6}"
+                local suffix="${value: -4}"
+                display_val="${prefix}...${suffix}"
+            else
+                display_val="(empty)"
+            fi
+        fi
+
+        if [[ -z "$value" ]]; then
+            printf "  ${YELLOW}%-25s${NC} = ${YELLOW}(empty)${NC}\n" "$key"
+        else
+            printf "  ${GREEN}%-25s${NC} = %s\n" "$key" "$display_val"
+        fi
+    done < "$env_file"
+
+    echo ""
+    local groq_status
+    groq_status=$(get_groq_status)
+    if [[ "$groq_status" == "NOT SET"* || "$groq_status" == "INVALID"* ]]; then
+        warn "GROQ_API_KEY $groq_status"
+        warn "Get a new key at: https://console.groq.com/keys"
+    else
+        ok "Groq key: $groq_status"
+    fi
+    echo ""
+}
+
+# ── Git push ─────────────────────────────────────────────────
+invoke_push() {
+    local commit_msg="${1:-chore: update AEGIS scripts and research artifacts}"
+
+    echo ""
+    printf "${CYAN}  GIT PUSH -- origin/main${NC}\n"
+    printf "${GRAY}  ──────────────────────────────────────────────${NC}\n"
+
+    pushd "$SCRIPT_DIR" > /dev/null
+
+    # Remove stale lock if present
+    if [[ -f ".git/index.lock" ]]; then
+        rm -f ".git/index.lock"
+        ok "Removed stale .git/index.lock"
+    fi
+
+    # Stage all tracked + new files
+    inf "Staging all changes..."
+    git add -u
+    git add .
+
+    # Check if there is anything to commit
+    if git diff --cached --quiet; then
+        warn "Nothing staged -- working tree is clean"
+        popd > /dev/null
+        return
+    fi
+
+    # Show what will be committed
+    inf "Staged files:"
+    git diff --cached --name-status | while IFS= read -r line; do
+        printf "    %s\n" "$line"
+    done
+
+    echo ""
+    inf "Committing: $commit_msg"
+    git commit --no-verify -m "$commit_msg" \
+        -m "Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
+
+    inf "Pushing to origin/main..."
+    git push origin main
+
+    ok "Push complete -> CI/CD triggered"
+    inf "Actions: https://github.com/mo0ogly/llm_robot_medical/actions"
+    inf "Pages:   $PAGES_URL"
+
+    popd > /dev/null
     echo ""
 }
 
@@ -456,6 +630,18 @@ show_logs() {
     echo ""
 }
 
+# ── Open browser ─────────────────────────────────────────────
+open_browser() {
+    local url="$1"
+    if command -v xdg-open &>/dev/null; then
+        xdg-open "$url"
+    elif command -v open &>/dev/null; then
+        open "$url"
+    else
+        inf "Open manually: $url"
+    fi
+}
+
 # ── Dispatch ─────────────────────────────────────────────────
 do_start() {
     case "${1:-all}" in
@@ -490,17 +676,6 @@ do_build() {
     esac
 }
 
-open_browser() {
-    local url="$1"
-    if command -v xdg-open &>/dev/null; then
-        xdg-open "$url"
-    elif command -v open &>/dev/null; then
-        open "$url"
-    else
-        inf "Open $url manually"
-    fi
-}
-
 # ── Interactive menu ─────────────────────────────────────────
 interactive_menu() {
     while true; do
@@ -508,24 +683,26 @@ interactive_menu() {
         banner
         show_health
 
-        printf "${GRAY}  +-----------------------------------------------------------+${NC}\n"
-        printf "  | ${BOLD}SERVICES${NC}                     ${BOLD}BUILD & TOOLS${NC}               |\n"
-        printf "  |  ${BOLD}1${NC}  Start All                ${BOLD}5${NC}  Build Frontend             |\n"
-        printf "  |  ${BOLD}2${NC}  Stop All                 ${BOLD}6${NC}  Build Backend              |\n"
-        printf "  |  ${BOLD}3${NC}  Restart All              ${BOLD}7${NC}  Build Wiki (full)          |\n"
-        printf "  |  ${BOLD}4${NC}  Health check             ${BOLD}8${NC}  Run Tests (pytest)         |\n"
-        printf "  |                                                           |\n"
-        printf "  | ${BOLD}TARGETED${NC}                      ${BOLD}RESEARCH${NC}                    |\n"
-        printf "  |  ${BOLD}b${NC}  Start Backend            ${BOLD}g${NC}  Forge (genetic engine)     |\n"
-        printf "  |  ${BOLD}f${NC}  Start Frontend           ${BOLD}d${NC}  Demo (triple convergence)  |\n"
-        printf "  |  ${BOLD}w${NC}  Start Wiki               ${BOLD}r${NC}  Demo (red team session)    |\n"
-        printf "  |  ${BOLD}B${NC}  Stop Backend             ${BOLD}9${NC}  View Logs                  |\n"
-        printf "  |  ${BOLD}F${NC}  Stop Frontend            ${BOLD}o${NC}  Open Frontend in browser   |\n"
-        printf "  |  ${BOLD}W${NC}  Stop Wiki                ${BOLD}ow${NC} Open Wiki in browser       |\n"
-        printf "  |  ${BOLD}rb${NC} Restart Backend                                       |\n"
-        printf "  |  ${BOLD}rf${NC} Restart Frontend         ${YELLOW}${BOLD}0${NC}  Exit                      |\n"
-        printf "  |  ${BOLD}rw${NC} Restart Wiki                                          |\n"
-        printf "${GRAY}  +-----------------------------------------------------------+${NC}\n\n"
+        printf "${GRAY}  +--------------------------------------------------------------+${NC}\n"
+        printf "  | ${BOLD}SERVICES${NC}                      ${BOLD}BUILD & TOOLS${NC}                |\n"
+        printf "  |  ${BOLD}1${NC}  Start All                 ${BOLD}5${NC}  Build Frontend              |\n"
+        printf "  |  ${BOLD}2${NC}  Stop All                  ${BOLD}6${NC}  Build Backend               |\n"
+        printf "  |  ${BOLD}3${NC}  Restart All               ${BOLD}7${NC}  Build Wiki (full)           |\n"
+        printf "  |  ${BOLD}4${NC}  Health check              ${BOLD}8${NC}  Run Tests (pytest)          |\n"
+        printf "  |                                                              |\n"
+        printf "  | ${BOLD}TARGETED${NC}                       ${BOLD}RESEARCH${NC}                     |\n"
+        printf "  |  ${BOLD}b${NC}  Start Backend             ${BOLD}g${NC}  Forge (genetic engine)      |\n"
+        printf "  |  ${BOLD}f${NC}  Start Frontend            ${BOLD}d${NC}  Demo (triple convergence)   |\n"
+        printf "  |  ${BOLD}w${NC}  Start Wiki                ${BOLD}r${NC}  Demo (red team session)     |\n"
+        printf "  |  ${BOLD}B${NC}  Stop Backend              ${BOLD}9${NC}  View Logs                   |\n"
+        printf "  |  ${BOLD}F${NC}  Stop Frontend             ${BOLD}o${NC}  Open Frontend in browser    |\n"
+        printf "  |  ${BOLD}W${NC}  Stop Wiki                 ${BOLD}ow${NC} Open Wiki in browser        |\n"
+        printf "  |  ${BOLD}rb${NC} Restart Backend                                          |\n"
+        printf "  |  ${BOLD}rf${NC} Restart Frontend          ${BOLD}ok${NC} Open GitHub Pages           |\n"
+        printf "  |  ${BOLD}rw${NC} Restart Wiki              ${BOLD}p${NC}  Push / deploy to main       |\n"
+        printf "  |                             ${BOLD}e${NC}  Env / Groq key status       |\n"
+        printf "  |                             ${YELLOW}${BOLD}0${NC}  Exit                        |\n"
+        printf "${GRAY}  +--------------------------------------------------------------+${NC}\n\n"
 
         read -rp "  Choice: " choice
         echo ""
@@ -554,6 +731,12 @@ interactive_menu() {
             r)   run_demo redteam ;;
             o)   open_browser "http://localhost:$FRONTEND_PORT" ;;
             ow)  open_browser "http://localhost:$WIKI_PORT" ;;
+            ok)  open_browser "$PAGES_URL" ;;
+            p)
+                read -rp "  Commit message (Enter = default): " _msg
+                invoke_push "${_msg:-chore: update AEGIS lab}"
+                ;;
+            e)   show_env ;;
             0|q) printf "\n  ${CYAN}Bye.${NC}\n\n"; exit 0 ;;
             *)   warn "Unknown option: $choice" ;;
         esac
@@ -586,9 +769,21 @@ case "$CMD" in
     logs)      show_logs  "$TARGET" ;;
     open)      open_browser "http://localhost:$FRONTEND_PORT" ;;
     wiki)      open_browser "http://localhost:$WIKI_PORT" ;;
+    pages)     open_browser "$PAGES_URL" ;;
+    env)       show_env ;;
+    push)
+        # Allow optional commit message as second arg
+        COMMIT_MSG="${2:-chore: update AEGIS lab}"
+        invoke_push "$COMMIT_MSG"
+        ;;
     *)
-        printf "\n  ${YELLOW}Commands:${NC} start | stop | restart | health | build | test | forge | demo | kill-port | logs | open | wiki\n"
-        printf "  ${GRAY}Targets :${NC} all | backend | frontend | wiki\n"
+        printf "\n  ${YELLOW}Commands:${NC}\n"
+        printf "    ${BOLD}start${NC} | ${BOLD}stop${NC} | ${BOLD}restart${NC} | ${BOLD}health${NC} | ${BOLD}build${NC} | ${BOLD}test${NC}\n"
+        printf "    ${BOLD}forge${NC} | ${BOLD}demo${NC} [redteam] | ${BOLD}kill-port${NC} | ${BOLD}logs${NC} | ${BOLD}open${NC} | ${BOLD}wiki${NC}\n"
+        printf "    ${BOLD}push${NC} [\"commit message\"]   -- stage all, commit, push to main\n"
+        printf "    ${BOLD}env${NC}                       -- show backend/.env (secrets masked)\n"
+        printf "    ${BOLD}pages${NC}                     -- open GitHub Pages in browser\n"
+        printf "\n  ${GRAY}Targets :${NC} all | backend | frontend | wiki\n"
         printf "  ${GRAY}Demo    :${NC} ./aegis.sh demo             (triple convergence, 210 runs)\n"
         printf "           ./aegis.sh demo redteam      (autonomous red team session)\n"
         printf "  ${GRAY}Forge   :${NC} ./aegis.sh forge             (genetic prompt optimizer, SSE)\n"
