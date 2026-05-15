@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { BookOpen, Users, RefreshCw, Clock, Zap, AlertCircle } from 'lucide-react';
 
-// Raw imports of mermaid source files maintained in docs/ (single source of truth)
-import pipelineMmd from '../../../../docs/mermaid_bibliography_pipeline.mmd?raw';
-import communicationsMmd from '../../../../docs/mermaid_bibliography_communications.mmd?raw';
-import agenticLoopMmd from '../../../../docs/mermaid_bibliography_agentic_loop.mmd?raw';
+// Raw imports of mermaid source files (copied from docs/ into src/assets/mermaid/ for Vite build compat)
+import pipelineMmd from '../../assets/mermaid/mermaid_bibliography_pipeline.mmd?raw';
+import communicationsMmd from '../../assets/mermaid/mermaid_bibliography_communications.mmd?raw';
+import agenticLoopMmd from '../../assets/mermaid/mermaid_bibliography_agentic_loop.mmd?raw';
 
 // Lazy mermaid: avoid shipping ~500KB in the main bundle
 var mermaidPromise = null;
@@ -283,9 +283,4 @@ export default function BibliographyPipelineView() {
             {' · '}
             <span className="text-neutral-600">bibliography-pipeline (page actuelle)</span>
           </p>
-        </footer>
-
-      </div>
-    </div>
-  );
-}
+        </footer
