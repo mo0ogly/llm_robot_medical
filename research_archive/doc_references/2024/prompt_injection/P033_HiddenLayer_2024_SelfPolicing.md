@@ -28,7 +28,7 @@
 
 3. **Timing pertinent.** Publie rapidement apres l'annonce du cadre Guardrails d'OpenAI (6 octobre 2025), le rapport souligne l'urgence de la menace avant que la communaute academique ne produise des evaluations formelles.
 
-4. **Classification MITRE ATLAS correcte.** Le mapping T1562.001 (Impair Defenses) est une categorisation pertinente du vecteur d'attaque.
+4. **Classification MITRE ATLAS correcte.** Le mapping T1685 (Disable or Modify Tools) est une categorisation pertinente du vecteur d'attaque.
 
 **Faiblesses :**
 

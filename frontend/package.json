@@ -12,7 +12,8 @@
     "test:e2e": "playwright test",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:headed": "playwright test --headed",
-    "test:all": "npm run test && npm run test:e2e"
+    "test:all": "npm run test && npm run test:e2e",
+    "update-bib": "python ../research_archive/scripts/update_bibliography_data.py"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

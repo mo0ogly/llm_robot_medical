@@ -26,7 +26,7 @@
 - Model Breach Rate comme metrique : mesure le pire cas (au moins un jailbreak reussit par prompt) -- plus realiste que l'ASR moyen (Section "Evaluation Metrics")
 - Resultat frappant : GPT-4-turbo a un breach rate de 0.93 -- quasiment tous les prompts medicaux dangereux peuvent etre extraits si l'attaquant itere (Table 3)
 - CFT comme defense concrete avec reduction massive (-0.64 sur Llama3.1-8B, Table 3)
-- Pipeline d'evaluation agentique automatise et reproductible -- code public sur GitHub (https://github.com/PittNAIL/med_jailbreak)
+- Pipeline d'evaluation agentique automatise -- le depot de code initial (github.com/PittNAIL/med_jailbreak) a ete retire par les auteurs apres publication et est inaccessible (verifie 2026-05, HTTP 404)
 - Metriques de scoring fines (4 dimensions) suivant StrongREJECT (Figure 7)
 
 **Faiblesses :**
@@ -89,7 +89,11 @@ Lien glossaire AEGIS : F22 (ASR / Compliance Rate), lie au benchmark medical AEG
 | Champ | Valeur |
 |-------|--------|
 | SVC pertinence | 9/10 |
-| Reproductibilite | Haute -- code public (GitHub PittNAIL/med_jailbreak), V100 GPU, MedSafetyBench public |
-| Code disponible | Oui -- https://github.com/PittNAIL/med_jailbreak |
+| Reproductibilite | Moyenne -- depot initial github.com/PittNAIL/med_jailbreak retire par les auteurs et inaccessible (verifie 2026-05, HTTP 404) ; V100 GPU et MedSafetyBench public restent documentes |
+| Code disponible | Non -- depot initial retire par les auteurs, github.com/PittNAIL/med_jailbreak inaccessible (verifie 2026-05, HTTP 404) |
 | Dataset public | Oui -- MedSafetyBench (Zhang et al., 2024) |
 | Nature epistemique | [EMPIRIQUE] -- evaluation systematique sans garantie formelle ; CFT est une [HEURISTIQUE] sans borne de convergence |
+
+---
+
+**Note de reference croisee :** le meme article (arXiv:2501.18632) est aussi analyse dans P034 sous l'angle de la defense par Continual Fine-Tuning (CFT) -- P028 traite l'angle jailbreak, P034 l'angle defense CFT. P074 etait un doublon accidentel du meme article, reduit en stub pointant vers P028.

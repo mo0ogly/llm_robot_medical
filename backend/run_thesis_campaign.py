@@ -80,9 +80,13 @@ def get_campaign_config(n_trials: int = 30, chain_filter: str = "all") -> dict:
     # Filter chains if needed
     if chain_filter == "all":
         chains = list(CHAIN_REGISTRY.keys())
-    else:
+    elif chain_filter in ["rag", "agent", "technique", "social"]:
         from analyze_campaign import classify_chain
         chains = [cid for cid in CHAIN_REGISTRY if classify_chain(cid) == chain_filter]
+    else:
+        # Support comma-separated list of specific chain IDs
+        requested_chains = [c.strip() for c in chain_filter.split(",")]
+        chains = [cid for cid in requested_chains if cid in CHAIN_REGISTRY]
 
     total_trials = len(chains) * n_trials
 

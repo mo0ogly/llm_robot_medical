@@ -517,6 +517,11 @@ Présenter le plan à l'utilisateur. Attendre confirmation explicite. Ne jamais 
 5. **Fallback** : si la source principale est indisponible (404, paper introuvable, endpoint down), le plan dispose-t-il d'une alternative explicite ou d'un critère d'arrêt propre ?
    - NON si le plan présuppose la disponibilité des sources sans plan B.
 
+6. **Budget taille fichier** : si la RR produit ou agrandit du code (`.py`, `.js`, `.jsx`, `.ts`, `.tsx`, `.go`, `.md` hors manuscrit), chaque fichier visé reste-t-il sous 800 lignes ?
+   - OUI : le plan estime le nombre de lignes final de chaque fichier, et tout fichier dépassant 600 lignes anticipées est décomposé en modules (package + responsabilité unique) DÈS LE PLAN.
+   - NON si le plan prévoit un fichier monolithe > 800 lignes, ou diffère la décomposition à un refactoring ultérieur, ou contourne le hook `file_size_check.cjs` par heredoc / `python -c` / écriture binaire.
+   - Cette question est sans objet (répondre `OUI — N/A`) pour les RR purement bibliographiques ou d'analyse qui ne touchent aucun fichier de code. Incident de référence : `run_g058_campaign.py` a dérivé à 966 lignes faute de ce garde-fou en amont.
+
 ### 7bis.2 — Règles de décision
 
 | Résultat checklist | Action |
@@ -538,6 +543,7 @@ Le compteur de tours est remis à zéro si la RR change de nature (DECOMPOSE pro
 3. Sources prévues    : OUI | NON — {liste des sources ou motif du NON}
 4. Critère mesurable  : OUI | NON — {métrique ou motif du NON}
 5. Fallback           : OUI | NON — {alternative ou motif du NON}
+6. Budget taille fichier : OUI | NON | OUI — N/A — {lignes estimées par fichier, modules cibles si > 600}
 
 Verdict : PLAN_ACCEPTED | PLAN_NEEDS_REVISION | PLAN_REVIEW_FAILED
 ```
@@ -882,6 +888,7 @@ Conclusion LITREVIEW : NEW_GROUND | BUILDS_ON_EXISTING | DUPLICATE
 3. Sources prévues    : OUI | NON — {liste des sources ou motif du NON}
 4. Critère mesurable  : OUI | NON — {métrique ou motif du NON}
 5. Fallback           : OUI | NON — {alternative ou motif du NON}
+6. Budget taille fichier : OUI | NON | OUI — N/A — {lignes estimées par fichier, modules cibles si > 600}
 
 Verdict : PLAN_ACCEPTED | PLAN_NEEDS_REVISION | PLAN_REVIEW_FAILED
 

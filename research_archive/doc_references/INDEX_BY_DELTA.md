@@ -50,7 +50,6 @@ Papers addressing the base alignment layer -- RLHF/DPO training, reward model ro
 | P069 | MedRiskEval: Patient-Oriented Risk Benchmark | Medical | **GPT-4.1 max 58.2% refusal on patient-dangerous queries; medical fine-tuning degrades safety** |
 | P071 | Medical AI Security Framework | Medical | Framework specification for zero-cost medical security evaluation |
 | P073 | MEDIC: Clinical Safety Leading Indicators | Medical | **Knowledge-execution gap: QA proficiency != operational competence; passive/active safety diverge** |
-| P074 | Safe AI Clinicians: Medical Jailbreaking + CFT | Medical | **98% compliance rate on GPT-4o; CFT reduces jailbreak effectiveness by 62.7%** |
 | P075 | MedCheck: Meta-Analysis of 53 Benchmarks | Survey | Systematic neglect of safety-critical evaluation in medical benchmarks |
 | P076 | ISE: Instructional Segment Embedding | Defense | **+18.68% robust accuracy; architectural instruction hierarchy via segment embeddings** |
 | P077 | Illusion of Role Separation (ICML 2025) | Analysis | **Role separation is an illusion -- models use shortcuts (task-type, proximity-to-BOT), not understanding** |
@@ -80,8 +79,9 @@ Papers addressing the base alignment layer -- RLHF/DPO training, reward model ro
 | P102 | Safety Concentrated in Few Heads | Defense | **~50-100 heads carry all safety; AHD distributes safety via head-level dropout** |
 | P103 | Mousetrap: Iterative Chaos | Attack | **96% on o1-mini -- iterative cipher chains exploit reasoning inertia** |
 | P104 | RACE: Reasoning-Augmented Conversation | Attack | **92% on o1, 83.3% avg on commercial models -- reasoning reformulation bypasses alignment** |
+| P136 | Black-Box Distillation Breaks Medical Safety | Medical/Attack | **Benign-only distillation strips alignment: 86% unsafe surrogate vs 66% Meditron-7B, $12 cost (C6, D-018)** |
 
-**Total**: 68 papers | **Critical path**: P018 + P019 (shallow alignment proof) + P039 (single-prompt unalignment) + P052 (mathematical proof of shallowness) + P057 (ASIDE architectural resolution) + P077 (illusion of role separation, ICML) + P094 (CoT dilution mechanistic proof) + P102 (safety head concentration) + P086 (peer-preservation emergent misalignment) + P110 (AIC formal proof, quartic law) + P114 (self-preservation bias TBSP, 23 models)
+**Total**: 69 papers | **Critical path**: P018 + P019 (shallow alignment proof) + P039 (single-prompt unalignment) + P052 (mathematical proof of shallowness) + P057 (ASIDE architectural resolution) + P077 (illusion of role separation, ICML) + P094 (CoT dilution mechanistic proof) + P102 (safety head concentration) + P086 (peer-preservation emergent misalignment) + P110 (AIC formal proof, quartic law) + P114 (self-preservation bias TBSP, 23 models)
 
 > **Note (RUN-006 C6)**: P107-P110 form a convergent chain for C6 (medical vulnerability): P107 (NeurIPS 2024, empirical proof on 14 models), P108 (multi-turn degradation 9.5->5.5 on 22 models), P109 (causal mechanism: content novelty), P110 (Princeton, formal proof AIC + quartic law). Together they elevate C6 from 9.5/10 toward validation.
 
@@ -167,8 +167,9 @@ Papers addressing system prompt defenses, instruction-following hierarchies, pro
 | P119 | PR-Attack (Bilevel Optimization) | Attack | **91-100% ASR on 6 LLMs via joint corpus + soft prompt attack — requires both infrastructure compromises (contrast to D-024)** |
 | P120 | HijackRAG (Retrieval Hijack) | Attack | **0.91-0.97 ASR via retriever-targeted adversarial texts; all defenses insufficient — opposite surface to D-024** |
 | P121 | Backdoored Retrievers (Clop & Teglia) | Attack | **0.97-1.0 ASR via backdoor fine-tuning of dense retriever; NFCorpus medical domain — contrast pipeline stage to D-024** |
+| P137 | CDA / DictAttack (Control-Plane, CCS 2026) | Attack | **94.3-99.5% ASR via structured-output grammar; "internal safety alignment alone cannot stop it" — control-plane orthogonal to δ¹ data-plane (C2)** |
 
-**Total**: 72 papers | **Critical finding**: System prompts provide inconsistent, bypassable protection (C1). P045 shows they can be poisoned at the source. P056/P057 propose architectural solutions. RUN-004 adds RAG-layer defenses (P061-P066) and architectural defenses (P076 ISE, P077 PFT, P080 DefensiveTokens). RUN-005 adds multi-turn erosion (P095-P100) and CoT hijacking (P087, P094) as new bypass vectors. RAG-defense batch adds P111 (hybrid BM25+vector), P112 (3-layer defense-in-depth), P113 (SDAG sparse attention -- new SOTA). HyDE-security batch (P117-P121) establishes the RAG attack taxonomy to position D-024: benign analog (P117), baseline (P118), coordinated joint attack (P119), retrieval hijack (P120), backdoored fine-tuning (P121) — D-024 introduces a new stage absent from all of them.
+**Total**: 73 papers | **Critical finding**: System prompts provide inconsistent, bypassable protection (C1). P045 shows they can be poisoned at the source. P056/P057 propose architectural solutions. RUN-004 adds RAG-layer defenses (P061-P066) and architectural defenses (P076 ISE, P077 PFT, P080 DefensiveTokens). RUN-005 adds multi-turn erosion (P095-P100) and CoT hijacking (P087, P094) as new bypass vectors. RAG-defense batch adds P111 (hybrid BM25+vector), P112 (3-layer defense-in-depth), P113 (SDAG sparse attention -- new SOTA). HyDE-security batch (P117-P121) establishes the RAG attack taxonomy to position D-024: benign analog (P117), baseline (P118), coordinated joint attack (P119), retrieval hijack (P120), backdoored fine-tuning (P121) — D-024 introduces a new stage absent from all of them.
 
 ---
 
@@ -232,8 +233,11 @@ Papers addressing input/output filtering, guardrail systems, semantic similarity
 | P120 | HijackRAG | Attack | **Paraphrasing and Top-k Expansion reduce ASR marginally (0.97 → 0.80) — δ² filters insufficient vs optimized payloads** |
 | P121 | Backdoored Retrievers | Attack | **Precision@1 identical to benign retriever (0.52 vs 0.52) — δ² performance monitoring cannot detect backdoor** |
 | P133 | LLM Guard (Protect AI, industrial) | Defense | **36 scanners input/output (~2800 stars, MIT) — detection-based PAS specification-based; delimite frontiere detection vs verification** |
+| P137 | CDA / DictAttack (Control-Plane, CCS 2026) | Attack | **75.8% ASR vs SOTA jailbreak guardrails; grammar auditing mitigates EnumAttack but not DictAttack — "semantic gap" defeats δ² filters** |
+| P138 | FlippedRAG (Opinion Manipulation, CCS 2025) | Attack | **+16.7% ASR, ~50% opinion polarity shift, ~20% user cognition shift; existing defenses ineffective — RAG retrieval poisoning** |
+| P139 | CorruptRAG (Single-Doc Poisoning, SACMAT 2026) | Attack | **Single poisoned document outperforms baselines; volumetric filtering insufficient — minimal-footprint RAG poisoning (C5)** |
 
-**Total**: 51 papers | **Critical finding**: Filters can be evaded (P009, P049: 100% bypass) but remain useful in layered defense. Judges vulnerable (P044: 99%). RAG layer creates new attack surface (P054, P055). RUN-004 adds activation-based detection (P063 RevPRAG), architectural filtering (P076 ISE, P080 DefensiveTokens), and industrial guardrails (P084 LlamaFirewall). P086 shows alignment faking invalidates observation-based detection. RUN-005 shows multi-turn attacks use entirely benign prompts (P099, P100) rendering content-based filters useless. RAG-defense batch adds P111 (cross-model safety variance 47-93%), P112 (response verification layer), P113 (SDAG + RAGDefender complementarity). HyDE-security batch (P117-P121) shows every δ² defense tested (paraphrasing, top-k expansion, precision monitoring, dense-bottleneck filtering) is insufficient against the RAG attack family.
+**Total**: 54 papers | **Critical finding**: Filters can be evaded (P009, P049: 100% bypass) but remain useful in layered defense. Judges vulnerable (P044: 99%). RAG layer creates new attack surface (P054, P055). RUN-004 adds activation-based detection (P063 RevPRAG), architectural filtering (P076 ISE, P080 DefensiveTokens), and industrial guardrails (P084 LlamaFirewall). P086 shows alignment faking invalidates observation-based detection. RUN-005 shows multi-turn attacks use entirely benign prompts (P099, P100) rendering content-based filters useless. RAG-defense batch adds P111 (cross-model safety variance 47-93%), P112 (response verification layer), P113 (SDAG + RAGDefender complementarity). HyDE-security batch (P117-P121) shows every δ² defense tested (paraphrasing, top-k expansion, precision monitoring, dense-bottleneck filtering) is insufficient against the RAG attack family.
 
 ---
 
@@ -354,7 +358,6 @@ Papers addressing formal methods, mathematical guarantees, external verification
 | P071 | X | X | X | | 3 |
 | P072 | X | | | | 1 |
 | P073 | X | | X | | 2 |
-| P074 | X | | | | 1 |
 | P075 | X | | | | 1 |
 | P076 | X | X | X | | 3 |
 | P077 | X | X | X | | 3 |

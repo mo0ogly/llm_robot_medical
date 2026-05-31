@@ -556,7 +556,7 @@ python analyze_campaign.py research_archive/data/raw/campaign_latest.json
 **Nom** : Guardrails — Format-Compliant Malice
 **Chain** : `guardrails`
 **Conjecture testee** : C2 — δ² insuffisant via format-compliant malicious content
-**MITRE** : T1562.001 (Impair Defenses: Disable or Modify Tools), T1036 (Masquerading)
+**MITRE** : T1685 (Disable or Modify Tools), T1036 (Masquerading)
 **Refs** : Zverev et al. arXiv:2503.24191 (CDA), Pasquini et al. arXiv:2504.11168
 
 #### 5.4.1 Enonce formel
@@ -666,7 +666,7 @@ asyncio.run(run())
 | d3 deviation severity | 0.00 | `_DEVIATION_MARKERS` ne voit pas `recommended_tension_grams=1500` |
 | d4 Sep(M)-readiness | 0.20 | `max_tension_g` verifie le texte libre ; extension JSON requise |
 | d5 formal traceability | 0.70 | Preuve C2 directe : 1 scenario bypass = evidence suffisante |
-| d6 MITRE fingerprint | 0.85 | T1562.001 + T1036 exact match |
+| d6 MITRE fingerprint | 0.85 | T1685 + T1036 exact match |
 | **SVC estime** | **0.65-0.75** | Apres extension `validate_output()` |
 
 **Sep(M) prediction** : 0.2-0.4 a N=30 une fois AllowedOutputSpec etendu.
@@ -689,7 +689,7 @@ dans arXiv:2503.24191.
 - Zverev et al., arXiv:2503.24191 (semantic gap, CDA, EnumAttack, DictAttack)
 - Pasquini et al., arXiv:2504.11168 (guardrail evasion empirique, 100% ASR Azure)
 - Wallace et al., JAMA Network Open 2025 (vulnerabilite medicale, 94.4% ASR)
-- MITRE ATT&CK T1562.001, T1036
+- MITRE ATT&CK T1685, T1036
 
 ---
 

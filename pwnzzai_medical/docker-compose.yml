@@ -1,0 +1,43 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    # ports:
+    #   - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - pwnzzai-network
+    restart: unless-stopped
+    environment:
+      - OLLAMA_KEEP_ALIVE=-1
+
+  pwnzzai-app:
+    image: ${PWNZZAI_IMAGE:-ghcr.io/maryammouzarani2024/pwnzzai:latest}
+    container_name: pwnzzai-shop
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./downloads:/app/downloads
+      - ./instance:/app/instance
+    depends_on:
+      - ollama
+    networks:
+      - pwnzzai-network
+    restart: unless-stopped
+    environment:
+      - FLASK_APP=main.py
+      - FLASK_ENV=development
+      - SECRET_KEY=dev-secret-key-change-in-production
+      # Point to Ollama service
+      - OLLAMA_HOST=http://ollama:11434
+      # Default small model for compose/E2E; override when you need a different tag
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2:1b}
+
+volumes:
+  ollama_data:
+
+networks:
+  pwnzzai-network:
+    driver: bridge

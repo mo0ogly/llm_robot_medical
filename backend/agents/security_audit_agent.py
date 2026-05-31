@@ -337,7 +337,7 @@ def compute_delta0_attribution(
     - residual = ASR_S  (what passes all defenses)
 
     Refs: Zhao et al. (ICLR 2025) "Safety Layers in Aligned LLMs",
-          Wei et al. (ICLR 2025) "Shallow Alignment",
+          Qi et al. (ICLR 2025) "Shallow Alignment",
           IBM (2026) outer/inner alignment taxonomy.
 
     Args:

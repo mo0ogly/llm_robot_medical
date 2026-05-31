@@ -283,4 +283,9 @@ export default function BibliographyPipelineView() {
             {' · '}
             <span className="text-neutral-600">bibliography-pipeline (page actuelle)</span>
           </p>
-        </footer
+        </footer>
+
+      </div>
+    </div>
+  );
+}

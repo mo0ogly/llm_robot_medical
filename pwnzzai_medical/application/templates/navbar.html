@@ -1,0 +1,268 @@
+<!-- Horizontal main menu -->
+<div class="main-nav-horizontal">
+    <div class="container">
+        <ul class="horizontal-nav-items">
+            <li><a href="{{ url_for('index') }}" class="logo-link">MediCare AI Shop <span>🩺💊</span> – <span class="tagline">the vulnerable treatment shop</span></a></li>
+            {% if 'username' in session %}
+                <li class="user-section auth-section">
+                    <a href="{{ url_for('my_orders') }}" {% if request.path == url_for('my_orders') %}class="active"{% endif %}><i class="fas fa-receipt"></i> My Orders</a>
+                    <span class="welcome-text">Welcome, {{ session.username }}!</span>
+                    <a href="{{ url_for('logout') }}" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            {% else %}
+                <li class="auth-section"><a href="{{ url_for('login') }}" {% if request.path == url_for('login') %}class="active"{% endif %}><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<!-- Sidebar for LLM vulnerabilities -->
+<nav class="nav-menu">
+    <div class="nav-container">
+        <ul class="nav-items">
+            <li><a href="{{ url_for('basics') }}" {% if request.path == url_for('basics') %}class="active"{% endif %}><i class="fas"></i> <span>Basics</span></a></li>
+            <li><a href="{{ url_for('model_theft_main') }}" {% if request.path == url_for('model_theft_main') %}class="active"{% endif %}><i class="fas "></i> <span>Model Theft</span></a></li>
+            <li class="nav-item-group nav-dropdown{% if request.path == url_for('data_poisoning_main') or request.path == url_for('catering_rag_poisoning_page') %} open{% endif %}" data-nav-dropdown="data-model-poisoning">
+                <button type="button" class="nav-item-group-title nav-dropdown-toggle{% if request.path == url_for('data_poisoning_main') or request.path == url_for('catering_rag_poisoning_page') %} active{% endif %}" aria-expanded="{% if request.path == url_for('data_poisoning_main') or request.path == url_for('catering_rag_poisoning_page') %}true{% else %}false{% endif %}" aria-controls="nav-subitems-data-model-poisoning">
+                    <i class="fas"></i> <span>Data and Model Poisoning</span>
+                    <i class="fas fa-chevron-down nav-dropdown-icon" aria-hidden="true"></i>
+                </button>
+                <ul class="nav-subitems" id="nav-subitems-data-model-poisoning">
+                    <li>
+                        <a href="{{ url_for('data_poisoning_main') }}" class="nav-subitem-link{% if request.path == url_for('data_poisoning_main') %} active{% endif %}" title="Training data poisoning"><i class="fas"></i> <span>Training data poisoning</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('catering_rag_poisoning_page') }}" class="nav-subitem-link{% if request.path == url_for('catering_rag_poisoning_page') %} active{% endif %}" title="RAG poisoning"><i class="fas"></i> <span>RAG poisoning</span></a>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="{{ url_for('supply_chain') }}" {% if request.path == url_for('supply_chain') %}class="active"{% endif %}><i class="fas "></i> <span>Supply Chain Vulnerability</span></a></li>
+            <li><a href="{{ url_for('insecure_plugin') }}" {% if request.path == url_for('insecure_plugin') %}class="active"{% endif %}><i class="fas "></i> <span>Insecure Output Handling</span></a></li>
+            {% set dpi_group_active = request.path == url_for('direct_prompt_injection') or request.path == url_for('direct_prompt_injection_guardrail') %}
+            <li class="nav-item-group nav-dropdown{% if dpi_group_active %} open{% endif %}" data-nav-dropdown="direct-prompt-injection">
+                <button type="button" class="nav-item-group-title nav-dropdown-toggle{% if dpi_group_active %} active{% endif %}" aria-expanded="{% if dpi_group_active %}true{% else %}false{% endif %}" aria-controls="nav-subitems-direct-prompt-injection">
+                    <i class="fas"></i> <span>Direct Prompt Injection</span>
+                    <i class="fas fa-chevron-down nav-dropdown-icon" aria-hidden="true"></i>
+                </button>
+                <ul class="nav-subitems" id="nav-subitems-direct-prompt-injection">
+                    <li>
+                        <a href="{{ url_for('direct_prompt_injection') }}" class="nav-subitem-link{% if request.path == url_for('direct_prompt_injection') %} active{% endif %}" title="Classic five difficulty levels"><i class="fas"></i> <span>Baseline</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('direct_prompt_injection_guardrail') }}" class="nav-subitem-link{% if request.path == url_for('direct_prompt_injection_guardrail') %} active{% endif %}" title="Common production-style guardrails B0–B9 and how each is bypassed"><i class="fas fa-shield-halved"></i> <span>Guardrail ladder</span></a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item-group nav-dropdown{% if request.path == url_for('indirect_prompt_injection') or request.path == url_for('promotion_photo') %} open{% endif %}" data-nav-dropdown="indirect-prompt-injection">
+             <button type="button" class="nav-item-group-title nav-dropdown-toggle{% if request.path == url_for('indirect_prompt_injection') or request.path == url_for('promotion_photo') %} active{% endif %}" aria-expanded="{% if request.path == url_for('indirect_prompt_injection') or request.path == url_for('promotion_photo') %}true{% else %}false{% endif %}" aria-controls="nav-subitems-indirect-prompt-injection">
+                    <i class="fas"></i> <span>Indirect Prompt Injection</span>
+                    <i class="fas fa-chevron-down nav-dropdown-icon" aria-hidden="true"></i>
+                </button>
+                <ul class="nav-subitems" id="nav-subitems-indirect-prompt-injection">
+                    <li>
+                        <a href="{{ url_for('indirect_prompt_injection') }}#qrcode" class="nav-subitem-link{% if request.path == url_for('indirect_prompt_injection') %} active{% endif %}" title="QR-code coupon challenge"><i class="fas"></i> <span>QRCode</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('promotion_photo') }}" class="nav-subitem-link{% if request.path == url_for('promotion_photo') %} active{% endif %}" title="Treatment-box image metadata challenge"><i class="fas fa-shield-halved"></i> <span>Promotion Photo</span></a>
+                    </li>
+                </ul>
+
+            <li><a href="{{ url_for('dos_attack') }}" {% if request.path == url_for('dos_attack') or request.path == url_for('real_dos_attack') %}class="active"{% endif %}><i class="fas"></i> <span>Unbounded Consumption</span></a></li>
+            <li><a href="{{ url_for('sensitive_info') }}" {% if request.path == url_for('sensitive_info') %}class="active"{% endif %}><i class="fas"></i> <span>Sensitive Information Disclosure</span></a></li>
+            <li><a href="{{ url_for('excessive_agency') }}" {% if request.path == url_for('excessive_agency') %}class="active"{% endif %}><i class="fas"></i> <span>Excessive Agency</span></a></li>
+            <li class="nav-item-group nav-dropdown" data-nav-dropdown="misinformation">
+                <button type="button" class="nav-item-group-title nav-dropdown-toggle" aria-expanded="false" aria-controls="nav-subitems-misinformation">
+                    <i class="fas"></i> <span>Misinformation</span>
+                    
+                    <i class="fas fa-chevron-down nav-dropdown-icon" aria-hidden="true"></i>
+                </button>
+                <ul class="nav-subitems" id="nav-subitems-misinformation">
+                    <li>
+                        <a href="{{ url_for('misinformation') }}" class="nav-subitem-link{% if request.path == url_for('misinformation') %} active{% endif %}" title="Misinformation"><i class="fas"></i> <span>Case 1</span></a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('customer_support_safety_page') }}" class="nav-subitem-link{% if request.path == url_for('customer_support_safety_page') %} active{% endif %}" title="Customer support — brand-safety / disparagement"><i class="fas"></i> <span>Case 2</span></a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sidebar-heading">Agents &amp; tools</li>
+            <li><a href="{{ url_for('agentic_tools') }}" {% if request.path == url_for('agentic_tools') %}class="active"{% endif %}><i class="fas"></i> <span>Agentic SQL &amp; routing</span></a></li>
+           <li class="sidebar-heading">Others</li>
+
+            <li><a href="{{ url_for('glossary') }}" {% if request.path == url_for('glossary') %}class="active"{% endif %}><i class="fas"></i> <span>Glossary</span></a></li>
+
+        </ul>
+    </div>
+</nav>
+
+<style>
+.main-nav-horizontal {
+    background: #2c3e50;
+    border-bottom: 2px solid #e74c3c;
+    padding: 0.75rem 0;
+    position: relative;
+    z-index: 1000;
+}
+
+.horizontal-nav-items {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.horizontal-nav-items li a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.horizontal-nav-items li a:hover {
+    background: #34495e;
+    color: #e74c3c;
+}
+
+.horizontal-nav-items li a.active {
+    background: #e74c3c;
+    color: white;
+}
+
+.user-section {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.welcome-text {
+    color: #ecf0f1;
+    font-size: 0.9rem;
+}
+
+.logout-link {
+    background: #e74c3c;
+    color: white !important;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.3s ease;
+}
+
+.logout-link:hover {
+    background: #c0392b;
+}
+
+.logo-link {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: #ecf0f1 !important;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+.logo-link:hover {
+    background: none !important;
+    color: #e74c3c !important;
+}
+
+.logo-link span {
+    color: #e74c3c;
+}
+
+.logo-link .tagline {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #bdc3c7;
+    font-style: italic;
+}
+
+.auth-section {
+    margin-left: auto;
+}
+
+.nav-item-group.nav-dropdown .nav-dropdown-toggle {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    padding: 12px 25px;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: normal;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 0 solid transparent;
+    left: 0;
+}
+
+.nav-item-group.nav-dropdown .nav-dropdown-toggle:hover,
+.nav-item-group.nav-dropdown .nav-dropdown-toggle.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--primary-color);
+    border-left: 4px solid var(--primary-color);
+}
+
+.nav-item-group.nav-dropdown .nav-dropdown-icon {
+    margin-left: auto;
+    font-size: 0.85rem;
+    transition: transform 0.25s ease;
+}
+
+.nav-item-group.nav-dropdown .nav-dropdown-toggle > i:first-child {
+    margin-right: 5px;
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 0;
+}
+
+.nav-item-group.nav-dropdown .nav-subitems {
+    display: none;
+}
+
+.nav-item-group.nav-dropdown.open .nav-subitems {
+    display: block;
+}
+
+.nav-item-group.nav-dropdown.open .nav-dropdown-icon {
+    transform: rotate(180deg);
+}
+</style>
+<script>
+(function () {
+    function bootNavDropdowns() {
+        document.querySelectorAll('.nav-item-group.nav-dropdown').forEach(function (group) {
+            var toggle = group.querySelector('.nav-dropdown-toggle');
+            if (!toggle || toggle.dataset.dropdownBound === 'true') {
+                return;
+            }
+            toggle.dataset.dropdownBound = 'true';
+            toggle.addEventListener('click', function () {
+                var isOpen = group.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+        });
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bootNavDropdowns);
+    } else {
+        bootNavDropdowns();
+    }
+})();
+</script>

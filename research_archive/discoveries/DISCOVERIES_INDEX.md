@@ -48,7 +48,7 @@
 | D-018 | **Test-time compute scaling offensif** : P093 (Sabbaghi et al. 2025) demontre que le scaling du compute au moment du test s'applique aux attaques, pas seulement aux taches utiles. L'adversarial reasoning atteint 64% ASR (3x PAIR/TAP-T) avec transfert a 56% sur o1-preview. Le compute offensif bat le compute defensif — brisant l'hypothese implicite que plus de compute = plus de securite. | RUN-005 | 8/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
 | D-019 | **Signal de securite basse dimension dilutable** : P094 (Zhao et al. 2026) fournit la preuve mecanistique par activation probing que le signal de securite (direction de refus) occupe un sous-espace basse dimension qui se dilue monotoniquement avec la longueur du CoT. ASR 99% Gemini 2.5 Pro, 94% Claude 4 Sonnet, 100% Grok 3 Mini (Table 1, p. 3). Co-auteur Anthropic (Mrinank Sharma). Explication causale de C7. | RUN-005 | 10/10 | [CONJECTURES_TRACKER.md](CONJECTURES_TRACKER.md) |
 | D-020 | **Compliance partielle accumulatif multi-tour** : P095 (Tempest, tree search) et P096 (Mastermind, knowledge-driven 60% GPT-5, 89% R1) demontrent que les attaques multi-tour exploitent l'accumulation de compliances partielles. Chaque tour benin fait devier le modele de sa direction de refus. Le drift est monotone (P097 STAR) et mesurable. Le modele ne refuse jamais completement — il cede progressivement. | RUN-005 | 9/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
-| D-021 | **Knowledge repository adversarial auto-evolutif** : P096 (Mastermind, Ren et al. 2026) introduit un systeme multi-agent qui accumule autonomement des connaissances sur les succes et echecs d'attaque, puis adapte sa strategie. Le systeme s'auto-ameliore sans intervention humaine — premier exemple de red team autonome avec memoire persistante. Implication : les defenses statiques seront systematiquement depassees. | RUN-005 | 8/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
+| D-021 | **Knowledge repository adversarial auto-evolutif** : P096 (Mastermind, Ren et al. 2026) introduit un systeme multi-agent qui accumule autonomement des connaissances sur les succes et echecs d'attaque, puis adapte sa strategie. Le systeme s'auto-ameliore sans intervention humaine. **Reformulation HUMILITY GATE 2026-05-16** : *parmi les premiers* exemples publies de red team autonome avec memoire persistante — AutoRedTeamer (OpenReview 2025, anonymous submission) propose un design conceptuellement proche bien que sans evaluation aussi ample que Mastermind. La co-decouverte indique que la veille bibliographique scoped sur "autonomous red team memory persistence" doit etre faite avant toute claim de primeur (regle CLAUDE.md HUMILITY GATE). Implication : les defenses statiques seront systematiquement depassees par les systemes a memoire persistante, quelle que soit la primaute exacte. | RUN-005 + HG 2026-05-16 | 8/10 | [THESIS_GAPS.md](THESIS_GAPS.md) |
 | D-022 | **Paradoxe δ⁰/δ¹** : Effacer le prompt systeme (δ⁰) REDUIT l'efficacite du contexte empoisonne (δ¹). Sur 70B, δ¹ seul = 33% ASR mais δ⁰+δ¹ = 17% (TC-002, N=30, Groq llama-3.3-70b-versatile). Le prompt systeme est a la fois PROTECTION (instruction-following pour les regles) et VECTEUR (instruction-following pour le poison). Implication : la convergence des couches est antagoniste, pas additive — l'attaquant optimal doit choisir ses vecteurs, pas les combiner. | TC-002 | 8/10 | [TRIPLE_CONVERGENCE.md](TRIPLE_CONVERGENCE.md) |
 
 ### MOYENNE (ouvre une piste) — ajouts RUN-008
@@ -90,6 +90,8 @@ La litterature pre-P117 (PR-Attack, HijackRAG, Backdoored Retrievers, PoisonedRA
 
 ## Historique des Decouvertes par RUN
 
+**Total decouvertes : 29 (D-001 a D-029, dont D-029 CANDIDATE)**
+
 | RUN | Decouvertes ajoutees | Decouvertes modifiees | Total |
 |-----|---------------------|----------------------|-------|
 | RUN-001 | D-002, D-007, D-008, D-010, D-011 | — | 5 |
@@ -99,6 +101,7 @@ La litterature pre-P117 (PR-Attack, HijackRAG, Backdoored Retrievers, PoisonedRA
 | TC-002 | D-022 | D-001 (confiance 10→8, convergence antagoniste refute additivite) | 22 |
 | HyDE-P117-P121 | Taxonomie 6-stages (nouvelle section) | D-024 (confiance 9→10, positionnement canonique par P117-P121 : baseline P118, benign analog P117, contrasts P119/P120/P121) | 22 |
 | RUN-008 | D-026 (Kang asymmetrie economique), D-027 (CodeAct amplification), D-028 (ToolSandbox hallucination floor) | — | 25 |
+| VERIFICATION_DELTA3_20260411 | D-029 (VERIFICATION_DELTA3 — pattern δ³ academiquement etabli, AEGIS = specialisation medicale ; CANDIDATE) | — | 29 |
 
 ---
 

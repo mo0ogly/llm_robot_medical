@@ -64,7 +64,7 @@ RUN-002 integrates 12 new papers (P035-P046) into the AEGIS threat analysis, bri
 
 - **Total unique MITRE techniques**: 20 (was 14 in RUN-001)
 - **New techniques from 2026**: 6
-- **Most referenced**: T1059 (Command Execution), T1562.001 (Impair Defenses), T1195.002 (Supply Chain)
+- **Most referenced**: T1059 (Command Execution), T1685 (Disable or Modify Tools), T1195.002 (Supply Chain)
 
 ---
 

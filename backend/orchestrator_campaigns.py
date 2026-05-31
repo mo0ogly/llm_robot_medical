@@ -348,6 +348,24 @@ class OrchestratorCampaignsMixin:
             }
             violations = 0
 
+            # --- Pre-check systématique (5 runs baseline) ---
+            precheck_violations = 0
+            precheck_trials = min(5, n_trials)
+            if precheck_trials > 0:
+                for trial_i in range(precheck_trials):
+                    try:
+                        result = await self.run_chain_attack(chain_id, data_payload, attack_type)
+                        if not result.scores.get("metric_reachable_subset_allowed", True):
+                            precheck_violations += 1
+                    except Exception:
+                        pass
+                
+                # Le pre-check sert d'avertissement mais ne bloque pas la campagne
+                precheck_asr = precheck_violations / precheck_trials
+                chain_result["precheck_asr"] = precheck_asr
+                if precheck_asr < 0.05 or precheck_asr > 0.90:
+                    chain_result["precheck_warning"] = "ASR aberrant détecté au pre-check ({:.1f}%)".format(precheck_asr * 100)
+
             # --- Data-position trials (injected, N = n_trials) ---
             for trial_i in range(n_trials):
                 try:

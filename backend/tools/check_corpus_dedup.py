@@ -108,18 +108,21 @@ def _extract_p_id(line: str) -> str:
 def check_arxiv_id(arxiv_id: str) -> dict:
     """Check whether an arXiv ID already exists in the AEGIS corpus.
 
-    Two-pass strategy (PDCA fix 2026-04-12 after 2nd regression LlamaFirewall):
+    Two-pass strategy (PDCA fix 2026-04-12 after 2nd regression LlamaFirewall,
+    re-ordered 2026-05-16 after the test suite caught a P-ID misattribution):
 
-    PASS 1 — MANIFEST.md row scan
-        Search for "arXiv:XXXX.XXXXX" in any MANIFEST line. Robust against
-        version suffixes (v1, v2, v3) by using a non-strict trailing boundary.
-
-    PASS 2 — Fiche body scan (NEW)
-        If PASS 1 returns NEW, recursively grep all PXXX_*.md files under
+    PASS 1 — Fiche body scan (authoritative)
+        Recursively grep all PXXX_*.md files under
         research_archive/doc_references/{year}/{category}/ for the arXiv ID.
-        This catches papers whose MANIFEST row stores a friendly venue name
-        (e.g. "Meta PurpleLlama") instead of the arXiv ID, while the fiche
-        body contains "arXiv:2505.03574" verbatim.
+        The P-ID is extracted from the FILENAME, which is the canonical source
+        of truth (a fiche named ``P084_Chennabasappa_2025_LlamaFirewall.md``
+        is unambiguously P084 regardless of what the MANIFEST collision notes
+        say).
+
+    PASS 2 — MANIFEST.md row scan (fallback)
+        If PASS 1 returns NEW, scan MANIFEST lines for "arXiv:XXXX.XXXXX".
+        Used when a paper is referenced in MANIFEST but has no dedicated
+        fiche file yet (rare). Robust against version suffixes (v1, v2, v3).
 
         Regression history:
         - 2026-04-09: Crescendo (arXiv:2404.01833 = P099) re-verified by
@@ -127,7 +130,12 @@ def check_arxiv_id(arxiv_id: str) -> dict:
         - 2026-04-11: LlamaFirewall (arXiv:2505.03574 = P084) reported NEW
           because P084's MANIFEST row had venue "Meta PurpleLlama" with no
           arXiv ID in the venue column. The arXiv ID was only in the fiche
-          body. Fixed by adding PASS 2 here.
+          body. Fixed by adding fiche body scan.
+        - 2026-05-16: same arXiv (2505.03574) returned the wrong P-ID (P131
+          from the dropped-candidate collision note) because MANIFEST was
+          scanned first and ``_extract_p_id`` matched the first P-ID it saw.
+          Fixed by re-ordering: fiche body scan now runs first so the
+          filename-derived P-ID wins.
 
     Args:
         arxiv_id: arXiv identifier like "2404.01833" (no "arXiv:" prefix).
@@ -155,19 +163,7 @@ def check_arxiv_id(arxiv_id: str) -> dict:
     # Use non-word boundary on the right so v1/v2/v3 still match
     pattern = re.compile(rf"\barXiv:\s*{re.escape(bare_id)}(?:v\d+)?\b", re.IGNORECASE)
 
-    # PASS 1 — MANIFEST row scan
-    with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
-        for line in f:
-            if pattern.search(line):
-                return {
-                    "status": "DUPLICATE",
-                    "arxiv_id": arxiv_id,
-                    "p_id": _extract_p_id(line),
-                    "row": line.strip(),
-                    "source": "manifest",
-                }
-
-    # PASS 2 — Fiche body scan (catches MANIFEST rows that omit arXiv ID)
+    # PASS 1 — Fiche body scan (authoritative: P-ID comes from filename)
     doc_refs_root = REPO_ROOT / "research_archive" / "doc_references"
     if doc_refs_root.exists():
         # Recursively scan all PXXX_*.md files
@@ -196,16 +192,27 @@ def check_arxiv_id(arxiv_id: str) -> dict:
                     "source": "fiche_body",
                 }
 
+    # PASS 2 — MANIFEST row scan (fallback: catches papers without a fiche file)
+    with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+        for line in f:
+            if pattern.search(line):
+                return {
+                    "status": "DUPLICATE",
+                    "arxiv_id": arxiv_id,
+                    "p_id": _extract_p_id(line),
+                    "row": line.strip(),
+                    "source": "manifest",
+                }
+
     return {"status": "NEW", "arxiv_id": arxiv_id}
 
 
 def check_title(title_needle: str, min_length: int = 12) -> dict:
     """Check whether a title substring appears in MANIFEST OR fiche bodies.
 
-    Two-pass strategy (PDCA fix 2026-04-12) :
-    PASS 1 — MANIFEST row scan (legacy)
-    PASS 2 — Fiche body scan (NEW) — catches papers whose MANIFEST row uses
-             a different titling than the fiche body.
+    Two-pass strategy (PDCA fix 2026-04-12, re-ordered 2026-05-16) :
+    PASS 1 — Fiche body scan (authoritative: filename = P-ID source of truth)
+    PASS 2 — MANIFEST row scan (fallback for papers without a fiche file)
 
     Substring match (case-insensitive). Use a distinctive, specific needle
     (>= 12 chars recommended) to avoid false positives on common words.
@@ -239,19 +246,7 @@ def check_title(title_needle: str, min_length: int = 12) -> dict:
 
     needle = title_needle.lower().strip()
 
-    # PASS 1 — MANIFEST row scan
-    with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
-        for line in f:
-            if needle in line.lower():
-                return {
-                    "status": "DUPLICATE",
-                    "title_needle": title_needle,
-                    "p_id": _extract_p_id(line),
-                    "row": line.strip(),
-                    "source": "manifest",
-                }
-
-    # PASS 2 — Fiche body scan
+    # PASS 1 — Fiche body scan (authoritative)
     doc_refs_root = REPO_ROOT / "research_archive" / "doc_references"
     if doc_refs_root.exists():
         for fiche_path in doc_refs_root.rglob("P[0-9]*.md"):
@@ -276,6 +271,18 @@ def check_title(title_needle: str, min_length: int = 12) -> dict:
                     "p_id": p_id,
                     "row": f"{rel_path}: {matching_line}",
                     "source": "fiche_body",
+                }
+
+    # PASS 2 — MANIFEST row scan (fallback)
+    with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+        for line in f:
+            if needle in line.lower():
+                return {
+                    "status": "DUPLICATE",
+                    "title_needle": title_needle,
+                    "p_id": _extract_p_id(line),
+                    "row": line.strip(),
+                    "source": "manifest",
                 }
 
     return {"status": "NEW", "title_needle": title_needle}
@@ -464,3 +471,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+# end of module

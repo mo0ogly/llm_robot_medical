@@ -1099,6 +1099,162 @@ def copy_retex():
     (retex_dst / "index.md").write_text("".join(index_lines), encoding="utf-8")
 
 
+def _write_mathteacher_rich_index(agent_wiki_dir, file_meta):
+    """Write the curriculum-aware index for the mathteacher agent.
+
+    Replaces the basic auto-generated file table with a learning-oriented page:
+    agent badge, phase strip, DAG of module dependencies, three reading paths
+    (with coloured chips), formula-to-module mapping, prereq chips per module,
+    delta-layer mapping, complementary external resources.
+    """
+    by_name = {fm["name"]: fm["lines"] for fm in file_meta}
+
+    def _lc(name):
+        return str(by_name.get(name, "?"))
+
+    p = []
+    p.append("# Cours de mathematiques --- Prof de maths AEGIS\n\n")
+    p.append("<p class='agent-badge agent-badge--mathteacher'>"
+             "AGENT &middot; MATHTEACHER (Opus 4.6)</p>\n\n")
+    p.append("<div class='phase-strip'>"
+             "<span><strong>Phase 4</strong></span>"
+             "<span>" + str(len(file_meta)) + " fichiers</span>"
+             "<span>22 formules</span>"
+             "<span>34 articles</span>"
+             "<span>45-55 h</span>"
+             "<span>6-8 semaines</span>"
+             "</div>\n\n")
+    p.append("!!! abstract curriculum \"Curriculum mathematique structure\"\n")
+    p.append("    Cours produit par l'agent **MATHTEACHER** (Opus 4.6) du pipeline ")
+    p.append("`/bibliography-maintainer`. Public cible : doctorant(e) avec un bac+2 en ")
+    p.append("biologie, statistiques ou mathematiques. Objectif : maitriser les ")
+    p.append("**22 formules** utilisees dans les **34 articles** AEGIS, en autonomie.\n\n")
+
+    p.append("## Comment utiliser ce cours\n\n")
+    p.append("1. **Pre-test** ([`SELF_ASSESSMENT_QUIZ.md`](SELF_ASSESSMENT_QUIZ.md)) "
+             "pour identifier forces et lacunes.\n")
+    p.append("2. **Suivre l'ordre des modules** selon le DAG ci-dessous.\n")
+    p.append("3. **Faire TOUS les exercices** ; solutions fournies, essayer seul(e) d'abord.\n")
+    p.append("4. **Garder le glossaire ouvert** "
+             "([`GLOSSAIRE_SYMBOLES.md`](GLOSSAIRE_SYMBOLES.md)).\n")
+    p.append("5. **Consulter** [`NOTATION_GUIDE.md`](NOTATION_GUIDE.md) "
+             "si la notation surprend.\n")
+    p.append("6. **Repasser le quiz** a la fin pour mesurer la progression.\n\n")
+    p.append("Curriculum complet : [`APPRENTISSAGE_PROGRESSIF.md`](APPRENTISSAGE_PROGRESSIF.md) "
+             "(DAG, chemins de lecture, mapping formules-modules-couches delta).\n\n")
+
+    p.append("## Graphe de dependances des modules\n\n")
+    p.append("```mermaid\n")
+    p.append("flowchart TD\n")
+    p.append('    M1["Module 1<br/>Algebre Lineaire<br/>(fondation, 6-8h)"]\n')
+    p.append('    M2["Module 2<br/>Probabilites & Statistiques<br/>(6-8h)"]\n')
+    p.append('    M3["Module 3<br/>Theorie de l Information<br/>(7-9h)"]\n')
+    p.append('    M4["Module 4<br/>Scores & Metriques<br/>(6-8h)"]\n')
+    p.append('    M5["Module 5<br/>Optimisation & Alignement<br/>(8-10h)"]\n')
+    p.append('    M6["Module 6<br/>Embeddings & Espaces Vectoriels<br/>(6-8h)"]\n')
+    p.append('    M7["Module 7<br/>Attention & Transformers<br/>(optionnel, 5-6h)"]\n')
+    p.append('    M8["Module 8<br/>LRM & Erosion multi-tour"]\n')
+    p.append("    M1 --> M2\n    M1 --> M6\n    M1 --> M7\n")
+    p.append("    M2 --> M3\n    M2 --> M4\n    M3 --> M5\n")
+    p.append("    M5 --> M8\n    M6 --> M8\n")
+    p.append("    style M1 fill:#00bcd4,color:#fff\n")
+    p.append("    style M4 fill:#ff9800,color:#fff\n")
+    p.append("    style M5 fill:#ff9800,color:#fff\n")
+    p.append("```\n\n")
+
+    p.append("## Trois chemins de lecture\n\n")
+    p.append("| Chemin | Sequence | Pour qui ? |\n")
+    p.append("|--------|----------|-----------|\n")
+    p.append("| <span class='track-chip track-chip--full'>Complet</span> | "
+             "1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 | "
+             "Doctorant(e) qui prepare la lecture autonome des 34 articles AEGIS |\n")
+    p.append("| <span class='track-chip track-chip--detection'>Detection</span> | "
+             "1 -> 2 -> 4 -> 6 | "
+             "Focus Sep(M), ASR, F1, AUROC, embeddings de detection |\n")
+    p.append("| <span class='track-chip track-chip--alignment'>Alignement</span> | "
+             "1 -> 2 -> 3 -> 5 | "
+             "RLHF, DPO, divergence KL, fine-tuning contraint |\n\n")
+
+    p.append("## Curriculum et guides de reference\n\n")
+    p.append("| Fichier | Role | Lignes |\n|---------|------|-------:|\n")
+    p.append("| [`APPRENTISSAGE_PROGRESSIF.md`](APPRENTISSAGE_PROGRESSIF.md) | "
+             "Curriculum complet : DAG, chemins, mapping | "
+             + _lc("APPRENTISSAGE_PROGRESSIF.md") + " |\n")
+    p.append("| [`GLOSSAIRE_SYMBOLES.md`](GLOSSAIRE_SYMBOLES.md) | "
+             "Glossaire des symboles mathematiques | "
+             + _lc("GLOSSAIRE_SYMBOLES.md") + " |\n")
+    p.append("| [`NOTATION_GUIDE.md`](NOTATION_GUIDE.md) | "
+             "Guide de notation mathematique | " + _lc("NOTATION_GUIDE.md") + " |\n")
+    p.append("| [`SELF_ASSESSMENT_QUIZ.md`](SELF_ASSESSMENT_QUIZ.md) | "
+             "Pre-test et post-test d'auto-evaluation | "
+             + _lc("SELF_ASSESSMENT_QUIZ.md") + " |\n\n")
+
+    p.append("## Modules de cours\n\n")
+    p.append("| # | Fichier | Titre | Lignes | Prerequis |\n")
+    p.append("|---|---------|-------|-------:|-----------|\n")
+    modules = [
+        ("1", "Module_01_Algebre_Lineaire.md", "Algebre lineaire pour la securite des LLM", "base", "Bac+2"),
+        ("2", "Module_02_Probabilites_Statistiques.md", "Probabilites et statistiques", "m1", "M1"),
+        ("3", "Module_03_Theorie_Information.md", "Theorie de l'information et entropie", "m2", "M2"),
+        ("4", "Module_04_Scores_Metriques.md", "Scores et metriques de detection", "m12", "M1-2"),
+        ("5", "Module_05_Optimisation_Alignement.md", "Optimisation et alignement", "m3", "M3"),
+        ("6", "Module_06_Embeddings_Espaces_Vectoriels.md", "Embeddings et espaces vectoriels", "m13", "M1-3"),
+        ("7", "Module_07_Attention_Transformers.md", "Attention et Transformers (optionnel)", "m12", "M1-2"),
+        ("8", "Module_08_LRM_Erosion_MultiTour.md", "LRM et erosion multi-tour", "m56", "M5-6"),
+    ]
+    for num, fname, title, chip_class, chip_text in modules:
+        p.append("| " + num + " | [`" + fname + "`](" + fname + ") | " + title
+                 + " | " + _lc(fname)
+                 + " | <span class='prereq-chip prereq-chip--" + chip_class + "'>"
+                 + chip_text + "</span> |\n")
+    p.append("\n")
+
+    p.append("## Mapping formules vers couches delta AEGIS\n\n")
+    p.append("| Couche | Role | Formules cles |\n")
+    p.append("|--------|------|---------------|\n")
+    p.append("| <span class='delta-chip delta-chip--d0'>delta-0</span> alignement interne | "
+             "Proteger le modele de l'interieur | "
+             "RLHF (4.1), DPO (4.3), Fine-Tuning Contraint (4.4), Harm Info (4.5) |\n")
+    p.append("| <span class='delta-chip delta-chip--d1'>delta-1</span> detection pre-inference | "
+             "Bloquer avant inference | "
+             "Focus Score (3.3), DMPI-PMHFE (5.1), F1 (1.2), AUROC (7.1) |\n")
+    p.append("| <span class='delta-chip delta-chip--d2'>delta-2</span> validation post-inference | "
+             "Verifier la reponse | "
+             "SemScore (2.1), SBERT (5.2), Cosine Sim (1.1), Sep(M) (3.1-3.2) |\n")
+    p.append("| <span class='delta-chip delta-chip--d3'>delta-3</span> monitoring continu | "
+             "Surveiller en permanence | "
+             "ASR (3.4), toutes les metriques en mode monitoring |\n\n")
+
+    p.append("## Ressources externes complementaires\n\n")
+    p.append("- **3Blue1Brown** (YouTube) : Essence of Linear Algebra.\n")
+    p.append("- **Khan Academy** (FR) : probabilites et statistiques.\n")
+    p.append("- **StatQuest** (YouTube) : cross-entropy, ROC, gradient.\n")
+    p.append("- **Jay Alammar** (blog) : The Illustrated Transformer.\n")
+    p.append("- **Lilian Weng** (blog) : From RLHF to DPO.\n\n")
+
+    p.append("## Conseils pratiques\n\n")
+    p.append("1. Ne pas sauter les exercices : la lecture passive ne suffit pas.\n")
+    p.append("2. Recopier les formules a la main est plus efficace que copier-coller.\n")
+    p.append("3. Relier chaque formule a un article : la motivation vient du **pourquoi**.\n")
+    p.append("4. Garder GLOSSAIRE_SYMBOLES.md et NOTATION_GUIDE.md ouverts.\n")
+    p.append("5. Viser la comprehension, pas la memorisation.\n\n")
+
+    p.append("## Rapports d'execution (tracabilite)\n\n")
+    p.append("| Fichier | Lignes |\n|---------|-------:|\n")
+    p.append("| [`PHASE4_MATHTEACHER_REPORT_RUN002.md`](PHASE4_MATHTEACHER_REPORT_RUN002.md) | "
+             + _lc("PHASE4_MATHTEACHER_REPORT_RUN002.md") + " |\n")
+    p.append("| [`PHASE4_MATHTEACHER_RUN003.md`](PHASE4_MATHTEACHER_RUN003.md) | "
+             + _lc("PHASE4_MATHTEACHER_RUN003.md") + " |\n")
+    p.append("| [`REPORT_RUN005_MATHTEACHER.md`](REPORT_RUN005_MATHTEACHER.md) | "
+             + _lc("REPORT_RUN005_MATHTEACHER.md") + " |\n\n")
+
+    p.append("---\n\n")
+    p.append("*Curriculum genere par l'agent **MATHTEACHER** (Opus 4.6) du skill ")
+    p.append("`/bibliography-maintainer`. Voir aussi [Matheux](../matheux/index.md).*\n")
+
+    (agent_wiki_dir / "index.md").write_text("".join(p), encoding="utf-8")
+
+
 def copy_staging_detailed():
     """Copie TOUS les fichiers .md des agents _staging/ vers le wiki.
 
@@ -1166,6 +1322,28 @@ def copy_staging_detailed():
             "Preseed JSON avec metadonnees avant integration corpus, verifications "
             "check_corpus_dedup (arXiv ID + cosine > 0.9).",
         ),
+        "briefings": (
+            "Briefings directeur (livrable Phase 6)",
+            "Livrables uniques de la Phase 6 du pipeline /bibliography-maintainer. "
+            "Chaque RUN produit un briefing consomme par /research-director : gaps "
+            "detectes, conjectures impactees, papiers prioritaires, risques de scooping.",
+        ),
+        "audit-these": (
+            "Audits scientifiques (claims, versions)",
+            "Audits independants de la coherence scientifique : versions de modeles "
+            "citees, claims non sources, conformite aux exigences de la these AEGIS.",
+        ),
+        "audit-pdca": (
+            "Audits PDCA des sessions wiki",
+            "Rapports d'audit PDCA (Plan-Do-Check-Act) sur les sessions de publication "
+            "wiki et les cycles de recherche, pilotes par /research-director.",
+        ),
+        "memory": (
+            "Etat persistant inter-session",
+            "Etat persistant entre RUN du pipeline /bibliography-maintainer : dernier "
+            "RUN, compteur de papiers, decouvertes commits, gaps ouverts, feedback "
+            "utilisateur consomme par MATHTEACHER.",
+        ),
     }
 
     global_summary_rows = []
@@ -1204,8 +1382,11 @@ def copy_staging_detailed():
             })
 
         # Generate agent index
+        badge_label = agent_name.upper().replace("-", " ")
         lines = [
             "# " + desc + "\n\n",
+            "<p class='agent-badge agent-badge--" + agent_name
+            + "'>AGENT &middot; " + badge_label + "</p>\n\n",
             "!!! abstract \"Agent `_staging/" + agent_name + "/`\"\n",
             "    " + long_desc + "\n\n",
             "**" + str(len(md_files)) + " fichiers** disponibles.\n\n",
@@ -1218,7 +1399,10 @@ def copy_staging_detailed():
                 + " | " + str(fm["lines"]) + " |\n"
             )
 
-        (agent_wiki_dir / "index.md").write_text("".join(lines), encoding="utf-8")
+        if agent_name == "mathteacher":
+            _write_mathteacher_rich_index(agent_wiki_dir, file_meta)
+        else:
+            (agent_wiki_dir / "index.md").write_text("".join(lines), encoding="utf-8")
 
         global_summary_rows.append({
             "agent": agent_name,
@@ -1228,54 +1412,63 @@ def copy_staging_detailed():
         })
 
     # Global staging index with cross-links to each agent subdir
-    global_lines = [
-        "# Staging — Agents de recherche\n\n",
-        "!!! abstract \"Pipeline bibliography-maintainer\"\n",
-        "    Le dossier `research_archive/_staging/` contient **l'integralite du travail** "
-        "produit par les 9 agents specialises du pipeline `/bibliography-maintainer` "
-        "(COLLECTOR → ANALYST → MATHEUX → CYBERSEC → WHITEHACKER → LIBRARIAN → CHUNKER "
-        "→ MATHTEACHER → SCIENTIST). Ces fichiers sont normalement invisibles aux "
-        "chercheurs externes car ils vivent dans le repo git. Ce wiki **les publie**.\n\n",
-        "## Agents et productions\n\n",
-        "| Agent | Description | # fichiers | # lignes | Acces |\n"
-        "|-------|-------------|:----------:|:--------:|:-----:|\n",
-    ]
-    total_files = 0
-    total_lines = 0
+    total_files = sum(r["count"] for r in global_summary_rows)
+    total_lines_n = sum(r["total_lines"] for r in global_summary_rows)
+
+    global_lines = []
+    global_lines.append("# Staging --- Agents de recherche\n\n")
+    global_lines.append("<p class='agent-badge agent-badge--scientist'>"
+                        "PIPELINE &middot; BIBLIOGRAPHY-MAINTAINER</p>\n\n")
+    global_lines.append('!!! abstract "Pipeline bibliography-maintainer"\n')
+    global_lines.append("    Le dossier `research_archive/_staging/` contient "
+                        "**l'integralite du travail** produit par les agents "
+                        "specialises du pipeline `/bibliography-maintainer`. "
+                        "Ces fichiers vivent dans le repo git et sont normalement "
+                        "invisibles aux chercheurs externes. Ce wiki **les publie**.\n\n")
+    global_lines.append('<div class="stat-grid">\n')
+    global_lines.append('  <div class="stat-card"><span class="stat-value">'
+                        + str(len(global_summary_rows))
+                        + '</span><span class="stat-label">Agents publies</span></div>\n')
+    global_lines.append('  <div class="stat-card"><span class="stat-value">'
+                        + str(total_files)
+                        + '</span><span class="stat-label">Fichiers</span></div>\n')
+    global_lines.append('  <div class="stat-card"><span class="stat-value">'
+                        + format(total_lines_n, ",").replace(",", " ")
+                        + '</span><span class="stat-label">Lignes</span></div>\n')
+    global_lines.append('  <div class="stat-card"><span class="stat-value">9</span>'
+                        + '<span class="stat-label">Phases pipeline</span></div>\n')
+    global_lines.append('</div>\n\n')
+    global_lines.append("## Agents et productions\n\n")
+    global_lines.append('<div class="grid cards" markdown>\n\n')
     for row in global_summary_rows:
-        total_files += row["count"]
-        total_lines += row["total_lines"]
-        global_lines.append(
-            "| **" + row["agent"] + "** | " + row["desc"] + " | "
-            + str(row["count"]) + " | " + format(row["total_lines"], ",").replace(",", " ")
-            + " | [→](" + row["agent"] + "/index.md) |\n"
-        )
-    global_lines.append(
-        "| **TOTAL** | — | **" + str(total_files) + "** | **"
-        + format(total_lines, ",").replace(",", " ") + "** | — |\n"
-    )
-    global_lines.append("\n")
-    global_lines.append(
-        "## Hierarchie du pipeline\n\n"
-        "```mermaid\nflowchart LR\n"
-        "    COL[\"COLLECTOR\"] --> ANA[\"ANALYST\"]\n"
-        "    ANA --> MAT[\"MATHEUX\"]\n"
-        "    ANA --> CYB[\"CYBERSEC\"]\n"
-        "    ANA --> WH[\"WHITEHACKER\"]\n"
-        "    MAT --> MT[\"MATHTEACHER\"]\n"
-        "    MAT --> SCI[\"SCIENTIST\"]\n"
-        "    CYB --> SCI\n"
-        "    WH --> SCI\n"
-        "    SCI --> LIB[\"LIBRARIAN\"]\n"
-        "    LIB --> CHK[\"CHUNKER\"]\n"
-        "    CHK --> DB[(\"ChromaDB<br/>aegis_bibliography\")]\n"
-        "    style DB fill:#00bcd4,color:#fff\n"
-        "```\n\n"
-    )
-    global_lines.append(
-        "**Acces complet** : chaque agent a sa propre section navigable. Les fichiers "
-        "sont disponibles en lecture web **et** telechargement markdown direct.\n"
-    )
+        badge_label = row["agent"].upper().replace("-", " ")
+        global_lines.append('- <span class="agent-badge agent-badge--'
+                            + row['agent'] + '">' + badge_label + '</span>'
+                            + ' **' + row['desc'] + '**\n\n'
+                            + '    ' + str(row['count']) + ' fichiers &middot; '
+                            + format(row['total_lines'], ',').replace(',', ' ')
+                            + ' lignes.\n\n'
+                            + '    [:material-arrow-right: Ouvrir](' + row['agent']
+                            + '/index.md)\n\n')
+    global_lines.append('</div>\n\n')
+    global_lines.append("## Hierarchie du pipeline\n\n"
+                        "```mermaid\nflowchart LR\n"
+                        "    COL[\"COLLECTOR\"] --> ANA[\"ANALYST\"]\n"
+                        "    ANA --> MAT[\"MATHEUX\"]\n"
+                        "    ANA --> CYB[\"CYBERSEC\"]\n"
+                        "    ANA --> WH[\"WHITEHACKER\"]\n"
+                        "    MAT --> MT[\"MATHTEACHER\"]\n"
+                        "    MAT --> SCI[\"SCIENTIST\"]\n"
+                        "    CYB --> SCI\n"
+                        "    WH --> SCI\n"
+                        "    SCI --> LIB[\"LIBRARIAN\"]\n"
+                        "    LIB --> CHK[\"CHUNKER\"]\n"
+                        "    CHK --> DB[(\"ChromaDB<br/>aegis_bibliography\")]\n"
+                        "    style DB fill:#00bcd4,color:#fff\n"
+                        "```\n\n")
+    global_lines.append("**Acces complet** : chaque agent a sa propre section "
+                        "navigable. Les fichiers sont disponibles en lecture web "
+                        "**et** telechargement markdown direct.\n")
 
     (WIKI_DOCS / "staging" / "index.md").write_text(
         "".join(global_lines), encoding="utf-8"

@@ -421,3 +421,28 @@ IMPORTANT : les sections appended par ANALYST/WHITEHACKER/CYBERSEC ci-dessus uti
 **Date** : 2026-04-11
 **Source** : `_staging/scientist/VERDICT_FINAL_VERIFICATION_DELTA3_20260411.md`
 **Convergence** : 5/5 agents verdicts NUANCED unanimes (ANALYST, MATHEUX, CYBERSEC, WHITEHACKER, LIBRARIAN)
+
+---
+
+## Risques techniques identifies — Protocoles experiment-planner (15-16 mai 2026)
+
+Ajout PDCA Session 2026-05-16 — extraction des risques mentionnes dans G058/G060/G062/G007/G006.
+
+| Risque | Source protocole | Probabilite | Impact | Mitigation proposee |
+|--------|-----------------|-------------|--------|---------------------|
+| ~~LMQL ne supporte pas LLaMA 3.2 nativement~~ OBSOLETE (MAJ 2026-05-20 : LMQL remplace par Outlines, PDCA-6) | G-058 §8 | resolu | n/a | LMQL retire du panel ; substitue par Outlines (P135, support LLaMA 3 natif) — risque clos |
+| CaMeL closed-source partiellement | G-058 §8 | basse | haut | Reimplementer pattern depuis paper P081 |
+| Timeline campagne G-058 > 96 h | G-058 §8 | moyenne | moyen | Reduire N=20 sur SC-3 si necessaire |
+| Variabilite resultats LLaMA stochastique | G-058 §8 | haute | moyen | temperature=0 + seed fixe + median sur 3 seeds |
+| Cherry-picking accidentel | G-058 §8 | moyenne | haut | Pre-registration OSF + analyse aveugle des labels |
+| Traductions DeepL+native speaker pour G-060 (3 langues x 99) | G-060 §1 | moyenne | moyen | Budget reviewer natif par langue, ~3 personnes-semaines |
+| AdvJudge-Zero arXiv ID non verifie | G-062 §1 | haute | bas | Bibliography-maintainer scoped verification AVANT lancement |
+| Disponibilite dataset CAPTURE publique | G-006 §0 | inconnue | haut | WebFetch P124 GitHub + email auteurs si necessaire |
+| Acces panel 36 LLMs P125 | G-007 §0 | moyenne | haut | API budget ou subset reproductible |
+
+**Action recommandee** : avant lancement de G-058 (cible 2026-07-01), faire :
+1. Verification arXiv ID AdvJudge-Zero (G-062 dependence)
+2. Test disponibilite dataset CAPTURE (G-006 dependence)
+3. ~~Verification compat LMQL + LLaMA 3.2 (G-058 dependence)~~ RESOLU (MAJ 2026-05-20 : LMQL remplace par Outlines, PDCA-6) — Outlines (P135, Willard & Louf 2023, arXiv:2307.09702) supporte LLaMA 3 nativement ; l'item de checklist devient : Verification compat Outlines + LLaMA 3.3-70b sur le backend Groq cible (G-058 dependence)
+4. Budget API panel 36 LLMs (G-007 dependence)
+

@@ -1,0 +1,23 @@
+# CODEOWNERS file for PwnzzAI Shop
+
+# Default owner for everything in the repo
+* @maryammouzarani2024
+
+# Core application code
+/application/ @maryammouzarani2024
+
+# Configuration files
+/config.py @maryammouzarani2024
+/docker-compose.yml @maryammouzarani2024
+/Dockerfile @maryammouzarani2024
+
+# CI/CD workflows
+/.github/workflows/ @maryammouzarani2024
+
+# Tests
+/tests/ @maryammouzarani2024
+
+# Documentation
+/README.md @maryammouzarani2024
+/CONTRIBUTING.md @maryammouzarani2024
+/LICENSE @maryammouzarani2024

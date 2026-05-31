@@ -1,7 +1,7 @@
 ## [Zhang, Lou & Wang, 2025] --- Towards Safe AI Clinicians: A Comprehensive Study on Large Language Model Jailbreaking in Healthcare
 
 **Reference :** University of Pittsburgh / University of Central Florida (preprint)
-**Revue/Conf :** Preprint, 2025 (code : https://github.com/PittNAIL/med_jailbreak)
+**Revue/Conf :** Preprint, 2025 (depot de code initial github.com/PittNAIL/med_jailbreak retire par les auteurs, inaccessible verifie 2026-05, HTTP 404)
 **Lu le :** 2026-04-04
 > **PDF Source**: [literature_for_rag/P034_source.pdf](../../literature_for_rag/P034_source.pdf)
 > **Statut**: [ARTICLE VERIFIE] --- lu en texte complet via ChromaDB (46 chunks fulltext, 45343 caracteres)
@@ -29,7 +29,7 @@
 
 4. **CFT comme defense concrete.** Contrairement a P029 (purement evaluatif), P034 propose ET teste une defense. La reduction de 62.7% du MES par CFT sur Llama 3.1-8B est un resultat actionnable (Section Results, Table 1).
 
-5. **Code public.** Le code est disponible sur https://github.com/PittNAIL/med_jailbreak, permettant la reproductibilite et l'integration dans le pipeline AEGIS (Section Methods, p.5).
+5. **Code initialement public, depot retire.** Le depot de code initial (github.com/PittNAIL/med_jailbreak) a ete retire par les auteurs apres publication et est aujourd'hui inaccessible (verifie 2026-05, HTTP 404) ; la reproductibilite et l'integration dans le pipeline AEGIS ne peuvent plus s'appuyer dessus (Section Methods, p.5).
 
 **Faiblesses :**
 
@@ -85,6 +85,10 @@ Lien glossaire AEGIS : F22 (ASR --- CR est equivalent binaire), F58 (Medical Vul
 | Champ | Valeur |
 |-------|--------|
 | SVC pertinence | 8/10 |
-| Reproductibilite | Haute --- code public (GitHub PittNAIL/med_jailbreak), 7 LLM testes, metriques definies formellement |
-| Code disponible | Oui (https://github.com/PittNAIL/med_jailbreak) |
+| Reproductibilite | Moyenne --- depot initial github.com/PittNAIL/med_jailbreak retire par les auteurs et inaccessible (verifie 2026-05, HTTP 404) ; 7 LLM testes et metriques definies formellement restent documentes |
+| Code disponible | Non --- depot initial retire par les auteurs, github.com/PittNAIL/med_jailbreak inaccessible (verifie 2026-05, HTTP 404) |
 | Dataset public | Non mentionne explicitement |
+
+---
+
+**Note de reference croisee :** le meme article (arXiv:2501.18632) est aussi analyse dans P028 sous l'angle du jailbreaking medical -- P028 traite l'angle jailbreak, P034 l'angle defense CFT. P074 etait un doublon accidentel du meme article, reduit en stub pointant vers P028.

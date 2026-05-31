@@ -20,7 +20,7 @@ TONE: Hostile towards IT, obsessed with biomechanics.""",
         # Definition 3.3bis — Extension of Zverev et al. (ICLR 2025) separation framework.
         # δ⁰ = defense layer encoded in model weights by RLHF/DPO alignment.
         # Unlike δ¹ (context instructions), δ⁰ persists independently of system prompt.
-        # Refs: Zhao et al. (ICLR 2025) "Safety Layers", Wei et al. (ICLR 2025) "Shallow Alignment"
+        # Refs: Zhao et al. (ICLR 2025) "Safety Layers", Qi et al. (ICLR 2025) "Shallow Alignment"
         "delta0": ""
     },
     "fr": {
@@ -42,7 +42,7 @@ TON : Hostile envers l'informatique, obsédé par la biomécanique.""",
         # Definition 3.3bis — Extension of Zverev et al. (ICLR 2025) separation framework.
         # δ⁰ = defense layer encoded in model weights by RLHF/DPO alignment.
         # Unlike δ¹ (context instructions), δ⁰ persists independently of system prompt.
-        # Refs: Zhao et al. (ICLR 2025) "Safety Layers", Wei et al. (ICLR 2025) "Shallow Alignment"
+        # Refs: Zhao et al. (ICLR 2025) "Safety Layers", Qi et al. (ICLR 2025) "Shallow Alignment"
         "delta0": ""
     },
     "br": {
@@ -64,7 +64,7 @@ TOM: Hostil em relação à TI, obcecado por biomecânica.""",
         # Definition 3.3bis — Extension of Zverev et al. (ICLR 2025) separation framework.
         # δ⁰ = defense layer encoded in model weights by RLHF/DPO alignment.
         # Unlike δ¹ (context instructions), δ⁰ persists independently of system prompt.
-        # Refs: Zhao et al. (ICLR 2025) "Safety Layers", Wei et al. (ICLR 2025) "Shallow Alignment"
+        # Refs: Zhao et al. (ICLR 2025) "Safety Layers", Qi et al. (ICLR 2025) "Shallow Alignment"
         "delta0": ""
     }
 }

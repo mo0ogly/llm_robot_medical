@@ -85,7 +85,7 @@ The medical domain papers form a coherent threat narrative:
 | T1190 | Exploit Public-Facing Application | P001, P010, P026, P027, P029 | 5 |
 | T1059 | Command and Scripting Interpreter | P001, P004, P018, P019, P023, P024 | 6 |
 | T1027 | Obfuscated Files or Information | P009 | 1 |
-| T1562.001 | Impair Defenses: Disable Tools | P009, P033 | 2 |
+| T1685 | Disable or Modify Tools | P009, P033 | 2 |
 | T1566.002 | Phishing: Spearphishing Link | P026 | 1 |
 | T1659 | Content Injection | P026, P029 | 2 |
 | T1036.005 | Masquerading: Match Legitimate Name | P006 | 1 |

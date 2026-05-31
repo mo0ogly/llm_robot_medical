@@ -135,6 +135,15 @@ Strategie fichier par fichier avec ordre d'implementation.
 3. **Identifier les gates entre etapes** : compilation, tests, validation
 4. **Estimer le blast radius** : fichiers impactes, routes, composants
 5. **Definir le rollback** : comment revenir en arriere
+6. **Budget de taille par fichier (BLOQUANT)** : pour CHAQUE fichier que le plan
+   va creer ou agrandir, estimer son nombre de lignes final. Si l'estimation
+   depasse 600 lignes, le plan DOIT prevoir une decomposition modulaire DES LE
+   DEPART (package + modules par responsabilite), jamais un fichier monolithe a
+   decouper apres coup. Regle absolue : aucun fichier source `.py/.js/.jsx/.ts/.tsx/.go/.md`
+   ne depasse 800 lignes (cf. `.claude/rules/programming.md`). Conception modulaire
+   = decision de la phase PLAN, pas une dette de refactoring post-implementation.
+   Le plan liste explicitement, pour chaque fichier > 600 lignes anticipees, les
+   modules cibles et leur responsabilite unique.
 
 Format du plan :
 ```
@@ -159,6 +168,13 @@ Regles :
 1. **1 etape a la fois** : pas de multi-fichier sans validation
 2. **Gate apres chaque etape** : compilation, lint, tests unitaires
 3. **Pas de drift** : si un probleme emerge, revenir au PLAN, pas improviser. Si 2+ etapes echouent consecutivement, INVOQUER `/replan` (boucle OBSERVE -> COMPARE -> DECIDE -> AJUSTE) au lieu de replanifier implicitement. La replanification produit un nouveau `PLAN_*_REPLAN_*.md` dans `_alire/tracking/`.
+3b. **Garde-fou taille fichier (BLOQUANT)** : apres chaque etape qui cree ou
+   agrandit un fichier, verifier `wc -l`. Si un fichier atteint 700 lignes,
+   STOPPER, revenir au PLAN et le decomposer en modules AVANT de continuer.
+   Ne JAMAIS laisser un fichier franchir 800 lignes. Ne JAMAIS contourner le
+   hook `file_size_check.cjs` via heredoc, `python -c`, ou ecriture binaire :
+   le contournement produit des fichiers monolithes non audites (incident
+   reference : `run_g058_campaign.py` derive a 966 lignes faute de ce garde-fou).
 4. **Logger les decisions** : ecrire dans `_alire/02_LOGS/Journals/decision_log.jsonl` pour chaque choix d'architecture ou replanification (format JSONL, voir `.claude/rules/agentic-traceability.md`)
 
    Format journal d'action obligatoire par entree :

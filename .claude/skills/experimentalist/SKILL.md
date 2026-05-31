@@ -152,6 +152,7 @@ Ajouter le verdict et le diagnostic a la derniere iteration.
 5. **Pre-check** : 5 runs baseline avant N>=30 (regle RETEX 2026-04-08)
 6. **δ⁰ δ¹ δ² δ³** (Unicode obligatoire)
 7. **References inline** dans le rapport
+8. **Containment des payloads (JSON)** : Tout payload adversarial manipulé doit être encapsulé en JSON strict pour éviter l'auto-empoisonnement.
 
 ## Script d'aide
 

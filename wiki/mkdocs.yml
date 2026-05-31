@@ -64,6 +64,7 @@ theme:
 
 extra_css:
   - stylesheets/aegis.css
+  - stylesheets/staging.css
   - stylesheets/semantic-search.css
 
 extra_javascript:
@@ -330,6 +331,10 @@ nav:
     - "Librarian (10 rapports)": staging/librarian/index.md
     - "Chunker (6 extractions)": staging/chunker/index.md
     - "Collector (7 preseed)": staging/collector/index.md
+    - "Briefings (4 livrables directeur)": staging/briefings/index.md
+    - "Audit these (5 audits)": staging/audit-these/index.md
+    - "Audit PDCA (1 rapport)": staging/audit-pdca/index.md
+    - "Memoire inter-session": staging/memory/index.md
     - Cours de mathematiques (8 modules):
       - "Vue d'ensemble": staging/mathteacher/index.md
       - "Apprentissage progressif (curriculum)": staging/mathteacher/APPRENTISSAGE_PROGRESSIF.md

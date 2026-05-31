@@ -18,6 +18,7 @@ autonomous agentic loop (DECOMPOSE -> PLAN -> ACT -> OBSERVE -> EVALUATE -> REPL
 | `curriculum_update` | "curriculum", "math", "modules" | Run MATHEUX + MATHTEACHER only |
 | `research_axes` | "axes", "synthesis", "analyse croisee" | Run SCIENTIST only on all existing data |
 | `rag_refresh` | "rag", "chunks", "chromadb" | Run CHUNKER only, regenerate all chunks |
+| `scoped` | "scoped", "verification ciblee", "verifie cette reference", HUMILITY GATE | Verification ciblee d'une ou plusieurs references precises via COLLECTOR uniquement (existence, titre, auteurs, annee, venue, chiffre cite, attribution). STEP 0 anti-doublon + HUMILITY GATE. Aucun des 9 agents complets, ZERO mutation du corpus. Produit un rapport scoped. |
 | `methodology_refresh` | "methodology", "method_papers", "methodo" | Refresh de la collection aegis_methodology_papers (separee d'aegis_bibliography). Agents actifs : COLLECTOR (arXiv methodo), ANALYST (resume FR), CHUNKER (ingest via ingest_methodology_paper.py). Agents skips : MATHEUX, CYBERSEC, WHITEHACKER, MATHTEACHER, SCIENTIST. Frequence : trimestrielle. |
 
 ### Mode `methodology_refresh` -- detail
@@ -60,6 +61,36 @@ au format P006 complet (verifie via pypdf + tag `[ARTICLE VERIFIE]`).
 python .claude/skills/aegis-research-lab/scripts/ingest_methodology_paper.py --all
 python .claude/skills/aegis-research-lab/scripts/retrieve_methodology_paper.py "query test"
 ```
+
+### Mode `scoped` -- detail
+
+**Declencheur** : "scoped", "verification ciblee", "verifie cette/ces reference(s)", "resoudre les dettes [A VERIFIER]", appel depuis le HUMILITY GATE (Phase 6b) ou depuis un audit de la skill `anti-confabulation`.
+
+**Objet** : confirmer l'existence et l'exactitude (titre, auteurs, annee, venue, chiffre cite, attribution) d'une ou plusieurs references precises fournies en entree. Ne decouvre PAS de nouveaux papiers, ne reorganise PAS le filesystem, ne touche PAS a ChromaDB.
+
+**Agents actifs** : COLLECTOR uniquement (role verification d'URL via WebSearch). Tous les autres agents (ANALYST, MATHEUX, CYBERSEC, WHITEHACKER, LIBRARIAN, MATHTEACHER, SCIENTIST, CHUNKER, DIRECTOR) sont SKIPS.
+
+**Garde-fous (non negociables)** :
+- STEP 0 anti-doublon OBLIGATOIRE sur tout arXiv ID : `python backend/tools/check_corpus_dedup.py <id>`. Si `[DUPLICATE] as PXXX` -> referencer PXXX, ne pas re-verifier. Limite connue : si la ligne MANIFEST ne contient pas l'arXiv ID, completer par `--title "<needle >= 12 chars>"` (cas reel : P018 manquait son arXiv 2406.05946, manque par le check arXiv seul).
+- HUMILITY GATE applique a toute claim de primaute ou d'absence portee par la reference ("premier", "seul", "aucune taxonomie", "first", "only"). Reformuler avec scope + date si aucune contre-preuve.
+- ZERO mutation du corpus : pas de P-ID attribue, pas d'injection ChromaDB, pas d'edition MANIFEST. Les corrections (re-attribution, ajout de papier, fix metadonnees) sont PROPOSEES dans le rapport, jamais appliquees en mode scoped.
+- Content filter safety : ne jamais lire les fichiers sensibles (cf. CLAUDE.md).
+
+**Entree** : liste de references a verifier (texte libre, ou pointeur vers les items `[A VERIFIER]` d'un audit anti-confabulation ou d'une fiche).
+
+**Procedure** :
+1. Pour chaque reference, extraire (titre suppose, auteurs, annee, venue, chiffre cite).
+2. STEP 0 anti-doublon (arXiv ID puis fallback `--title`) -> si deja dans le corpus, pointer le P-ID.
+3. WebSearch (COLLECTOR) : confirmer existence + titre/auteurs/annee/venue exacts + chiffre cite.
+4. Classer chaque reference : `[SOURCE]` confirme | `[SOURCE -- qualite inferieure]` (blog/editeur, non peer-reviewed) | erreur d'attribution | erreur de date | `[A VERIFIER]` (introuvable).
+5. Appliquer le HUMILITY GATE aux claims de primaute.
+6. Lister les lacunes corpus reperees (auteurs "Unknown", arXiv ID manquant) et les candidats a l'ajout (NEW, dedup-clean).
+
+**Output** : `research_archive/research_notes/AEGIS-SCOPED-VERIF_<sujet>_<date>.md` -- tableau verdict par reference, constats d'attribution, lacunes corpus, candidats a l'ajout, items hors-perimetre (les ASR relevent d'une campagne experimentale, pas de la biblio). Aucun fichier `_staging/` des 9 agents n'est produit.
+
+**Frequence** : a la demande (declenche par un audit anti-confabulation, le HUMILITY GATE, ou une relecture de fiche).
+
+**Reference d'execution** : premiere execution documentee le 2026-05-21 sur les 6 dettes de la fiche #08 (`research_notes/AEGIS-SCOPED-VERIF_fiche08-refs_2026-05-21.md`). A revele l'erreur d'attribution "Wei et al." -> Qi et al. (papier "Safety Alignment... Tokens Deep" = corpus P018).
 
 ## Inter-Session Memory (Continuity System)
 
@@ -276,10 +307,11 @@ research_archive/
 - **Discoveries**: Read TRIPLE_CONVERGENCE.md + THESIS_GAPS.md. Update if new technique confirms/invalidates a discovery. Map PoC to known gaps (e.g., G-011 triple convergence test).
 
 ### 6. LIBRARIAN
-- **Objective**: Filesystem organization, central indexes, deduplication, validation
-- **Output**: `doc_references/{year}/{domain}/` + MANIFEST.md + INDEX_BY_DELTA.md + GLOSSAIRE_MATHEMATIQUE.md
-- **Success**: All papers indexed, zero duplicates, zero orphans
+- **Objective**: Filesystem organization, central indexes, deduplication, validation, and frontend portal synchronization
+- **Output**: `doc_references/{year}/{domain}/` + MANIFEST.md + INDEX_BY_DELTA.md + GLOSSAIRE_MATHEMATIQUE.md + `frontend/src/components/thesis/bibliography_data.js` (via python sync script)
+- **Success**: All papers indexed, zero duplicates, zero orphans, and React frontend data fully synchronized with MANIFEST.md
 - **Discoveries**: Read DISCOVERIES_INDEX.md. Validate that all paper references in discovery files (D-XXX) exist in MANIFEST. Flag broken references.
+- **Frontend Sync**: After updating `MANIFEST.md`, run `python research_archive/scripts/update_bibliography_data.py` to regenerate the React frontend data source.
 
 ### 7. MATHTEACHER
 - **Objective**: Personalized French math curriculum (5-7 modules), exercises, quiz
@@ -328,14 +360,15 @@ This runs every Monday at 9am, searching only last 7 days of papers.
 When all agents complete, the Orchestrator:
 1. Verifies all output files exist and are non-empty
 2. Verifies `discoveries/` files are updated (DISCOVERIES_INDEX timestamp matches current RUN)
-3. Runs `ingest_to_chromadb.py --dry-run` to validate chunks
-4. Reports: papers found, analyses created, formulas extracted, axes identified, chunks prepared
-5. Reports: discoveries added/modified/invalidated, conjecture score changes, gaps opened/closed
-6. **Generates DIRECTOR_BRIEFING** (Phase 6 — MANDATORY, see below)
-7. **Runs WIKI SYNC** (Phase 7 — MANDATORY, see below) via `python wiki/build_wiki.py`
+3. Runs `ingest_to_chromadb.py --dry-run` to validate chunks, THEN executes `python _staging/chunker/ingest_to_chromadb.py --execute` to physically ingest all data into the active ChromaDB instance (aegis_bibliography/aegis_corpus).
+4. Runs the automated frontend database synchronizer via `python research_archive/scripts/update_bibliography_data.py` to ensure the portal frontend `bibliography_data.js` is fully synchronized with the new `MANIFEST.md` and literature PDFs.
+5. Reports: papers found, analyses created, formulas extracted, axes identified, chunks prepared
+6. Reports: discoveries added/modified/invalidated, conjecture score changes, gaps opened/closed
+7. **Generates DIRECTOR_BRIEFING** (Phase 6 — MANDATORY, see below)
+8. **Runs WIKI SYNC** (Phase 7 — MANDATORY, see below) via `python wiki/build_wiki.py`
    followed by `python -m mkdocs build`. The semantic search widget at `/semantic-search/`
    remains live because it queries ChromaDB directly — no additional action required.
-8. Proposes git commit if changes are significant (including `wiki/docs/research/bibliography/`
+9. Proposes git commit if changes are significant (including `wiki/docs/research/bibliography/`
    updates from Phase 7)
 
 ### Phase 6: DIRECTOR BRIEFING (MANDATORY)

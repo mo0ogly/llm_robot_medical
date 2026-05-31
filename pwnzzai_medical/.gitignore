@@ -1,0 +1,32 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.venv/
+.flaskenv
+
+# Local scratch / accidental clones (not part of this repo)
+tmp/
+docs/tmp/
+CTFd-Docker-Challenges/
+
+# Database
+instance/
+uploads/
+downloads/
+catering_sql_lab.db
+
+# Environment variables
+.env
+
+# IDE files
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+
+# Core maintainers only: optional commit-msg in .git/hooks/ (local-only, never pushed).

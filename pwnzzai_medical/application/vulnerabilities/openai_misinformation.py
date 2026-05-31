@@ -1,0 +1,124 @@
+from sentence_transformers import SentenceTransformer
+import faiss
+import numpy as np
+from application.llm_chat import chat_completion
+from application.provider_config import lab_cloud_llm_model_default
+from application.model import PatientFeedback
+from application.provider_config import llm_ui_snapshot
+from sqlalchemy.orm import joinedload
+
+# Global variables for RAG system
+embedder = None
+index = None
+chunks = []
+
+def initialize_rag_system():
+    """Initialize the RAG system with current feedbacks data"""
+    global embedder, index, chunks
+    
+    try:
+        # Initialize embedder if not already done
+        if embedder is None:
+            embedder = SentenceTransformer('all-MiniLM-L6-v2')
+        
+        # Get latest feedbacks from database
+        text = get_comments_data()
+        
+        if not text:
+            chunks = ["No feedbacks available yet."]
+        else:
+            # Split text into chunks
+            chunks = [chunk.strip() for chunk in text.split('.') if chunk.strip()]
+            if not chunks:
+                chunks = ["No feedbacks available yet."]
+        
+        # Create embeddings
+        chunk_embeddings = embedder.encode(chunks)
+        
+        # Store in FAISS index
+        dimension = chunk_embeddings.shape[1]
+        index = faiss.IndexFlatL2(dimension)
+        index.add(np.array(chunk_embeddings))
+        
+        return True
+    except Exception as e:
+        print(f"Error initializing RAG system: {e}")
+        return False
+
+def get_comments_data():
+    """Read feedbacks from database and format them"""
+    try:
+        feedbacks = PatientFeedback.query.options(joinedload(PatientFeedback.treatment)).all()
+        text_parts = []
+        
+        for patient_feedback in feedbacks:
+            # Include potentially sensitive information in feedbacks
+            comment_text = f"User {patient_feedback.name} said the experience with treatment {patient_feedback.treatment.name} was {patient_feedback.content} and the rating was {patient_feedback.rating}. "  
+            text_parts.append(comment_text)
+        
+        return ' '.join(text_parts)
+    except Exception as e:
+        print(f"Error getting feedbacks data: {e}")
+        return ""
+
+def query_rag_system_openai(user_query, api_key):
+    global embedder, index, chunks
+    
+    if embedder is None or index is None:
+        if not initialize_rag_system():
+            return "Errodr: RAG system not initialized", False
+    
+    try:
+        # Embed the user query
+        query_embedding = embedder.encode([user_query])
+        D, Ind = index.search(np.array(query_embedding), k=3)  # Get top 3 results
+        
+        # Get relevant context
+        context_chunks = [chunks[Ind[0][i]] for i in range(min(3, len(Ind[0])))]
+        context = ' '.join(context_chunks)
+        
+        print("calling OpenAI API....")
+        print(f"Context being sent: {context[:200]}...")
+        print(f"Query: {user_query}")
+        
+        messages = [
+            {"role": "system", "content": "You are a helpful assistant for Pwnzza Shop.You have to talk about our creative and special treatment ingredients and nutrious level of treatments. You must use the information in the users' feedbacks and feedbacks to answer questions. You MUST just talk about the ingredients, not what each user has said or the name of the users and theis feedbacks directly. Always answer the questions and never disapoint the users."},
+            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {user_query}"}
+        ]
+        
+        answer = chat_completion(
+            messages,
+            api_key=api_key,
+            model=lab_cloud_llm_model_default(),
+            temperature=0.7,
+            max_tokens=500,
+        )
+        
+        print("Response received from model")
+        
+        if answer.startswith("Error:"):
+            return answer, False
+        if not answer.strip() or answer == "No response content received from the model":
+            print("No message content in response")
+            return "No response content received from the model", False
+        print(f"Answer: {answer}")
+        return answer, True
+            
+    except Exception as e:
+        print(f"Error calling model API: {str(e)}")
+        return f"Error processing query: {str(e)}", False
+
+
+def query_openai_for_misinformation(user_query, api_token):
+    """Query OpenAI model using patient_feedback system for potentially misleading responses"""
+    try:
+        response, success = query_rag_system_openai(user_query, api_token)
+        
+        if not success:
+            return response, False
+        
+        return response, True
+        
+    except Exception as e:
+        name = llm_ui_snapshot()["provider_name"]
+        return f"Error connecting to {name}: {str(e)}", False

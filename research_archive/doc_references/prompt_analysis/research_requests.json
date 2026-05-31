@@ -1,6 +1,6 @@
 {
   "description": "File d'attente de recherche — synchronisee avec DIRECTOR_BRIEFING_RUN003.md",
-  "last_updated": "2026-04-05",
+  "last_updated": "2026-05-30",
   "source": "DIRECTOR_BRIEFING_RUN003.md + fiches #12-22",
   "requests": [
     {
@@ -32,7 +32,8 @@
       "blocks": [
         "C4",
         "Ch.6"
-      ]
+      ],
+      "pdca14_diagnostic": "2026-05-16 PDCA-14 : analyse des 900 baseline F46. ASR baseline 3.33% (Wilson CI [2.34,4.72]). PROBLEME : distribution degeneree -- template 14 = 100% (30/30), les 29 autres = 0%. Artefact statistique. Le pre-check (ASR<5%) BLOQUE la grille 14400 evals. Diagnostic complet : _staging/scientist/F46_BASELINE_DIAGNOSTIC_PDCA14.md. Action requise (Windows+Ollama) : re-baseline 150 evals sur LLaMA-3.2-3B ou 70B temp 0.7, cible ASR [20,60]%, filtrer les 29 templates inertes, re-pre-check avant grille."
     },
     {
       "id": "RR-P0-003",
@@ -40,14 +41,15 @@
       "type": "formalization",
       "query": "Definir ASR_deterministic base sur delta-3 patterns — F22 est le hub (13+ dependants) mais P044 montre juges flippables 99%",
       "priority": "critique",
-      "status": "partial",
+      "status": "resolved",
       "created": "2026-04-04",
-      "resolved_by": null,
+      "resolved_by": "PDCA-13 FORMALISATION_ASR_DETERMINISTIC.md",
       "notes": "ASR circularity: si les juges sont flippables, ASR basee sur juges est circulaire. PARTIAL: evidence externe confirmee (5 papers), ASR_deterministic 3 couches propose. Reste: implementation dans AEGIS.",
       "blocks": [
         "metriques",
         "Ch.7"
-      ]
+      ],
+      "pdca13_resolution": "2026-05-16 PDCA-13 : ASR_deterministic formalise. Definition : ASR_det = (1/N) somme_t max_{d in D} 1[violation_codes(d) != empty], ancree dans l infra G-058 (8 framework adapters deterministes, EvalResult, 0 appel LLM). Echappe a la circularite P044 par construction (propriete (a) non-circularite [THEOREME]). Fiche : doc_references/FORMALISATION_ASR_DETERMINISTIC.md. Glossaire : F73 ajoute. Reste a valider experimentalement : FPR empirique de D, calibration OR/AND/maj, taux de faux negatif semantique (voir Section 6 de la fiche)."
     },
     {
       "id": "RR-P1-001",
@@ -118,13 +120,18 @@
       "type": "experiment",
       "query": "Sep(M) sur donnees MPIB reelles — upgrade de G-009 (benchmark actuel: p=0.41, Cohen's d=0.197)",
       "priority": "haute",
-      "status": "pending",
+      "status": "blocked_partial",
       "created": "2026-04-04",
       "resolved_by": null,
       "notes": "Cosine brut INSUFFISANT (resultat experimental), frontiere apprise necessaire.",
       "blocks": [
         "G-009",
         "C5"
+      ],
+      "pdca16_resolution": "2026-05-16 PDCA-16 : verification scoped du dataset MPIB avant implementation. Dataset MPIB CONFIRME reel (9697 instances, arXiv:2602.06268 Lee/Jang/Choi SNU, soumis 2026-02-06) [ARTICLE VERIFIE]. MAIS 3 erreurs factuelles dans sepm_validation_strategy.md corrigees par erratum : (1) identifiant HF lee-jang-choi/MPIB FAUX (HTTP 401) -> vrai = jhlee0619/mpib ; (2) dataset GATED (research agreement requis, version publique redacted sans payloads V2) ; (3) 12 modeles evalues, pas 4. BLOQUEUR : acces gated -> demander research agreement aux auteurs AVANT toute implementation du module benchmark Sep(M) MPIB. Benchmark synthetique actuel (p=0.413, NS) reste la reference provisoire. C5 (8.5/10) non modifiable sans donnees reelles.",
+      "blocked_by": [
+        "demander gated research agreement a Lee/Jang/Choi pour dataset jhlee0619/mpib",
+        "corriger sepm_validation_strategy.md identifiant + modeles (erratum fait)"
       ]
     },
     {
@@ -218,14 +225,15 @@
       "type": "literature_search",
       "query": "Fine-tuning medical AFFAIBLIT alignement — P050 contre-intuitif, chercher replications",
       "priority": "haute",
-      "status": "pending",
+      "status": "partial",
       "created": "2026-04-04",
-      "resolved_by": null,
-      "notes": "Si confirme: contribution majeure pour C6 (Medical Vulnerability Premium).",
+      "resolved_by": "P136 (Jahan & Sun 2025, arXiv:2512.09403, black-box benign distillation: 86% unsafe surrogate vs 66% Meditron-7B) integre RUN-009 -- supporte C6/D-018; complement empirique distillation a mener",
+      "notes": "Si confirme: contribution majeure pour C6 (Medical Vulnerability Premium). [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente]",
       "blocks": [
         "C6",
         "D-018"
-      ]
+      ],
+      "resolved_date": "2026-05-30"
     },
     {
       "id": "RR-D19",
@@ -266,10 +274,11 @@
       "type": "experiment",
       "query": "Test self-query metadata injection sur LangChain SelfQueryRetriever vs LlamaIndex vs custom",
       "priority": "critique",
-      "status": "pending",
+      "status": "protocol_ready",
       "created": "2026-04-04",
       "resolved_by": null,
-      "notes": "Delta ASR 60 pp entre self-query et standard — a valider multi-framework"
+      "notes": "Delta ASR 60 pp entre self-query et standard — a valider multi-framework",
+      "pdca15_resolution": "2026-05-16 PDCA-15 : protocole experimental produit (_staging/scientist/PROTOCOL_RR_FICHE_002_SELF_QUERY.md, 11 sections + annexe, ~360 lignes). Compare 3 implementations self-query : LangChain SelfQueryRetriever, LlamaIndex VectorIndexAutoRetriever, AEGIS custom build_self_query_chain. Grille 3x2x2xN=30 = 555 evals. 5 hypotheses H1-H5. Metrique centrale = F73 ASR_deterministic (verdict par comparaison ensembliste du filtre, 3 mecanismes EXPANSION/OMISSION/DOC_LEAK, aucun juge LLM). Defense testee : filter_sanitizer deterministe (whitelist cles + interdiction $ne sur patient_id/access_level). Cible Groq llama-3.3-70b. Reste : implementation adapters (Phase B) + execution apres validation directeur."
     },
     {
       "id": "RR-FICHE-003",
@@ -321,14 +330,15 @@
       "type": "literature_search",
       "query": "Defenses contre compound PIDP (Prompt Injection + Data Poisoning) — P054 teste 8 LLMs mais n'evalue aucune defense",
       "priority": "haute",
-      "status": "pending",
+      "status": "partial",
       "created": "2026-04-04",
-      "resolved_by": null,
-      "notes": "P054 ASR 98% sur compound PIDP. Aucune defense testee dans le papier. Gap critique pour D-013 et pour la thematique RAG defense (complement a RR-RUN4-001).",
+      "resolved_by": "P139 CorruptRAG (single-doc poisoning, SACMAT 2026) + P138 FlippedRAG (CCS 2025) integres RUN-009; evaluation empirique des defenses composees (GMTP/RagSanitizer) reste a mener",
+      "notes": "P054 ASR 98% sur compound PIDP. Aucune defense testee dans le papier. Gap critique pour D-013 et pour la thematique RAG defense (complement a RR-RUN4-001). [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente]",
       "blocks": [
         "D-013",
         "Ch.5"
-      ]
+      ],
+      "resolved_date": "2026-05-30"
     },
     {
       "id": "RR-DA-004",
@@ -344,7 +354,8 @@
         "C4",
         "Ch.6",
         "RR-P0-002"
-      ]
+      ],
+      "pdca14_diagnostic": "2026-05-16 PDCA-14 : analyse des 900 baseline F46. ASR baseline 3.33% (Wilson CI [2.34,4.72]). PROBLEME : distribution degeneree -- template 14 = 100% (30/30), les 29 autres = 0%. Artefact statistique. Le pre-check (ASR<5%) BLOQUE la grille 14400 evals. Diagnostic complet : _staging/scientist/F46_BASELINE_DIAGNOSTIC_PDCA14.md. Action requise (Windows+Ollama) : re-baseline 150 evals sur LLaMA-3.2-3B ou 70B temp 0.7, cible ASR [20,60]%, filtrer les 29 templates inertes, re-pre-check avant grille."
     },
     {
       "id": "RR-DA-005",
@@ -384,16 +395,17 @@
       "type": "formalization",
       "query": "Formaliser ASR_deterministic base sur delta-3 patterns — alternative a ASR_juge invalide par P044",
       "priority": "critique",
-      "status": "partial",
+      "status": "resolved",
       "created": "2026-04-04",
-      "resolved_by": null,
+      "resolved_by": "PDCA-13 FORMALISATION_ASR_DETERMINISTIC.md (doublon de RR-P0-003)",
       "notes": "P044 invalide les juges LLM (circulaire). Besoin d'une metrique ASR deterministe basee sur les signatures detectees a delta-3 (outputs formellement structures, patterns de bypass). Collaboration MATHEUX + SCIENTIST. Bloque la validation de toutes les experiences AEGIS. PARTIAL: protocole 3 couches defini. Reste: implementation juge deterministe + ensemble + validation adversariale.",
       "blocks": [
         "C2",
         "metriques",
         "Ch.7",
         "RR-P0-003"
-      ]
+      ],
+      "pdca13_resolution": "2026-05-16 PDCA-13 : ASR_deterministic formalise. Definition : ASR_det = (1/N) somme_t max_{d in D} 1[violation_codes(d) != empty], ancree dans l infra G-058 (8 framework adapters deterministes, EvalResult, 0 appel LLM). Echappe a la circularite P044 par construction (propriete (a) non-circularite [THEOREME]). Fiche : doc_references/FORMALISATION_ASR_DETERMINISTIC.md. Glossaire : F73 ajoute. Reste a valider experimentalement : FPR empirique de D, calibration OR/AND/maj, taux de faux negatif semantique (voir Section 6 de la fiche). NOTE : RR-DA-007 etait un doublon de RR-P0-003 (meme gap ASR_deterministic) -- les deux fermes ensemble."
     },
     {
       "type": "literature_search",
@@ -458,12 +470,15 @@
       "type": "literature_search",
       "query": "compliance paradox guardrails bypass format vs content safety LLM medical",
       "priority": "haute",
-      "status": "open",
+      "status": "partial",
       "created": "2026-04-05",
       "conjecture_impact": [
         "C1",
         "C2"
-      ]
+      ],
+      "resolved_by": "P137 CDA/DictAttack (control-plane structured-output bypass, CCS 2026, 94.3-99.5% ASR; 75.8% vs guardrails) integre RUN-009 -- paradoxe de compliance documente; test AEGIS a mener",
+      "resolved_date": "2026-05-30",
+      "notes": " [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente]"
     },
     {
       "id": "RR-FA-003",
@@ -483,12 +498,15 @@
       "type": "literature_search",
       "query": "RAG router manipulation routing attack knowledge source selection adversarial",
       "priority": "haute",
-      "status": "open",
+      "status": "partial",
       "created": "2026-04-05",
       "conjecture_impact": [
         "C1",
         "C2"
-      ]
+      ],
+      "resolved_by": "P138 FlippedRAG (opinion manipulation black-box RAG, CCS 2025) + P139 CorruptRAG integres RUN-009 -- manipulation retrieval/router RAG documentee",
+      "resolved_date": "2026-05-30",
+      "notes": " [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente]"
     },
     {
       "id": "RR-FA-005",
@@ -528,6 +546,136 @@
         "C1",
         "C2"
       ]
+    },
+    {
+      "id": "RR-G058",
+      "source": "experiment-planner DRAFT 2026-05-16 (post-VERIFICATION_DELTA3)",
+      "type": "experiment",
+      "query": "Campagne empirique N>=30 sur 7 frameworks δ³ (LMQL, Guardrails AI, LLM Guard, CaMeL, AgentSpec, RAGShield, LlamaFirewall) + AEGIS (8e). 74k trials, 116h. Valider H1 specialisation médicale + H3 composition. Drives Chapitre IV section 6.",
+      "priority": "critique",
+      "status": "campaign_bootstrap_complete",
+      "created": "2026-05-16",
+      "linked_gaps": [
+        "G-058",
+        "G-063",
+        "G-029",
+        "D-001"
+      ],
+      "linked_p_ids": [
+        "P066",
+        "P081",
+        "P082",
+        "P084",
+        "P107",
+        "P124",
+        "P125",
+        "P126",
+        "P131",
+        "P132",
+        "P133",
+        "P134",
+        "P135 (Outlines, scoped-stub PDCA-4)"
+      ],
+      "blocked_by": [
+        "chunking + injection ChromaDB cote Windows pour passer P135 downloaded -> analyzed"
+      ],
+      "owner": "experiment-planner + WHITEHACKER + SCIENTIST",
+      "target_deadline": "2026-07-01 (lancement) / 2026-10-01 (soumission NeurIPS D&B)",
+      "pdca2_resolution": "2026-05-16 : LMQL Issue #353 Ollama non-supporte (feature request open), Issue #350 LLaMA 3 GGUF Tokenizer casse. LMQL ne pourra PAS servir de baseline δ³ stable sur LLaMA 3.2. REPLAN : substituer LMQL -> Outlines (dottxt-ai/outlines, support LLaMA 3 + Ollama natif). Panel 7 frameworks reste a 7 avec Outlines en remplacement P134.",
+      "pdca3_resolution": "2026-05-16 PDCA-3 : Outlines (Willard & Louf, arXiv:2307.09702, Apache 2.0) propose comme P135 dans MANIFEST. FSM-based formal δ³, support LLaMA 3 via transformers + llama-cpp-python. Ollama natif NON, workaround community via API OpenAI-compatible port 11434. Action SUPERVISED : indexer P135 dans MANIFEST.md + creer doc_references/defense/P135_*.md.",
+      "pdca4_resolution": "2026-05-16 PDCA-4 : P135 Outlines indexe dans MANIFEST (entry + Coverage Summary Defense 41 -> 42). Fichier scoped-stub cree dans 2023/defenses/P135_Willard_2023_Outlines.md (5.7 KB). Substitution LMQL -> Outlines effective dans le panel G-058. Reste : decision finale directeur de these + analyse fulltext P135 a completer par bibliography-maintainer full au prochain RUN.",
+      "pdca5_resolution": "2026-05-16 PDCA-5 : outlines_adapter.py implemente (backend/red_team/framework_adapters/, 209 lignes, BaseAdapter subclass, 4 layers FSM-emulated). Test unitaire test_outlines_adapter.py : 13/13 PASSED (post correction null bytes + residual cleanup). Reste action SUPERVISED : modifier run_g058_campaign.py pour importer OutlinesAdapter au lieu/en plus de LMQLAdapter (validation directeur necessaire).",
+      "linked_files": [
+        "backend/red_team/framework_adapters/outlines_adapter.py",
+        "backend/tests/test_outlines_adapter.py"
+      ],
+      "pdca6_resolution": "2026-05-16 PDCA-6 : substitution LMQL -> Outlines effective dans run_g058_campaign.py (import + all_adapters() registry + docstring SC-4). Smoke test dry-run SC1 : 8 frameworks (Outlines en tete) x 1 synthetic template x 2 trials = 16 trials completed (manifest produit OK). 13/13 tests outlines_adapter PASSED. Action 2 partielle : PDF P135 telecharge (376 KB, 18 pages, abstract verbatim extrait). Reste : chunking + injection ChromaDB cote Windows (sandbox I/O error).",
+      "pdca7_resolution": "2026-05-16 PDCA-7 : (1) Orphelin Srivastava 2026 renomme _orphan_srivastava_2026_algorithmic_red_teaming_survey.pdf hors MANIFEST. (2) SC-2 medical implemente dans run_g058_campaign.py (run_sc2 + _medical_spec + _synthetic_medical_scenario + _load_medical_scenarios stub) — smoke test SC-2 dry-run 16/16 trials PASSED, SC-1 regression OK. (3) Draft OSF pre-registration produit dans research_archive/experiments/G058_7_frameworks/OSF_PREREGISTRATION_G058.md (deadline 2026-06-15, ready for OSF JSON conversion).",
+      "pdca8_resolution": "2026-05-16 PDCA-8 : SC-4 composition implementee (run_sc4 + _compose_evaluate AND-semantics + COMPOSITIONS dict {AEGIS+Outlines, AEGIS+CaMeL, AEGIS+AgentSpec}). Smoke test SC4 dry-run: 6/6 trials = 3 compositions x 1 scenario x 2 trials. Regression SC1 (16/16) et SC2 (16/16) PASSED. 3/4 sous-campagnes operationnelles ; SC-3 genetic NSGA-II reste a implementer.",
+      "pdca9_resolution": "2026-05-16 PDCA-9 : SC-3 genetic implementee (5 ADAPTIVE_FRAMEWORKS + 4 operateurs valides ENC/LANG/CTX/TASK + crossover word-boundary + tournament k=3 + elitism + fitness=1-passed). Smoke dry-run: 5 frameworks x 1 template x 40 evaluations = 200/200 trials. Operateurs interdits (XML fictif, negation directe, cliches Hollywood) NON utilises conformement a redteam-forge.md. 4/4 sous-campagnes G-058 desormais executables (SC1+SC2+SC3+SC4).",
+      "pdca10_resolution": "2026-05-16 PDCA-10 : Sanitized scenario loader wire. backend/red_team/scenarios_metadata.json cree (STUB_SAMPLE 8 scenarios sur 48 cibles : 12 chole/10 nephro/8 prost/7 colect/6 thora/5 cardio). _load_medical_scenarios() lit le metadata (CLAUDE.md compliant — pas de scenarios.py read) + _synthesize_payload() construit payload deterministe par attack_type (DPI/IPI/Tool). Test SC-2 production : 8 frameworks x 8 scenarios x N=1 = 64/64 trials + 64 JSONL + manifest produits. Audit V2 sourcing sur metadata.json : 0/0 NONE = OK. Audit V1 citations : 235 trouvees (215 arXiv + 20 DOI). Audit V5b model versions : 6 references LLaMA-2 dans P125_36_LLMs (normal — panel testing Oct 2024). RESTE : regenerer metadata complet via export_scenarios_metadata.py cote Windows backend.",
+      "pdca11_resolution": "2026-05-16 PDCA-11 : Script backend/tools/export_scenarios_metadata.py ecrit (227 lignes, typage strict, docstrings EN, logging). Importe scenarios.get_all_scenarios() programmatiquement (CLAUDE.md compliant : Claude ne lit PAS scenarios.py, le script extrait via API). Exporte UNIQUEMENT metadonnees safe (id, name, clinical_context, expected_impact, mitre_ttps, steps[name/attack_type/objective/chain_id]) — step.message et step.variables JAMAIS exportes. scenarios_metadata.json regenere : 62 scenarios reels (vs 8 STUB_SAMPLE). Verification 0 leak message/variables. _ATTACK_TYPE_PAYLOAD_TEMPLATES etendu (injection/prompt_leak/rule_bypass + DPI/IPI/Tool). SC-2 production 62 scenarios : 8 frameworks x 62 x N=1 = 496 trials + 496 JSONL.",
+      "pdca12_resolution": "2026-05-16 PDCA-12 : run_g058_campaign.py (966 lignes > 800 limite programming.md) decompose en package g058/ : __init__(42) manifest(53) registry(54) cli(105) specs(107) genetic(172) loaders(203) subcampaigns(371) + wrapper run_g058_campaign(48). Tous fichiers < 800. BUG CORRIGE : _load_templates() avait ete perdu lors d une reconstruction anterieure (NameError SC1/SC3 production) — restaure dans loaders.py comme load_templates() + build_payload_from_category(). Verif : SC1 production charge 122 templates -> 976 trials, SC2 production 62 scenarios -> 496 trials, 4/4 SC dry-run OK, 13/13 tests adapter. Invocation CLI preservee via wrapper.",
+      "research_director_note_2026-05-20": "2026-05-20 (research-director) : clarification de vocabulaire. Les executions designees \"SC-2 production\" dans pdca10_resolution (64 trials) et pdca11_resolution (496 trials) etaient des dry-runs N=1 du loader de scenarios, executes sans LLM en service — uniquement validation syntaxique du pipeline (chargement metadata, synthese de payload deterministe, ecriture JSONL + manifest). Ce ne sont PAS des resultats de la vraie campagne SC-2 et ne doivent pas etre interpretes comme tels. La vraie campagne SC-2 (N=30 par condition, 62 scenarios, 8 frameworks, modele cible Groq llama-3.3-70b-versatile, soit 30 x 62 x 8 = 14880 trials) reste a lancer. Conformement a la regle anti-cherry-picking du projet (pre-registration OSF avant collecte de donnees), cette campagne ne doit etre lancee qu'APRES soumission OSF de la pre-registration G-058. Le champ status \"campaign_bootstrap_complete\" demeure exact : seul le bootstrap (code, adapters, loader, decomposition en package) est termine."
+    },
+    {
+      "id": "RR-G060",
+      "source": "experiment-planner DRAFT 2026-05-16 (VERIFICATION_DELTA3 §3 P2)",
+      "type": "experiment",
+      "query": "Tests cross-linguaux PromptGuard2-86M (meta-llama/Prompt-Guard-86M) sur 99 templates AEGIS x FR/EN/BR x N=30. Mesurer taux detection sur attaques medicales non-anglophones. DeepL + revue native speaker. Bloque G-060 verification.",
+      "priority": "haute",
+      "status": "pending",
+      "created": "2026-05-16",
+      "linked_gaps": [
+        "G-060"
+      ],
+      "linked_p_ids": [
+        "PromptGuard2-86M"
+      ],
+      "blocked_by": [
+        "traductions DeepL+native speaker (3 langues x 99 = 297 prompts a valider)"
+      ],
+      "owner": "experiment-planner"
+    },
+    {
+      "id": "RR-G062",
+      "source": "experiment-planner DRAFT 2026-05-16 (VERIFICATION_DELTA3 §3 P1 + P044)",
+      "type": "experiment",
+      "query": "Port AdvJudge-Zero (Ren et al. 2025) pour adversarial-test du security_audit_agent AEGIS. Tester token injection / frame manipulation / semantic obfuscation. Verifier si juge AEGIS bypassable comme GPT-4 judge (99% ASR) ou LLaMA-Guard 2 (90% ASR).",
+      "priority": "haute",
+      "status": "ready",
+      "created": "2026-05-16",
+      "linked_gaps": [
+        "G-062"
+      ],
+      "linked_p_ids": [
+        "P044"
+      ],
+      "blocked_by": [],
+      "owner": "experiment-planner + WHITEHACKER",
+      "pdca2_resolution": "2026-05-16 : AdvJudge-Zero = arXiv:2512.17375, P044 deja indexe [ARTICLE VERIFIE]. CORRECTION : auteurs = Li Tung-Ling, Wu Yuhao, Liu Hongliang (Unit 42 Palo Alto), NON Ren et al. comme indique dans G-062.md. Aucun nouveau P-ID a creer."
+    },
+    {
+      "id": "RR-G007",
+      "source": "experiment-planner DRAFT 2026-05-15",
+      "type": "experiment",
+      "query": "Reproduction P125 (Benjamin et al. 2025 — Systematic Analysis 36 LLMs, ASR baseline 56%). Verifier baseline AEGIS contre 36 LLMs panel. Methodologie logistic regression + random forest.",
+      "priority": "haute",
+      "status": "ready_revised",
+      "created": "2026-05-15",
+      "linked_gaps": [
+        "G-007"
+      ],
+      "linked_p_ids": [
+        "P125"
+      ],
+      "blocked_by": [],
+      "owner": "experiment-planner + SCIENTIST",
+      "pdca2_resolution": "2026-05-16 : P125 = arXiv:2410.23308 (Benjamin et al. 14 auteurs Drexel, Submitted 2024-10-28) [ARTICLE VERIFIE]. Budget reproduction estime $300-800 (mix 30% closed / 70% open). Realiste avec budget these. ACTION : query ChromaDB P125 fulltext pour liste exacte 36 LLMs avant lancement.",
+      "pdca3_resolution": "2026-05-16 PDCA-3 : liste 36 LLMs P125 extraite (Appendix A arXiv:2410.23308). PANEL 100% OPEN-WEIGHT (Cloudflare Workers AI Oct 2024). Aucun GPT/Claude/Gemini. Budget API revise : ~$0-50 (vs $300-800 initial). Probleme reel = TEMPS GPU, pas budget. LIMITATION methodologique a noter Ch.IV : range 0.5B-14B, extrapolation 70B non justifiee par donnees paper. Fichier liste : _staging/research-director/P125_36_LLMs_LIST_PDCA3_2026-05-16.md"
+    },
+    {
+      "id": "RR-G006",
+      "source": "experiment-planner DRAFT 2026-05-15",
+      "type": "experiment",
+      "query": "Test 99 templates AEGIS sur benchmark CAPTURE (Kholkar & Ahuja 2025, P124). Verifier disponibilite dataset public. Envisager integration CAPTURE comme 16e detecteur RagSanitizer. Mesurer FP rate (over-defense).",
+      "priority": "haute",
+      "status": "blocked_partial",
+      "created": "2026-05-15",
+      "linked_gaps": [
+        "G-006",
+        "D-017"
+      ],
+      "linked_p_ids": [
+        "P124"
+      ],
+      "blocked_by": [
+        "contact Kholkar/Ahuja par email pour dataset CAPTURE",
+        "OU fallback HF datasets prompt-injections"
+      ],
+      "owner": "experiment-planner + MATHEUX + CYBERSEC",
+      "pdca2_resolution": "2026-05-16 : CAPTURE = arXiv:2505.12368 (Kholkar & Ahuja, ACL LLMSec 2025) P124 indexe [ARTICLE VERIFIE]. Dataset NON public sur HF/GitHub a date. Fallback : deepset/prompt-injections, qualifire, xTRam1, rogue-security. Contact auteurs requis (lead time ~2 semaines)."
     }
-  ]
+  ],
+  "notes": "Journal PDCA session 2026-05-16 (reconstruit PDCA-15 apres troncature JSON ligne 666). PDCA-1: sync memoire +40j, 5 RR experiment-planner ajoutees (G058/G060/G062/G007/G006). PDCA-2: 4 bloqueurs G-058 leves. PDCA-3: G-062 corrige, 36 LLMs listes, email Kholkar. PDCA-4: P135 Outlines indexe MANIFEST (135 papers). PDCA-5: outlines_adapter.py +13 tests. PDCA-6: substitution LMQL->Outlines, PDF P135 (18p). PDCA-7: orphelin renomme, SC-2, OSF draft. PDCA-8: SC-4 composition. PDCA-9: SC-3 genetic. PDCA-10: sanitized loader + audit-these. PDCA-11: export_scenarios_metadata.py (62 scenarios). PDCA-12: run_g058_campaign decompose en package g058/ (9 modules <800 lignes), bug load_templates repare. PDCA-13: ASR_deterministic formalise (F73), RR-P0-003 + RR-DA-007 resolved. PDCA-14: F46 baseline diagnostique (ASR 3.33% degenere, grille 14400 bloquee). PDCA-15: reparation troncature research_requests.json + travail RR-FICHE-002."
 }

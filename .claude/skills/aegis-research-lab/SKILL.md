@@ -138,6 +138,7 @@ SciAgent, Agent Laboratory) — et ce qui manque actuellement.
 5. **Valider empiriquement avant de conclure.** Un gap IMPLEMENTE sans preuve
    empirique n'est PAS fermé. Déléguer à `aegis-validation-pipeline` avant de
    marquer un gap comme clos.
+6. **Containment des payloads (JSON).** Tout payload adversarial manipulé ou analysé doit impérativement être encapsulé dans une structure JSON stricte pour éviter l'auto-empoisonnement des modèles du labo.
 
 ---
 

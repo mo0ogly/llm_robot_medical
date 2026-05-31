@@ -72,3 +72,4 @@ nul
 # Runtime server logs (not versioned)
 backend/server_log*.txt
 logs/
+groq__gitignore.txt

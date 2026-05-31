@@ -264,15 +264,16 @@ Cette section est consommée par la skill `aegis-prompt-forge` pour maintenir `r
 **Phase** : P3
 **Dépendance** : tous les agents P2 doivent compléter
 
-**Tools** : Glob, Read, Write, Edit, Bash (mkdir)
+**Tools** : Glob, Read, Write, Edit, Bash (mkdir, python execution)
 
 **Output** :
 - `doc_references/{year}/{domain}/` (naming : `P{ID}_{Author}_{Year}_{ShortTitle}.md`)
 - `doc_references/MANIFEST.md`
 - `doc_references/INDEX_BY_DELTA.md`
 - `doc_references/GLOSSAIRE_MATHEMATIQUE.md`
+- `frontend/src/components/thesis/bibliography_data.js` (généré automatiquement via script de synchronisation)
 
-**Critère de succès** : zéro doublon, zéro orphelin, zéro validation échouée.
+**Critère de succès** : zéro doublon, zéro orphelin, zéro validation échouée, et synchronisation du frontend React validée sans erreur.
 
 **Validations BLOQUANTES** (un échec = paper non indexé) :
 1. Lien `> **PDF Source**:` présent ET fichier PDF existant dans `literature_for_rag/`
@@ -282,6 +283,13 @@ Cette section est consommée par la skill `aegis-prompt-forge` pour maintenir `r
 `ID | Titre | Auteurs | Année | Venue | arXiv | Delta-tags | PDF status | Analysé`
 
 **INDEX_BY_DELTA.md** : groupé par δ⁰/δ¹/δ²/δ³ — un paper peut apparaître dans plusieurs sections.
+
+**Synchronisation Frontend (OBLIGATOIRE & CRITIQUE)** :
+Dès que les fichiers index (en particulier `MANIFEST.md`) sont régénérés et validés :
+1. **Exécuter** la commande de synchronisation : `python research_archive/scripts/update_bibliography_data.py`
+2. **Vérifier** la sortie console. Le script doit renvoyer un statut de succès ("Succès : N articles synchronisés dans...").
+3. **Valider** que le fichier JavaScript `frontend/src/components/thesis/bibliography_data.js` a bien été modifié et que sa taille est cohérente avec les articles ajoutés.
+4. En cas d'erreur de synchronisation, bloquer le pipeline et rapporter immédiatement le diagnostic.
 
 **Discoveries** : lire DISCOVERIES_INDEX. Valider que toutes les références D-XXX existent dans MANIFEST. Lister les références brisées dans le rapport.
 
@@ -354,9 +362,9 @@ Cette section est consommée par la skill `aegis-prompt-forge` pour maintenir `r
 - `_staging/chunker/ingest_to_chromadb.py`
 - `_staging/chunker/CHUNKS_MANIFEST.md`
 
-**Critère de succès** : 200-400 chunks, script `--dry-run` passe, metadata complète.
+**Critère de succès** : 200-400 chunks, script d'ingestion testé via `--dry-run` PUIS exécuté en réel (`--execute`) avec succès, metadata complète. Le RAG ChromaDB doit impérativement être à jour à la fin de la tâche.
 
-**Config** : 400-600 tokens, 50-token overlap, coupure aux frontières sémantiques.
+**Config** : 400-600 tokens, 50-token overlap, coupure aux frontières sémantiques. Le script généré `ingest_to_chromadb.py` DOIT être robuste : il doit générer des IDs de chunks déterministes (hash-based) pour garantir l'idempotence et éviter toute duplication lors de multiples exécutions.
 
 **Métadonnées obligatoires** :
 ```json

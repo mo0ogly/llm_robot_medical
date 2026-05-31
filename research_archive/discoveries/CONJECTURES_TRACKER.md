@@ -89,6 +89,7 @@
 |-----|-------|---------------------|-------------|
 | RUN-001 | 6/10 | Sep(M) defini theoriquement mais pas encore valide avec N >= 30. | P024, P012 |
 | RUN-002 | 8/10 | P035 (MPIB) fournit un benchmark avec N >= 30, validant la faisabilite. P041 (SAM) fournit une metrique complementaire. | +P035, P041 |
+| **AUDIT 2026-05-16** | — | **Audit retrospectif (COHERENCE_INTER_RUN.md)** : Δ = +2 sur C4 (6→8/10) entre RUN-001 et RUN-002 aurait formellement requis un gate SUPERVISED. Aucun briefing archive disponible (`_staging/briefings/RUN-001` et `RUN-002` absents). **Decision post-hoc** : maintenir 8/10 — l'evidence est suffisante (P035 NeurIPS 2024 large-scale benchmark MPIB + P041 SAM ICLR 2025). **Action correctrice** : ajouter dans research-director SKILL.md la regle "tout Δ >= 2 doit produire un BRIEFING archive meme pour les premiers RUN". | — |
 | RUN-003 | **9/10** | P057 ASIDE utilise directement Sep(M) comme metrique de validation, prouvant son utilite pratique. P050 degradation multi-tour 9.5->5.5 est mesurable par Sep(M). P054 derive RAG compound est une nouvelle surface de mesure. | +P057, P050, P054 |
 
 **Condition de validation** : Executer Sep(M) avec N >= 30 par condition sur le benchmark MPIB (P035). P057 ASIDE fournit un precedent de validation reussie.
@@ -137,7 +138,7 @@
 4. En consequence, les modeles medical-tuned sont systematiquement MOINS surs que les modeles generiques (P107, Section 4.1 ; P108, Section 5.2)
 5. L'effet est observable empiriquement en single-turn (P107) ET en multi-tour (P108, degradation 9.5->5.5)
 
-**Contre-arguments** : P074 (CFT) reduit les jailbreaks de 62.7%, mais ne traite pas la cause racine (le gamma de l'AIC). La mitigation par fine-tuning de securite (P107) est une correction de premier ordre qui ne peut prevenir le collapse de second ordre (P110, Section 6).
+**Contre-arguments** : P028 (CFT) reduit les jailbreaks de 62.7%, mais ne traite pas la cause racine (le gamma de l'AIC). La mitigation par fine-tuning de securite (P107) est une correction de premier ordre qui ne peut prevenir le collapse de second ordre (P110, Section 6).
 
 **STATUT : VALIDEE (10/10)** — La convergence de 4 papiers independants (NeurIPS, arXiv, NRC Canada, Princeton) couvrant les 4 niveaux de preuve (empirique, multi-tour, mecaniste, formel) avec une chaine causale complete suffit pour la validation. C6 rejoint C1, C2 et C3 comme conjecture validee.
 
@@ -652,3 +653,30 @@ Corpus AEGIS apres propagation LIBRARIAN : **134 papers** (130 + 4 nouveaux + 0 
 
 **Signature** : SCIENTIST RUN VERIFICATION_DELTA3_20260411, 2026-04-11
 **Next agent** : research-director pour declencher RUN+1 avec les 7 actions normatives (G-058 a G-063 + patch dedup + reformulation wiki).
+
+---
+
+## Update RUN-009 (2026-05-30) — Axe securite medicale + RAG (P136-P139)
+
+Mode : incremental scoped (aegis-research-lab APEX -> bibliography-maintainer Bac C).
+4 papiers integres (P136-P139), 4 doublons ecartes par STEP 0 anti-doublon
+(2511.15759=P112, 2603.25164=P054, 2511.01268=P065, 2504.11168=P009).
+
+### Tableau des changements RUN-009
+
+| Conjecture | Score POST-VERIF (2026-04-11) | Score RUN-009 | Variation | Justification cle |
+|-----------|-------------------------------|---------------|-----------|-------------------|
+| **C1** (alignement contournable) | 10/10 (validee) | **10/10** | Stable (sature) | P137 CDA/DictAttack (94.3-99.5% ASR, 13 modeles incl. gpt-5/gemini-2.5-pro) + P138 FlippedRAG + P139 CorruptRAG renforcent le contournement par vecteurs structurels et indirects. Aucune montee possible (deja sature). |
+| **C2** (necessite δ³) | 10/10 (validee) | **10/10** | Stable (sature) | P137 fournit l'argument le plus net depuis P131 : "internal safety alignment alone cannot stop it" (Zhang et al., 2026, arXiv:2503.24191, Abstract) — l'attaque agit sur le control plane (decodage), pas sur l'entree. Aucune des 4 attaques n'est arretable a δ⁰ seul. |
+| **C5** (insuffisance filtrage par similarite) | 8.5/10 | **9/10** | +0.5 | P139 CorruptRAG montre qu'**un seul** document empoisonne suffit (vs hypothese majorite numerique) — le filtrage volumetrique/similarite est insuffisant. P138 confirme defenses RAG existantes inefficaces. Evidence convergente sur l'insuffisance du filtrage seul. |
+| **C6** (medical vulnerability premium) | 10/10 (validee) | **10/10** | Stable (sature) | P136 (Jahan & Sun 2025) : distillation benigne d'un LLM medical (Meditron-7B) produit un substitut a 86% unsafe vs 66% cible vs 46% base, pour 12 USD. L'alignement medical ne se transfere pas — renforce C6 et D-018 (mecanisme : distillation, pas seulement fine-tuning nuisible). |
+
+### Liens decouvertes
+- **D-018** (fine-tuning medical affaiblit l'alignement) : **ETENDUE** par P136 — la *distillation comportementale benigne* (pas seulement le fine-tuning sur donnees nuisibles) suffit a stripper l'alignement medical. Evidence supplementaire, mecanisme nouveau. Promotion differee a SCIENTIST.
+
+### Candidats decouvertes (PROPOSED — NON promus, HUMILITY GATE)
+- **[PROPOSED] Surface d'attaque control-plane / structured output** (P137) : la contrainte de format imposee (grammar-guided decoding) est un vecteur orthogonal au data-plane. NON promu : revendication de nouveaute a verifier par WebSearch via /bibliography-maintainer scoped avant tout statut ACTIVE.
+- **[PROPOSED] Seuil de poisoning RAG tres bas (1 document)** (P139) : a confronter au cluster RAG poisoning existant (P054/P055/P065/P119-P121) — possible redondance partielle. NON promu.
+
+**Mode autonomie** : toutes variations |Δ| <= 0.5 -> AUTONOMOUS. Aucun gate SUPERVISED declenche.
+**Signature** : bibliography-maintainer (ANALYST+SCIENTIST roles) RUN-009, 2026-05-30.
