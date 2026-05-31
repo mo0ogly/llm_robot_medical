@@ -6,7 +6,7 @@
 
     **Director**: **David Naccache** (ENS)
     **Testbed**: AEGIS Red Team Lab — Da Vinci Xi surgical robot (simulated)
-    **Corpus**: 130 papers (P001-P130, excl. P088/P105/P106)
+    **Corpus**: 131 papers (P001-P135, excl. P088/P105/P106 ; P074 reduced to a duplicate stub of P028)
     **Progress**: ~85% (chapters I-V drafted, chapter VI in progress)
 
 ## 1. Manuscript structure
@@ -51,7 +51,7 @@ research_archive/manuscript/
 
 ### Chapter III — State of the art (85%)
 
-- **130 papers** analyzed via Keshav 3-pass
+- **131 papers** analyzed via Keshav 3-pass
 - Organization by δ⁰–δ³ layer (see [INDEX_BY_DELTA](../research/bibliography/by-delta.md))
 - CrowdStrike 95 + AEGIS 70 defenses taxonomy
 - **Identified gap**: no medical + δ³ paper (except AEGIS)

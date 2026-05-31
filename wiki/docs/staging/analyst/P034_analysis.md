@@ -7,13 +7,13 @@
 **Lu le :** 2026-04-04
 **Nature :** [EMPIRIQUE] -- metriques d'evaluation definies operationnellement (MES, CR, MBR), pipeline automatise, evaluation CFT comme defense
 > **PDF Source**: [literature_for_rag/P034_source.pdf](../../assets/pdfs/P034_source.pdf)
-> **Statut**: [PREPRINT] -- lu en texte complet via ChromaDB (46 chunks paper_fulltext, 45343 caracteres). Code public : https://github.com/PittNAIL/med_jailbreak
+> **Statut**: [PREPRINT] -- lu en texte complet via ChromaDB (46 chunks paper_fulltext, 45343 caracteres). Depot de code initial retire par les auteurs : github.com/PittNAIL/med_jailbreak inaccessible (verifie 2026-05, HTTP 404)
 
 ---
 
 ### Abstract original
 > Large language models (LLMs) are increasingly utilized in healthcare applications. However, their deployment in clinical practice raises significant safety concerns, including the potential spread of harmful information. This study systematically assesses the vulnerabilities of seven LLMs to three advanced black-box jailbreaking techniques within medical contexts. To quantify the effectiveness of these techniques, we propose an automated and domain-adapted agentic evaluation pipeline. Experiment results indicate that leading commercial and open-source LLMs are highly vulnerable to medical jailbreaking attacks. To bolster model safety and reliability, we further investigate the effectiveness of Continual Fine-Tuning (CFT) in defending against medical adversarial attacks. Our findings underscore the necessity for evolving attack methods evaluation, domain-specific safety alignment, and LLM safety-utility balancing.
-> -- Source : PDF page 1 (preprint, GitHub: PittNAIL/med_jailbreak)
+> -- Source : PDF page 1 (preprint ; depot GitHub PittNAIL/med_jailbreak retire par les auteurs, inaccessible verifie 2026-05, HTTP 404)
 
 ### Resume (5 lignes)
 - **Probleme :** Evaluer systematiquement la vulnerabilite des LLM aux attaques de jailbreaking dans le contexte medical et tester le Continual Fine-Tuning (CFT) comme defense (Section Introduction, p.1-2)
@@ -38,7 +38,7 @@
 
 4. **CFT comme defense concrete et testee.** Contrairement a P029 (purement evaluatif) et P031 (pas de defense), P034 propose ET teste une defense. Les resultats du CFT sont remarquables : MES chute de 0.57 a 0.01 (Plain) et de 0.83 a 0.05 (PAIR) sur Llama3.1-8B (Table 1). La CR chute de 0.72 a 0.01 (Plain) et de 0.98 a 0.08 (PAIR) sur Llama3.1-8B (Table 2). C'est la reduction la plus importante du corpus.
 
-5. **Code public.** Le code est disponible sur https://github.com/PittNAIL/med_jailbreak, permettant la reproductibilite et l'integration dans le pipeline AEGIS.
+5. **Code initialement public, depot retire.** Le depot de code initial (github.com/PittNAIL/med_jailbreak) a ete retire par les auteurs apres publication et est aujourd'hui inaccessible (verifie 2026-05, HTTP 404) ; la reproduction et l'integration dans le pipeline AEGIS ne peuvent plus s'appuyer dessus.
 
 6. **Dataset standardise (MedSafetyBench).** L'utilisation de MedSafetyBench (sous-ensemble MedSafety-Eval-GPT4, ref. 24) comme source de requetes medicales nocives fournit une base de comparaison standardisee, contrairement aux scenarios ad hoc de P031 (Zhang, Lou & Wang, 2025, Section Methods, p.3-4, Dataset Description).
 
@@ -118,11 +118,11 @@ Lien glossaire AEGIS : F22 (ASR -- CR est equivalent binaire), F58 (Medical Vuln
 ### Pertinence these AEGIS
 
 - **Couches delta :**
-  - δ⁰ (RLHF alignment) : evaluation directe de la resilience de l'alignement aux attaques medicales ; CR = 0.98 sur GPT-4o montre l'echec delta-0 (Table 2)
-  - δ⁰ (CFT comme amelioration delta-0) : le CFT est un renforcement de delta-0 par fine-tuning continu post-deployment avec donnees adversariales
+  - δ⁰ (RLHF alignment) : evaluation directe de la resilience de l'alignement aux attaques medicales ; CR = 0.98 sur GPT-4o montre l'echec δ⁰ (Table 2)
+  - δ⁰ (CFT comme amelioration δ⁰) : le CFT est un renforcement de δ⁰ par fine-tuning continu post-deployment avec donnees adversariales
 
 - **Conjectures :**
-  - C1 (insuffisance delta-1) : **fortement supportee** -- les 8 modeles sont vulnerables a CR >= 0.70 pour au moins une technique malgre leur alignement (Table 2)
+  - C1 (insuffisance δ¹) : **fortement supportee** -- les 8 modeles sont vulnerables a CR >= 0.70 pour au moins une technique malgre leur alignement (Table 2)
   - C4 (scaling independence) : **partiellement supportee** -- GPT-4o (flagship) et Llama3.3-70B (70B open) partagent des CR similaires (0.96-0.98 pour PAIR), suggerant que la taille ne protege pas (Table 2)
   - C6 (Medical Vulnerability Premium) : **supportee indirectement** -- CR de 0.98 en medical est parmi les plus eleves du corpus, mais absence de comparaison directe med/non-med
 
@@ -148,9 +148,9 @@ Lien glossaire AEGIS : F22 (ASR -- CR est equivalent binaire), F58 (Medical Vuln
 | Champ | Valeur |
 |-------|--------|
 | SVC pertinence | 8/10 |
-| Reproductibilite | Haute -- code public (GitHub PittNAIL/med_jailbreak), 8 modeles testes, metriques definies formellement, dataset MedSafetyBench |
-| Code disponible | Oui (https://github.com/PittNAIL/med_jailbreak) |
-| Dataset public | Partiel (MedSafetyBench reference, code public) |
+| Reproductibilite | Moyenne -- depot initial github.com/PittNAIL/med_jailbreak retire par les auteurs et inaccessible (verifie 2026-05, HTTP 404) ; 8 modeles testes, metriques definies formellement et dataset MedSafetyBench restent documentes |
+| Code disponible | Non -- depot initial retire par les auteurs, github.com/PittNAIL/med_jailbreak inaccessible (verifie 2026-05, HTTP 404) |
+| Dataset public | Partiel (MedSafetyBench reference) |
 | Nature epistemique | [EMPIRIQUE] -- metriques operationnelles, pipeline automatise, pas de contribution formelle |
 | Confiance | 7/10 -- fulltext verifie, code public, mais preprint non peer-reviewed et juge LLM non valide |
 

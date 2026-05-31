@@ -75,7 +75,7 @@ flowchart LR
 
     ---
 
-    **Origem** : Zhao et al. (ICLR 2025) "Safety Layers", Wei et al. (ICLR 2025) "Shallow Alignment",
+    **Origem** : Zhao et al. (ICLR 2025) "Safety Layers", Qi et al. (ICLR 2025) "Shallow Alignment",
     Young (2026) "Gradient vanishing beyond harm horizon"
 
     **Ancoragem bibliografica** : 68 artigos do corpus AEGIS abordam δ⁰

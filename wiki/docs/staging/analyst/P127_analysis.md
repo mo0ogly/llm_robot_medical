@@ -43,10 +43,10 @@ Paper massif (30+ co-auteurs) analysant la vulnerabilite des agents LLM aux **In
 ### Pertinence these AEGIS
 
 **Mapping delta :**
-- delta-0 : testee implicitement (agents RLHF standard)
-- delta-1 : system prompt agents
-- **delta-2** : CIBLEE (detection IPI dans donnees externes)
-- delta-3 : probablement non testee
+- δ⁰ : testee implicitement (agents RLHF standard)
+- δ¹ : system prompt agents
+- **δ²** : CIBLEE (detection IPI dans donnees externes)
+- δ³ : probablement non testee
 
 **Conjectures :**
 - **C1** : probable SUPPORT (si ASR eleve)

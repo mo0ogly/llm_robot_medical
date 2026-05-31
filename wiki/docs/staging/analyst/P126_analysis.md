@@ -38,16 +38,16 @@
 ### Pertinence these AEGIS — ANALYSE CRITIQUE
 
 !!! danger "RISQUE DE SCOOPING — PRIORITE P0"
-    Ce paper par Tramèr et al. propose **"provable resistance"** via design patterns formels. Si ces patterns couvrent formellement ce qu'AEGIS appelle **delta-3**, l'originalite de la these doit etre **repositionnee sur le domaine medical** comme contribution principale.
+    Ce paper par Tramèr et al. propose **"provable resistance"** via design patterns formels. Si ces patterns couvrent formellement ce qu'AEGIS appelle **δ³**, l'originalite de la these doit etre **repositionnee sur le domaine medical** comme contribution principale.
 
 **Mapping delta :**
-- delta-0 : Non traite (couche modele)
-- delta-1 : Probable (instruction hierarchy)
-- delta-2 : Probable (isolation/filtrage)
-- **delta-3** : **COEUR potentiel** — "provable resistance" = validation formelle
+- δ⁰ : Non traite (couche modele)
+- δ¹ : Probable (instruction hierarchy)
+- δ² : Probable (isolation/filtrage)
+- **δ³** : **COEUR potentiel** — "provable resistance" = validation formelle
 
 **Conjectures :**
-- **C2 (necessite delta-3)** : **SUPPORT MAJEUR** — validation academique de reference par equipe prestigieuse
+- **C2 (necessite δ³)** : **SUPPORT MAJEUR** — validation academique de reference par equipe prestigieuse
 - **C3 (formal patterns > heuristiques)** : SUPPORT
 
 **Decouvertes :**
@@ -61,7 +61,7 @@
 | Implementation | Patterns theoriques | **Systeme end-to-end (backend + frontend + RAG)** |
 | Validation | Case studies | **N>=30 campagnes + Sep(M) + ASR + SVC** |
 | Benchmark | Non-medical | **48 scenarios medicaux + 99 templates** |
-| delta-3 concret | "Provable resistance" | **5 techniques explicites + RagSanitizer 15+ detecteurs** |
+| δ³ concret | "Provable resistance" | **5 techniques explicites + RagSanitizer 15+ detecteurs** |
 | Consequences | Impacts fonctionnels | **Consequences lethales (850g tension, freeze_instruments)** |
 
 ### ACTIONS CRITIQUES

@@ -75,15 +75,15 @@ L'auteur reconnait (Chapter 6-7) : (1) le gap de transfert cross-modele (open-so
 
 | Conjecture | Support | Niveau de preuve | Detail |
 |-----------|---------|-----------------|--------|
-| **C2** (delta-3 necessaire) | FORT | Les agents avec outils executent des actions irreversibles ; delta-0 a delta-2 ne suffisent pas a empecher l'execution | Le contexte agent (tool calling) amplifie les consequences de l'injection |
+| **C2** (δ³ necessaire) | FORT | Les agents avec outils executent des actions irreversibles ; δ⁰ a δ² ne suffisent pas a empecher l'execution | Le contexte agent (tool calling) amplifie les consequences de l'injection |
 | **C5** (agent-level surfaces) | FORT | Les surfaces d'attaque agents (outils, memoire, planification) sont qualitativement differentes du single-turn | TAP exploite le contexte multi-turn de l'agent pour iterer sur les injections |
 
 ### Couches delta
 
-- **delta-0** : implicitement insuffisant (les modeles alignes executent des injections en contexte agent).
-- **delta-1 (injection crafting)** : GCG et TAP operent a ce niveau en optimisant les payloads injectes.
-- **delta-2 (multi-turn exploitation)** : les attaques universelles exploitent la structure multi-etape de l'agent.
-- **delta-3 (validation formelle)** : non teste mais fortement implique. Le sandboxing des outils et l'isolation de la memoire sont des mecanismes delta-3 necessaires.
+- **δ⁰** : implicitement insuffisant (les modeles alignes executent des injections en contexte agent).
+- **δ¹ (injection crafting)** : GCG et TAP operent a ce niveau en optimisant les payloads injectes.
+- **δ² (multi-turn exploitation)** : les attaques universelles exploitent la structure multi-etape de l'agent.
+- **δ³ (validation formelle)** : non teste mais fortement implique. Le sandboxing des outils et l'isolation de la memoire sont des mecanismes δ³ necessaires.
 
 ### Formules AEGIS impactees
 
@@ -92,7 +92,7 @@ L'auteur reconnait (Chapter 6-7) : (1) le gap de transfert cross-modele (open-so
 
 ### Gap identifie
 
-- **G-020** (RUN-003) : defenses specifiques aux agents non evaluees. Les mecanismes AEGIS de delta-3 (sandboxing, isolation memoire) doivent etre testes contre les attaques automatisees de P058.
+- **G-020** (RUN-003) : defenses specifiques aux agents non evaluees. Les mecanismes AEGIS de δ³ (sandboxing, isolation memoire) doivent etre testes contre les attaques automatisees de P058.
 
 ---
 

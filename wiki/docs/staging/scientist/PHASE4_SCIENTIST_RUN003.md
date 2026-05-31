@@ -11,7 +11,7 @@
 
 RUN-003 analyzed 14 new papers (P047-P060) spanning defenses (P047, P048, P056, P057), guardrail evasion (P049), RAG attacks (P054, P055), medical safety (P050, P051), RLHF theory (P052, P053), automated attacks (P058, P059), and systematization (P060). The cross-analysis reveals three major developments:
 
-1. **Three conjectures reach 10/10 (VALIDATED)**: C1 (RLHF insufficiency), C2 (necessity of delta-3), and C3 (shallow alignment) are now mathematically proven and empirically confirmed beyond reasonable doubt.
+1. **Three conjectures reach 10/10 (VALIDATED)**: C1 (RLHF insufficiency), C2 (necessity of δ³), and C3 (shallow alignment) are now mathematically proven and empirically confirmed beyond reasonable doubt.
 2. **ASIDE (P057) emerges as the only architectural response to D-001 Triple Convergence**, but remains undeployed and untested against adaptive attacks.
 3. **RAG compound attacks (P054+P055) extend the threat model** beyond the original Triple Convergence, creating persistent poisoning vectors that no current defense addresses end-to-end.
 
@@ -23,8 +23,8 @@ RUN-003 analyzed 14 new papers (P047-P060) spanning defenses (P047, P048, P056, 
 
 | Conjecture | RUN-001 | RUN-002 | RUN-003 | Delta | Key new evidence |
 |-----------|---------|---------|---------|-------|-----------------|
-| C1 (delta-0 insuffisant) | 9/10 | 10/10 | **10/10** | -- (saturated) | P052 martingale proof, P050 multi-turn p<0.001 |
-| C2 (delta-3 necessaire) | 8/10 | 9/10 | **10/10** | +1 | P054+P055 RAG compound, P060 IEEE S&P |
+| C1 (δ⁰ insuffisant) | 9/10 | 10/10 | **10/10** | -- (saturated) | P052 martingale proof, P050 multi-turn p<0.001 |
+| C2 (δ³ necessaire) | 8/10 | 9/10 | **10/10** | +1 | P054+P055 RAG compound, P060 IEEE S&P |
 | C3 (alignement superficiel) | 8/10 | 9/10 | **10/10** | +1 | P052 formal proof, P049 100% bypass |
 | C4 (derive semantique) | 6/10 | 8/10 | **9/10** | +1 | P057 ASIDE validates Sep(M), P050 MTSD |
 | C5 (cosine insuffisante) | 7/10 | 7/10 | **8/10** | +1 | P057 orthogonal rotation, P053 paraphrases |
@@ -37,7 +37,7 @@ RUN-003 analyzed 14 new papers (P047-P060) spanning defenses (P047, P048, P056, 
 
 **C1/C3 chain (formal proof)**: P019 (empirical observation) -> P052 (martingale decomposition: I_t = Cov[E[H|x<=t], score_function]) -> P050 (multi-turn validation: 9.5 -> 5.5, p<0.001). The alignment shallowness is now PROVEN, not merely observed.
 
-**C2 chain (delta-3 necessity)**: P039 (delta-0 erasable) + P045 (delta-1 poisonable) + P044 (delta-2 bypass 99%) + P054/P055 (RAG compound/persistent) + P060 (no universal guardrail, IEEE S&P) = ALL layers except delta-3 demonstrated vulnerable. 0/60 papers implement delta-3.
+**C2 chain (δ³ necessity)**: P039 (δ⁰ erasable) + P045 (δ¹ poisonable) + P044 (δ² bypass 99%) + P054/P055 (RAG compound/persistent) + P060 (no universal guardrail, IEEE S&P) = ALL layers except δ³ demonstrated vulnerable. 0/60 papers implement δ³.
 
 **C6 chain (medical amplification)**: P029 (94.4% ASR, JAMA) + P040 (6x emotional amplification) + P050 (medical models MORE vulnerable than general, p<0.001, 50K conversations) + P051 (first clinical-specific detector). Medical domain is uniquely vulnerable across multiple independent studies.
 
@@ -81,11 +81,11 @@ RUN-003 analyzed 14 new papers (P047-P060) spanning defenses (P047, P048, P056, 
 
 | Axe | Maturite RUN-002 | Maturite RUN-003 | Key additions |
 |-----|------------------|------------------|---------------|
-| 1 (fragilite delta-0) | Mature | **Sature** | P052 (formal proof), P050 (multi-turn) |
+| 1 (fragilite δ⁰) | Mature | **Sature** | P052 (formal proof), P050 (multi-turn) |
 | 2 (defense en profondeur) | En cours | En cours (enrichi) | P047, P049, P054-P057, P060 (7 new papers) |
 | 3 (medical specificity) | En cours | En cours (enrichi) | P050 (p<0.001), P051 (clinical 4D detector) |
 | 4 (Sep(M) measurement) | En cours | En cours (enrichi) | P057 (ASIDE validates Sep(M)), P052 (I_t complement) |
-| 6 (delta-3 validation) | Exploratoire | Exploratoire (renforcee) | P054/P055 (RAG compound), P060 (SoK) |
+| 6 (δ³ validation) | Exploratoire | Exploratoire (renforcee) | P054/P055 (RAG compound), P060 (SoK) |
 | 9 (LRM paradox) | Emergent | **En cours** | P058 (agent attacks), P052, P059 |
 
 ### New research questions from RUN-003
@@ -93,7 +93,7 @@ RUN-003 analyzed 14 new papers (P047-P060) spanning defenses (P047, P048, P056, 
 1. **Does the Recovery Penalty Objective (P052, F46) fix gradient concentration?** -- Testable with AEGIS + Ollama models.
 2. **Does ASIDE resist adaptive attacks designed to target orthogonal rotation?** -- Critical for D-015 confidence level.
 3. **Does RagSanitizer detect PIDP compound attacks?** -- Testable immediately with existing AEGIS chains.
-4. **Does multi-turn degradation (P050) worsen or improve when delta-1 through delta-3 are active?** -- AEGIS can measure this with the 48 medical scenarios.
+4. **Does multi-turn degradation (P050) worsen or improve when δ¹ through δ³ are active?** -- AEGIS can measure this with the 48 medical scenarios.
 5. **Can the SEU framework (P060) be used to benchmark all 66 AEGIS defense techniques?** -- Would provide IEEE S&P-level validation.
 
 ---
@@ -160,11 +160,11 @@ RUN-003 added 17 new formulas (F38-F54), 23 new dependency edges, and 4 new crit
 
 All three pillars strengthened in RUN-003:
 
-1. **delta-0 erasable**: P052 provides formal proof (martingale), P050 adds multi-turn empirical confirmation (p<0.001), P053 confirms semantic-level limitations.
-2. **delta-1 poisonable**: Extended to RAG infrastructure by P054 (compound, +4-16pp) and P055 (persistent, ~275K vectors).
-3. **delta-2 bypass**: P049 demonstrates 100% evasion (exceeding P044's 99%). P060 (IEEE S&P) confirms no universal guardrail.
+1. **δ⁰ erasable**: P052 provides formal proof (martingale), P050 adds multi-turn empirical confirmation (p<0.001), P053 confirms semantic-level limitations.
+2. **δ¹ poisonable**: Extended to RAG infrastructure by P054 (compound, +4-16pp) and P055 (persistent, ~275K vectors).
+3. **δ² bypass**: P049 demonstrates 100% evasion (exceeding P044's 99%). P060 (IEEE S&P) confirms no universal guardrail.
 
-**ASIDE (P057)** is the ONLY proposed architectural resolution, but it does not address delta-1 RAG poisoning or delta-2 evasion via character injection. D-001 remains valid and strengthened.
+**ASIDE (P057)** is the ONLY proposed architectural resolution, but it does not address δ¹ RAG poisoning or δ² evasion via character injection. D-001 remains valid and strengthened.
 
 ### New attack techniques (WHITEHACKER)
 
@@ -180,7 +180,7 @@ All three pillars strengthened in RUN-003:
 ## 8. SWOT Update
 
 ### Strengths (AEGIS)
-- **delta-3 implementation**: Still UNIQUE in the entire 60-paper corpus. 5 techniques in production.
+- **δ³ implementation**: Still UNIQUE in the entire 60-paper corpus. 5 techniques in production.
 - **RagSanitizer coverage**: 15 detectors, 12/12 Hackett techniques. VALIDATED by P049 (100% bypass of competitors).
 - **98 attack templates + 48 scenarios**: Most comprehensive medical red-team catalog documented.
 - **Heterogeneous multi-agent architecture**: Mitigates recursive judge vulnerability (C4).
@@ -193,13 +193,13 @@ All three pillars strengthened in RUN-003:
 
 ### Opportunities (RUN-003)
 - **Implement SEU framework (P060)**: Would provide IEEE S&P-level validation methodology.
-- **Test Recovery Penalty (P052)**: First theoretically grounded delta-0 fix, testable with Ollama.
+- **Test Recovery Penalty (P052)**: First theoretically grounded δ⁰ fix, testable with Ollama.
 - **Design anti-ASIDE attacks**: Could establish AEGIS as first to evaluate ASIDE adversarially.
 - **Compound RAG testing (P054)**: Immediate test of RagSanitizer against PIDP-Attack.
 
 ### Threats (external)
-- **ASIDE deployment**: If deployed at scale, could partially resolve D-001, reducing the urgency of delta-3.
-- **AIR adoption (P056, NVIDIA)**: Could strengthen delta-1 for open-weight models, reducing AEGIS differentiation.
+- **ASIDE deployment**: If deployed at scale, could partially resolve D-001, reducing the urgency of δ³.
+- **AIR adoption (P056, NVIDIA)**: Could strengthen δ¹ for open-weight models, reducing AEGIS differentiation.
 - **Automated attack scaling (P058)**: Agent-level attacks may discover AEGIS-specific vulnerabilities faster than manual red-teaming.
 
 ---
@@ -274,7 +274,7 @@ All three pillars strengthened in RUN-003:
 
 ### Thesis manuscript implications
 - **Chapter 1 (Foundations)**: C3 (10/10) as opening conjecture, proven by P052 martingale.
-- **Chapter 2 (delta-0 Fragility)**: C1 (10/10) with P019+P052+P050+P039 chain.
+- **Chapter 2 (δ⁰ Fragility)**: C1 (10/10) with P019+P052+P050+P039 chain.
 - **Chapter 3 (Multi-layer Defense)**: C2 (10/10) with D-001 Triple Convergence + P054/P055 extension.
 - **Chapter 4 (Medical Specificity)**: C6 (9/10) with P029+P050+P040 chain.
 - **Chapter 5 (Measurement)**: C4 (9/10) + C5 (8/10) with Sep(M) + MTSD + SEU.

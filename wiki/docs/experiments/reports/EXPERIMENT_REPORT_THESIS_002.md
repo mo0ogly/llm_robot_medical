@@ -52,7 +52,7 @@
 
 **Mecanisme** : Le 70B parse et valide les tags XML de l'attaquant AVEC PLUS DE PRECISION que le 8B. Il "comprend" mieux la structure, donc il la suit plus rigoureusement — y compris quand elle est malicieuse.
 
-**Implication critique** : La vulnerabilite XML Agent est **structurelle, pas liee a l'alignement RLHF**. Augmenter la taille du modele ou ameliorer l'alignement NE REGLE PAS le probleme. Il faut **obligatoirement** une validation de tags en dehors du LLM (delta-3 whitelist, comme chain_defenses.XMLAgentTagWhitelist).
+**Implication critique** : La vulnerabilite XML Agent est **structurelle, pas liee a l'alignement RLHF**. Augmenter la taille du modele ou ameliorer l'alignement NE REGLE PAS le probleme. Il faut **obligatoirement** une validation de tags en dehors du LLM (δ³ whitelist, comme chain_defenses.XMLAgentTagWhitelist).
 
 Ce resultat **refute definitivement** la thèse que "plus gros = plus sur" pour cette classe d'attaques. Au contraire, un modele plus capable est **plus vulnerable** au parsing trust exploit.
 
@@ -82,8 +82,8 @@ La distribution bimodale observee sur 8B (33/40 a 0%, 2/40 a 96.7%) est **reprod
 
 | Conjecture / Decouverte | 8B | 70B | Impact |
 |------------------------|-----|-----|--------|
-| **C1 (delta-0 insuffisant)** | 10/10 | 10/10 | Confirme — xml_agent 100% et hyde 90% malgre delta-0 RLHF fort |
-| **C2 (delta-3 necessaire)** | 10/10 | **10/10 RENFORCE** | XML Agent 100% sur 70B prouve que **seul delta-3 externe** peut defendre |
+| **C1 (δ⁰ insuffisant)** | 10/10 | 10/10 | Confirme — xml_agent 100% et hyde 90% malgre δ⁰ RLHF fort |
+| **C2 (δ³ necessaire)** | 10/10 | **10/10 RENFORCE** | XML Agent 100% sur 70B prouve que **seul δ³ externe** peut defendre |
 | **D-023 (bimodalite)** | 9/10 | **10/10** | Reproduit cross-model, pas un artefact |
 | **D-024 (HyDE self-amp)** | 10/10 | **10/10 RENFORCE** | 90% ASR sur frontier 70B confirme universalite |
 | **D-025 (parsing trust)** | 9/10 | **10/10 RENFORCE** | **100% sur 70B** — vulnerabilite structurelle universelle |
@@ -94,7 +94,7 @@ La distribution bimodale observee sur 8B (33/40 a 0%, 2/40 a 96.7%) est **reprod
 
 Contre l'intuition, le 70B est **strictement plus vulnerable** au parsing trust (xml_agent 100% vs 96.7%). Trois chaines restent identiquement catastrophiques (hyde, xml_agent) independamment de la taille.
 
-**Implication** : augmenter la taille du modele ne regle pas les vulnerabilites structurelles. Il faut des defenses **orthogonales au modele** (delta-3 deterministe).
+**Implication** : augmenter la taille du modele ne regle pas les vulnerabilites structurelles. Il faut des defenses **orthogonales au modele** (δ³ deterministe).
 
 ## Actions recommandees
 
@@ -109,7 +109,7 @@ Contre l'intuition, le 70B est **strictement plus vulnerable** au parsing trust 
 
 ## Texte thesis-ready
 
-"La campagne cross-model THESIS-002 (N=1200 sur llama-3.3-70b-versatile) confirme que les vulnerabilites XML Agent et HyDE identifiees dans THESIS-001 (8B) sont **structurelles et universelles**. XML Agent atteint **100% ASR** (30/30, IC 95% [88.6%, 100%]) sur le modele 70B, c'est-a-dire **pire que sur le 8B** (96.7%). Ce resultat refute definitivement l'hypothese selon laquelle augmenter la taille du modele ameliore la securite face au parsing trust exploit. HyDE maintient 90% ASR sur le 70B, validant D-024 cross-model. La bimodalite D-023 est egalement confirmee : 37 chaines a 0% ASR, 2 a >= 90%, avec seulement 1 chaine intermediaire. La necessite de defenses delta-3 externes (conjecture C2) est donc empiriquement prouvee sur deux tailles de modele avec N=2400 au total."
+"La campagne cross-model THESIS-002 (N=1200 sur llama-3.3-70b-versatile) confirme que les vulnerabilites XML Agent et HyDE identifiees dans THESIS-001 (8B) sont **structurelles et universelles**. XML Agent atteint **100% ASR** (30/30, IC 95% [88.6%, 100%]) sur le modele 70B, c'est-a-dire **pire que sur le 8B** (96.7%). Ce resultat refute definitivement l'hypothese selon laquelle augmenter la taille du modele ameliore la securite face au parsing trust exploit. HyDE maintient 90% ASR sur le 70B, validant D-024 cross-model. La bimodalite D-023 est egalement confirmee : 37 chaines a 0% ASR, 2 a >= 90%, avec seulement 1 chaine intermediaire. La necessite de defenses δ³ externes (conjecture C2) est donc empiriquement prouvee sur deux tailles de modele avec N=2400 au total."
 
 ## Metadata
 

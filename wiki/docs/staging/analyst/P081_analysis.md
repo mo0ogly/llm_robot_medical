@@ -43,7 +43,7 @@
 - **Securite prouvable** : Si le plan est correct ET la politique de capabilities est respectee, alors aucune injection ne peut provoquer une action non autorisee ou une exfiltration (Section 4, Theorem informel) [HEURISTIQUE — pas de preuve formelle complete publiee, argument par construction]
 - Lien glossaire AEGIS : F15 (Sep(M)), F22 (ASR) — CaMeL vise ASR = 0% par construction
 
-### Pertinence these AEGIS — COMPARAISON DIRECTE delta-3
+### Pertinence these AEGIS — COMPARAISON DIRECTE δ³
 
 - **Couches delta :** δ³ principalement. CaMeL est un systeme δ³ par excellence — validation externe des actions du LLM.
 - **Conjectures :**

@@ -50,7 +50,7 @@ Modifications apportees :
 | RR-DA-004 | experiment | CRITIQUE | Calibration empirique F46 Recovery Penalty (Theoremes 19-22 P052) |
 | RR-DA-005 | experiment | HAUTE | Tester compound PIDP vs RagSanitizer AEGIS |
 | RR-DA-006 | experiment | HAUTE | Judge fuzzing : templates AEGIS flippent-ils le juge ? |
-| RR-DA-007 | formalization | CRITIQUE | Formaliser ASR_deterministic base delta-3 patterns |
+| RR-DA-007 | formalization | CRITIQUE | Formaliser ASR_deterministic base δ³ patterns |
 
 Total research_requests : 27 (20 existantes + 7 nouvelles RR-DA)
 
@@ -85,7 +85,7 @@ Modifications apportees :
    Si les juges LLM sont flippables a 99.91% sur les jugements safety (pas seulement correctitude), TOUTES les ASR AEGIS calculees via LLM-as-Judge doivent etre recalculees avec une metrique deterministe. Lancer `/bibliography-maintainer` avec query RR-DA-002 AVANT de publier tout resultat experimental.
 
 2. **RR-DA-007 + RR-P0-003** (CRITIQUE — formalisation bloquante) :
-   La formule ASR_deterministic basee sur delta-3 doit etre definie avant Ch.7. Collaboration MATHEUX + SCIENTIST requise.
+   La formule ASR_deterministic basee sur δ³ doit etre definie avant Ch.7. Collaboration MATHEUX + SCIENTIST requise.
 
 3. **RR-DA-004** (CRITIQUE — Ch.6 bloque) :
    F46 Recovery Penalty n'a aucune validation empirique. Concevoir l'experience via `/aegis-prompt-forge FORGE`.

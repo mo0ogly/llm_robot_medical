@@ -12,14 +12,14 @@
 
 | # | Nom | Paper | Nature | Couche delta |
 |---|-----|-------|--------|-------------|
-| 9.1 | Transition d'Etats LRM | P087 | [EMPIRIQUE] | delta-0 |
-| 9.2 | Entropie/Info Mutuelle Securite | P087 | [EMPIRIQUE] | delta-0 |
-| 9.3 | Gradient Bandit SEAL | P089 | [ALGORITHME] | delta-2 |
-| 9.4 | Loss Adversarial Reasoning | P093 | [ALGORITHME] | delta-3 |
-| 9.5 | Dialogue Multi-Tour STAR | P097 | [ALGORITHME] | delta-1 |
-| 9.6 | Direction de Refus + AHD | P102 | [ALGORITHME] | delta-0 |
-| 9.7 | Self-Talk Multi-Tour ActorBreaker | P100 | [ALGORITHME] | delta-3 |
-| 9.8 | SFR Multi-Tour | P097, P098, P101 | [EMPIRIQUE] | delta-3 |
+| 9.1 | Transition d'Etats LRM | P087 | [EMPIRIQUE] | δ⁰ |
+| 9.2 | Entropie/Info Mutuelle Securite | P087 | [EMPIRIQUE] | δ⁰ |
+| 9.3 | Gradient Bandit SEAL | P089 | [ALGORITHME] | δ² |
+| 9.4 | Loss Adversarial Reasoning | P093 | [ALGORITHME] | δ³ |
+| 9.5 | Dialogue Multi-Tour STAR | P097 | [ALGORITHME] | δ¹ |
+| 9.6 | Direction de Refus + AHD | P102 | [ALGORITHME] | δ⁰ |
+| 9.7 | Self-Talk Multi-Tour ActorBreaker | P100 | [ALGORITHME] | δ³ |
+| 9.8 | SFR Multi-Tour | P097, P098, P101 | [EMPIRIQUE] | δ³ |
 
 ---
 
@@ -59,7 +59,7 @@ C7 est la conjecture la plus impactee par ce lot. Evidence convergente de 8 papi
 
 **Nouvelle formulation candidate de C7** : Le raisonnement etendu des LRM cree un espace de complexite que le mecanisme de verification de securite — concentre dans un sous-espace basse dimension de quelques tetes d'attention — ne peut couvrir. Le paradoxe est STRUCTURAL : la meme architecture qui permet le raisonnement (attention multi-tetes, CoT long) dilue le signal de securite (direction de refus).
 
-### C1 (Insuffisance de delta-0) : reste 10/10 (sature)
+### C1 (Insuffisance de δ⁰) : reste 10/10 (sature)
 
 Renforce par P092 (self-jailbreaking sans adversaire), P094 (dilution), P098 (instabilite sous contexte long), P102 (concentration sparse).
 

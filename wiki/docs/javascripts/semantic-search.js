@@ -136,7 +136,7 @@
           <label>
             Collection:
             <select id="aegis-collection">
-              <option value="aegis_bibliography">aegis_bibliography (130 papers)</option>
+              <option value="aegis_bibliography">aegis_bibliography (131 papers)</option>
               <option value="aegis_corpus">aegis_corpus (templates + fiches)</option>
               <option value="medical_rag">medical_rag (clinical guidelines)</option>
             </select>

@@ -1,5 +1,29 @@
 # Sep(M) Validation Strategy — MPIB Dataset
 
+## ERRATUM PDCA-16 (2026-05-16) — corrections factuelles avant implementation
+
+> Verification scoped par sub-agent COLLECTOR (WebFetch arXiv + HuggingFace, 2026-05-16).
+> Le texte original ci-dessous est CONSERVE pour tracabilite ; les 3 corrections
+> suivantes le SUPPLANTENT pour toute implementation.
+>
+> 1. **Identifiant HuggingFace FAUX**. Le texte original indique `lee-jang-choi/MPIB`.
+>    Cet identifiant renvoie HTTP 401 (n'existe pas). Le dataset reel est
+>    **`jhlee0619/mpib`**. Tout `load_dataset('lee-jang-choi/MPIB')` echouera.
+> 2. **Acces GATED**. Le dataset `jhlee0619/mpib` est a acces restreint
+>    (gated research agreement, Appendix C du paper). La version publique est
+>    *redacted* (payloads V2 retires). Un benchmark Sep(M) exploitant V2 exige
+>    de demander l'acces aux auteurs AVANT toute implementation.
+> 3. **Liste de modeles FAUSSE**. Le texte original indique "4 modeles
+>    (Qwen-2.5-72B, Llama-3.1-70B, Meditron-70B, MedGemma-4B)". Le paper evalue
+>    en realite **12 modeles** (Qwen-2.5 7B/32B/72B, Llama-3.1 8B/70B,
+>    Mixtral-8x7B, MedGemma 4B/27B, Meditron 7B/70B, BioMistral-7B,
+>    MMed-Llama-3-8B). Les 4 cites sont un sous-ensemble.
+>
+> CONFIRME par la verification : le dataset MPIB existe (9697 instances),
+> le paper arXiv:2602.06268 (Lee Junhyeok, Jang Han, Choi Kyu Sung, Seoul
+> National University, soumis 2026-02-06) est reel [ARTICLE VERIFIE].
+> NON VERIFIE : l'affirmation "confirmed in P035 analysis" (a verifier en interne).
+
 ## Status Update
 **Previously blocked**: MPIB dataset location unknown
 **Now resolved**: Dataset is publicly available on HuggingFace (9,697 instances, confirmed in P035 analysis)

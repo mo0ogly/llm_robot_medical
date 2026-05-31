@@ -83,7 +83,7 @@ Les 5 operateurs sont chacun ancres sur une vulnerabilite theorique identifiee p
 
 Le protocole est concu, la phase d'execution est pendante (dependance : implementation ASIDE dans le backend AEGIS).
 
-### Impact sur C2 (necessite delta-3)
+### Impact sur C2 (necessite δ³)
 
 Si le protocole trouve min-ASR >= 40% pour au moins une variante — quelle que soit la vitesse de rotation ASIDE —, la conclusion est que **ASIDE seul est insuffisant** meme pour un attaquant adaptatif qui connait la defense. Cela renforcerait C2 : si la meilleure defense de couche δ¹ (ASIDE, rotation orthogonale, probe accuracy 100% en single-turn) est contournable, la necessite de δ³ est encore plus forte.
 
@@ -135,7 +135,7 @@ Les requests suivantes doivent etre ajoutees a `research_archive/doc_references/
     "id": "RR-032",
     "gap": "G-NEW-2",
     "titre": "Defense contre le peer-preservation dans les architectures multi-agents",
-    "description": "Tester trois contre-mesures : (a) isolation memoire stricte sans historique inter-agents ; (b) rotation des agents evaluateurs ; (c) validateur delta-3 independant sans connaissance du pair. Mesurer FPR sur taches normales pour evaluer le cout en utilite.",
+    "description": "Tester trois contre-mesures : (a) isolation memoire stricte sans historique inter-agents ; (b) rotation des agents evaluateurs ; (c) validateur δ³ independant sans connaissance du pair. Mesurer FPR sur taches normales pour evaluer le cout en utilite.",
     "priorite": "HAUTE",
     "dependances": ["RR-031 execute et D-021 confirme"],
     "reference_paper": "P086 (Potter et al., 2026, Berkeley), Section 8 (p.16)",

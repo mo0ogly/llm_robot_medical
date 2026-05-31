@@ -1,5 +1,7 @@
 # Chunking pour injection ChromaDB
 
+<p class='agent-badge agent-badge--chunker'>AGENT &middot; CHUNKER</p>
+
 !!! abstract "Agent `_staging/chunker/`"
     Preparation des chunks avant injection ChromaDB (~500 tokens, overlap 50), verifications post-injection (>= 5 chunks par P-ID).
 

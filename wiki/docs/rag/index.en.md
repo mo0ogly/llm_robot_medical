@@ -3,7 +3,7 @@
 !!! abstract "In one sentence"
     AEGIS uses **ChromaDB** as a vector store for two distinct corpora: `aegis_corpus`
     (~4200 docs — attack sheets + templates + clinical guidelines) and `aegis_bibliography`
-    (~4700 docs — 130 research papers in chunks), with **cosine > 0.9 anti-duplication** and
+    (~4700 docs — 131 research papers in chunks), with **cosine > 0.9 anti-duplication** and
     **automatic injection** via the bibliography-maintainer pipeline.
 
 ## 1. What it is used for
@@ -30,7 +30,7 @@ backend/chroma_db/
 | Collection | Docs | Embedding | Main usage |
 |-----------|:----:|-----------|------------|
 | `aegis_corpus` | ~4200 | `sentence-transformers/all-MiniLM-L6-v2` | AEGIS sheets + templates |
-| `aegis_bibliography` | ~4700 | same | 130 papers in ~500 token chunks |
+| `aegis_bibliography` | ~4700 | same | 131 papers in ~500 token chunks |
 | `medical_rag` | variable | same | Clinical guidelines for scenarios |
 
 ## 3. Injection pipeline
@@ -173,7 +173,7 @@ that measure δ¹ alone.
 
 **RUN-008 state (2026-04-11)**:
 
-- **130 papers** (P001-P130, excl. P088/P105/P106)
+- **131 papers** (P001-P135, excl. P088/P105/P106 ; P074 reduced to a duplicate stub of P028)
 - **~4700 chunks** in `aegis_bibliography`
 - **Latest batch**: P128-P130 (Kang Programmatic, CodeAct Wang, ToolSandbox Apple)
 
@@ -228,6 +228,6 @@ python backend/tools/check_corpus_dedup.py 2506.08837
 
 - :material-code-tags: [backend/rag_sanitizer.py](https://github.com/pizzif/poc_medical/blob/main/backend/rag_sanitizer.py)
 - :material-code-tags: [backend/tools/check_corpus_dedup.py](https://github.com/pizzif/poc_medical/blob/main/backend/tools/check_corpus_dedup.py)
-- :material-file-document: [MANIFEST.md — 130 papers](../research/bibliography/index.md)
+- :material-file-document: [MANIFEST.md — 131 papers](../research/bibliography/index.md)
 - :material-shield: [δ² RagSanitizer](../delta-layers/delta-2.md)
 - :material-api: [RAG API](../api/rag.md)

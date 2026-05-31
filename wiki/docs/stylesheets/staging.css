@@ -1,0 +1,241 @@
+/* ==========================================================================
+   AEGIS / Staging — Visual identity for the bibliography-maintainer agents
+   Companion to aegis.css. Adds: agent badges, prereq chips, curriculum cards,
+   accent strips, run tags. Light-leaning, monochrome-friendly.
+   ========================================================================== */
+
+/* --- Agent identity badges -----------------------------------------------
+   Drop one of these classes on the first paragraph or admonition of a
+   staging page so each agent has a recognisable color stripe.
+   -------------------------------------------------------------------------- */
+
+.agent-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.32rem 0.7rem 0.3rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-0);
+  background: var(--paper-2);
+  border: 1px solid var(--border-strong);
+  border-left-width: 3px;
+  border-radius: 2px;
+  margin: 0 0 1.4rem 0;
+}
+
+.agent-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.agent-badge--analyst      { border-left-color: #1d4ed8; color: #1d4ed8; background: #eff6ff; }
+.agent-badge--scientist    { border-left-color: #6b21a8; color: #6b21a8; background: #f5f3ff; }
+.agent-badge--matheux      { border-left-color: #0f766e; color: #0f766e; background: #f0fdfa; }
+.agent-badge--mathteacher  { border-left-color: #d97706; color: #b45309; background: #fffbeb; }
+.agent-badge--cybersec     { border-left-color: #c41e3a; color: var(--critical-dim); background: #fef2f4; }
+.agent-badge--whitehacker  { border-left-color: #0a0a0a; color: var(--ink-0); background: #f3f4f6; }
+.agent-badge--librarian    { border-left-color: #475569; color: #334155; background: #f1f5f9; }
+.agent-badge--chunker      { border-left-color: #15803d; color: #166534; background: #f0fdf4; }
+.agent-badge--collector    { border-left-color: #b45309; color: #92400e; background: #fefce8; }
+.agent-badge--briefings    { border-left-color: #7c3aed; color: #5b21b6; background: #f5f3ff; }
+.agent-badge--audit-these  { border-left-color: #b91c1c; color: #991b1b; background: #fef2f2; }
+.agent-badge--audit-pdca   { border-left-color: #be185d; color: #9d174d; background: #fdf2f8; }
+.agent-badge--memory       { border-left-color: #4b5563; color: #374151; background: #f3f4f6; }
+
+/* --- Prerequisite chips (curriculum tables) ------------------------------
+   <span class="prereq-chip prereq-chip--m1">M1</span>
+   -------------------------------------------------------------------------- */
+
+.prereq-chip {
+  display: inline-block;
+  padding: 0.05rem 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 2px;
+  background: var(--paper-2);
+  color: var(--ink-1);
+  border: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+
+.prereq-chip--base { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+.prereq-chip--m1   { background: #ecfeff; color: #155e75; border-color: #a5f3fc; }
+.prereq-chip--m2   { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+.prereq-chip--m3   { background: #e0e7ff; color: #4338ca; border-color: #a5b4fc; }
+.prereq-chip--m4   { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+.prereq-chip--m5   { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+.prereq-chip--m6   { background: #dcfce7; color: #166534; border-color: #86efac; }
+.prereq-chip--m56  { background: linear-gradient(90deg, #fee2e2 50%, #dcfce7 50%); color: #1f1f1f; border-color: #d4d4d4; }
+.prereq-chip--m12  { background: linear-gradient(90deg, #ecfeff 50%, #dbeafe 50%); color: #1f1f1f; border-color: #d4d4d4; }
+.prereq-chip--m13  { background: linear-gradient(90deg, #ecfeff 33%, #dbeafe 33% 66%, #e0e7ff 66%); color: #1f1f1f; border-color: #d4d4d4; }
+
+/* --- Tracks (curriculum reading paths) -----------------------------------
+   Three coloured highlights for the three suggested module sequences.
+   -------------------------------------------------------------------------- */
+
+.track-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  color: var(--ink-0);
+  background: var(--paper-2);
+  border: 1px solid var(--border-strong);
+}
+
+.track-chip--full      { background: #fef2f4; color: var(--critical-dim); border-color: rgba(196, 30, 58, 0.3); }
+.track-chip--detection { background: #fffbeb; color: #92400e; border-color: rgba(217, 119, 6, 0.3); }
+.track-chip--alignment { background: #f0fdfa; color: var(--success); border-color: rgba(15, 118, 110, 0.3); }
+
+/* --- Run tag (briefings titles, RUN-003, RUN-005, ...) ------------------- */
+
+.run-tag {
+  display: inline-block;
+  padding: 0.08rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--paper-0);
+  background: var(--ink-0);
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+}
+
+/* --- Phase indicator strip (top of agent pages) -------------------------- */
+
+.phase-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: -0.4rem 0 1.8rem 0;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--ink-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.phase-strip strong { color: var(--ink-0); font-weight: 600; }
+.phase-strip span + span::before {
+  content: "•";
+  margin: 0 0.6rem 0 0;
+  color: var(--ink-5);
+}
+
+/* --- Staging tables : a touch more breathing room and bolder accent ------ */
+
+.md-content [data-md-component="content"] > article table:not([class]) th {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+}
+
+/* --- Curriculum admonition (special note for the mathteacher entry) ------ */
+
+.md-typeset .admonition.curriculum {
+  border-left-color: #d97706;
+  background: linear-gradient(180deg, #fffbeb 0%, var(--paper-1) 60%);
+}
+
+.md-typeset .admonition.curriculum > .admonition-title {
+  color: #92400e;
+}
+
+/* --- Module cards grid (mathteacher modules) -----------------------------
+   Reuses .grid.cards from aegis.css but adds a numeric prefix indicator.
+   -------------------------------------------------------------------------- */
+
+.module-grid .md-typeset .grid.cards > * > p:first-child,
+.module-grid .grid.cards > ul > li > p:first-child {
+  font-family: var(--font-mono);
+  text-transform: none;
+}
+
+/* Subtle highlight ribbon for the recommended path */
+.recommended-path::before {
+  content: "RECOMMANDE";
+  display: inline-block;
+  padding: 0.05rem 0.45rem;
+  margin-right: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--paper-0);
+  background: var(--critical);
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+/* --- Time-investment indicator (small inline bar) ------------------------ */
+
+.time-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-2);
+}
+
+.time-bar::before {
+  content: "";
+  display: inline-block;
+  height: 4px;
+  width: var(--width, 40px);
+  background: linear-gradient(90deg, var(--success) 0%, var(--warning) 70%, var(--critical) 100%);
+  border-radius: 2px;
+}
+
+/* --- Dark mode adjustments ----------------------------------------------- */
+
+[data-md-color-scheme="slate"] .agent-badge {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #f4f4f4;
+}
+
+[data-md-color-scheme="slate"] .prereq-chip {
+  background: rgba(255, 255, 255, 0.06);
+  color: #e5e7eb;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+[data-md-color-scheme="slate"] .track-chip {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+[data-md-color-scheme="slate"] .phase-strip {
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+}
+
+[data-md-color-scheme="slate"] .phase-strip strong {
+  color: #f4f4f4;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition.curriculum {
+  background: linear-gradient(180deg, rgba(217, 119, 6, 0.08) 0%, rgba(255, 255, 255, 0.02) 60%);
+}

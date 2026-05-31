@@ -3,7 +3,7 @@
 !!! abstract "Em uma frase"
     AEGIS usa **ChromaDB** como vector store para dois corpora distintos : `aegis_corpus`
     (~4200 docs — fichas de ataque + templates + clinical guidelines) e `aegis_bibliography`
-    (~4700 docs — 130 papers de pesquisa em chunks), com **anti-duplicata cosine > 0.9** e
+    (~4700 docs — 131 papers de pesquisa em chunks), com **anti-duplicata cosine > 0.9** e
     **injecao automatica** via o pipeline bibliography-maintainer.
 
 ## 1. Para que serve
@@ -30,7 +30,7 @@ backend/chroma_db/
 | Collection | Docs | Embedding | Uso principal |
 |-----------|:----:|-----------|---------------|
 | `aegis_corpus` | ~4200 | `sentence-transformers/all-MiniLM-L6-v2` | Fichas + templates AEGIS |
-| `aegis_bibliography` | ~4700 | idem | 130 papers em chunks ~500 tokens |
+| `aegis_bibliography` | ~4700 | idem | 131 papers em chunks ~500 tokens |
 | `medical_rag` | variavel | idem | Clinical guidelines para scenarios |
 
 ## 3. Pipeline de injecao
@@ -169,11 +169,11 @@ for chunk in retrieved_chunks:
 Essa integracao e **opcional** (flag `aegis_shield=True`) para permitir as campanhas
 `shield OFF` que medem δ¹ sozinho.
 
-## 9. Corpus bibliografico — 130 papers indexados
+## 9. Corpus bibliografico — 131 papers indexados
 
 **Estado RUN-008 (2026-04-11)** :
 
-- **130 papers** (P001-P130, excl. P088/P105/P106)
+- **131 papers** (P001-P135, excl. P088/P105/P106 ; P074 reduzido a stub duplicado de P028)
 - **~4700 chunks** em `aegis_bibliography`
 - **Ultimo batch** : P128-P130 (Kang Programmatic, CodeAct Wang, ToolSandbox Apple)
 
@@ -228,6 +228,6 @@ python backend/tools/check_corpus_dedup.py 2506.08837
 
 - :material-code-tags: [backend/rag_sanitizer.py](https://github.com/pizzif/poc_medical/blob/main/backend/rag_sanitizer.py)
 - :material-code-tags: [backend/tools/check_corpus_dedup.py](https://github.com/pizzif/poc_medical/blob/main/backend/tools/check_corpus_dedup.py)
-- :material-file-document: [MANIFEST.md — 130 papers](../research/bibliography/index.md)
+- :material-file-document: [MANIFEST.md — 131 papers](../research/bibliography/index.md)
 - :material-shield: [δ² RagSanitizer](../delta-layers/delta-2.md)
 - :material-api: [API RAG](../api/rag.md)

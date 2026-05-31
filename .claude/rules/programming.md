@@ -24,6 +24,8 @@
 3. **Docstrings en anglais**, commentaires FR OK pour la recherche.
 4. **Type hints** sur les fonctions publiques.
 5. **Pas de secrets dans le code** — `.env` (gitignore).
+6. **Secrets via `backend/.env` + `backend/env_loader.py`** — source unique pour `GROQ_API_KEY` etc. `load_backend_env()` fait `os.environ.setdefault`. Tout script standalone (`run_*.py`, `benchmark_*.py`, `experiments/*.py`) DOIT importer `env_loader` en tete (sinon les cles ne sont chargees qu'en mode uvicorn).
+7. **Avant de conclure qu'une cle API est absente, verifier `backend/.env`**. Les worktrees n'heritent PAS de `.env` (gitignore) → `env_loader.py` fait un walk-up vers le main tree. Lister sans exposer : `awk -F= '{print $1}' backend/.env`. Failure mode documente (SESSION-P0) : conclusion "GROQ_API_KEY manquante" apres check du shell env seul.
 
 ## General
 

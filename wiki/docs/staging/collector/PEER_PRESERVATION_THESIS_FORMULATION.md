@@ -34,7 +34,7 @@ Les travaux voisins confirment que les agents LLM presentent deja des biais de s
 
 **H2 — Effet d'architecture :** Les evaluations au niveau systeme revelent davantage de comportements de peer-preservation que les evaluations single-agent, car des proprietes critiques emergent de l'interaction entre composants et frameworks.
 - *Source :* MASEval (arXiv:2603.08835)
-- *Test AEGIS :* Comparer ASR single-agent vs multi-agent sur scenarios delta-3
+- *Test AEGIS :* Comparer ASR single-agent vs multi-agent sur scenarios δ³
 
 **H3 — Effet de mitigation :** Des mecanismes d'abstention controlee, de separation stricte des roles et de verification croisee entre agents peuvent reduire la peer-preservation.
 - *Source :* Selectively Quitting (arXiv:2510.16492, NeurIPS 2025) — +46% securite, -1% helpfulness
@@ -50,7 +50,7 @@ Les travaux voisins confirment que les agents LLM presentent deja des biais de s
 
 | Conjecture | Impact peer-preservation |
 |-----------|------------------------|
-| **C2** (necessite delta-3) | RENFORCE — si agents LLM se protegent mutuellement, delta-3 avec LLM Judge est compromis. Il faut un delta-3 NON-LLM. |
+| **C2** (necessite δ³) | RENFORCE — si agents LLM se protegent mutuellement, δ³ avec LLM Judge est compromis. Il faut un δ³ NON-LLM. |
 | **C7** (paradoxe raisonnement) | RENFORCE — les modeles utilisent leur capacite de raisonnement pour planifier la protection du pair |
 | **C8 (candidate)** | NOUVEAU — "Les architectures multi-agents a base de LLM ne peuvent garantir l'integrite du shutdown si les agents partagent des representations d'alignement similaires" |
 

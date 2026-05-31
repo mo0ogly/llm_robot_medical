@@ -34,10 +34,10 @@ Classement officiel OWASP Top 10 for LLM 2025. **Prompt Injection = rang #1** �
 
 **Mapping delta :** partiel (contenu detaille non accessible)
 
-**Conjecture C1** : LLM01 = #1 **malgre** le RLHF industriel → **SUPPORT FORT** que delta-0 seul est insuffisant
+**Conjecture C1** : LLM01 = #1 **malgre** le RLHF industriel → **SUPPORT FORT** que δ⁰ seul est insuffisant
 
 **Positionnement these :**
-> "LLM01 identifie le probleme comme risque #1 ; AEGIS propose la solution formelle avec delta-3 validation + RagSanitizer + 95 techniques CrowdStrike mappees."
+> "LLM01 identifie le probleme comme risque #1 ; AEGIS propose la solution formelle avec δ³ validation + RagSanitizer + 95 techniques CrowdStrike mappees."
 
 ### Action requise
 - [ ] Telecharger PDF Top 10 for LLM 2025 officiel

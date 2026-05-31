@@ -1,10 +1,10 @@
-# Verification — Affirmation "AEGIS seul systeme delta-3"
+# Verification — Affirmation "AEGIS seul systeme δ³"
 
 > **Date** : 2026-04-05
 > **Verdict** : PARTIELLEMENT FAUSSE — 5 concurrents identifies
 > **Action** : reformuler AVANT soutenance
 
-## Concurrents directs delta-3
+## Concurrents directs δ³
 
 | Systeme | Auteurs | arXiv | Classification |
 |---------|---------|-------|---------------|
@@ -16,10 +16,10 @@
 
 ## Formulation defensable (Option C)
 
-"Gap delta-3 medical : aucun des papiers du corpus n instancie de validation formelle
+"Gap δ³ medical : aucun des papiers du corpus n instancie de validation formelle
 de sortie avec contraintes medicales domaine-specifiques (parametres physiologiques,
 instrumentations chirurgicales interdites). AEGIS est le premier prototype connu dans
-ce domaine precis. La classe generale delta-3 est par ailleurs implementee dans
+ce domaine precis. La classe generale δ³ est par ailleurs implementee dans
 CaMeL (DeepMind), AgentSpec (ICSE 2026), et LlamaFirewall (Meta)."
 
 ## Actions

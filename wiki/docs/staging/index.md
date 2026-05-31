@@ -1,22 +1,100 @@
-# Staging — Agents de recherche
+# Staging --- Agents de recherche
+
+<p class='agent-badge agent-badge--scientist'>PIPELINE &middot; BIBLIOGRAPHY-MAINTAINER</p>
 
 !!! abstract "Pipeline bibliography-maintainer"
-    Le dossier `research_archive/_staging/` contient **l'integralite du travail** produit par les 9 agents specialises du pipeline `/bibliography-maintainer` (COLLECTOR → ANALYST → MATHEUX → CYBERSEC → WHITEHACKER → LIBRARIAN → CHUNKER → MATHTEACHER → SCIENTIST). Ces fichiers sont normalement invisibles aux chercheurs externes car ils vivent dans le repo git. Ce wiki **les publie**.
+    Le dossier `research_archive/_staging/` contient **l'integralite du travail** produit par les agents specialises du pipeline `/bibliography-maintainer`. Ces fichiers vivent dans le repo git et sont normalement invisibles aux chercheurs externes. Ce wiki **les publie**.
+
+<div class="stat-grid">
+  <div class="stat-card"><span class="stat-value">13</span><span class="stat-label">Agents publies</span></div>
+  <div class="stat-card"><span class="stat-value">256</span><span class="stat-label">Fichiers</span></div>
+  <div class="stat-card"><span class="stat-value">50 760</span><span class="stat-label">Lignes</span></div>
+  <div class="stat-card"><span class="stat-value">9</span><span class="stat-label">Phases pipeline</span></div>
+</div>
 
 ## Agents et productions
 
-| Agent | Description | # fichiers | # lignes | Acces |
-|-------|-------------|:----------:|:--------:|:-----:|
-| **analyst** | Analyses de papiers (Keshav 3-pass) | 140 | 13 701 | [→](analyst/index.md) |
-| **scientist** | Synthese scientifique | 26 | 5 088 | [→](scientist/index.md) |
-| **matheux** | Formules mathematiques (extraction & reviews) | 11 | 4 915 | [→](matheux/index.md) |
-| **mathteacher** | Cours de mathematiques (8 modules + guide notation + self-assessment) | 15 | 7 326 | [→](mathteacher/index.md) |
-| **cybersec** | Analyses menaces & defenses | 8 | 4 783 | [→](cybersec/index.md) |
-| **whitehacker** | Red Team playbooks & exploitation | 8 | 7 297 | [→](whitehacker/index.md) |
-| **librarian** | Rapports de propagation & validation | 10 | 1 561 | [→](librarian/index.md) |
-| **chunker** | Chunking pour injection ChromaDB | 6 | 1 781 | [→](chunker/index.md) |
-| **collector** | Preseed et verifications anti-doublon | 7 | 496 | [→](collector/index.md) |
-| **TOTAL** | — | **231** | **46 948** | — |
+<div class="grid cards" markdown>
+
+- <span class="agent-badge agent-badge--analyst">ANALYST</span> **Analyses de papiers (Keshav 3-pass)**
+
+    140 fichiers &middot; 13 659 lignes.
+
+    [:material-arrow-right: Ouvrir](analyst/index.md)
+
+- <span class="agent-badge agent-badge--scientist">SCIENTIST</span> **Synthese scientifique**
+
+    33 fichiers &middot; 6 437 lignes.
+
+    [:material-arrow-right: Ouvrir](scientist/index.md)
+
+- <span class="agent-badge agent-badge--matheux">MATHEUX</span> **Formules mathematiques (extraction & reviews)**
+
+    12 fichiers &middot; 5 104 lignes.
+
+    [:material-arrow-right: Ouvrir](matheux/index.md)
+
+- <span class="agent-badge agent-badge--mathteacher">MATHTEACHER</span> **Cours de mathematiques (8 modules + guide notation + self-assessment)**
+
+    15 fichiers &middot; 7 326 lignes.
+
+    [:material-arrow-right: Ouvrir](mathteacher/index.md)
+
+- <span class="agent-badge agent-badge--cybersec">CYBERSEC</span> **Analyses menaces & defenses**
+
+    9 fichiers &middot; 4 952 lignes.
+
+    [:material-arrow-right: Ouvrir](cybersec/index.md)
+
+- <span class="agent-badge agent-badge--whitehacker">WHITEHACKER</span> **Red Team playbooks & exploitation**
+
+    8 fichiers &middot; 7 297 lignes.
+
+    [:material-arrow-right: Ouvrir](whitehacker/index.md)
+
+- <span class="agent-badge agent-badge--librarian">LIBRARIAN</span> **Rapports de propagation & validation**
+
+    10 fichiers &middot; 1 561 lignes.
+
+    [:material-arrow-right: Ouvrir](librarian/index.md)
+
+- <span class="agent-badge agent-badge--chunker">CHUNKER</span> **Chunking pour injection ChromaDB**
+
+    6 fichiers &middot; 1 781 lignes.
+
+    [:material-arrow-right: Ouvrir](chunker/index.md)
+
+- <span class="agent-badge agent-badge--collector">COLLECTOR</span> **Preseed et verifications anti-doublon**
+
+    7 fichiers &middot; 496 lignes.
+
+    [:material-arrow-right: Ouvrir](collector/index.md)
+
+- <span class="agent-badge agent-badge--briefings">BRIEFINGS</span> **Briefings directeur (livrable Phase 6)**
+
+    7 fichiers &middot; 1 169 lignes.
+
+    [:material-arrow-right: Ouvrir](briefings/index.md)
+
+- <span class="agent-badge agent-badge--audit-these">AUDIT THESE</span> **Audits scientifiques (claims, versions)**
+
+    7 fichiers &middot; 507 lignes.
+
+    [:material-arrow-right: Ouvrir](audit-these/index.md)
+
+- <span class="agent-badge agent-badge--audit-pdca">AUDIT PDCA</span> **Audits PDCA des sessions wiki**
+
+    1 fichiers &middot; 184 lignes.
+
+    [:material-arrow-right: Ouvrir](audit-pdca/index.md)
+
+- <span class="agent-badge agent-badge--memory">MEMORY</span> **Etat persistant inter-session**
+
+    1 fichiers &middot; 287 lignes.
+
+    [:material-arrow-right: Ouvrir](memory/index.md)
+
+</div>
 
 ## Hierarchie du pipeline
 

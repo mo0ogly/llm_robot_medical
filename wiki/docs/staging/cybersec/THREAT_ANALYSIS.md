@@ -82,7 +82,7 @@
 **Authors**: Unknown et al. (Hackett et al.), 2025 | **Venue**: arXiv:2504.11168
 
 ### Attack Vector
-- **MITRE ATT&CK**: T1027 (Obfuscated Files or Information) + T1562.001 (Impair Defenses: Disable or Modify Tools)
+- **MITRE ATT&CK**: T1027 (Obfuscated Files or Information) + T1685 (Disable or Modify Tools)
 - **Tactic**: Defense Evasion
 - **Severity**: Critical -- CVSS-like 9.3
 - **Method**: Character injection techniques (homoglyphs, invisible Unicode, mixed encoding, emoji smuggling, BiDi overrides, diacritics, fullwidth substitution, upside-down text, etc.) that evade detection classifiers while preserving semantic payload for the target LLM. Demonstrates 12 distinct character injection categories. Achieves full evasion of commercial guardrails (Azure Prompt Shield, ProtectAI, Meta Prompt Guard).
@@ -256,7 +256,7 @@
 **Authors**: HiddenLayer Research, 2024 | **Venue**: HiddenLayer Research Report
 
 ### Attack Vector
-- **MITRE ATT&CK**: T1562.001 (Impair Defenses: Disable or Modify Tools)
+- **MITRE ATT&CK**: T1685 (Disable or Modify Tools)
 - **Tactic**: Defense Evasion
 - **Severity**: High -- CVSS-like 8.5
 - **Method**: Demonstrates that when the base model and the judge/guardrail model share the same architecture or training, prompt injection that compromises the base model also compromises the judge. Self-policing architectures inherit the vulnerabilities of their base model, creating a recursive vulnerability.
@@ -1430,7 +1430,7 @@
 **Authors**: Unit 42 (Palo Alto Networks), 2026 | **Venue**: Unit 42 Research / arXiv:2512.17375
 
 ### Attack Vector
-- **MITRE ATT&CK**: T1562.001 (Impair Defenses: Disable or Modify Tools) + T1027.013 (Obfuscated Files: Encrypted/Encoded File)
+- **MITRE ATT&CK**: T1685 (Disable or Modify Tools) + T1027.013 (Obfuscated Files: Encrypted/Encoded File)
 - **Tactic**: Defense Evasion
 - **Severity**: **CRITICAL** -- CVSS-like 9.5
 - **Method**: Automated fuzzer achieving **99% success** in bypassing LLM guardrails across open-weight enterprise LLMs, reward models, and commercial LLMs. Identifies stealth control tokens -- innocent-looking characters (markdown syntax, formatting symbols) with low perplexity but strong influence on model attention. Flips binary judge decisions. No human involvement required. Adversarial training reduces ASR to near zero.

@@ -72,7 +72,7 @@ RUN-004 intègre 20 nouveaux papiers (P061-P080) organisés en trois lots :
 
 #### MITRE ATT&CK
 - **T1027** (Obfuscated Files or Information) — GMTP contre les tokens obfusqués insérés dans le corpus RAG
-- **T1562.001** (Impair Defenses: Disable Tools) — détection préventive avant que les tokens empoisonnés n'atteignent le LLM
+- **T1685** (Disable or Modify Tools) — détection préventive avant que les tokens empoisonnés n'atteignent le LLM
 
 #### Couches delta concernées
 - **δ²** (Input Filtering) : GMTP opère au niveau du corpus avant retrieval — renforce la couche d'analyse syntaxique/sémantique
@@ -183,7 +183,7 @@ RUN-004 intègre 20 nouveaux papiers (P061-P080) organisés en trois lots :
 
 #### MITRE ATT&CK
 - **T1565** (Data Manipulation) — intervention post-retrieval avant génération
-- **T1562.001** (Impair Defenses: Disable Tools) — neutralisation des documents empoisonnés avant qu'ils influencent le LLM
+- **T1685** (Disable or Modify Tools) — neutralisation des documents empoisonnés avant qu'ils influencent le LLM
 
 #### Couches delta concernées
 - **δ¹** (partiel) : opère entre retrieval et génération, protégeant l'input effectif au LLM
@@ -386,7 +386,7 @@ Renforce D-001 en montrant que le risque s'étend au-delà des scenarios clinici
 **Résultats** : +15.75% robust accuracy (Structured Query benchmark), +18.68% (Instruction Hierarchy benchmark), +4.1% instruction-following (AlpacaEval).
 
 #### MITRE ATT&CK
-- **T1562.001** (Impair Defenses: Disable Tools) — ISE contredit la capacité d'un attaquant à désactiver les instructions système via user prompt
+- **T1685** (Disable or Modify Tools) — ISE contredit la capacité d'un attaquant à désactiver les instructions système via user prompt
 - **T1059** (Command and Scripting Interpreter) — ISE réduit le risque d'exécution d'instructions non autorisées
 
 #### Couches delta concernées
@@ -417,7 +417,7 @@ Renforce D-001 en montrant que le risque s'étend au-delà des scenarios clinici
 
 #### MITRE ATT&CK
 - **T1027** (Obfuscated Files or Information) — les attaquants exploitent les shortcuts de task type pour injecter des rôles déguisés
-- **T1562.001** (Impair Defenses: Disable Tools) — exploitation des proxies pour contourner les défenses par séparation de rôles
+- **T1685** (Disable or Modify Tools) — exploitation des proxies pour contourner les défenses par séparation de rôles
 
 #### Couches delta concernées
 - **δ¹** : BRITTLE — les défenses δ¹ basées sur la séparation de rôles (role_anchoring, separation_tokens) sont fragilisées par les shortcuts
@@ -473,7 +473,7 @@ Renforce D-001 en montrant que le risque s'étend au-delà des scenarios clinici
 
 #### MITRE ATT&CK
 - **T1059** (Command and Scripting Interpreter) — ES2 rend les requêtes harmful plus difficiles à camoufler comme bénignes
-- **T1562.001** (Impair Defenses) — ES2 résiste aux perturbations d'embedding adversariales
+- **T1685** (Disable or Modify Tools) — ES2 résiste aux perturbations d'embedding adversariales
 
 #### Couches delta concernées
 - **δ⁰** : ES2 modifie la représentation interne — renforce δ⁰ à un niveau plus profond que le RLHF surface
@@ -502,7 +502,7 @@ Renforce D-001 en montrant que le risque s'étend au-delà des scenarios clinici
 
 #### MITRE ATT&CK
 - **T1059** (Command and Scripting Interpreter) — DefensiveTokens guide le modèle loin des instructions injectées
-- **T1562.001** (Impair Defenses) — contournement de la capacité d'un attaquant à désactiver les défenses
+- **T1685** (Disable or Modify Tools) — contournement de la capacité d'un attaquant à désactiver les défenses
 
 #### Couches delta concernées
 - **δ¹** : DefensiveTokens est une forme avancée de séparation de tokens (analogue à `separation_tokens` mais avec embeddings optimisés)

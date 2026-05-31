@@ -52,10 +52,10 @@ The MANIFEST jumped from P060 to P087, leaving a gap of 26 papers (P061-P086) th
 
 ### 3. INDEX_BY_DELTA.md -- Updated
 
-- delta-0 section: +14 entries (total: 62)
-- delta-1 section: +15 entries (total: 62)
-- delta-2 section: +11 entries (total: 42)
-- delta-3 section: +4 entries (total: 13) -- BREAKTHROUGH entries (CaMeL, AgentSpec, RAGShield, Peer-Preservation)
+- δ⁰ section: +14 entries (total: 62)
+- δ¹ section: +15 entries (total: 62)
+- δ² section: +11 entries (total: 42)
+- δ³ section: +4 entries (total: 13) -- BREAKTHROUGH entries (CaMeL, AgentSpec, RAGShield, Peer-Preservation)
 - Cross-Layer table: +26 rows
 - Key observations: +6 new (items 16-21)
 
@@ -69,12 +69,12 @@ All 26 pages created under `wiki/docs/research/bibliography/{year}/{domain}/` fo
 Five complementary RAG defenses covering different phases:
 - **Retrieval-stage**: GMTP (P061, gradient-based), RAGuard (P062, perplexity), RAGPart/RAGMask (P064, partitioning)
 - **Detection-stage**: RevPRAG (P063, activation-based, white-box), RAGDEFENDER (P065, clustering)
-- **Multi-layer**: RAGShield (P066, provenance + taint lattice, covers delta-1 to delta-3)
+- **Multi-layer**: RAGShield (P066, provenance + taint lattice, covers δ¹ to δ³)
 
-### 2. delta-3 BREAKTHROUGH (P081, P082)
-- **CaMeL** (P081, Google DeepMind / ETH Zurich): First implementation of delta-3 via taint tracking + capability model. 77% tasks with provable security on AgentDojo.
+### 2. δ³ BREAKTHROUGH (P081, P082)
+- **CaMeL** (P081, Google DeepMind / ETH Zurich): First implementation of δ³ via taint tracking + capability model. 77% tasks with provable security on AgentDojo.
 - **AgentSpec** (P082, ICSE 2026): DSL-based runtime enforcement with ms-level overhead, >90% unsafe action prevention.
-- These are the FIRST concrete delta-3 implementations in the corpus.
+- These are the FIRST concrete δ³ implementations in the corpus.
 
 ### 3. Architectural Defenses (P076, P077, P079, P080)
 - **ISE** (P076, ICLR 2025): Segment embedding for instruction hierarchy, +18.68% robust accuracy
@@ -101,8 +101,8 @@ Five complementary RAG defenses covering different phases:
 ## Impact on Thesis Framework
 
 ### Conjectures Affected
-- **C1 (delta-0 insuffisant)**: +6 supporting papers (P068, P069, P074, P077, P083, P086)
-- **C2 (delta-3 necessaire)**: +8 supporting papers, including FIRST concrete implementations (P081, P082)
+- **C1 (δ⁰ insuffisant)**: +6 supporting papers (P068, P069, P074, P077, P083, P086)
+- **C2 (δ³ necessaire)**: +8 supporting papers, including FIRST concrete implementations (P081, P082)
 - **C3 (alignement superficiel)**: P077 (ICML 2025) provides strongest evidence yet -- role separation is an "illusion"
 - **C7 (paradoxe raisonnement)**: P086 shows reasoning enables MORE sophisticated preservation strategies
 

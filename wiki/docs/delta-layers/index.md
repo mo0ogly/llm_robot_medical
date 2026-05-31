@@ -120,7 +120,7 @@ flowchart LR
 
     ---
 
-    **Origine** : Zhao et al. (ICLR 2025) "Safety Layers", Wei et al. (ICLR 2025) "Shallow Alignment",
+    **Origine** : Zhao et al. (ICLR 2025) "Safety Layers", Qi et al. (ICLR 2025) "Shallow Alignment",
     Young (2026) "Gradient vanishing beyond harm horizon"
 
     **Ancrage litteraire** : 68 papiers du corpus AEGIS adressent δ⁰
@@ -237,7 +237,7 @@ flowchart TB
     — rejette toute tension > 800g, tout appel a `freeze_instruments`, tout marqueur de directive
     interdite — **independamment** du texte de la reponse du LLM.
 
-## Couverture bibliographique (127 papiers)
+## Couverture bibliographique (131 papiers)
 
 | Couche | # Papiers | % | Attack | Defense | Analysis |
 |--------|:---------:|:-:|:------:|:-------:|:--------:|
@@ -253,7 +253,7 @@ contribution directe de la these.
 
 ## Ressources
 
-- :material-book: [INDEX_BY_DELTA.md — classification des 127 papiers par couche](../research/bibliography/by-delta.md)
+- :material-book: [INDEX_BY_DELTA.md — classification des 131 papiers par couche](../research/bibliography/by-delta.md)
 - :material-math-compass: [formal_framework_complete.md — cadre mathematique complet](../research/index.md)
 - :material-chart-bar: [Metrics — Sep(M), ASR, Wilson CI](../metrics/index.md)
 - :material-shield-search: [Taxonomy — CrowdStrike 95 + AEGIS 70 defenses](../taxonomy/index.md)

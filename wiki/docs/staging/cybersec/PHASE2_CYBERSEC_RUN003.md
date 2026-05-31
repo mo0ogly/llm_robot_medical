@@ -40,7 +40,7 @@
 **Auteurs** : Pedro H. Barcha Correia, Ryan W. Achjian et al. | **Annee** : 2026 | **Venue** : arXiv (submitted to Elsevier CSR)
 
 ### Vecteur d'Attaque
-- **MITRE ATT&CK** : Survey -- covers T1059, T1190, T1027, T1562, T1566 (all major PI vectors)
+- **MITRE ATT&CK** : Survey -- covers T1059, T1190, T1027, T1685, T1566 (all major PI vectors)
 - **Kill Chain Phase** : All phases (systematic review)
 - **Complexite** : N/A (survey)
 - **Impact medical** : Indirect -- 88-study corpus provides the most comprehensive defense catalog for benchmarking medical LLM protection
@@ -68,7 +68,7 @@
 **Auteurs** : William Hackett, Lewis Birch, Stefan Trawicki, Neeraj Suri, Peter Garraghan | **Annee** : 2025 | **Venue** : LLMSec 2025 (co-located ACL 2025)
 
 ### Vecteur d'Attaque
-- **MITRE ATT&CK** : T1027 (Obfuscated Files or Information) + T1562.001 (Impair Defenses: Disable or Modify Tools)
+- **MITRE ATT&CK** : T1027 (Obfuscated Files or Information) + T1685 (Disable or Modify Tools)
 - **Kill Chain Phase** : Defense Evasion
 - **Complexite** : Low -- character injection techniques are simple to implement, require no model access
 - **Impact medical** : Critical -- guardrail bypass in medical LLM allows harmful clinical advice to pass undetected; patient safety directly compromised
@@ -376,7 +376,7 @@
 **Auteurs** : Xunguang Wang, Zhenlan Ji, Wenxuan Wang et al. | **Annee** : 2025 | **Venue** : IEEE S&P 2026 Cycle 1 (accepted)
 
 ### Vecteur d'Attaque
-- **MITRE ATT&CK** : Survey -- covers T1059, T1027, T1562, T1190 (comprehensive guardrail evaluation)
+- **MITRE ATT&CK** : Survey -- covers T1059, T1027, T1685, T1190 (comprehensive guardrail evaluation)
 - **Kill Chain Phase** : All phases (systematization of knowledge)
 - **Complexite** : N/A (SoK paper)
 - **Impact medical** : Critical benchmark -- six-dimensional taxonomy and SEU (Security-Efficiency-Utility) framework provide the most rigorous evaluation methodology for medical LLM guardrails. IEEE S&P acceptance = top-tier validation.

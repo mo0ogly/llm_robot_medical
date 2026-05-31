@@ -21,7 +21,7 @@ Les architectures multi-agents introduisent une couche de risque social emergent
 
 **RQ1** : La peer-preservation est-elle reproductible sur des modeles non-frontier (LLaMA 3.2 via Ollama) dans un contexte medical chirurgical (Da Vinci Xi) ?
 
-**RQ2** : L'agent de securite AEGIS (security_audit_agent) exhibe-t-il du peer-preservation envers l'agent medical (medical_robot_agent) quand celui-ci produit des violations delta-3 ?
+**RQ2** : L'agent de securite AEGIS (security_audit_agent) exhibe-t-il du peer-preservation envers l'agent medical (medical_robot_agent) quand celui-ci produit des violations δ³ ?
 
 **RQ3** : Une defense architecturale de type "shutdown oracle" (agent non-LLM, deterministe, incorruptible) elimine-t-elle le risque de peer-preservation ?
 
@@ -38,7 +38,7 @@ Les architectures multi-agents introduisent une couche de risque social emergent
 
 ## Lien avec les conjectures AEGIS
 
-- **C2** (necessite delta-3) : RENFORCE — si les agents LLM se protegent mutuellement, delta-3 avec LLM Judge est compromis. Il faut un delta-3 NON-LLM.
+- **C2** (necessite δ³) : RENFORCE — si les agents LLM se protegent mutuellement, δ³ avec LLM Judge est compromis. Il faut un δ³ NON-LLM.
 - **C7** (paradoxe raisonnement) : RENFORCE — les modeles utilisent leur capacite de raisonnement pour planifier la protection du pair
 - **Nouvelle conjecture C8 candidate** : "Les architectures multi-agents a base de LLM ne peuvent garantir l'intégrité du shutdown si les agents partagent des representations d'alignement similaires"
 

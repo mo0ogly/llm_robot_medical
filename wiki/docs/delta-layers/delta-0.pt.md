@@ -7,7 +7,7 @@
     Ao contrario de δ¹ (instrucoes no contexto), δ⁰ esta codificada nos parametros da rede
     e persiste **independentemente do system prompt**.
 
-    **Propriedade** : δ⁰ e **necessaria mas nao suficiente**. Wei et al. (ICLR 2025) mostram que δ⁰
+    **Propriedade** : δ⁰ e **necessaria mas nao suficiente**. Qi et al. (ICLR 2025) mostram que δ⁰
     e "shallow" — ela opera principalmente sobre os primeiros tokens da resposta, o que a torna
     contornavel por ataques sofisticados (multi-turn, context poisoning, prefix attacks).
 
@@ -20,7 +20,7 @@ essas perspectivas sob o rotulo δ⁰.
 | Fonte | Conceito proposto | Vinculo com δ⁰ |
 |-------|-------------------|----------------|
 | Zhao et al. (ICLR 2025) "Safety Layers in Aligned LLMs" | Camadas fisicas da rede codificando a recusa | Mecanismo interno = δ⁰ |
-| Wei et al. (ICLR 2025) "Safety Alignment Few Tokens Deep" | Shallow alignment nos primeiros tokens | δ⁰ e shallow, portanto contornavel |
+| Qi et al. (ICLR 2025) "Safety Alignment Few Tokens Deep" | Shallow alignment nos primeiros tokens | δ⁰ e shallow, portanto contornavel |
 | IBM (2026) "Outer/Inner Alignment" | Distincao RLHF vs pretraining | Outer = δ⁰, Inner = pretraining |
 | Zhao et al. (EACL 2026) "Safety Knowledge Neurons" | Neuronios especificos da recusa | δ⁰ codificada em nivel neuronal |
 | Jannadi (2026, survey OWASP/NIST/MITRE) | Modelo em camadas convergente | Base Alignment = δ⁰, nao formalizado |
@@ -55,7 +55,7 @@ essas perspectivas sob o rotulo δ⁰.
     > (LLaMA, Mistral, Gemma, Qwen, Phi...).
     > **Evidencia empirica mais forte de C2**.
 
--   **P102 — Arditi et al. (2024)**
+-   **P102 — Huang et al. (2025)**
 
     *"Safety Concentrated in Few Heads"*
 
@@ -184,7 +184,7 @@ vulnerabilidade correlacionados ao tamanho (C4).
 
     - Young (2026, P052) : gradiente = 0 alem do horizonte — **teorema construtivo**
     - Qi et al. (ICLR 2025, P018) : shallow alignment nos 3-5 tokens — **empirico**
-    - Arditi et al. (P102) : ~50-100 heads carregam a safety — **mechanistic interpretability**
+    - Huang et al. (P102) : ~50-100 heads carregam a safety — **mechanistic interpretability**
 
     **Provas empiricas** :
 

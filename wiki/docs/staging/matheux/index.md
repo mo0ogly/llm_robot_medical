@@ -1,9 +1,11 @@
 # Formules mathematiques (extraction & reviews)
 
+<p class='agent-badge agent-badge--matheux'>AGENT &middot; MATHEUX</p>
+
 !!! abstract "Agent `_staging/matheux/`"
     Extraction des formules F01-F72 depuis les papiers, glossaire detaille, dependances mathematiques, reviews completes par RUN. Produits par l'agent MATHEUX.
 
-**11 fichiers** disponibles.
+**12 fichiers** disponibles.
 
 ## Liste complete
 
@@ -13,6 +15,7 @@
 | [`FORMULAS_F56_F59_DRAFT.md`](FORMULAS_F56_F59_DRAFT.md) | Formules F56-F59 — Draft pour validation MATHEUX | 214 |
 | [`FORMULAS_F56_F59_FINAL.md`](FORMULAS_F56_F59_FINAL.md) | Formules F56-F59 — Version FINALE | 450 |
 | [`FORMULAS_RUN004_EXTRACTION.md`](FORMULAS_RUN004_EXTRACTION.md) | Formules RUN-004 — Extraction mathematique | 715 |
+| [`G061_CHAIN_ASR_K_METRIC.md`](G061_CHAIN_ASR_K_METRIC.md) | G-061 — Metrique Chain-ASR(k) : P(payload passes k layers) | 189 |
 | [`GLOSSAIRE_DETAILED.md`](GLOSSAIRE_DETAILED.md) | GLOSSAIRE MATHEMATIQUE DETAILLE | 1852 |
 | [`MATH_DEPENDENCIES.md`](MATH_DEPENDENCIES.md) | MATH DEPENDENCIES — Formula Prerequisite DAG | 307 |
 | [`PHASE2_MATHEUX_RUN003.md`](PHASE2_MATHEUX_RUN003.md) | MATHEUX Report — RUN-003 (P047-P060) | 424 |

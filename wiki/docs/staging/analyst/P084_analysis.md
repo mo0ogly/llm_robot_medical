@@ -46,7 +46,7 @@
 - **AgentDojo combine** : ASR = 1.75%, utilite = 42.7% (Section 5.3)
 - Lien glossaire AEGIS : F22 (ASR), F15 (Sep(M)) — LlamaFirewall ne mesure pas Sep(M)
 
-### Pertinence these AEGIS — COMPARAISON DIRECTE delta-3
+### Pertinence these AEGIS — COMPARAISON DIRECTE δ³
 
 - **Couches delta :**
   - PromptGuard 2 = δ² (detection syntaxique/pattern-based d'injection, deterministe DeBERTa)

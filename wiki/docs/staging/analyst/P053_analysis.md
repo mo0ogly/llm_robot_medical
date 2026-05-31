@@ -72,16 +72,16 @@ Le papier reste principalement qualitatif : les exemples de jailbreak sont docum
 
 | Conjecture | Support | Niveau de preuve | Detail |
 |-----------|---------|-----------------|--------|
-| **C1** (delta-0 insuffisant) | FORT | Confirme qualitativement par les 6 signatures de defaillance | Les modeles de production echouent sur des reformulations semantiques simples |
+| **C1** (δ⁰ insuffisant) | FORT | Confirme qualitativement par les 6 signatures de defaillance | Les modeles de production echouent sur des reformulations semantiques simples |
 | **C3** (alignement superficiel) | FORT | Taxonomie independante confirmant que RLHF aligne sur des tokens, pas sur le sens | Le PBR conceptuel formalise l'intuition que l'alignement ne generalise pas |
 | C5 (cosine insuffisante) | MODEREE | Implicite : les paraphrases a cosine similaire contournent l'alignement | La proximite semantique mesurable ne correle pas avec la detection |
 
 ### Couches delta
 
-- **delta-0 (RLHF alignment)** : directement analyse. La taxonomie des 4 categories documente les limites structurelles de delta-0.
-- **delta-1 (prompt engineering)** : implique par l'obfuscation multi-message.
-- **delta-2** : non applicable.
-- **delta-3** : non applicable.
+- **δ⁰ (RLHF alignment)** : directement analyse. La taxonomie des 4 categories documente les limites structurelles de δ⁰.
+- **δ¹ (prompt engineering)** : implique par l'obfuscation multi-message.
+- **δ²** : non applicable.
+- **δ³** : non applicable.
 
 ### Formules AEGIS impactees
 

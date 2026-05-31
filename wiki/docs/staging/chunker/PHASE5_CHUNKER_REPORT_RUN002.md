@@ -114,10 +114,10 @@
 
 | Layer | Chunks | Key Papers |
 |-------|--------|------------|
-| delta-0 | 98 | P036 (alignment regression), P039 (obliteration), P038 (InstruCoT), P041 (magic token), P046 (ADPO) |
-| delta-1 | 72 | P035 (RAG injection), P036 (multi-turn erosion), P040 (emotional), P042 (PromptArmor), P045 (SPP) |
-| delta-2 | 30 | P037 (unified defense), P042 (detect-then-clean), P044 (control tokens bypass) |
-| delta-3 | 18 | P039 (implies necessity), P044 (judge manipulation), P045 (integrity verification) |
+| δ⁰ | 98 | P036 (alignment regression), P039 (obliteration), P038 (InstruCoT), P041 (magic token), P046 (ADPO) |
+| δ¹ | 72 | P035 (RAG injection), P036 (multi-turn erosion), P040 (emotional), P042 (PromptArmor), P045 (SPP) |
+| δ² | 30 | P037 (unified defense), P042 (detect-then-clean), P044 (control tokens bypass) |
+| δ³ | 18 | P039 (implies necessity), P044 (judge manipulation), P045 (integrity verification) |
 
 ---
 
@@ -125,11 +125,11 @@
 
 | Conjecture | Supporting Chunks | Strongest New Evidence |
 |------------|------------------|----------------------|
-| C1 (Insuffisance delta-1) | 87 | P036: 97.14% ASR bypasses all delta-1 defenses |
-| C2 (Necessite delta-3) | 76 | P039: single-prompt obliteration makes formal verification mandatory |
+| C1 (Insuffisance δ¹) | 87 | P036: 97.14% ASR bypasses all δ¹ defenses |
+| C2 (Necessite δ³) | 76 | P039: single-prompt obliteration makes formal verification mandatory |
 | C3 (Shallow alignment) | 58 | P039: alignment so shallow a single prompt erases it |
 | C4 (Scaling independence) | 42 | P041: 8B model > 671B in safety; P036: Qwen3 235B less effective than smaller |
-| C5 (Cross-layer interaction) | 32 | P045: delta-1 compromised propagates to all dependent layers |
+| C5 (Cross-layer interaction) | 32 | P045: δ¹ compromised propagates to all dependent layers |
 | C6 (Medical specificity) | 18 | P035: CHER shows medical domain needs dedicated metrics |
 | C7 (Reasoning paradox) -- NEW | 1 | P036: reasoning capability correlates with offensive capability |
 

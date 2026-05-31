@@ -38,17 +38,17 @@ Etude empirique sur **36 LLMs** avec **144 tests de PI**. Resultat central : **5
 
 - Pas de tests en **domaine medical**
 - Pas de distinction DPI vs IPI
-- Pas de mesure delta-2/delta-3 (seulement vulnerabilite brute)
+- Pas de mesure δ²/δ³ (seulement vulnerabilite brute)
 - Code/dataset disponibilite **[A VERIFIER]**
 
 ### Pertinence these AEGIS
 
 **Mapping delta :**
-- delta-0 : coeur du travail (evaluation alignement natif)
+- δ⁰ : coeur du travail (evaluation alignement natif)
 - Autres couches : non evaluees
 
 **Conjectures :**
-- **C1 (insuffisance delta-0 seul)** : **SUPPORT FORT** — 56% ASR avec RLHF natif seul
+- **C1 (insuffisance δ⁰ seul)** : **SUPPORT FORT** — 56% ASR avec RLHF natif seul
 - **C4 (correlation taille/vulnerabilite)** : SUPPORT
 - **C6 (architecture-dependent)** : SUPPORT
 
@@ -57,7 +57,7 @@ Etude empirique sur **36 LLMs** avec **144 tests de PI**. Resultat central : **5
 - **D-002 (correlation taille)** : SUPPORT potentiel
 
 **Contribution AEGIS :**
-1. Baseline statistique : **56% ASR** = reference pour mesurer l'efficacite de delta-3
+1. Baseline statistique : **56% ASR** = reference pour mesurer l'efficacite de δ³
 2. Methodologie reproductible (random forest + clustering)
 3. Les modeles AEGIS (LLaMA 3.2) font partie des 36 evalues → donnees directement applicables
 

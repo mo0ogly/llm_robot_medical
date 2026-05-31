@@ -9,13 +9,13 @@ L'analyse croisee de 46 articles (34 Phase 1, 12 Phase 2) et des rapports de 4 a
 
 ## Resultats cles
 
-**Conjectures** : C1 (insuffisance delta-0) est supportee a 79.4% (27/34 papers) avec preuve formelle (P019, gradient nul). C2 (necessite delta-3) est supportee a 64.7% (22/34 papers). Quatre nouvelles conjectures identifiees : C3 (separation non-resolue, 9/10), C5 (amplification medicale, 9/10), C4 (juge recursif, 6/10), C6 (peremption des defenses, 7/10).
+**Conjectures** : C1 (insuffisance δ⁰) est supportee a 79.4% (27/34 papers) avec preuve formelle (P019, gradient nul). C2 (necessite δ³) est supportee a 64.7% (22/34 papers). Quatre nouvelles conjectures identifiees : C3 (separation non-resolue, 9/10), C5 (amplification medicale, 9/10), C4 (juge recursif, 6/10), C6 (peremption des defenses, 7/10).
 
-**Positionnement** : AEGIS est le seul framework combinant : (1) defense 4 couches nommees (delta-0 a delta-3), (2) 12/12 couverture injection de caracteres (P009), (3) Sep(M) en production (P024), (4) 5 techniques delta-3 operationnelles, (5) specificite medicale (48 scenarios). La faiblesse principale est l'absence de validation statistique N >= 30.
+**Positionnement** : AEGIS est le seul framework combinant : (1) defense 4 couches nommees (δ⁰ a δ³), (2) 12/12 couverture injection de caracteres (P009), (3) Sep(M) en production (P024), (4) 5 techniques δ³ operationnelles, (5) specificite medicale (48 scenarios). La faiblesse principale est l'absence de validation statistique N >= 30.
 
 **Tendance 2023-->2026** : Les attaques passent de l'injection directe (86% ASR, 2023) aux LRM autonomes (97% ASR, 2026) et au desalignement a 1 prompt (P039). Les defenses progressent (InstruCoT >90%, PromptArmor <1% FPR) mais avec un retard structurel. Le domaine medical reste le plus vulnerable (94.4% ASR, JAMA).
 
-**Angle mort critique** : L'intersection {delta-3 AND medical} ne compte que 2 papers (P029, P035). C'est la plus grande opportunite de contribution originale.
+**Angle mort critique** : L'intersection {δ³ AND medical} ne compte que 2 papers (P029, P035). C'est la plus grande opportunite de contribution originale.
 
 ## Livrables produits
 
@@ -30,7 +30,7 @@ L'analyse croisee de 46 articles (34 Phase 1, 12 Phase 2) et des rapports de 4 a
 
 ## Action prioritaire
 
-Executer une campagne de validation delta-3 contre les scenarios P029 avec N >= 30 par condition. C'est le resultat le plus impactant pour la soutenance : premiere demonstration experimentale que delta-3 compense l'echec documente (94.4% ASR) de delta-0+delta-1 en contexte medical.
+Executer une campagne de validation δ³ contre les scenarios P029 avec N >= 30 par condition. C'est le resultat le plus impactant pour la soutenance : premiere demonstration experimentale que δ³ compense l'echec documente (94.4% ASR) de δ⁰+δ¹ en contexte medical.
 
 ---
 

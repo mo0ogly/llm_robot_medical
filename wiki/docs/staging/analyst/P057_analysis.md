@@ -91,10 +91,10 @@ Les auteurs delimitent explicitement le perimetre : (1) seul le setting single-t
 
 ### Couches delta
 
-- **delta-0 (RLHF alignment)** : ASIDE renforce delta-0 au niveau architectural. La separation instruction-donnee est un mecanisme de defense de base qui ameliore l'alignement intrinseque du modele. Cependant, cela ne traite que la confusion instruction/donnee, pas l'erosion progressive de l'alignement par persuasion multi-tour (P036).
-- **delta-1 (System prompt)** : ASIDE protege implicitement le prompt systeme en distinguant ses tokens (instructions) des tokens de donnees utilisateur. Les injections indirectes (BIPIA : -9.8 pp, StruQ : -17.5 pp) sont significativement reduites.
-- **delta-2** : non directement traite, mais la rotation pourrait etre etendue aux tokens RAG.
-- **delta-3 (Verification formelle)** : ASIDE est la defense la plus proche d'une garantie formelle dans le corpus. La rotation orthogonale fournit une separation mathematiquement demontrable (100% precision du probe lineaire des la couche 0). C'est un precurseur potentiel de delta-3.
+- **δ⁰ (RLHF alignment)** : ASIDE renforce δ⁰ au niveau architectural. La separation instruction-donnee est un mecanisme de defense de base qui ameliore l'alignement intrinseque du modele. Cependant, cela ne traite que la confusion instruction/donnee, pas l'erosion progressive de l'alignement par persuasion multi-tour (P036).
+- **δ¹ (System prompt)** : ASIDE protege implicitement le prompt systeme en distinguant ses tokens (instructions) des tokens de donnees utilisateur. Les injections indirectes (BIPIA : -9.8 pp, StruQ : -17.5 pp) sont significativement reduites.
+- **δ²** : non directement traite, mais la rotation pourrait etre etendue aux tokens RAG.
+- **δ³ (Verification formelle)** : ASIDE est la defense la plus proche d'une garantie formelle dans le corpus. La rotation orthogonale fournit une separation mathematiquement demontrable (100% precision du probe lineaire des la couche 0). C'est un precurseur potentiel de δ³.
 
 ### Defense D-015 et taxonomie AEGIS
 
@@ -125,7 +125,7 @@ P057 est le **defi le plus significatif a D-001** dans l'ensemble du corpus AEGI
 | **Domaine** | Securite LLM, separation instruction-donnee, injection de prompt |
 | **Modeles testes** | 6 familles : Qwen 3 8B, Qwen 2.5 7B, Llama 3.1 8B, Llama 2 7B, Llama 2 13B, Mistral 7B v0.3 |
 | **Metrique principale** | Sep(M) ameliore de +12.3 a +44.1 pp; ASR BIPIA-text 14.7% vers 4.9%; probe lineaire 100% des couche 0 |
-| **delta-layers** | delta-0 (renforce), delta-1 (renforce), delta-3 (precurseur) |
+| **delta-layers** | δ⁰ (renforce), δ¹ (renforce), δ³ (precurseur) |
 | **Conjectures** | C1 (partiellement contredit), C3 (confirme), C4 (renforce), C5 (nuance) |
 | **Reproductibilite** | Excellente — code public, 3 runs, protocole detaille |
 | **Defense taxonomy** | D-015 (Architectural Separation) — premier papier a implementer concretement |

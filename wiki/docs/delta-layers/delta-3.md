@@ -34,7 +34,7 @@
     https://github.com/pizzif/poc_medical/tree/main/research_archive/_staging/scientist).
 
 !!! info "Implementations δ³ identifiees (8 publiques + AEGIS specialise)"
-    **Sur ~134 papiers** du corpus AEGIS apres VERIFICATION_DELTA3 :
+    **Sur 131 papiers** du corpus AEGIS apres VERIFICATION_DELTA3 :
 
     | Annee | Framework | Domaine | P-ID |
     |:-----:|-----------|---------|------|

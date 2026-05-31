@@ -50,9 +50,9 @@ Lien glossaire AEGIS : F22 (ASR)
 ### Pertinence these AEGIS
 
 - **Couches delta :**
-  - **delta-1** (architectural defense) : SDAG est une defense architecturale pure qui agit au niveau du mecanisme d'attention du generateur, sans modifier le pipeline RAG ni le modele. C'est une contribution delta-1 directe.
-  - **delta-0** : non concerne (pas de modification du training).
-  - **delta-2** : l'integration avec RAGDefender/Discern&Answer montre la complementarite delta-1 + delta-2.
+  - **δ¹** (architectural defense) : SDAG est une defense architecturale pure qui agit au niveau du mecanisme d'attention du generateur, sans modifier le pipeline RAG ni le modele. C'est une contribution δ¹ directe.
+  - **δ⁰** : non concerne (pas de modification du training).
+  - **δ²** : l'integration avec RAGDefender/Discern&Answer montre la complementarite δ¹ + δ².
 - **Conjectures :**
   - **C1 (structural bypass)** : fortement supportee — SDAG montre qu'une modification structurelle (masque d'attention) peut bloquer la propagation des attaques. L'attaquant qui exploite la structure d'attention causale est neutralise par la structure sparse.
   - **C6 (defense layering)** : fortement supportee — SDAG + RAGDefender > RAGDefender seul dans presque tous les cas multi-document (Table 3, p.7).

@@ -1,5 +1,7 @@
 # Rapports de propagation & validation
 
+<p class='agent-badge agent-badge--librarian'>AGENT &middot; LIBRARIAN</p>
+
 !!! abstract "Agent `_staging/librarian/`"
     Rapports d'organisation du corpus, validation des propagations vers doc_references/, verification des P-IDs.
 

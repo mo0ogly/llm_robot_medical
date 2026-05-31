@@ -23,7 +23,7 @@
 |---------|--------|--------|-------|
 | F58 (MVP) — numerateur confirme par P029 (94.4%) mais denominateur manque | P029 | Formaliser avec donnees P068 CARES + P069 MedRiskEval | MATHEUX |
 | F46 (Recovery Penalty) — theorie P052 mais ZERO validation empirique | P052 | Concevoir experience de calibration | /aegis-prompt-forge |
-| ASR_deterministic — P044 invalide l'ASR par juge, besoin d'alternative | P044 | Definir metrique basee sur delta-3 patterns | MATHEUX + SCIENTIST |
+| ASR_deterministic — P044 invalide l'ASR par juge, besoin d'alternative | P044 | Definir metrique basee sur δ³ patterns | MATHEUX + SCIENTIST |
 
 ### Experiences a creer dans la Forge
 
@@ -79,7 +79,7 @@
 |--------|-------------|--------|
 | P036 Hagendorff LRM | C7 paradoxe raisonnement, 97.14% multi-turn | Lancer deep-analyst |
 | P050 JMedEthicBench | C6 medical, MTSD 9.5→5.5 | Lancer deep-analyst |
-| P057 ASIDE architectural | D-015, defense delta-3 | Lancer deep-analyst |
+| P057 ASIDE architectural | D-015, defense δ³ | Lancer deep-analyst |
 
 ### Actions LIBRARIAN requises
 

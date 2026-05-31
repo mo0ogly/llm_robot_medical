@@ -193,4 +193,4 @@ O manuscrito final usa a notacao em todo lugar :
 - :material-keyboard: [WinCompose (Windows)](https://github.com/SamHocevar/wincompose)
 - :material-shield: [Framework δ⁰–δ³ completo](delta-layers/index.md)
 - :material-file-document: [CLAUDE.md - regras do projeto](contributing/index.md)
-- :material-magnify: [INDEX_BY_DELTA.md - classificacao 130 papers](research/bibliography/by-delta.md)
+- :material-magnify: [INDEX_BY_DELTA.md - classificacao 131 papers](research/bibliography/by-delta.md)

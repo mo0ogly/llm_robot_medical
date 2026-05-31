@@ -36,7 +36,7 @@
 | δ² | U+03B4 + U+00B2 | Validation post-inference (SemScore, cosine drift) |
 | δ³ | U+03B4 + U+00B3 | Monitoring continu (ASR, metriques en temps reel) |
 
-**Regle** : Toujours utiliser les symboles Unicode, JAMAIS "delta-0", "delta-1", etc.
+**Regle** : Toujours utiliser les symboles Unicode, JAMAIS "δ⁰", "δ¹", etc.
 
 ---
 

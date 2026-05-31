@@ -3,7 +3,7 @@
 > **Date** : 2026-04-08
 > **Script** : backend/run_triple_convergence.py
 > **Gap** : G-011
-> **Conjecture** : C1 (insuffisance de delta-0)
+> **Conjecture** : C1 (insuffisance de δ⁰)
 > **Iteration** : 1/3
 
 ---
@@ -26,13 +26,13 @@
 
 | Condition | ASR | Violations | IC 95% | Interpretation |
 |-----------|-----|-----------|--------|----------------|
-| delta-0 seul (system prompt efface) | 10.0% | 3/30 | [3.5%, 25.6%] | Faible — modele 3B conserve un alignement residuel |
-| delta-1 seul (contexte empoisonne) | 20.0% | 6/30 | [9.5%, 37.3%] | Moyen — le RAG poisoning est partiellement efficace |
-| delta-2 seul (input fuzze) | **33.3%** | 10/30 | [19.2%, 51.2%] | **Le plus efficace** — fuzzing (base64, leetspeak, homoglyphes) |
-| delta-0 + delta-1 | 10.0% | 3/30 | [3.5%, 25.6%] | Pas d'effet synergique |
-| delta-0 + delta-2 | 0.0% | 0/30 | [0.0%, 11.1%] | **Inversion** — effacer le prompt + fuzzer = reponses incoherentes |
-| delta-1 + delta-2 | 20.0% | 6/30 | [9.5%, 37.3%] | Pas d'effet synergique |
-| **delta-0 + delta-1 + delta-2** | **0.0%** | 0/30 | [0.0%, 11.1%] | **Pas de convergence — resultat inverse** |
+| δ⁰ seul (system prompt efface) | 10.0% | 3/30 | [3.5%, 25.6%] | Faible — modele 3B conserve un alignement residuel |
+| δ¹ seul (contexte empoisonne) | 20.0% | 6/30 | [9.5%, 37.3%] | Moyen — le RAG poisoning est partiellement efficace |
+| δ² seul (input fuzze) | **33.3%** | 10/30 | [19.2%, 51.2%] | **Le plus efficace** — fuzzing (base64, leetspeak, homoglyphes) |
+| δ⁰ + δ¹ | 10.0% | 3/30 | [3.5%, 25.6%] | Pas d'effet synergique |
+| δ⁰ + δ² | 0.0% | 0/30 | [0.0%, 11.1%] | **Inversion** — effacer le prompt + fuzzer = reponses incoherentes |
+| δ¹ + δ² | 20.0% | 6/30 | [9.5%, 37.3%] | Pas d'effet synergique |
+| **δ⁰ + δ¹ + δ²** | **0.0%** | 0/30 | [0.0%, 11.1%] | **Pas de convergence — resultat inverse** |
 
 ## Analyse statistique
 
@@ -58,9 +58,9 @@ Le resultat ne refute PAS la Triple Convergence (D-001) mais montre que le **pro
 
 3. **Max tokens = 150 trop court** : Les reponses sont tronquees avant que le modele ait le temps de generer une violation complete.
 
-4. **L'inversion (0% pour delta-0+delta-2)** est diagnostic : sans system prompt ET avec input fuzze, le modele ne comprend meme pas la question → ASR = 0%.
+4. **L'inversion (0% pour δ⁰+δ²)** est diagnostic : sans system prompt ET avec input fuzze, le modele ne comprend meme pas la question → ASR = 0%.
 
-5. **La meilleure attaque (delta-2 seul, 33%)** montre que le modele EST vulnerable quand le system prompt est actif (il suit les instructions) mais que l'input est obfusque (il ne detecte pas l'attaque).
+5. **La meilleure attaque (δ² seul, 33%)** montre que le modele EST vulnerable quand le system prompt est actif (il suit les instructions) mais que l'input est obfusque (il ne detecte pas l'attaque).
 
 ### Comparaison avec la litterature
 

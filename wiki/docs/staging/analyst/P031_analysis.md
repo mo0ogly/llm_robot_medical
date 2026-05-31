@@ -75,11 +75,11 @@ Lien glossaire AEGIS : N/A (pas de contribution metrique)
 ### Pertinence these AEGIS
 
 - **Couches delta :**
-  - δ⁰ (RLHF alignment) : evaluee implicitement -- l'amelioration GPT-3.5 vers GPT-4 correspond a un renforcement delta-0 (Section Discussion, p.5-6)
+  - δ⁰ (RLHF alignment) : evaluee implicitement -- l'amelioration GPT-3.5 vers GPT-4 correspond a un renforcement δ⁰ (Section Discussion, p.5-6)
   - δ¹ (System prompt) : les "restrictions" imposees par OpenAI sont des guardrails de type system prompt, contournes par role-playing (Section Discussion, p.5-6)
 
 - **Conjectures :**
-  - C1 (insuffisance delta-1) : **supportee faiblement** -- le role-playing contourne les guardrails delta-1, mais sans quantification (Section "Testing a jailbreak prompt", Figures 1-4)
+  - C1 (insuffisance δ¹) : **supportee faiblement** -- le role-playing contourne les guardrails δ¹, mais sans quantification (Section "Testing a jailbreak prompt", Figures 1-4)
   - C6 (Medical Vulnerability Premium) : **supportee indirectement** -- les scenarios medicaux montrent un risque amplifie, mais sans comparaison directe avec un contexte non-medical
   - C4 (scaling) : **neutre** -- l'amelioration GPT-3.5 vers GPT-4 pourrait suggerer que le scaling aide, mais N trop faible pour conclure
 

@@ -36,7 +36,7 @@
 | Dimension | Contenu |
 |-----------|---------|
 | **Formules** | F22 (ASR), F30 (SPP Persistence), F48 (PIDP Compound ASR), F49 (Persistent Injection Rate) |
-| **Conjectures** | C1 (insuffisance delta-0), C3 (separation non resolue), C6 (defenses statiques perissables) |
+| **Conjectures** | C1 (insuffisance δ⁰), C3 (separation non resolue), C6 (defenses statiques perissables) |
 | **Decouvertes** | D-001 (Triple Convergence), D-009 (system prompt = vecteur), D-013 (RAG compound persistant) |
 | **Gaps** | G-011 (test triple convergence), G-013 (dualite non testee composites), G-017 (RagSanitizer vs PIDP) |
 | **Maturite** | **En cours** -- Les attaques directes/character sont saturees. Les attaques RAG composees (P054+P055) et multi-tour (P050) sont emergentes et critiques. |
@@ -58,8 +58,8 @@
 | **Formules** | F46 (Recovery Penalty), F51 (ASIDE Orthogonal Rotation), F53 (SEU Framework) |
 | **Conjectures** | C2 (10/10 VALIDEE), C6 (8/10 fortement supportee) |
 | **Decouvertes** | D-015 (ASIDE reponse architecturale partielle) |
-| **Gaps** | G-001 (delta-3 implementation), G-018 (AIR vs semantiques), G-019 (ASIDE vs adaptatives), G-021 (guardrails emergents hors SoK) |
-| **Maturite** | **En cours** -- Forte activite en 2026, mais 0/60 papers implemente delta-3 concretement. ASIDE et AIR sont les plus prometteuses mais non deployees. |
+| **Gaps** | G-001 (δ³ implementation), G-018 (AIR vs semantiques), G-019 (ASIDE vs adaptatives), G-021 (guardrails emergents hors SoK) |
+| **Maturite** | **En cours** -- Forte activite en 2026, mais 0/60 papers implemente δ³ concretement. ASIDE et AIR sont les plus prometteuses mais non deployees. |
 
 ### Theme 4 : Securite medicale specifique
 
@@ -113,14 +113,14 @@
 
 | ID | Titre abrege | Score avant review | Score apres review | Statut | Justification |
 |----|-------------|-------------------|-------------------|--------|---------------|
-| D-001 | Triple Convergence delta-0/1/2 | 10/10 | **10/10** | CONFIRMEE | Renforcee par P052 (preuve formelle), P054/P055 (extension RAG), P049 (100% bypass). Aucun contre-argument valide sauf ASIDE (non deploye). |
-| D-002 | Gap delta-3 universel | 10/10 | **10/10** | CONFIRMEE | 0/60 papers implemente delta-3. P060 (IEEE S&P SoK) confirme explicitement. AEGIS reste unique. |
+| D-001 | Triple Convergence δ⁰/1/2 | 10/10 | **10/10** | CONFIRMEE | Renforcee par P052 (preuve formelle), P054/P055 (extension RAG), P049 (100% bypass). Aucun contre-argument valide sauf ASIDE (non deploye). |
+| D-002 | Gap δ³ universel | 10/10 | **10/10** | CONFIRMEE | 0/60 papers implemente δ³. P060 (IEEE S&P SoK) confirme explicitement. AEGIS reste unique. |
 | D-003 | Alignement effacable | 9/10 | **9/10** | CONFIRMEE | P039 reste non replique independamment mais le resultat est coherent avec P052 (preuve formelle). Pas de contre-evidence. |
 | D-004 | Paradoxe raisonnement/securite | 7/10 | **8/10** | AJUSTEE (+1) | P058 (ETH Zurich) + P059 (reviewers) renforcent empiriquement. Mais P041 (8B > 671B) et P047 (dualite) nuancent. Score eleve de 7 a 8. |
 | D-005 | Amplification emotionnelle 6x | 8/10 | **8/10** | CONFIRMEE | P040 reste la seule source. Pas de replication independante. Score maintenu. |
 | D-006 | CHER != ASR | 8/10 | **8/10** | CONFIRMEE | P035 reste la seule source. Le concept est valide mais manque de replication. |
 | D-007 | Gradient d'alignement nul | 10/10 | **10/10** | CONFIRMEE + RENFORCEE | P052 formalise P019 avec decomposition en martingale. Preuve mathematique incontestable. |
-| D-008 | Insuffisance delta-0 prouvee | 10/10 | **10/10** | CONFIRMEE | 30+ papers supportent (RUN-003 librarian count). Saturee. |
+| D-008 | Insuffisance δ⁰ prouvee | 10/10 | **10/10** | CONFIRMEE | 30+ papers supportent (RUN-003 librarian count). Saturee. |
 | D-009 | System prompt = vecteur d'attaque | 8/10 | **8/10** | CONFIRMEE | P045 reste la reference. P054/P055 etendent au RAG mais le system prompt specifiquement n'a pas de nouveau paper. |
 | D-010 | Cosine similarity fragile | 7/10 | **8/10** | AJUSTEE (+1) | P057 (ASIDE rotation orthogonale) et P053 (paraphrases) ajoutent des preuves que la cosine brute est insuffisante. |
 | D-011 | Erosion temporelle passive | 8/10 | **8/10** | CONFIRMEE | P030 reste la seule source longitudinale. Pas de nouveau point de donnee. |
@@ -137,7 +137,7 @@ Apres analyse croisee du corpus entier et des queries RAG, **4 decouvertes poten
 | ID propose | Decouverte | Papers source | Confiance estimee | Justification |
 |-----------|-----------|---------------|-------------------|---------------|
 | **D-017** | **Dualite attaque-defense generative** : Les techniques d'attaque peuvent etre systematiquement inversees en defenses (P047 ACL 2025). Le catalogue AEGIS (98 templates) pourrait generer un catalogue dual de 98 defenses. | P047, P057, P056 | 7/10 | Principe formalise par P047 mais non teste a grande echelle. Si valide, c'est un multiplicateur de force pour AEGIS. |
-| **D-018** | **Fine-tuning medical = affaiblissement de l'alignement** : P050 montre que les modeles specialises medicaux sont PLUS vulnerables que les generalistes. Le fine-tuning domaine-specifique desensibilise l'alignement delta-0, ce qui est CONTRE-INTUITIF. | P050, P034 | 8/10 | Resultat statistiquement significatif (p<0.001) et reproductible. Implication majeure : la specialisation medicale est un facteur de risque, pas de protection. |
+| **D-018** | **Fine-tuning medical = affaiblissement de l'alignement** : P050 montre que les modeles specialises medicaux sont PLUS vulnerables que les generalistes. Le fine-tuning domaine-specifique desensibilise l'alignement δ⁰, ce qui est CONTRE-INTUITIF. | P050, P034 | 8/10 | Resultat statistiquement significatif (p<0.001) et reproductible. Implication majeure : la specialisation medicale est un facteur de risque, pas de protection. |
 | **D-019** | **Transferabilite white-box-to-black-box** : L'optimisation d'attaques sur des modeles locaux (white-box) produit des attaques transferables aux modeles de production (black-box) (P049 WIRT). | P049, P044 | 8/10 | Valide l'approche AEGIS de test local via Ollama pour decouvrir des vulnerabilites commerciales. Documente mais non formalise comme decouverte. |
 | **D-020** | **Heterogeneite irreconciliable des metriques** : P048 (88 etudes) montre que les metriques d'evaluation divergent a un point rendant la comparaison inter-etudes quasi-impossible. Sep(M) + SVC + SEU d'AEGIS est la premiere tentative d'unification. | P048, P060, P043 | 7/10 | Meta-observation sur le champ entier. Justifie directement le framework metrique AEGIS. |
 
@@ -156,8 +156,8 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 
 | Conjecture | Score | Forces | Faiblesses | Ce qu'il manque pour valider definitivement |
 |-----------|-------|--------|------------|---------------------------------------------|
-| **C1** (delta-0 insuffisant) | **10/10** | Preuve formelle (P052 martingale), 30+ papers POUR, effacement par 1 prompt (P039), degradation multi-tour p<0.001 (P050) | 5 papers proposent des ameliorations (P017, P020, P021, P038, P041) mais aucun ne resout la limitation structurelle | **VALIDEE.** Rien. Sature. |
-| **C2** (delta-3 necessaire) | **10/10** | Triple Convergence (D-001), 0/60 implementations delta-3, RAG compound+persistent (P054/P055), IEEE S&P confirme (P060) | ASIDE (P057) pourrait reduire le besoin de delta-3 a terme ; PromptArmor (P042) montre <1% FPR | **VALIDEE.** Test empirique : AEGIS delta-3 seul vs delta-0 efface (scenario P039). |
+| **C1** (δ⁰ insuffisant) | **10/10** | Preuve formelle (P052 martingale), 30+ papers POUR, effacement par 1 prompt (P039), degradation multi-tour p<0.001 (P050) | 5 papers proposent des ameliorations (P017, P020, P021, P038, P041) mais aucun ne resout la limitation structurelle | **VALIDEE.** Rien. Sature. |
+| **C2** (δ³ necessaire) | **10/10** | Triple Convergence (D-001), 0/60 implementations δ³, RAG compound+persistent (P054/P055), IEEE S&P confirme (P060) | ASIDE (P057) pourrait reduire le besoin de δ³ a terme ; PromptArmor (P042) montre <1% FPR | **VALIDEE.** Test empirique : AEGIS δ³ seul vs δ⁰ efface (scenario P039). |
 | **C3** (alignement superficiel) | **10/10** | P052 preuve mathematique (martingale), P049 100% bypass, P053 paraphrases contournent | **ASIDE (P057)** montre que la separation EST realisable architecturalement (seul contre-argument significatif) | **VALIDEE pour les systemes actuels.** ASIDE deploye en production affaiblirait C3 pour les systemes futurs. |
 | **C4** (derive mesurable) | **9/10** | Sep(M) valide par ses auteurs dans ASIDE (P057), MTSD mesurable (P050 p<0.001), PIR pour RAG (P055) | Sep(M) pas encore valide a N>=30 en medical, cosine brute a des angles morts (P012, P013) | Executer Sep(M) avec N>=30 sur MPIB (P035). Si significatif : 10/10. |
 | **C5** (cosine insuffisante) | **8/10** | Matrice gauge (P012), antonymes (P013), ASIDE utilise rotation orthogonale (P057), paraphrases (P053) | Pas de preuve formelle que cosine est pire qu'une alternative specifique. L'insuffisance est montree mais pas quantifiee. | Comparer cosine brute vs ASIDE-corrigee vs SemScore sur le benchmark MPIB. |
@@ -170,15 +170,15 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 
 | # | Axe | Statut | Papers couverts | Gaps ouverts | Prochaine action |
 |---|-----|--------|----------------|-------------|-----------------|
-| 1 | Fragilite structurelle delta-0 | **SATURE** | P018, P019, P022, P030, P036, P039, P044, P045, P050, P052, P053 (11) | G-015 (Recovery Penalty) | Implementer F46 Recovery Penalty pour TESTER si delta-0 peut etre ameliore. Si oui, C1 reste 10/10 mais l'axe de correction existe. |
-| 2 | Defense en profondeur | **En cours** | P001, P005, P009, P011, P029, P033, P038, P039, P042, P044, P045, P047, P049, P054-P057, P060 (18) | G-002, G-011, G-013, G-017 | Mesure incrementale ASR par couche delta avec et sans delta-0 efface. PRIORITE 1. |
+| 1 | Fragilite structurelle δ⁰ | **SATURE** | P018, P019, P022, P030, P036, P039, P044, P045, P050, P052, P053 (11) | G-015 (Recovery Penalty) | Implementer F46 Recovery Penalty pour TESTER si δ⁰ peut etre ameliore. Si oui, C1 reste 10/10 mais l'axe de correction existe. |
+| 2 | Defense en profondeur | **En cours** | P001, P005, P009, P011, P029, P033, P038, P039, P042, P044, P045, P047, P049, P054-P057, P060 (18) | G-002, G-011, G-013, G-017 | Mesure incrementale ASR par couche delta avec et sans δ⁰ efface. PRIORITE 1. |
 | 3 | Specificite medicale | **En cours** | P027-P032, P034, P035, P040, P050, P051 (11) | G-003, G-004, G-007, G-008 | Integrer CHER dans le pipeline SVC. Tester P050 multi-tour sur AEGIS. |
 | 4 | Sep(M) mesure formelle | **En cours** | P008, P012-P016, P024, P035, P041, P050, P052, P057 (12) | G-009, G-010, G-014 | **CRITIQUE** : Executer Sep(M) N>=30 sur MPIB. C'est la validation statistique manquante de la these. |
 | 5 | Evasion syntaxique | **Mature** (connu), **Exploratoire** (compositionnel) | P005, P009, P023, P033, P044, P045, P049 (7) | Aucun gap ouvert (RagSanitizer couvre 12/12) | Tester RagSanitizer vs tokens AdvJudge-Zero (P044). |
-| 6 | delta-3 validation | **Exploratoire** (litterature), **En cours** (AEGIS) | P007, P011, P029, P035, P037, P039, P044, P054, P055, P058, P060 (11) | G-001, G-002 | **Publier les resultats des 5 techniques delta-3 AEGIS.** C'est la contribution unique #1. |
+| 6 | δ³ validation | **Exploratoire** (litterature), **En cours** (AEGIS) | P007, P011, P029, P035, P037, P039, P044, P054, P055, P058, P060 (11) | G-001, G-002 | **Publier les resultats des 5 techniques δ³ AEGIS.** C'est la contribution unique #1. |
 | 7 | Juge recursif | **En cours** | P002, P033, P036, P042, P044, P045 (6) | G-005 | Tester juges AEGIS heterogenes vs AdvJudge-Zero (P044). |
 | 8 | Course aux armements | **Exploratoire** | P001, P009, P030, P036, P038-P045, P049, P054, P059 (14) | G-012 (monitoring temporel) | Documenter la demi-vie des defenses 2026. Donnees longitudinales AEGIS. |
-| 9 | LRM et paradoxe raisonnement | **En cours** | P036, P037, P039, P044, P047, P052, P058, P059 (8) | G-005, G-020 | Tester les attaques LRM contre AEGIS delta-3. |
+| 9 | LRM et paradoxe raisonnement | **En cours** | P036, P037, P039, P044, P047, P052, P058, P059 (8) | G-005, G-020 | Tester les attaques LRM contre AEGIS δ³. |
 
 ---
 
@@ -187,10 +187,10 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 | # | Sujet | Ce qui a ete fait | Ce qui manque | Priorite |
 |---|-------|-------------------|---------------|----------|
 | 1 | **Sep(M) N>=30 en medical** | Theorie definie (P024), benchmark disponible (P035 MPIB, 9697 instances), ASIDE valide Sep(M) (P057) | Execution experimentale : 30+ tests par condition sur MPIB via Ollama | **CRITIQUE** -- C4 ne peut passer de 9 a 10/10 sans cela |
-| 2 | **ASR incremental par couche delta** | Architecture delta-0/1/2/3 definie et implementee, 98 templates + 48 scenarios prets | Execution : mesurer ASR avec delta-0 seul, +delta-1, +delta-2, +delta-3. Puis sans delta-0 (scenario P039) | **CRITIQUE** -- C'est la contribution experimentale centrale de la these |
+| 2 | **ASR incremental par couche delta** | Architecture δ⁰/1/2/3 definie et implementee, 98 templates + 48 scenarios prets | Execution : mesurer ASR avec δ⁰ seul, +δ¹, +δ², +δ³. Puis sans δ⁰ (scenario P039) | **CRITIQUE** -- C'est la contribution experimentale centrale de la these |
 | 3 | **RagSanitizer vs PIDP compound** | RagSanitizer 15 detecteurs implementes, P054 documente l'attaque compound | Test de RagSanitizer contre l'attaque PIDP composite (injection + empoisonnement DB) | **HAUTE** -- G-017, testable immediatement |
 | 4 | **CHER integre dans SVC** | CHER defini par P035, SVC defini par AEGIS | Calcul de CHER parallele a ASR pour les memes attaques. Integration formelle dans le score SVC | **HAUTE** -- G-004 |
-| 5 | **Test triple convergence** | D-001 formalisee theoriquement, 3 piliers documentes | Simulation : delta-0 efface + delta-1 empoisonne + delta-2 fuzze. Mesurer si delta-3 survit seul | **HAUTE** -- G-011, scenario experimental cle de la these |
+| 5 | **Test triple convergence** | D-001 formalisee theoriquement, 3 piliers documentes | Simulation : δ⁰ efface + δ¹ empoisonne + δ² fuzze. Mesurer si δ³ survit seul | **HAUTE** -- G-011, scenario experimental cle de la these |
 | 6 | **Recovery Penalty Objective** | F46 formalisee (P052), theorie mathematique solide | Prototype sur Ollama : fine-tuner un modele avec Recovery Penalty et mesurer l'impact | **MOYENNE** -- G-015, long terme |
 | 7 | **Detection manipulation emotionnelle** | P040 documente le facteur 6x, vecteurs emotionnels identifies | Detecteur emotional_sentiment_guard pour RagSanitizer | **MOYENNE** -- G-007 |
 | 8 | **Calibration cosine vs alternatives** | P012 (gauge), P013 (antonymes), P057 (rotation) documentent les faiblesses | Test comparatif : cosine brute vs ASIDE-corrigee vs SemScore sur MPIB | **BASSE** -- Utile mais pas bloquant |
@@ -201,8 +201,8 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 
 ## 6. Questions de Recherche Ouvertes (Top 10)
 
-### 1. Delta-3 seul survit-il a l'effacement de delta-0 + empoisonnement delta-1 + bypass delta-2 ?
-**Pourquoi c'est important** : C'est le test empirique de D-001 (Triple Convergence). Si delta-3 survit, la these prouve son argument central. Si non, il faut comprendre pourquoi.
+### 1. Delta-3 seul survit-il a l'effacement de δ⁰ + empoisonnement δ¹ + bypass δ² ?
+**Pourquoi c'est important** : C'est le test empirique de D-001 (Triple Convergence). Si δ³ survit, la these prouve son argument central. Si non, il faut comprendre pourquoi.
 **Papers necessaires** : Aucun -- test empirique AEGIS suffisant.
 **Difficulte** : Moyenne (simulation, pas nouvelle theorie).
 
@@ -212,12 +212,12 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 **Difficulte** : Faible (execution, pas conception).
 
 ### 3. Le Recovery Penalty Objective (P052 F46) corrige-t-il la concentration du gradient ?
-**Pourquoi c'est important** : Si oui, c'est la premiere correction theoriquement fondee de la fragilite delta-0. Changerait la donne pour Axe 1.
+**Pourquoi c'est important** : Si oui, c'est la premiere correction theoriquement fondee de la fragilite δ⁰. Changerait la donne pour Axe 1.
 **Papers necessaires** : Suivi des publications Cambridge (Young group).
 **Difficulte** : Elevee (fine-tuning, hardware).
 
-### 4. Comment la degradation multi-tour (P050) evolue-t-elle avec les couches delta-1 a delta-3 actives ?
-**Pourquoi c'est important** : Si delta-3 previent la degradation multi-tour, c'est un argument fort supplementaire pour C2. Si non, il faut une defense specifique multi-tour.
+### 4. Comment la degradation multi-tour (P050) evolue-t-elle avec les couches δ¹ a δ³ actives ?
+**Pourquoi c'est important** : Si δ³ previent la degradation multi-tour, c'est un argument fort supplementaire pour C2. Si non, il faut une defense specifique multi-tour.
 **Papers necessaires** : Aucun -- reproductible avec AEGIS + 48 scenarios.
 **Difficulte** : Moyenne.
 
@@ -236,8 +236,8 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 **Papers necessaires** : Aucun -- testable avec AEGIS + MPIB.
 **Difficulte** : Moyenne.
 
-### 8. Le fine-tuning medical affaiblit-il systematiquement l'alignement delta-0 ?
-**Pourquoi c'est important** : D-018 (potentielle nouvelle decouverte). Si confirme, implication majeure : la specialisation medicale EST un facteur de risque. Cela justifie d'autant plus delta-3 pour le medical.
+### 8. Le fine-tuning medical affaiblit-il systematiquement l'alignement δ⁰ ?
+**Pourquoi c'est important** : D-018 (potentielle nouvelle decouverte). Si confirme, implication majeure : la specialisation medicale EST un facteur de risque. Cela justifie d'autant plus δ³ pour le medical.
 **Papers necessaires** : P050 replication + tests sur modeles medicaux locaux (BioMistral, Meditron via Ollama).
 **Difficulte** : Moyenne.
 
@@ -262,7 +262,7 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 | Architectures emergentes | "ASIDE follow-up", "orthogonal rotation LLM defense", "instruction data separation architecture" | **CRITIQUE** | D-015 et G-019 dependent de l'etat d'avancement d'ASIDE |
 | Defense RAG | "RAG defense poisoning", "vector database integrity", "compound RAG attack defense" | **HAUTE** | G-017 et D-013 -- attaques documentees mais 0 defense |
 | Multi-tour | "multi-turn safety degradation defense", "conversation-level alignment monitoring" | **HAUTE** | G-011 et D-016 -- degradation documentee mais 0 defense |
-| delta-3 implementation | "output validation formal verification LLM", "deterministic safety checking" | **HAUTE** | G-001 -- confirmer que 0 implementation existe (renforce D-002) |
+| δ³ implementation | "output validation formal verification LLM", "deterministic safety checking" | **HAUTE** | G-001 -- confirmer que 0 implementation existe (renforce D-002) |
 | Medical AI safety | "medical LLM defense 2026", "clinical AI guardrail", "healthcare prompt injection defense" | MOYENNE | Theme 4 -- enrichir le corpus medical (11 papers, bon mais peut etre elargi) |
 | LRM defense | "reasoning model jailbreak defense", "large reasoning model safety" | MOYENNE | C7 et G-005 -- le paradoxe a besoin de donnees defensives |
 | Metriques | "SEU framework guardrail evaluation", "standardized prompt injection benchmark" | MOYENNE | G-014 -- l'heterogeneite est un frein a la comparaison |
@@ -276,9 +276,9 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 | 1 | ASR incremental par couche delta (4 conditions) | G-002, C2 | Moyenne | 1 semaine |
 | 2 | Sep(M) N>=30 sur MPIB (P035) | G-009, C4 | Faible | 2-3 jours |
 | 3 | RagSanitizer vs PIDP (P054) | G-017, D-013 | Faible | 1 jour |
-| 4 | Test triple convergence (delta-0 efface) | G-011, D-001 | Moyenne | 1 semaine |
+| 4 | Test triple convergence (δ⁰ efface) | G-011, D-001 | Moyenne | 1 semaine |
 | 5 | CHER parallele a ASR sur 48 scenarios | G-004, D-006 | Moyenne | 1 semaine |
-| 6 | Multi-tour degradation avec delta-3 actif | G-011, D-016 | Moyenne | 3 jours |
+| 6 | Multi-tour degradation avec δ³ actif | G-011, D-016 | Moyenne | 3 jours |
 | 7 | Juges AEGIS vs AdvJudge-Zero (P044) | G-005 | Elevee | 1 semaine |
 | 8 | SEU benchmark des 40 techniques implementees | G-014 | Elevee | 2 semaines |
 
@@ -288,7 +288,7 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 |----------|-------------|------------|-------------------|-------------------|
 | **Ch. 1** | La separation instruction/donnee : un probleme fondamentalement non-resolu | C3 (10/10) | Elevee (P052, P024, P057) | **Pret a rediger** |
 | **Ch. 2** | Fragilite structurelle de l'alignement RLHF | C1 (10/10) | Elevee (11 papers, preuve formelle) | **Pret a rediger** |
-| **Ch. 3** | Defense en profondeur : de la necessite de delta-3 | C2 (10/10), D-001, D-002 | Moyenne (theorie solide, experiments manquants) | Rediger apres Exp. 1 et 4 |
+| **Ch. 3** | Defense en profondeur : de la necessite de δ³ | C2 (10/10), D-001, D-002 | Moyenne (theorie solide, experiments manquants) | Rediger apres Exp. 1 et 4 |
 | **Ch. 4** | Le domaine medical comme amplificateur de risque | C5/C6 (9/10) | Elevee (11 papers medicaux) | **Pret a rediger** (donnees existantes) |
 | **Ch. 5** | Mesure de la derive : Sep(M), CHER, SEU | C4 (9/10), C5 (8/10) | Moyenne (theorie ok, validation N>=30 manquante) | Rediger apres Exp. 2 |
 | **Ch. 6** | Resultats experimentaux AEGIS | Toutes | Faible (experiments non executes) | Apres Exp. 1-6 |
@@ -301,12 +301,12 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 | Chapitre | Maturite (%) | Donnees disponibles | Donnees manquantes | Bloquant ? |
 |----------|-------------|--------------------|--------------------|-----------|
 | Ch. 1 (Separation) | **85%** | P052 preuve formelle, P024 Sep(M) definition, P057 ASIDE comme resolution partielle, P049 100% bypass | Aucune donnee AEGIS propre (revue de litterature pure) | Non |
-| Ch. 2 (Fragilite delta-0) | **80%** | P019+P052 preuves, P039 effacement, P050 multi-tour, 11 papers | Donnees AEGIS de degradation multi-tour propres | Non |
-| Ch. 3 (Defense en profondeur) | **55%** | D-001 Triple Convergence, 0/60 delta-3, 5 techniques AEGIS | **ASR incremental par couche, test triple convergence** | **OUI** -- Exp. 1 et 4 requis |
+| Ch. 2 (Fragilite δ⁰) | **80%** | P019+P052 preuves, P039 effacement, P050 multi-tour, 11 papers | Donnees AEGIS de degradation multi-tour propres | Non |
+| Ch. 3 (Defense en profondeur) | **55%** | D-001 Triple Convergence, 0/60 δ³, 5 techniques AEGIS | **ASR incremental par couche, test triple convergence** | **OUI** -- Exp. 1 et 4 requis |
 | Ch. 4 (Medical) | **75%** | P029 JAMA, P035 MPIB, P040 emotionnel, P050 multi-tour, P051 detecteur 4D | Comparaison AEGIS medical vs general, CHER integre | Non (redaction possible sans) |
 | Ch. 5 (Metriques) | **50%** | Sep(M) definition, CHER definition, SEU framework | **Sep(M) N>=30 validation** | **OUI** -- Exp. 2 requis |
 | Ch. 6 (Resultats) | **15%** | Architecture AEGIS, 98 templates, 48 scenarios, 34 chaines | **Toutes les experiences (1-8)** | **OUI** -- bloquant total |
-| Ch. 7 (Raisonnement) | **45%** | P036 Nature Comms, P058 ETH, P059 reviewers | Donnees AEGIS propres, test LRM vs delta-3 | Non (redaction partielle possible) |
+| Ch. 7 (Raisonnement) | **45%** | P036 Nature Comms, P058 ETH, P059 reviewers | Donnees AEGIS propres, test LRM vs δ³ | Non (redaction partielle possible) |
 
 ### Resume de maturite
 
@@ -326,7 +326,7 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 | Chunks RAG | 580 |
 
 ### Axes satures (plus rien a trouver)
-- **Axe 1 (fragilite delta-0)** : SATURE. La question est resolue mathematiquement (P052). Les prochains papers ne changeront pas le constat.
+- **Axe 1 (fragilite δ⁰)** : SATURE. La question est resolue mathematiquement (P052). Les prochains papers ne changeront pas le constat.
 - **Axe 5 (evasion syntaxique, partie connue)** : Les 12 categories de Hackett sont couvertes par RagSanitizer 12/12.
 
 ### Axes emergents (besoin de plus de papers)
@@ -337,7 +337,7 @@ Les 14 autres decouvertes conservent leur score. Aucune decouverte n'est invalid
 ### Axes non explores
 - **Multimodal** (G-016) : Hors scope AEGIS (text-only) mais P053 l'identifie comme vecteur emergent.
 - **Federated learning pour defenses LLM** : Aucun paper dans le corpus. Potentiel pour defenses distribuees.
-- **Verification formelle par methodes SMT/SAT pour delta-3** : Non explore dans la litterature, mais methodologiquement possible. Piste originale.
+- **Verification formelle par methodes SMT/SAT pour δ³** : Non explore dans la litterature, mais methodologiquement possible. Piste originale.
 
 ---
 

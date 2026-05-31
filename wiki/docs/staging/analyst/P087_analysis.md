@@ -115,7 +115,7 @@ Lien glossaire AEGIS : F15 (Sep(M)), F22 (ASR), F44 (decomposition martingale �
 |-------|--------|
 | SVC pertinence | 9/10 |
 | Reproductibilite | Moyenne — T_E collectes manuellement, mais code partiellement publie (GitHub Duke CEI Center) |
-| Code disponible | Oui, partiellement (https://github.com/dukeceicenter/jailbreak-o1o3-deepseek-r1) |
+| Code disponible | Oui, partiellement (https://github.com/dukeceicenter/jailbreak-reasoning-openai-o1o3-deepseek-r1) |
 | Dataset public | Oui, partiellement (Malicious-Educator, donnees internes a Duke pour le reste) |
 | Nature epistemique | [EMPIRIQUE] — analyse info-theorique non formellement prouvee, mais experimentalement validee |
 | Type d'attaque | Jailbreak / CoT Hijacking |

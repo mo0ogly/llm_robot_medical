@@ -33,19 +33,19 @@ Premier benchmark **context-aware** pour Prompt Injection. Identifie deux proble
 ### Faiblesses
 
 - Pas de tests en **domaine medical** (HL7, FDA, DICOM)
-- Pas de comparaison avec delta-3 formel
+- Pas de comparaison avec δ³ formel
 - Metriques FN/FP sans correction pour la **rarete des attaques reelles** (base rate fallacy)
 - Kholkar & Ahuja : pas de reputation majeure — paper solide mais pas fondateur
 
 ### Pertinence these AEGIS
 
 **Mapping delta :**
-- delta-2 : coeur du travail (guardrail context-aware)
-- delta-3 : partiel (CaptureGuard = delta-2 renforce, pas delta-3)
+- δ² : coeur du travail (guardrail context-aware)
+- δ³ : partiel (CaptureGuard = δ² renforce, pas δ³)
 
 **Conjectures :**
-- **C1** : SUPPORT (guardrails delta-2 ont FN eleves)
-- **C2** : SUPPORT par contraste (CaptureGuard ameliore delta-2 mais ne propose pas delta-3)
+- **C1** : SUPPORT (guardrails δ² ont FN eleves)
+- **C2** : SUPPORT par contraste (CaptureGuard ameliore δ² mais ne propose pas δ³)
 - **C5 (over-defense)** : nouvelle evidence pour cette conjecture potentielle
 
 **Contribution AEGIS :**

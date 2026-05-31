@@ -7,7 +7,7 @@
     Contrairement a δ¹ (instructions dans le contexte), δ⁰ est encodee dans les parametres du reseau
     et persiste **independamment du system prompt**.
 
-    **Propriete** : δ⁰ est **necessaire mais non suffisante**. Wei et al. (ICLR 2025) montrent que δ⁰
+    **Propriete** : δ⁰ est **necessaire mais non suffisante**. Qi et al. (ICLR 2025) montrent que δ⁰
     est "shallow" — elle opere principalement sur les premiers tokens de la reponse, ce qui la rend
     contournable par les attaques sophistiquees (multi-turn, context poisoning, prefix attacks).
 
@@ -20,7 +20,7 @@ perspectives sous le label δ⁰.
 | Source | Concept propose | Lien avec δ⁰ |
 |--------|-----------------|--------------|
 | Zhao et al. (ICLR 2025) "Safety Layers in Aligned LLMs" | Couches physiques du reseau encodant le refus | Mecanisme interne = δ⁰ |
-| Wei et al. (ICLR 2025) "Safety Alignment Few Tokens Deep" | Shallow alignment sur premiers tokens | δ⁰ est shallow, donc contournable |
+| Qi et al. (ICLR 2025) "Safety Alignment Few Tokens Deep" | Shallow alignment sur premiers tokens | δ⁰ est shallow, donc contournable |
 | IBM (2026) "Outer/Inner Alignment" | Distinction RLHF vs pretraining | Outer = δ⁰, Inner = pretraining |
 | Zhao et al. (EACL 2026) "Safety Knowledge Neurons" | Neurones specifiques du refus | δ⁰ encode au niveau neuronal |
 | Jannadi (2026, survey OWASP/NIST/MITRE) | Modele en couches convergent | Base Alignment = δ⁰, non formalise |
@@ -55,7 +55,7 @@ perspectives sous le label δ⁰.
     > (LLaMA, Mistral, Gemma, Qwen, Phi...).
     > **Plus forte evidence empirique de C2**.
 
--   **P102 — Arditi et al. (2024)**
+-   **P102 — Huang et al. (2025)**
 
     *"Safety Concentrated in Few Heads"*
 
@@ -184,7 +184,7 @@ vulnerabilite corrélés a la taille (C4).
 
     - Young (2026, P052) : gradient = 0 au-dela de l'horizon — **theoreme constructif**
     - Qi et al. (ICLR 2025, P018) : shallow alignment sur 3-5 tokens — **empirique**
-    - Arditi et al. (P102) : ~50-100 heads portent la safety — **mechanistic interpretability**
+    - Huang et al. (P102) : ~50-100 heads portent la safety — **mechanistic interpretability**
 
     **Preuves empiriques** :
 

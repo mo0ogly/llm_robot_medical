@@ -29,7 +29,7 @@ L'analyse complete des 34 articles academiques couvre le paysage de la securite 
 
 ## delta-Layer Coverage Matrix
 
-| Paper | delta-0 | delta-1 | delta-2 | delta-3 | C1 | C2 |
+| Paper | δ⁰ | δ¹ | δ² | δ³ | C1 | C2 |
 |-------|---------|---------|---------|---------|----|----|
 | P001 (Liu/HouYi) | | X | | | Yes | Yes* |
 | P002 (Multi-agent) | | | X | | Yes* | Part |
@@ -70,7 +70,7 @@ L'analyse complete des 34 articles academiques couvre le paysage de la securite 
 
 ## Conjecture Evidence Summary
 
-### C1 (Insuffisance delta-1) — 27/34 papers support (79.4%)
+### C1 (Insuffisance δ¹) — 27/34 papers support (79.4%)
 
 Evidence overwhelmingly supports C1. Key findings:
 - **P001**: 86.1% of LLM-integrated apps vulnerable despite system prompts
@@ -78,7 +78,7 @@ Evidence overwhelmingly supports C1. Key findings:
 - **P029**: 94.4% injection success in medical LLMs with commercial guardrails
 - **P033**: Self-policing LLM judges share the same vulnerabilities as the models they protect
 
-### C2 (Necessite delta-3) — 22/34 papers support (64.7%)
+### C2 (Necessite δ³) — 22/34 papers support (64.7%)
 
 Strong support for C2, with particularly compelling arguments from:
 - **P019**: Mathematical proof that alignment gradients are zero beyond harm horizon — standard objectives cannot produce deep alignment
@@ -89,7 +89,7 @@ Strong support for C2, with particularly compelling arguments from:
 ## Critical Findings for the Thesis
 
 ### 1. The Shallow Alignment Problem (P018 + P019)
-RLHF alignment concentrates on the first few tokens. P019 provides the mathematical proof via martingale decomposition: positions beyond the harm horizon receive zero gradient. This is the strongest theoretical argument that delta-0 is fundamentally limited.
+RLHF alignment concentrates on the first few tokens. P019 provides the mathematical proof via martingale decomposition: positions beyond the harm horizon receive zero gradient. This is the strongest theoretical argument that δ⁰ is fundamentally limited.
 
 ### 2. Medical Injection Devastation (P029)
 94.4% success rate on commercial medical LLMs, 91.7% on Category X drugs. The most empirically alarming result in the corpus.
@@ -118,11 +118,11 @@ Medical disclaimers dropped from 26.3% (2022) to 0.97% (2025). This demonstrates
 
 ## Research Gaps Identified (Cross-Paper)
 
-1. **No paper addresses delta-3 implementation concretely** — formal verification is identified as necessary but never implemented
+1. **No paper addresses δ³ implementation concretely** — formal verification is identified as necessary but never implemented
 2. **Medical-specific defenses are underexplored** — most defenses are tested on generic tasks, not clinical scenarios
 3. **Adaptive attacker model is rarely tested** — most evaluations use static attacks, not adversaries that adapt to defenses
 4. **Sep(M) with N >= 30 per condition** is not achieved in any medical evaluation (P029 uses N=5 for flagship models)
-5. **Cross-layer interaction** — no paper studies how delta-0 through delta-3 interact when stacked
+5. **Cross-layer interaction** — no paper studies how δ⁰ through δ³ interact when stacked
 
 ## Files Produced (RUN-001)
 
@@ -177,7 +177,7 @@ L'analyse incrementale des 12 articles de 2026 (P035-P046) revele une accelerati
 
 ## delta-Layer Coverage Matrix (RUN-002)
 
-| Paper | delta-0 | delta-1 | delta-2 | delta-3 | C1 | C2 | C3 | C4 | C5 | C6 |
+| Paper | δ⁰ | δ¹ | δ² | δ³ | C1 | C2 | C3 | C4 | C5 | C6 |
 |-------|---------|---------|---------|---------|----|----|----|----|----|----|
 | P035 (MPIB) | X | X | | | Yes | Yes* | Yes | | Part | Yes |
 | P036 (LRM jailbreak) | X | X | | | Yes | Yes | Yes | Yes* | | |
@@ -196,14 +196,14 @@ L'analyse incrementale des 12 articles de 2026 (P035-P046) revele une accelerati
 
 ## Conjecture Evidence Update (Cumulative: 46 papers)
 
-### C1 (Insuffisance delta-1) — 36/46 papers support (78.3%)
+### C1 (Insuffisance δ¹) — 36/46 papers support (78.3%)
 New strong evidence:
 - **P036**: 97.14% ASR par jailbreak autonome multi-tour
 - **P044**: 99% contournement des juges LLM
-- **P045**: System Prompt Poisoning — le prompt systeme lui-meme est le vecteur d'attaque (resultat le plus devastateur pour delta-1)
-- **P042 nuance**: PromptArmor montre que delta-1 AVANCEE (LLM comme garde-fou) peut atteindre <1% erreur, mais uniquement avec des modeles frontier
+- **P045**: System Prompt Poisoning — le prompt systeme lui-meme est le vecteur d'attaque (resultat le plus devastateur pour δ¹)
+- **P042 nuance**: PromptArmor montre que δ¹ AVANCEE (LLM comme garde-fou) peut atteindre <1% erreur, mais uniquement avec des modeles frontier
 
-### C2 (Necessite delta-3) — 30/46 papers support (65.2%)
+### C2 (Necessite δ³) — 30/46 papers support (65.2%)
 New very strong evidence:
 - **P039**: GRP-Obliteration — alignement effacable par un seul prompt (resultat le plus fort du corpus pour C2)
 - **P044**: AdvJudge-Zero — 99% contournement implique que seules des garanties formelles sont fiables
@@ -220,9 +220,9 @@ New very strong evidence:
 - **P044**: Vulnerabilite independante de la taille du modele juge
 
 ### C5 (Cross-layer interaction) — NEW from RUN-002: 5/12 papers touch
-- **P045**: SPP montre que la compromission de delta-1 neutralise les defenses dependantes
-- **P042**: PromptArmor combine delta-1 et delta-2 en pipeline
-- **P044**: Compromission du juge (delta-2) impacte l'entrainement d'alignement (delta-0)
+- **P045**: SPP montre que la compromission de δ¹ neutralise les defenses dependantes
+- **P042**: PromptArmor combine δ¹ et δ² en pipeline
+- **P044**: Compromission du juge (δ²) impacte l'entrainement d'alignement (δ⁰)
 
 ### C6 (Medical specificity) — NEW from RUN-002: 2/12 papers support
 - **P035**: MPIB et CHER demontrent la necessite de metriques medicales dediees
@@ -234,10 +234,10 @@ New very strong evidence:
 Les LRM transforment le jailbreak d'un art artisanal en un processus industriel automatise. Le paradoxe : ameliorer le raisonnement ameliore aussi la capacite offensive. Asymetrie fondamentale attaque/defense.
 
 ### 2. Single-Prompt Unalignment (P039)
-GRP-Obliteration est le resultat le plus dangereux du corpus 2026. L'alignement de securite peut etre completement efface (pas contourne) par un seul prompt d'entrainement sans etiquette de nocivite. Implication : delta-0 est fondamentalement fragile.
+GRP-Obliteration est le resultat le plus dangereux du corpus 2026. L'alignement de securite peut etre completement efface (pas contourne) par un seul prompt d'entrainement sans etiquette de nocivite. Implication : δ⁰ est fondamentalement fragile.
 
 ### 3. Guardrail-as-a-Service viability (P042)
-PromptArmor montre que des LLM frontier comme garde-fous atteignent <1% FPR/FNR. Meilleure defense delta-1 du corpus. Mais dependance critique aux modeles proprietaires.
+PromptArmor montre que des LLM frontier comme garde-fous atteignent <1% FPR/FNR. Meilleure defense δ¹ du corpus. Mais dependance critique aux modeles proprietaires.
 
 ### 4. Judge Vulnerability (P044)
 AdvJudge-Zero (99% contournement) remet en question l'ensemble du paradigme LLM-as-a-Judge. Si les juges sont manipulables, le pipeline RLHF est compromis a la source.
@@ -250,11 +250,11 @@ Premier benchmark medical avec N >> 30 et metriques cliniques (CHER). La diverge
 
 ## Research Gaps Updated (Cumulative)
 
-1. **No paper addresses delta-3 implementation concretely** — CONFIRMED across all 46 papers
+1. **No paper addresses δ³ implementation concretely** — CONFIRMED across all 46 papers
 2. **Medical-specific defenses remain underexplored** — P035 and P040 evaluate but don't defend
 3. **Adaptive attacker model tested by P036** — but defenses (P038, P042) not tested against adaptive attackers
 4. **Sep(M) with N >= 30** — P035's MPIB (9697 instances) finally satisfies this; AEGIS should adopt
-5. **Cross-layer interaction** — P045 (SPP) shows delta-1 compromise cascades; P044 shows delta-2 compromise impacts delta-0 via RLHF
+5. **Cross-layer interaction** — P045 (SPP) shows δ¹ compromise cascades; P044 shows δ² compromise impacts δ⁰ via RLHF
 6. **NEW: VLM security in medical context** — P046 opens this direction but no medical evaluation exists
 7. **NEW: Reasoning model offense/defense asymmetry** — P036 shows offense scales with reasoning; defense response unclear
 

@@ -48,9 +48,9 @@ Lien glossaire AEGIS : F22 (ASR)
 ### Pertinence these AEGIS
 
 - **Couches delta :**
-  - **delta-1** (content filtering, guardrails) : la couche de defense pre-generation correspond a la couche architecturale delta-1.
-  - **delta-2** (response verification) : la verification post-generation correspond a la couche delta-2 de monitoring.
-  - **delta-0** non directement adressee (pas de modification RLHF).
+  - **δ¹** (content filtering, guardrails) : la couche de defense pre-generation correspond a la couche architecturale δ¹.
+  - **δ²** (response verification) : la verification post-generation correspond a la couche δ² de monitoring.
+  - **δ⁰** non directement adressee (pas de modification RLHF).
 - **Conjectures :**
   - **C6 (defense layering)** : supportee — l'ablation study montre que chaque couche seule est insuffisante (content filtering: 41% ASR residuel, guardrails ajoutees: 23.4%, framework complet: 8.7%). La defense en profondeur est validee empiriquement.
   - **C1 (structural bypass)** : neutre — les attaques testees sont principalement semantiques, pas structurelles.

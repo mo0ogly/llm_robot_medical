@@ -46,7 +46,7 @@
 - Pas de formules mathematiques dans le papier. Les metriques sont des comptages : ASR = attaques reussies / total (Section 5) [EMPIRIQUE — sans IC ni test statistique]
 - Lien glossaire AEGIS : F22 (ASR) — mais sans les garanties statistiques d'AEGIS (Wilson CI, N >= 30)
 
-### Pertinence these AEGIS — COMPARAISON DIRECTE delta-3
+### Pertinence these AEGIS — COMPARAISON DIRECTE δ³
 
 - **Couches delta :**
   - Guard agent = δ¹ avance (verification comportementale par LLM)

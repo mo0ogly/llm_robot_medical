@@ -16,7 +16,7 @@ Evaluer la robustesse offensive de 5 nouveaux frameworks delta3 candidats (P131 
 1. Enumeration des techniques d'attaque documentees contre chaque framework (papers, github issues, security blogs, bug bounty reports)
 2. Proposition de bypass theoriques (no-exploitation) mappes aux 5 techniques defensives delta3 AEGIS (validate_output, AllowedOutputSpec, RagSanitizer semantic, aside_adaptive, ask_user_confirm)
 3. Cross-reference avec Liu et al. (2023) arXiv:2306.05499, Hackett et al. (2025) arXiv:2502.05174, Shi et al. (2024) AdvJudge-Zero
-4. Classification AEGIS : chaque bypass mappe aux 5 techniques delta-3 de la taxonomie defensive pour identifier les trous
+4. Classification AEGIS : chaque bypass mappe aux 5 techniques δ³ de la taxonomie defensive pour identifier les trous
 
 ---
 

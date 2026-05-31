@@ -7,7 +7,7 @@
     Unlike δ¹ (instructions in the context), δ⁰ is encoded in the network parameters
     and persists **independently of the system prompt**.
 
-    **Property**: δ⁰ is **necessary but not sufficient**. Wei et al. (ICLR 2025) show that δ⁰
+    **Property**: δ⁰ is **necessary but not sufficient**. Qi et al. (ICLR 2025) show that δ⁰
     is "shallow" — it operates primarily on the first few tokens of the response, which makes it
     bypassable by sophisticated attacks (multi-turn, context poisoning, prefix attacks).
 
@@ -20,7 +20,7 @@ these perspectives under the label δ⁰.
 | Source | Proposed concept | Link to δ⁰ |
 |--------|-----------------|--------------|
 | Zhao et al. (ICLR 2025) "Safety Layers in Aligned LLMs" | Physical network layers encoding refusal | Internal mechanism = δ⁰ |
-| Wei et al. (ICLR 2025) "Safety Alignment Few Tokens Deep" | Shallow alignment on first tokens | δ⁰ is shallow, hence bypassable |
+| Qi et al. (ICLR 2025) "Safety Alignment Few Tokens Deep" | Shallow alignment on first tokens | δ⁰ is shallow, hence bypassable |
 | IBM (2026) "Outer/Inner Alignment" | Distinction between RLHF and pretraining | Outer = δ⁰, Inner = pretraining |
 | Zhao et al. (EACL 2026) "Safety Knowledge Neurons" | Refusal-specific neurons | δ⁰ encoded at neuron level |
 | Jannadi (2026, OWASP/NIST/MITRE survey) | Convergent layered model | Base Alignment = δ⁰, not formalized |
@@ -55,7 +55,7 @@ these perspectives under the label δ⁰.
     > (LLaMA, Mistral, Gemma, Qwen, Phi...).
     > **Strongest empirical evidence for C2**.
 
--   **P102 — Arditi et al. (2024)**
+-   **P102 — Huang et al. (2025)**
 
     *"Safety Concentrated in Few Heads"*
 
@@ -184,7 +184,7 @@ profiles correlated to size (C4).
 
     - Young (2026, P052): gradient = 0 beyond the harm horizon — **constructive theorem**
     - Qi et al. (ICLR 2025, P018): shallow alignment on 3-5 tokens — **empirical**
-    - Arditi et al. (P102): ~50-100 heads carry safety — **mechanistic interpretability**
+    - Huang et al. (P102): ~50-100 heads carry safety — **mechanistic interpretability**
 
     **Empirical evidence**:
 

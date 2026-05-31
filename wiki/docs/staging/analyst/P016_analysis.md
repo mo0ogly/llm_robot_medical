@@ -72,8 +72,8 @@ Travail essentiellement **empirique** (benchmark + experiences) avec un concept 
 | **C4** (derive semantique mesurable) | SUPPORT | Semantic Elasticity mesure une forme de derive | Conceptuellement lie a la mesure de derive dans AEGIS. |
 
 ### Couches delta
-- **delta-2** : USMB pourrait servir de reference pour evaluer les metriques de detection d'injection d'AEGIS.
-- Pas d'impact direct sur delta-0, delta-1, delta-3.
+- **δ²** : USMB pourrait servir de reference pour evaluer les metriques de detection d'injection d'AEGIS.
+- Pas d'impact direct sur δ⁰, δ¹, δ³.
 
 ### Gaps adresses/crees
 - **G-010** : P016 propose une alternative systematique a la cosine naive via l'ensemble et USMB.
@@ -90,7 +90,7 @@ Travail essentiellement **empirique** (benchmark + experiences) avec un concept 
 | **Domaine** | Similarite textuelle, evaluation LLM |
 | **Modeles testes** | Multiples embedding models (sentence transformers) |
 | **Metrique principale** | Ensemble +48.2% sur USMB |
-| **delta-layers** | delta-2 (reference pour calibration) |
+| **delta-layers** | δ² (reference pour calibration) |
 | **Conjectures** | C5 (fort), C4 (support) |
 | **SVC pertinence** | 5/10 |
 | **Reproductibilite** | Moyenne — datasets publics mais code non mentionne |

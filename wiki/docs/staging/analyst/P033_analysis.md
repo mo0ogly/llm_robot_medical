@@ -33,7 +33,7 @@
 
 3. **Timing strategique.** Publie rapidement apres l'annonce du cadre Guardrails d'OpenAI (6 octobre 2025), le rapport souligne l'urgence de la menace avant que la communaute academique ne produise des evaluations formelles.
 
-4. **Classification MITRE ATLAS pertinente.** Le mapping T1562.001 (Impair Defenses: Disable or Modify Tools) est une categorisation appropriee du vecteur d'attaque, reliant le travail au referentiel de menaces standard [PDF NON DISPONIBLE -- source : chunks ChromaDB, chunk 5].
+4. **Classification MITRE ATLAS pertinente.** Le mapping T1685 (Disable or Modify Tools) est une categorisation appropriee du vecteur d'attaque, reliant le travail au referentiel de menaces standard [PDF NON DISPONIBLE -- source : chunks ChromaDB, chunk 5].
 
 **Faiblesses :**
 
@@ -57,7 +57,7 @@
 
 **Positionnement dans le corpus AEGIS :**
 
-P033 est un rapport industriel qui anticipe d'un an le resultat academique majeur de P044 (AdvJudge-Zero, Li et al., 2025, arXiv:2512.17375). Sa valeur pour la these n'est pas dans ses donnees (inexistantes quantitativement) mais dans l'identification du probleme architectural : le self-policing est structurellement defaillant. Ce constat est central pour la justification de la couche delta-3 (verification formelle externe) dans l'architecture AEGIS. Le rapport illustre egalement la complementarite industrie/academie : HiddenLayer identifie le probleme (octobre 2025), P044 le quantifie (decembre 2025), et AEGIS propose la solution architecturale (couche delta-3 heterogene). L'absence de PDF et de quantification classe P033 comme une source conceptuelle de soutien, pas comme une source de donnees primaire. Le biais commercial (HiddenLayer vend des solutions de securite IA) doit etre rappele dans la these.
+P033 est un rapport industriel qui anticipe d'un an le resultat academique majeur de P044 (AdvJudge-Zero, Li et al., 2025, arXiv:2512.17375). Sa valeur pour la these n'est pas dans ses donnees (inexistantes quantitativement) mais dans l'identification du probleme architectural : le self-policing est structurellement defaillant. Ce constat est central pour la justification de la couche δ³ (verification formelle externe) dans l'architecture AEGIS. Le rapport illustre egalement la complementarite industrie/academie : HiddenLayer identifie le probleme (octobre 2025), P044 le quantifie (decembre 2025), et AEGIS propose la solution architecturale (couche δ³ heterogene). L'absence de PDF et de quantification classe P033 comme une source conceptuelle de soutien, pas comme une source de donnees primaire. Le biais commercial (HiddenLayer vend des solutions de securite IA) doit etre rappele dans la these.
 
 ### Formules exactes
 
@@ -79,14 +79,14 @@ Lien glossaire AEGIS : F33b (Logit Gap, P044 -- formalisation du mecanisme sous-
 ### Pertinence these AEGIS
 
 - **Couches delta :**
-  - δ¹ (System prompt / guardrails) : le self-policing est une defense delta-1 par construction -- demontree defaillante [PDF NON DISPONIBLE -- source : chunks ChromaDB]
+  - δ¹ (System prompt / guardrails) : le self-policing est une defense δ¹ par construction -- demontree defaillante [PDF NON DISPONIBLE -- source : chunks ChromaDB]
   - δ² (Filtres LLM-based) : les filtres base-LLM sont vulnerables par construction car partageant les memes failles que le generateur
-  - δ³ (Verification formelle externe) : le probleme d'auto-reference est l'argument le plus fort pour des mecanismes de verification externes formels delta-3
+  - δ³ (Verification formelle externe) : le probleme d'auto-reference est l'argument le plus fort pour des mecanismes de verification externes formels δ³
 
 - **Conjectures :**
-  - C2 (necessite delta-3) : **fortement supportee** -- la demonstration du self-policing defaillant est l'argument le plus direct pour la necessite de verification externe formelle
+  - C2 (necessite δ³) : **fortement supportee** -- la demonstration du self-policing defaillant est l'argument le plus direct pour la necessite de verification externe formelle
   - C3 (shallow alignment) : **supportee** -- l'alignement RLHF ne protege ni le generateur ni le juge
-  - C5 (cross-layer) : **supportee** -- montre que delta-0+delta-1 ne suffisent pas sans delta-3
+  - C5 (cross-layer) : **supportee** -- montre que δ⁰+δ¹ ne suffisent pas sans δ³
 
 - **Decouvertes :**
   - D-012 (self-reference vulnerability) : **confirmee** -- le rapport est la premiere identification explicite de cette vulnerabilite architecturale

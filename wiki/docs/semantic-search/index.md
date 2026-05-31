@@ -162,6 +162,6 @@ directement sur `aegis_bibliography` en live.
 
 - :material-api: [backend/routes/rag_routes.py - semantic_search](https://github.com/pizzif/poc_medical/blob/main/backend/routes/rag_routes.py)
 - :material-file-document: [RAG ChromaDB architecture](../rag/index.md)
-- :material-book-search: [Bibliography - 130 papers](../research/bibliography/index.md)
+- :material-book-search: [Bibliography - 131 papers](../research/bibliography/index.md)
 - :material-magnify-scan: [Skill /bibliography-maintainer](../skills/index.md)
 - :material-shield: [Cadre delta](../delta-layers/index.md)

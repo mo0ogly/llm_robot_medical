@@ -236,7 +236,7 @@ RLHF Objectif -> KL Token/Token -> Harm Information -> Gradient Bound (= zero au
 ```
 **Importance**: Prouve mathematiquement POURQUOI les LLM sont vulnerables (alignement superficiel).
 
-### Chemin 3: Detection d'injection (couche delta-1)
+### Chemin 3: Detection d'injection (couche δ¹)
 ```
 Cosine Sim -> SBERT -> SemScore (derive semantique)
 Cosine Sim -> F1/Precision/Recall -> AUROC
@@ -245,21 +245,21 @@ Attention Mechanism -> Focus Score (detection sans entrainement)
 ```
 **Importance**: Les outils mathematiques pour DETECTER les injections.
 
-### Chemin 4: Renforcement de l'alignement (couche delta-0)
+### Chemin 4: Renforcement de l'alignement (couche δ⁰)
 ```
 RLHF -> DPO -> Fine-Tuning Contraint (protection position par position)
 ```
 **Importance**: Solutions pour rendre l'alignement interne plus robuste.
 
-### Chemin 5 (NEW RUN-002): Des-alignement offensif (threat delta-0)
+### Chemin 5 (NEW RUN-002): Des-alignement offensif (threat δ⁰)
 ```
 RLHF -> GRPO -> GRP-Obliteration (un seul prompt suffit a des-aligner)
 ```
-**Importance**: Prouve que les memes outils d'alignement (GRPO) peuvent etre retournes offensivement. Menace existentielle pour delta-0.
+**Importance**: Prouve que les memes outils d'alignement (GRPO) peuvent etre retournes offensivement. Menace existentielle pour δ⁰.
 
 ### Chemin 6 (NEW RUN-002): Alignement robuste aux perturbations visuelles
 ```
-DPO -> ADPO (+ PGD adversarial training) -> defense multimodale delta-0
+DPO -> ADPO (+ PGD adversarial training) -> defense multimodale δ⁰
 ```
 **Importance**: Etend l'alignement aux VLM avec robustesse worst-case.
 
@@ -273,7 +273,7 @@ ASR -> CHER (harm clinique reel) -> ASR a seuil (granularite severite)
 ```
 Logit Gap (juge manipulable) -> Benchmark Eff/Sep (qualite du benchmark)
 ```
-**Importance**: Revele que les LLM-juges sont fragiles (delta-3 menace), necessite des benchmarks renouvelables.
+**Importance**: Revele que les LLM-juges sont fragiles (δ³ menace), necessite des benchmarks renouvelables.
 
 ### Chemin 9 (NEW RUN-005): Paradoxe raisonnement/securite (C7)
 ```

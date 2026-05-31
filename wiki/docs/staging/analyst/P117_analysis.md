@@ -37,7 +37,7 @@
 
 ### Pertinence these AEGIS — **LIEN AVEC D-024 (CRITIQUE)**
 - **Couches delta :** δ¹ (retrieval) principalement, δ² (orchestration du pipeline query-expansion) secondairement.
-- **Conjectures :** C2 (la defense necessite un ancrage delta-3 externe au modele) — ce papier demontre empiriquement que δ¹ SEUL ne peut pas separer hallucination de connaissance reelle sur les benchmarks ou le LLM a "vu" les cibles. C6 (pertinence medicale) — SciFact est un corpus scientifique, premisse applicable a medical RAG.
+- **Conjectures :** C2 (la defense necessite un ancrage δ³ externe au modele) — ce papier demontre empiriquement que δ¹ SEUL ne peut pas separer hallucination de connaissance reelle sur les benchmarks ou le LLM a "vu" les cibles. C6 (pertinence medicale) — SciFact est un corpus scientifique, premisse applicable a medical RAG.
 - **Gap adresse :** G-042 (defense HyDE). Ce papier NE PROPOSE PAS de defense, il expose le mecanisme. Il nourrit le gap cote threat model.
 - **Relation a D-024 (BENIGN ANALOG / CLEF DE POSITIONNEMENT) :**
   - Yoon et al. (2025) demontrent que les gains de HyDE viennent majoritairement de cas ou le modele reproduit (partiellement) la gold evidence memorisee. C'est le mecanisme BENIN : le modele "fuit" de la verite.

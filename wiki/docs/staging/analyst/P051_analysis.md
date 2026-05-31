@@ -82,9 +82,9 @@ Les auteurs identifient (Section 4-5, p. 9-12) : (1) les faux negatifs lies a de
 
 ### Couches delta
 
-- **delta-1 (system prompt)** : non evalue directement, mais le cadre pourrait detecter des tentatives de contournement du prompt systeme via la dimension Professionalism.
-- **delta-2 (detection/classification)** : c'est la couche cible du papier. L'architecture en deux couches constitue un mecanisme δ² complementaire au modele cosine-drift AEGIS.
-- **delta-3** : non applicable.
+- **δ¹ (system prompt)** : non evalue directement, mais le cadre pourrait detecter des tentatives de contournement du prompt systeme via la dimension Professionalism.
+- **δ² (detection/classification)** : c'est la couche cible du papier. L'architecture en deux couches constitue un mecanisme δ² complementaire au modele cosine-drift AEGIS.
+- **δ³** : non applicable.
 
 ### Formules AEGIS impactees
 

@@ -64,21 +64,21 @@ Only P040 directly addresses medical contexts. The 6x amplification via emotiona
 
 | Conjecture | RUN-001 Confidence | RUN-002 Evidence | New Confidence |
 |-----------|-------------------|-----------------|----------------|
-| C1 (Insuffisance delta-1) | 9/10 | P045 (SPP), P036 (97.14%), P040 (37.5%) | 9/10 |
-| C2 (Necessite delta-3) | 8/10 | P039 (single-prompt unalign), P044 (99% judge bypass) | 9/10 |
+| C1 (Insuffisance δ¹) | 9/10 | P045 (SPP), P036 (97.14%), P040 (37.5%) | 9/10 |
+| C2 (Necessite δ³) | 8/10 | P039 (single-prompt unalign), P044 (99% judge bypass) | 9/10 |
 | C3 (Shallow alignment) | 7/10 | P039 (alignment erasable by 1 prompt) | 9/10 |
 | C4 (Scaling independence) | 7/10 | P041 (8B > 671B in safety), P039 (15 models all vulnerable) | 8/10 |
-| C5 (Cross-layer interaction) | 6/10 | P044 (judge compromise -> RLHF corruption), P045 (delta-1 -> delta-0) | 7/10 |
+| C5 (Cross-layer interaction) | 6/10 | P044 (judge compromise -> RLHF corruption), P045 (δ¹ -> δ⁰) | 7/10 |
 | C6 (Medical specificity) | 7/10 | P040 (6x amplification via emotion in medical context) | 8/10 |
 
 ## Delta-Layer Coverage
 
 | Layer | Papers addressing it | Key papers |
 |-------|---------------------|------------|
-| delta-0 | P036, P038, P039, P041, P046 | P039 (destruction), P038 (defense) |
-| delta-1 | P036, P040, P041, P042, P045 | P045 (SPP attack), P042 (defense) |
-| delta-2 | P038, P042, P044 | P044 (judge bypass) |
-| delta-3 | (implied by gaps) | None directly -- strongest argument for thesis |
+| δ⁰ | P036, P038, P039, P041, P046 | P039 (destruction), P038 (defense) |
+| δ¹ | P036, P040, P041, P042, P045 | P045 (SPP attack), P042 (defense) |
+| δ² | P038, P042, P044 | P044 (judge bypass) |
+| δ³ | (implied by gaps) | None directly -- strongest argument for thesis |
 
 ## Recommendations for Next Agents
 

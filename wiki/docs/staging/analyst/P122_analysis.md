@@ -34,11 +34,11 @@ Document normatif OWASP definissant les bonnes pratiques de prevention de Prompt
 ### Pertinence these AEGIS
 
 **Mapping delta :**
-- delta-1 : Structured Prompts
-- delta-2 : Input Validation + Output Monitoring
-- delta-3 : Non explicitement, mais "Acknowledge Limitations" pointe vers la necessite
+- δ¹ : Structured Prompts
+- δ² : Input Validation + Output Monitoring
+- δ³ : Non explicitement, mais "Acknowledge Limitations" pointe vers la necessite
 
-**Conjecture :** **C2 (necessite delta-3)** → SUPPORT INDIRECT via "power-law scaling vulnerabilities"
+**Conjecture :** **C2 (necessite δ³)** → SUPPORT INDIRECT via "power-law scaling vulnerabilities"
 
 **Positionnement :** AEGIS peut se positionner comme **implementation formelle** des recommandations OWASP avec metriques ASR/Sep(M)/SVC.
 

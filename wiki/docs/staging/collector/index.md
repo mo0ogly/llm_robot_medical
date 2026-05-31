@@ -1,5 +1,7 @@
 # Preseed et verifications anti-doublon
 
+<p class='agent-badge agent-badge--collector'>AGENT &middot; COLLECTOR</p>
+
 !!! abstract "Agent `_staging/collector/`"
     Preseed JSON avec metadonnees avant integration corpus, verifications check_corpus_dedup (arXiv ID + cosine > 0.9).
 

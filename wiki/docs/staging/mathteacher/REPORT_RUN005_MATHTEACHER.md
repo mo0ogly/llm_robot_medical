@@ -92,10 +92,10 @@ Les formules specifiques de C8 (taux de peer-preservation, scores de deception, 
 
 | Couche | Formules Module 08 | Sens |
 |--------|-------------------|------|
-| delta-0 | F9.1, F9.2, F9.6 | Vulnerabilites et defenses au niveau de l'alignement interne |
-| delta-1 | F9.5 | Detection de l'erosion multi-tour (pre-inference) |
-| delta-2 | F9.3 | Exploitation par chiffrements (post-inference validation) |
-| delta-3 | F9.4, F9.7, F9.8 | Monitoring continu, mesure de degradation |
+| δ⁰ | F9.1, F9.2, F9.6 | Vulnerabilites et defenses au niveau de l'alignement interne |
+| δ¹ | F9.5 | Detection de l'erosion multi-tour (pre-inference) |
+| δ² | F9.3 | Exploitation par chiffrements (post-inference validation) |
+| δ³ | F9.4, F9.7, F9.8 | Monitoring continu, mesure de degradation |
 
 ---
 
@@ -150,7 +150,7 @@ Les formules specifiques de C8 (taux de peer-preservation, scores de deception, 
 
 ## Post-RUN VERIFICATION_DELTA3_20260411
 
-**Context** : verification scoped de la claim "4eme implementation δ³" dans `wiki/docs/delta-layers/delta-3.md`. Les agents ANALYST et MATHEUX ont conclu verdict **NUANCED** : le pattern "validate output contre specification declarative" existe depuis **LMQL 2022** (P135, PLDI 2023), soit 7+ frameworks δ³ historiques avant AEGIS. La contribution originale d'AEGIS est (a) l'unification formelle sous `Integrity(S) := Reachable(M,i) ⊆ Allowed(i)`, (b) la specialisation FDA 510k Da Vinci Xi, et (c) la mesurabilite via Sep(M).
+**Context** : verification scoped de la claim "4eme implementation δ³" dans `wiki/docs/delta-layers/δ³.md`. Les agents ANALYST et MATHEUX ont conclu verdict **NUANCED** : le pattern "validate output contre specification declarative" existe depuis **LMQL 2022** (P135, PLDI 2023), soit 7+ frameworks δ³ historiques avant AEGIS. La contribution originale d'AEGIS est (a) l'unification formelle sous `Integrity(S) := Reachable(M,i) ⊆ Allowed(i)`, (b) la specialisation FDA 510k Da Vinci Xi, et (c) la mesurabilite via Sep(M).
 
 **Decision MATHTEACHER** : curriculum NE NECESSITE PAS de nouveau module. Les 8 modules existants couvrent deja les fondamentaux (algebre de Boole Module 1, Sep(M) et Wilson CI Module 4). Une extension localisee du Module 4 suffit a enseigner la distinction **composition vs unification formelle**, qui est LA notion pedagogique manquante pour comprendre le positionnement AEGIS dans la taxonomie δ³.
 

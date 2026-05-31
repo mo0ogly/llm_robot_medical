@@ -56,7 +56,7 @@ Lien glossaire AEGIS : F22 (ASR), F15 (Sep(M) — non utilise dans ce papier)
 
 ### Pertinence these AEGIS
 
-- **Couches delta :** Principalement **delta-1** (retrieval-layer defense) et **delta-2** (model-level safety evaluation cross-modele). La defense par hybrid retrieval est une defense architecturale qui agit avant le LLM (delta-1). L'evaluation multi-modele confirme que la couche delta-0 (RLHF/safety training) varie enormement entre modeles.
+- **Couches delta :** Principalement **δ¹** (retrieval-layer defense) et **δ²** (model-level safety evaluation cross-modele). La defense par hybrid retrieval est une defense architecturale qui agit avant le LLM (δ¹). L'evaluation multi-modele confirme que la couche δ⁰ (RLHF/safety training) varie enormement entre modeles.
 - **Conjectures :**
   - **C1 (structural bypass)** : supportee — les attaques GCG exploitent la structure d'embedding, et le hybrid retrieval constitue une defense structurelle. Le joint optimization montre que meme les defenses structurelles sont partiellement contournables.
   - **C4 (encoding bypass)** : neutre — le papier ne teste pas les encodages alternatifs.

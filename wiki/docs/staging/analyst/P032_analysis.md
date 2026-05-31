@@ -32,9 +32,9 @@
 
 3. **Triple evaluation structuree (3 RQs).** Le design experimental adresse trois questions orthogonales : efficacite des attaques (RQ1), distinguabilite linguistique des prompts d'attaque vs. requetes normales (RQ2, comparaison avec WildChat, Zhao et al. 2024), et detectabilite de la desinformation generee vs. desinformation humaine Reddit (RQ3) (Section Introduction, p.2). Cette structuration est exemplaire.
 
-4. **Resultats de detection prometteurs.** Les LLM atteignent 100% d'accord avec les annotateurs humains (Gemini) et 95% (GPT-3.5) sur la detection de jailbreaks (dimension "generation" uniquement), et 95.5% d'accord sur la detection de desinformation Reddit (Gemini, subset 200 posts) (Hussain et al., 2025, Section 6, p.12 ; calibration initiale Section 4, p.6). Cela suggere que les LLM sont a la fois la menace et une partie de la solution -- resultat pertinent pour la defense delta-2. Note : l'accord tombe a 85% quand on inclut les dimensions obedience + validation (Hussain et al., 2025, Section 6, p.12).
+4. **Resultats de detection prometteurs.** Les LLM atteignent 100% d'accord avec les annotateurs humains (Gemini) et 95% (GPT-3.5) sur la detection de jailbreaks (dimension "generation" uniquement), et 95.5% d'accord sur la detection de desinformation Reddit (Gemini, subset 200 posts) (Hussain et al., 2025, Section 6, p.12 ; calibration initiale Section 4, p.6). Cela suggere que les LLM sont a la fois la menace et une partie de la solution -- resultat pertinent pour la defense δ². Note : l'accord tombe a 85% quand on inclut les dimensions obedience + validation (Hussain et al., 2025, Section 6, p.12).
 
-5. **Analyse linguistique comparative (RQ2).** La comparaison des prompts d'attaque avec les requetes in-the-wild revele des marqueurs linguistiques distinctifs : vocabulaire plus diversifie, usage frequent de noms lies a la credibilite, verbes de validation (Section Results RQ2, p.9-10). Ces features sont exploitables pour un filtrage automatique au niveau delta-2.
+5. **Analyse linguistique comparative (RQ2).** La comparaison des prompts d'attaque avec les requetes in-the-wild revele des marqueurs linguistiques distinctifs : vocabulaire plus diversifie, usage frequent de noms lies a la credibilite, verbes de validation (Section Results RQ2, p.9-10). Ces features sont exploitables pour un filtrage automatique au niveau δ².
 
 **Faiblesses :**
 
@@ -94,10 +94,10 @@ Lien glossaire AEGIS : F22 (ASR), F58 (Medical Vulnerability Premium -- indirect
 
 - **Couches delta :**
   - δ⁰ (RLHF alignment) : les guardrails RLHF sont la defense testee implicitement -- ASR moyen ~0.85 montre leur insuffisance en contexte sante (Section Results RQ1, p.7-8)
-  - δ² (Detection/filtering) : l'evaluation de la detectabilite des jailbreaks et de la desinformation par des classificateurs releve directement de delta-2 (Section Results RQ3, p.11-12)
+  - δ² (Detection/filtering) : l'evaluation de la detectabilite des jailbreaks et de la desinformation par des classificateurs releve directement de δ² (Section Results RQ3, p.11-12)
 
 - **Conjectures :**
-  - C1 (insuffisance delta-1) : **supportee** -- les attaques generees par LLM contournent systematiquement delta-0+delta-1 avec ASR > 0.80 pour les 3 modeles (Section Conclusion, p.12)
+  - C1 (insuffisance δ¹) : **supportee** -- les attaques generees par LLM contournent systematiquement δ⁰+δ¹ avec ASR > 0.80 pour les 3 modeles (Section Conclusion, p.12)
   - C6 (Medical Vulnerability Premium) : **supportee moderement** -- ASR eleve en contexte medical, mais pas de comparaison directe avec un contexte non-medical
   - C3 (shallow alignment) : **supportee** -- les modeles generent de la desinformation structuree malgre l'alignement RLHF, avec des sorties "well structured, clear, and consistently followed" (Section Results RQ1, p.8)
 

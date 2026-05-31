@@ -100,7 +100,7 @@ RUN-002 integrated 15 new formulas from 12 papers (P035-P046) into the existing 
 ## Quality Checks
 
 - [x] All content in French (100%)
-- [x] Unicode notation (δ⁰, δ¹, δ², δ³ — never "delta-0")
+- [x] Unicode notation (δ⁰, δ¹, δ², δ³ — never "δ⁰")
 - [x] All exercises have full solutions (not just answers)
 - [x] Medical/security analogies in all new sections
 - [x] Prerequisite links to existing content (e.g., "voir Partie B" for Precision/Recall)

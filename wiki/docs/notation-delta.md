@@ -168,7 +168,18 @@ Si une anomalie est detectee, `audit-these` **bloque le commit** avec un warning
 
     Voir [delta-layers/index.md](delta-layers/index.md) pour le cadre complet.
 
-## 8. Usage dans les publications
+## 8. Présentation Vulgarisée (Analogie du Braquage de Banque)
+
+Pour expliquer simplement la philosophie AEGIS à un public non-technique, voici l'analogie officielle du "braquage de banque" :
+
+Imaginez que le modèle d'IA est le **coffre-fort d'une banque**. Les hackers essaient constamment de le braquer. AEGIS met en place 4 lignes de défense concentriques :
+
+- **Couche δ⁰ (L'Alignement Interne)** : C'est la robustesse du coffre-fort lui-même. On apprend à l'IA à être "sûre" de l'intérieur (RLHF, DPO). *Faille : un hacker trouvera toujours la faille d'une serrure, il faut des vigiles.*
+- **Couche δ¹ (Détection Pré-inférence)** : C'est le vigile à l'entrée. Il fouille les questions (prompts) avant que le modèle n'y réponde. *Faille : le hacker peut cacher son arme dans un double-fond.*
+- **Couche δ² (Modération Post-inférence)** : C'est le douanier à la sortie. Il bloque les réponses contenant des informations nocives avant qu'elles ne soient affichées. *Faille : lent et vulnérable à l'érosion multi-tour.*
+- **Couche δ³ (Monitoring Continu et Structurel)** : Ce sont les caméras intelligentes. Elles surveillent le comportement global et bloquent de manière déterministe toute sortie qui ne respecte pas le format autorisé (le schéma d'intégrité).
+
+## 9. Usage dans les publications
 
 Le manuscrit final utilise la notation partout :
 
@@ -178,7 +189,7 @@ Le manuscrit final utilise la notation partout :
 > structural output enforcement (validate_output vs Allowed(i) specification). Our **Conjecture 2**
 > states that only **δ³** can guarantee Integrity(S) deterministically."*
 
-## 9. Pourquoi ce n'est pas juste cosmetique
+## 10. Pourquoi ce n'est pas juste cosmetique
 
 1. **Recherche**: `grep "δ⁰"` trouve tous les passages. `grep "delta0"` pollue avec le code.
 2. **Originalite**: la notation est un **signal** de la contribution formelle — un lecteur voit
@@ -188,9 +199,9 @@ Le manuscrit final utilise la notation partout :
 4. **Citation**: les papiers cites utilisent δ⁰ en notation mathematique, AEGIS aligne sa
    terminologie sur la litterature.
 
-## 10. Ressources
+## 11. Ressources
 
 - :material-keyboard: [WinCompose (Windows)](https://github.com/SamHocevar/wincompose)
 - :material-shield: [Cadre δ⁰–δ³ complet](delta-layers/index.md)
 - :material-file-document: [CLAUDE.md - regles projet](contributing/index.md)
-- :material-magnify: [INDEX_BY_DELTA.md - classification 130 papers](research/bibliography/by-delta.md)
+- :material-magnify: [INDEX_BY_DELTA.md - classification 131 papers](research/bibliography/by-delta.md)

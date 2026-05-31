@@ -1,8 +1,8 @@
 # RESEARCH STATE — Etat partage de la recherche doctorale
 
 > **Fichier partage entre TOUTES les skills** (research-director, fiche-attaque, bibliography-maintainer, aegis-prompt-forge)
-> **Derniere MAJ** : 2026-04-06T14:30:00
-> **Mise a jour par** : Domaine 2 completion + 3 P0 blockers resolved (F46, ASIDE, Sep(M))
+> **Derniere MAJ** : 2026-05-21 (PDCA sync 05-16 -> 05-21, session anti-confabulation)
+> **Mise a jour par** : research-director, session 2026-05-21 - outillage tracabilite (anti-confabulation + scoped) + corrections fiche #08 / corpus
 
 ---
 
@@ -28,6 +28,15 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | `ASIDE_SEARCH_RUN004.md` | 2026-04-04 | **TRAITE** | 5 papiers (12 identifies) | URLs VERIFIEES par COLLECTOR |
 | `PAPERS_RUN004_VERIFIED.json` | 2026-04-04 | **COLLECTOR DONE** | 20 papiers, 0 URL invalide | 4 corrections propagees, 2 a verifier manuellement |
 
+### Rapports research-director (session validation G-058 2026-05-20)
+
+| Fichier | Date | Statut | Actions pendantes |
+|---------|------|--------|-------------------|
+| `DIRECTOR_VALIDATION_BRIEFING_G058_2026-05-20.md` | 2026-05-20 | **PRODUIT/TRAITE** | Validation du bootstrap G-058 et clarification du vocabulaire "SC-2 production" |
+| `AUDIT_SESSION_2026-05-20_G058VAL_scoring-report_COMPLETE.md` | 2026-05-20 | **PRODUIT/TRAITE** | Scoring report de la session de validation G-058 |
+
+> Note : les conjectures C1 a C7 restent INCHANGEES a l'issue de cette session. Les executions "SC-2 production" de PDCA-10 et PDCA-11 etaient des dry-runs N=1 du loader de scenarios sans LLM en service (validation syntaxique du pipeline uniquement) ; aucun resultat SC-2 reel n'a ete produit. La vraie campagne SC-2 (N=30, 62 scenarios, 8 frameworks, Groq llama-3.3-70b-versatile, 14880 trials) reste a lancer apres soumission OSF. Aucun mouvement de conjecture n'est justifie. Voir le tableau des conjectures en Section 4 (inchange).
+
 ### Rapports fiche-attaque
 
 | Fichier | Date | Statut | Fiches | Actions pendantes |
@@ -46,7 +55,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 
 | Fichier | Date | Statut | Actions |
 |---------|------|--------|---------|
-| `experiments/triple_convergence_results.json` | 2026-04-06 | **TRAITE** | 210 runs (7x30), C1 nuancee, KW p=0.77 non-significatif, model-dependent |
+| `experiments/triple_convergence_results.json` | 2026-04-06 | **TRAITE (chiffres reconcilies 2026-05-30)** | 210 runs (7x30, N=30). Donnee brute autoritative : modele llama-3.1-8b-instant, full convergence ASR=16.67%, best subset delta2_only=56.67%, KW H=18.80 p=0.0047 (SIGNIFICATIF), eta²=0.184, Cohen's f=0.475, gap_all_vs_best=-0.4, `c1_supported=false`. Interpretation : convergence ANTAGONISTE (full < meilleur sous-ensemble), coherente avec TC-002 70B. [ERRATUM 2026-05-20 resolu cote documentation : les chiffres 3B/full 3%/p=0.77 etaient FAUX. Re-run TC-001 v3 (70B) toujours requis pour decision finale C1 — voir Dossier_Correction] |
 
 ### Rapports aegis-prompt-forge
 
@@ -68,9 +77,9 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 
 | ID | Description | Statut | Bloque | Responsable |
 |----|-------------|--------|--------|-------------|
-| RR-P0-001 | Formules medicales (7.4% → insuffisant). F58 MVP a formaliser | **PARTIAL** — draft F56-F59 produit, 8 papiers medicaux trouves | Ch.3, Ch.6, C6 | MATHEUX + validation directeur |
-| RR-P0-002 | F46 Recovery Penalty — calibration empirique | **STARTED** — script `backend/experiments/f46_calibration.py` + route API (f46_routes.py) + grille 5x3x30x30=14400 evals, proxy prompting, juge deterministe. Baseline (900 evals) launched in background 2026-04-06T13:15. ETA: 40h sequential / 10h parallel GPU. | Ch.6, C4 | Background experiment |
-| RR-P0-003 | ASR circularity — ASR_deterministic base δ³ | **PENDING** | Metriques, Ch.7 | SCIENTIST + WHITEHACKER |
+| RR-P0-001 | Formules medicales (7.4% → insuffisant). F58 MVP a formaliser | **INTEGRATED** (2026-05-31, RUN-010) — F46, F56, F57, F58 (MVP=4.51), F59 formalisees dans `doc_references/GLOSSAIRE_F_SERIES.md` (module decompose, source FORMULAS_F56_F59_FINAL). Reste : validation empirique. | Ch.3, Ch.6, C6 | MATHEUX + validation directeur |
+| RR-P0-002 | F46 Recovery Penalty — calibration empirique | **PATCHED (no run)** (2026-05-31) — `f46_calibration.py` multi-provider (Ollama\|Groq via auto-detect GROQ_API_KEY) + module `f46_provider.py` + phase `pre-check` (5 runs, gate doctoral) default. env_loader walk-up charge la cle depuis main tree. Pret a lancer `--phase pre-check` sur Groq. Baseline avril existante (f46_baseline.json). | Ch.6, C4 | User: lancer pre-check Groq |
+| RR-P0-003 | ASR circularity — ASR_deterministic base δ³ | **RESOLVED comme F73** (2026-05-16) — `FORMALISATION_ASR_DETERMINISTIC.md` (F73, extension F22) + `backend/metrics/chain_asr.py` (Chain-ASR(k), G-061). Juge deterministe 8 adapters δ³, non-circulaire (echappe P044 99.91% flip), proprietes [THEOREME] prouvees. | Metriques, Ch.7 | RESOLVED |
 
 ### P1 — IMPORTANTS (8 items)
 
@@ -126,13 +135,14 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 
 | Conj | Score | Statut | Evolution cette session |
 |------|-------|--------|----------------------|
-| C1 | 10/10 | **VALIDEE (nuancee)** | Theorie confirmee (P052+P018). Experience triple convergence 2026-04-06 (210 runs, 7 conditions, N=30) : pas de synergie sur llama3.2:3.2B (ASR full=3% < best subset=23%, KW p=0.77). Convergence non-synergique sur petits modeles bien alignes — delta0 affaiblit l'attaque en retirant le persona exploitable. Resultat valide mais model-dependent. |
+| C1 | 10/10 **(score GELE — decision directeur apres v3)** | **EN RE-VERIFICATION** | Theorie confirmee (P052+P018). Donnee brute autoritative triple_convergence_results.json (2026-04-08, llama-3.1-8b-instant, 210 runs, 7 conditions, N=30) : full convergence ASR=16.67% < best subset delta2_only=56.67%, KW H=18.80 p=0.0047 (SIGNIFICATIF), Cohen's f=0.475, gap=-0.4, `c1_supported=false`. Lecture : C1 "les 3 couches delta necessaires a un ASR eleve" N'EST PAS supportee — delta2 seul domine ; convergence ANTAGONISTE (delta0 retire le persona exploitable), coherente avec TC-002 70B (full 20% < delta1 seul 33%). Les anciens chiffres (3.2B, full 3%, best 23%, p=0.77) etaient ERRONES (reconcilies 2026-05-30). Score 10/10 GELE : mouvement de conjecture = SUPERVISED, decision reportee au directeur apres re-run TC-001 v3 (70B). |
 | C2 | 10/10 | **VALIDEE** | RENFORCE par Deep-Analysis P0 — P024 Sep(M) compromis + P044 juges flippables 99.91% |
 | C3 | 10/10 | **VALIDEE** | RENFORCE par Deep-Analysis P0 — double preuve : P052 martingale + P018 shallow |
 | C4 | 9/10 | Fortement supportee | Stable — F56 (Drift Rate) draft produit, manque calibration empirique (RR-DA-004) |
 | C5 | **8.5/10** | Fortement supportee | **+0.5 Deep-Analysis P0** — P024 limites cosinus (Sep(M) > cosine brut) + P044 limites juges embeddings |
 | C6 | **9.5/10** | Fortement supportee | **+0.5 Deep-Analysis P0** — P029 94.4% ASR medical JAMA = evidence empirique forte |
 | C7 | 8/10 | Supportee | Protocole adaptatif concu (2026-04-06) — 50 variantes x 4 schedules, execution pendante. P054 compound mais pas specifique LRM ; manque papers LRM (RR-RUN4-003) |
+| C8 | 7/10 | **CANDIDATE** | Peer-preservation compromet le shutdown multi-agent. Supportee par P114-P116. Promotion a 8/10 conditionnee a la replication independante de P086 (G-028) + test en contexte medical (G-031). Voir CONJECTURES_TRACKER.md. |
 
 ---
 
@@ -170,7 +180,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | Decouvertes | 16 validees + 4 confirmees RUN-004 (D-017 a D-020) |
 | Techniques defense | 70 → 87 (+17 RUN-004, T-71 a T-87) |
 | Techniques attaque | 48 → 66 (+18 RUN-004, T-49 a T-66) |
-| Gaps these | 21 → 27 (+6 RUN-004, G-022 a G-027) |
+| Gaps these | 63 (G-001 a G-063) |
 | RAG chunks | 580+ (aegis_bibliography) + 23 fiches (aegis_corpus) |
 
 ### Papiers cles post-analyse complete (SVC 10/10)
@@ -239,3 +249,106 @@ Chaque element dans ce fichier porte un tag de verification :
 **bibliography-maintainer** : met a jour Sections 3, 4, 6 apres chaque RUN
 **fiche-attaque** : met a jour Section 5 apres chaque fiche
 **aegis-prompt-forge** : met a jour Section 2 apres chaque campagne
+
+---
+
+## Sync PDCA 2026-05-16 — activite 09 avril → 16 mai 2026
+
+### Rapports bibliography-maintainer
+
+| Fichier | Date | Statut | Actions extraites | Remarques |
+|---------|------|--------|-------------------|-----------|
+| RUN-008 (P128-P130 scoped) | 2026-04-09 | TRAITE | 3 P-IDs nouveaux | Anti-doublon fix : check_corpus_dedup.py |
+| VERIFICATION_DELTA3 P131-P134 | 2026-04-11 | TRAITE | 4 nouveaux frameworks δ³ verifies (Weissman, Guardrails AI, LLM Guard, LMQL) | P084 LlamaFirewall = duplicate dropped |
+
+### Rapports experiment-planner
+
+| Fichier | Date | Statut | Actions extraites | RR creee |
+|---------|------|--------|-------------------|----------|
+| G058_CAMPAGNE_7_FRAMEWORKS_DELTA3.md | 2026-05-16 | DRAFT exécutable | Campagne 74k trials, 7 adapters, pre-reg OSF | RR-G058 (critique) |
+| G060_PROMPTGUARD2_CROSSLINGUAL.md | 2026-05-16 | DRAFT exécutable | Test PromptGuard2 FR/EN/BR x 99 templates | RR-G060 (haute) |
+| G062_ADVJUDGE_ZERO_PORT.md | 2026-05-16 | DRAFT exécutable | Port AdvJudge-Zero, test juge AEGIS | RR-G062 (haute) |
+| G007_REPRODUCTION_P125_36LLMS.md | 2026-05-15 | DRAFT exécutable | Reproduction P125 baseline 56% | RR-G007 (haute) |
+| G006_CAPTURE_VS_99_TEMPLATES.md | 2026-05-15 | DRAFT exécutable | Test 99 templates AEGIS sur CAPTURE | RR-G006 (haute) |
+
+### Rapports thesis-writer
+
+| Fichier | Date | Statut | Section thèse |
+|---------|------|--------|---------------|
+| CHAPITRE_IV_DELTA3_G063.md | 2026-05-15 | DRAFT v1 (revue directeur) | Chapitre IV §IV.1 + §IV.2 (AllowedOutputSpec + Lemma 1) |
+| IMPLEMENTATION_P1_COMPARATEUR.md | 2026-05-15 | EN CONSTRUCTION | Implementation comparateur frameworks |
+| IMPLEMENTATION_S6_MEMORY_POISONING.md | 2026-05-15 | EN CONSTRUCTION | Scenario S6 memory poisoning |
+
+### Nouveaux gaps depuis 2026-04-09
+
+| ID | Description | Statut |
+|----|-------------|--------|
+| G-058 | Campagne empirique 7 frameworks δ³ | PROTOCOL_READY |
+| G-060 | PromptGuard2 cross-lingual coverage | PROTOCOL_READY |
+| G-062 | AdvJudge-Zero port pour juge AEGIS | PROTOCOL_READY |
+| G-063 | δ³ medical chirurgical FDA (P0 doctoral) | PROTOCOL_READY + chapitre draft |
+| G-007/G-006 reformules | Reproductions P125 / CAPTURE | PROTOCOL_READY |
+
+**last_updated** : `2026-05-16` (sync PDCA session)
+
+
+---
+
+## PDCA-2 — Resolution 4 bloqueurs G-058 (2026-05-16)
+
+Sub-agent COLLECTOR (mode scoped) — 4 verifications paralleles :
+
+| Bloqueur | RR | Resultat | Statut final |
+|----------|----|-----------|--------------|
+| AdvJudge-Zero (G-062) | RR-G062 | arXiv:2512.17375 = P044 existant. CORRECTION : auteurs Li/Wu/Liu (Unit 42) non Ren. | ready |
+| CAPTURE dataset (G-006) | RR-G006 | arXiv:2505.12368 = P124 indexe, dataset NON public, fallback HF deepset/prompt-injections | blocked_partial |
+| LMQL + LLaMA 3.2 (G-058) | RR-G058 | Issue #353 Ollama + #350 LLaMA 3 GGUF -> LMQL non viable. REPLAN : Outlines. | needs_replan |
+| Panel 36 LLMs P125 (G-007) | RR-G007 | arXiv:2410.23308 P125, budget $300-800 mix closed/open | ready |
+
+**Decisions prises** :
+- G-062 : juste correction protocole (Ren -> Li et al.)
+- G-006 : email Kholkar/Ahuja en parallele + fallback HF immediat
+- G-058 : substitution LMQL -> Outlines (deadline +7 jours)
+- G-007 : query ChromaDB P125 pour liste 36 LLMs avant lancement
+
+**Lecons capitalisees** :
+1. Verifier les arXiv IDs avant d'integrer dans un protocole (G-062 avait "à vérifier" + mauvais auteurs)
+2. Tester compat framework + LLM cible PENDANT le design protocole, pas après (G-058 perdrait 1 semaine si réalisé au moment du SC-1 lancement)
+3. Datasets cités dans papers ACL ne sont pas systematiquement publics — verifier HuggingFace en amont
+
+---
+
+## Sync PDCA 2026-05-21 — session anti-confabulation + verification scoped
+
+Briefing complet : `_staging/briefings/DIRECTOR_BRIEFING_2026-05-21.md`.
+
+### Outillage cree
+- Skill `anti-confabulation` (`.claude/skills`) : taxonomie 7 tags, scoring ITR + verdict de sortie + auto-eval /50, modes AUDIT / REDACTION.
+- Mode `scoped` formalise dans `bibliography-maintainer` (verification ciblee de references, COLLECTOR seul, zero mutation du corpus).
+- `backend/tools/verify_chromadb_chunks.py` cree (etait reference par le SKILL mais absent).
+
+### Corrections (fiche #08 + corpus + journal)
+- Fiche #08 v3.1 : 3 corrections numeriques + 3 d'attribution. Erreur majeure : "Safety Alignment Should Be Made More Than Just a Few Tokens Deep" = Qi et al. (P018, arXiv:2406.05946), pas Wei et al. ; "100 exemples" = Qi et al. 2023 (arXiv:2310.03693), pas NDSS ; Schulhoff = 2023 (EMNLP).
+- Corpus MANIFEST : P018 + arXiv:2406.05946 ; P023 auteurs -> Gong et al. ; P029 auteurs -> Lee et al. (Ro Woon Lee, JAMA Network Open, DOI 10.1001/jamanetworkopen.2025.49963).
+- Journal de decisions AEGIS-DECISION-LOG-001 : sections 2.2 / 2.3 / 3.4 corrigees.
+
+### Papiers stages (dedup-clean, pipeline complet a lancer en local)
+
+| P-ID | Reference | arXiv | Couches |
+|------|-----------|-------|---------|
+| P136 | Wallace et al. 2024, Instruction Hierarchy | 2404.13208 | δ⁰, δ¹ |
+| P137 | Qi et al. 2023, Fine-tuning compromises safety | 2310.03693 | δ⁰ |
+| P138 | Schulhoff et al. 2023, HackAPrompt taxonomy | 2311.16119 | δ¹ |
+
+Runbook : `_staging/collector/add_3_papers_fiche08.sh` puis `/bibliography-maintainer analyze_only`.
+
+### Conjectures — INCHANGEES
+Aucun resultat experimental neuf. Les corrections d'attribution renforcent la tracabilite de l'evidence de C3 (P018) et C6 (P029) sans en modifier les scores.
+
+### Actions ouvertes prioritaires
+- P0 : TC-001 audit anti-confabulation FAIT le 2026-05-21 (`research_notes/AEGIS-AUDIT-TC001_anti-confabulation_2026-05-21.md`), verdict NON CONFORME. Donnee brute autoritative (`triple_convergence_results.json`, modele llama-3.1-8b-instant) : ASR full = 16.67%, best subset = δ² seul 56.67%, KW p = 0.0047 (significatif), `c1_supported=False`. RESEARCH_STATE C1 cite a tort modele 3.2B, full 3%, best subset 23%, p=0.77. Re-run v3 + reconciliation de toutes les sources requis ; decision sur le score C1 reportee au directeur apres v3.
+- P0 : F46 calibration (etat du run background a recuperer) ; vraie campagne SC-2 apres soumission OSF (debloque Ch.6).
+- P1 : ingestion locale P136-P138 ; analyse FC-20260409 + FC-20260410 (PENDING_ANALYSIS) via `/experimentalist`.
+- Hygiene : purger le hook stale `_staging/scientist/PENDING_SCIENTIST_REVIEW.md` (entree du 2026-04-06).
+
+**last_updated** : `2026-05-21`

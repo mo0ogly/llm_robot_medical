@@ -85,10 +85,10 @@ Les auteurs reconnaissent : (1) l'etude est limitee a 100 papiers ICLR 2025, (2)
 
 ### Couches delta
 
-- **delta-0** : non applicable directement (l'attaque cible le traitement de documents, pas l'alignement RLHF).
-- **delta-1 (injection statique)** : l'attaque statique correspond a un template fixe de type delta-1 dans la taxonomie AEGIS.
-- **delta-2 (injection iterative)** : l'attaque iterative correspond a l'optimisation genetique delta-2 -- le prompt est optimise contre un simulateur de la cible.
-- **delta-3** : non teste. La validation formelle de la coherence entre le contenu du papier et l'evaluation pourrait constituer une defense delta-3.
+- **δ⁰** : non applicable directement (l'attaque cible le traitement de documents, pas l'alignement RLHF).
+- **δ¹ (injection statique)** : l'attaque statique correspond a un template fixe de type δ¹ dans la taxonomie AEGIS.
+- **δ² (injection iterative)** : l'attaque iterative correspond a l'optimisation genetique δ² -- le prompt est optimise contre un simulateur de la cible.
+- **δ³** : non teste. La validation formelle de la coherence entre le contenu du papier et l'evaluation pourrait constituer une defense δ³.
 
 ### Formules AEGIS impactees
 

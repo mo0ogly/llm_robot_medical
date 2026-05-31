@@ -31,7 +31,7 @@
 
 4. **CFT comme defense concrete.** Le Continual Fine-Tuning avec LoRA montre une reduction massive du MBR (-0.64 sur Llama3.1-8B, Table 3) et des compliance rates quasi-nulles post-CFT (Zhang, Lou & Wang, 2025, Table 2). Les hyperparametres sont completement specifies (alpha=256, rank=8, lr=5e-5, 2 epochs), permettant la reproduction.
 
-5. **Pipeline reproductible.** Code public sur GitHub (https://github.com/PittNAIL/med_jailbreak), MedSafetyBench public, evaluation sur V100 GPU. C'est une des rares contributions en securite medicale des LLM avec reproductibilite complete.
+5. **Pipeline reproductible.** Le depot de code initial (github.com/PittNAIL/med_jailbreak) a ete retire par les auteurs apres publication et est inaccessible (verifie 2026-05, HTTP 404) ; MedSafetyBench reste public, evaluation sur V100 GPU. C'est une des rares contributions en securite medicale des LLM dont le protocole reste documente, mais la reproductibilite est desormais limitee par l'indisponibilite du code.
 
 **Faiblesses :**
 
@@ -99,7 +99,7 @@ Lien glossaire AEGIS : F22 (ASR / Compliance Rate), lie au benchmark medical AEG
 | Champ | Valeur |
 |-------|--------|
 | SVC pertinence | 9/10 |
-| Reproductibilite | Haute -- code public (GitHub PittNAIL/med_jailbreak), V100 GPU, MedSafetyBench public, hyperparametres CFT complets |
-| Code disponible | Oui -- https://github.com/PittNAIL/med_jailbreak |
+| Reproductibilite | Moyenne -- depot initial github.com/PittNAIL/med_jailbreak retire par les auteurs et inaccessible (verifie 2026-05, HTTP 404) ; V100 GPU, MedSafetyBench public et hyperparametres CFT complets restent documentes |
+| Code disponible | Non -- depot initial retire par les auteurs, github.com/PittNAIL/med_jailbreak inaccessible (verifie 2026-05, HTTP 404) |
 | Dataset public | Oui -- MedSafetyBench (Zhang et al., 2024) |
 | Nature epistemique | [EMPIRIQUE] -- evaluation systematique sans garantie formelle ; CFT est une [HEURISTIQUE] sans borne de convergence ni preuve que l'alignement CFT resiste a des attaques adaptatives |

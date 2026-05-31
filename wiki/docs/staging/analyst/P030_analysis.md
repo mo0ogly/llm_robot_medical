@@ -44,7 +44,7 @@
 
 2. **Prompts single-turn uniquement.** Le comportement multi-turn -- ou l'accumulation contextuelle peut modifier la presence de disclaimers -- n'est pas capture. Les interactions patient-LLM reelles sont multi-tour (Section Discussion, p.5-6).
 
-3. **Pas d'analyse des system prompts.** Les disclaimers pourraient avoir migre vers les instructions systeme (delta-1) plutot qu'etre absents de l'architecture. L'etude ne distingue pas entre suppression deliberee et migration vers d'autres couches de securite (Section Discussion, implicite).
+3. **Pas d'analyse des system prompts.** Les disclaimers pourraient avoir migre vers les instructions systeme (δ¹) plutot qu'etre absents de l'architecture. L'etude ne distingue pas entre suppression deliberee et migration vers d'autres couches de securite (Section Discussion, implicite).
 
 4. **Correlation causale non demontree.** La pression commerciale vers la "helpfulness" est invoquee comme cause de l'erosion mais pas formellement demontree. La correlation temporelle (R2 = 0.944) ne prouve pas la causalite -- des facteurs confondants (changements architecturaux, nouvelles donnees d'entrainement) ne sont pas controles (Section Discussion, p.5).
 
@@ -106,23 +106,23 @@ Low-risk images : 16.2% disclaimers
 - xAI : 3.6% / 8.6%
 - DeepSeek : 0% / 0%
 
-Lien glossaire AEGIS : F22 (ASR -- indirectement, l'erosion augmente l'ASR baseline), lie a la mesure de drift temporel delta-0
+Lien glossaire AEGIS : F22 (ASR -- indirectement, l'erosion augmente l'ASR baseline), lie a la mesure de drift temporel δ⁰
 
 ### Pertinence these AEGIS
 
 - **Couches delta :**
   - δ⁰ (RLHF alignment) : evidence directe de la degradation longitudinale de l'alignement -- le taux de disclaimers chute de 26.3% a 0.97% en 3 ans SANS attaque active (Section Results, p.2)
   - δ¹ (System prompt) : potentiellement affecte mais non mesure directement -- les disclaimers pourraient avoir migre vers les instructions systeme
-  - δ² δ³ : l'erosion de delta-0 renforce l'argument pour des couches de defense externes independantes du modele
+  - δ² δ³ : l'erosion de δ⁰ renforce l'argument pour des couches de defense externes independantes du modele
 
 - **Conjectures :**
-  - C1 (insuffisance delta-1) : **supportee indirectement** -- l'erosion des disclaimers suggere que meme les instructions systeme de securite sont desactivees ou affaiblies
-  - C2 (necessite delta-3) : **fortement supportee** -- la degradation temporelle sans attaque active montre que delta-0 n'est pas fiable a long terme ; des garanties formelles sont necessaires
+  - C1 (insuffisance δ¹) : **supportee indirectement** -- l'erosion des disclaimers suggere que meme les instructions systeme de securite sont desactivees ou affaiblies
+  - C2 (necessite δ³) : **fortement supportee** -- la degradation temporelle sans attaque active montre que δ⁰ n'est pas fiable a long terme ; des garanties formelles sont necessaires
   - C4 (pression commerciale) : **fortement supportee** -- la course a la "helpfulness" erode la securite, documentee quantitativement (R2 = 0.944, p = 0.028, Section Results, p.2)
 
 - **Decouvertes :**
   - D-002 (erosion temporelle) : **confirmee** -- R2 = 0.944, reduction de 8.1 points/an (Section Results, p.2)
-  - D-003 (fragilite alignment) : **confirmee** -- delta-0 se degrade meme sans attaque
+  - D-003 (fragilite alignment) : **confirmee** -- δ⁰ se degrade meme sans attaque
   - D-016 (variation provider) : **confirmee** -- DeepSeek 0%, Google 41%, ecart massif (Section Results, p.2)
 
 - **Gaps :**

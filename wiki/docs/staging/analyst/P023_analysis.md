@@ -96,6 +96,6 @@ Lien glossaire AEGIS : F22 (ASR), F15 (Sep(M) -- non utilise directement dans ce
 |-------|--------|
 | SVC pertinence | 8/10 |
 | Reproductibilite | Haute -- NDSS publie (peer-reviewed CORE A*), metriques detaillees, hyperparametres complets en appendice (Table XXVIII), modeles open-weight accessibles |
-| Code disponible | Non mentionne dans le papier |
+| Code disponible | Oui -- code officiel github.com/ThuCCSLab/misalignment (verifie 2026-05) ; non mentionne dans le corps du papier |
 | Dataset public | Partiel -- HH-RLHF (Anthropic) public, datasets SA/HS/AOA decrits mais provenance a verifier |
 | Nature epistemique | [EMPIRIQUE] -- evaluation systematique sans garantie formelle ; SSRA et SSRD sont des [HEURISTIQUE] sans borne de convergence ni preuve de completude |

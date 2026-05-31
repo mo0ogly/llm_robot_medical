@@ -193,4 +193,4 @@ The final manuscript uses the notation everywhere:
 - :material-keyboard: [WinCompose (Windows)](https://github.com/SamHocevar/wincompose)
 - :material-shield: [Complete δ⁰–δ³ framework](delta-layers/index.md)
 - :material-file-document: [CLAUDE.md - project rules](contributing/index.md)
-- :material-magnify: [INDEX_BY_DELTA.md - 130 papers classification](research/bibliography/by-delta.md)
+- :material-magnify: [INDEX_BY_DELTA.md - 131 papers classification](research/bibliography/by-delta.md)

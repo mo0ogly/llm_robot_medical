@@ -32,9 +32,9 @@ Pas de doublons detectes parmi les 3 papiers (P111-P113 sont nouveaux dans le co
 
 | P-ID | Fichier | SVC | Nature | Couches delta |
 |------|---------|-----|--------|--------------|
-| P111 | `_staging/analyst/P111_analysis.md` | 8/10 | [PREPRINT] | delta-1, delta-2 |
-| P112 | `_staging/analyst/P112_analysis.md` | 5/10 | [PREPRINT] | delta-1, delta-2 |
-| P113 | `_staging/analyst/P113_analysis.md` | 9/10 | [PREPRINT] | delta-1, delta-2 |
+| P111 | `_staging/analyst/P111_analysis.md` | 8/10 | [PREPRINT] | δ¹, δ² |
+| P112 | `_staging/analyst/P112_analysis.md` | 5/10 | [PREPRINT] | δ¹, δ² |
+| P113 | `_staging/analyst/P113_analysis.md` | 9/10 | [PREPRINT] | δ¹, δ² |
 
 ### Synthese pour G-027 (RAG defense)
 

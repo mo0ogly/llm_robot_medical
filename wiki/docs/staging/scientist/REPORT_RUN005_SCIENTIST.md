@@ -18,7 +18,7 @@ RUN-005 est le lot le plus impactant depuis RUN-002 pour la these AEGIS. Les 15 
 
 2. **Les attaques multi-tour (MSBE) ont atteint la maturite operationnelle** avec 7 papiers (P095-P101). Le drift de la direction de refus est monotone (P097 STAR), les prompts sont entierement benins (P099 Crescendo, P100 ActorBreaker), et la degradation est passive sous contexte long (P098). Nouvel Axe 10 cree.
 
-3. **La Triple Convergence (D-001) est massivement renforcee** : Pilier 1 est maintenant explique a 3 niveaux (empirique, causal P094, architectural P102). 0/15 papiers adressent delta-3. L'argument pour delta-3 est soutenu par 73+ papiers.
+3. **La Triple Convergence (D-001) est massivement renforcee** : Pilier 1 est maintenant explique a 3 niveaux (empirique, causal P094, architectural P102). 0/15 papiers adressent δ³. L'argument pour δ³ est soutenu par 73+ papiers.
 
 ---
 
@@ -40,7 +40,7 @@ RUN-005 est le lot le plus impactant depuis RUN-002 pour la these AEGIS. Les 15 
 | Conjecture | Score avant | Score apres | Variation | Justification |
 |-----------|-------------|-------------|-----------|---------------|
 | **C1** | 10/10 | 10/10 | Stable (sature) | P092 (self-jailbreaking), P098 (degradation passive), P102 (concentration sparse). |
-| **C2** | 10/10 | 10/10 | Stable (sature) | 0/15 papiers avec delta-3. Total : 0/73+. |
+| **C2** | 10/10 | 10/10 | Stable (sature) | 0/15 papiers avec δ³. Total : 0/73+. |
 | **C3** | 10/10 | 10/10 | Stable (sature) | P102 : preuve architecturale (~50 tetes). |
 | **C4** | 9/10 | 9/10 | Stable | P097 STAR : drift monotone mesurable. Pas d'experience Sep(M) N>=30. |
 | **C5** | 8.5/10 | 8.5/10 | Stable | Pas de nouvelle evidence directe. |
@@ -102,13 +102,13 @@ Les rapports CYBERSEC et WHITEHACKER utilisaient independamment G-032 a G-037/G-
 
 La Triple Convergence est MASSIVEMENT renforcee par RUN-005 :
 
-- **Pilier 1 (delta-0 effacable)** : Maintenant explique a 4 niveaux : empirique (P039), formel (P052 martingale), causal (P094 dilution probing), architectural (P102 concentration sparse). 3 mecanismes fondamentaux identifies : concentration sparse, dilution basse-dim, auto-corruption.
+- **Pilier 1 (δ⁰ effacable)** : Maintenant explique a 4 niveaux : empirique (P039), formel (P052 martingale), causal (P094 dilution probing), architectural (P102 concentration sparse). 3 mecanismes fondamentaux identifies : concentration sparse, dilution basse-dim, auto-corruption.
 
-- **Pilier 2 (delta-1 empoisonnable)** : Etendu au multi-tour (P095-P100). L'erosion est systematique, monotone (P097 STAR), et fonctionne avec des prompts benins (P099, P100).
+- **Pilier 2 (δ¹ empoisonnable)** : Etendu au multi-tour (P095-P100). L'erosion est systematique, monotone (P097 STAR), et fonctionne avec des prompts benins (P099, P100).
 
-- **Pilier 3 (delta-2 bypassable)** : Confirme et etendu. Les prompts benins (P099, P100) contournent tous les filtres content-based. La detection doit devenir comportementale.
+- **Pilier 3 (δ² bypassable)** : Confirme et etendu. Les prompts benins (P099, P100) contournent tous les filtres content-based. La detection doit devenir comportementale.
 
-- **delta-3 seul survivant** : 0/15 papiers RUN-005 adressent delta-3. Total cumule : 0/73+ papiers du corpus.
+- **δ³ seul survivant** : 0/15 papiers RUN-005 adressent δ³. Total cumule : 0/73+ papiers du corpus.
 
 ---
 
@@ -131,7 +131,7 @@ concentree dans               MECANISME           passive sous contexte
                            securite)
 ```
 
-**Conclusion unifiee** : Le mecanisme fondamental est le meme — le signal de securite RLHF est un artefact basse dimension fragile qui se dilue sous toute forme d'extension du contexte, que ce soit par raisonnement (axe LRM) ou par multi-tour (axe MSBE). La defense doit donc etre hors du mecanisme d'attention : c'est l'argument le plus fort pour delta-3 deterministe.
+**Conclusion unifiee** : Le mecanisme fondamental est le meme — le signal de securite RLHF est un artefact basse dimension fragile qui se dilue sous toute forme d'extension du contexte, que ce soit par raisonnement (axe LRM) ou par multi-tour (axe MSBE). La defense doit donc etre hors du mecanisme d'attention : c'est l'argument le plus fort pour δ³ deterministe.
 
 ---
 
@@ -140,7 +140,7 @@ concentree dans               MECANISME           passive sous contexte
 ### Pour la these (manuscrit)
 1. **Promouvoir C7** de conjecture a fait etabli dans le Chapitre 4, avec la nuance P091 (conditionnel au type d'attaque)
 2. **Integrer Axe 10 (MSBE)** comme nouveau chapitre ou sous-section du chapitre erosion
-3. **Mettre a jour le formal framework** avec les 3 mecanismes de fragilite delta-0 (concentration, dilution, auto-corruption)
+3. **Mettre a jour le formal framework** avec les 3 mecanismes de fragilite δ⁰ (concentration, dilution, auto-corruption)
 
 ### Pour les experiences AEGIS
 1. **Tester T37 (CoT Hijacking puzzles)** sur LLaMA 3.2 via Ollama -- ASR le plus eleve du corpus, black-box, facile
@@ -181,7 +181,7 @@ Les 3 rapports (MATHEUX, CYBERSEC, WHITEHACKER) convergent sur :
 - P094 est le papier le plus fort du lot (SVC 10/10 unanime)
 - P102 fournit l'explication structurelle (les 3 identifient ~50 tetes)
 - P092 est le phenomene le plus conceptuellement nouveau (self-jailbreaking)
-- 0/15 papiers adressent delta-3 (confirmation unanime)
+- 0/15 papiers adressent δ³ (confirmation unanime)
 
 ### Divergences resolues
 - Numerotation des gaps (G-032 a G-038 en doublon) : reconciliee en G-032 a G-041

@@ -201,7 +201,7 @@
 - c) DPO est meilleur que RLHF
 - d) L'attention est inutile
 
-**Q30.** La couche delta-1 d'AEGIS correspond a :
+**Q30.** La couche δ¹ d'AEGIS correspond a :
 - a) L'alignement interne du modele
 - b) La detection pre-inference
 - c) La validation post-inference
@@ -264,7 +264,7 @@
 | Q27 | **b) elimine le reward model** | DPO optimise directement sur les paires de preferences |
 | Q28 | **c) attention au prompt original** | FS mesure si l'attention reste sur le prompt ou se detourne |
 | Q29 | **b) gradient nul au-dela de l'horizon** | Impossibilite structurelle de l'alignement profond |
-| Q30 | **b) detection pre-inference** | delta-0=alignement, delta-1=detection, delta-2=validation, delta-3=monitoring |
+| Q30 | **b) detection pre-inference** | δ⁰=alignement, δ¹=detection, δ²=validation, δ³=monitoring |
 
 ---
 

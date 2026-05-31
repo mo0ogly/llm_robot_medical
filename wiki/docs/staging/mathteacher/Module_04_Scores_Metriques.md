@@ -1426,7 +1426,7 @@ d) Config E proposee : **B en mode rapide (urgence) + A en mode differe (post-ho
 
 ### Section δ³ : composition vs unification formelle
 
-Cette section est ajoutee suite a la verification de la claim "4eme implementation δ³" (wiki/docs/delta-layers/delta-3.md) qui a revele **7+ frameworks δ³** existants (LMQL 2022, Guardrails AI 2023, LLM Guard 2023, CaMeL 2025 P081, AgentSpec 2025 P082, LlamaFirewall 2025 P131, RAGShield 2026 P066, AEGIS 2026). Elle enseigne la **difference mathematique** entre deux approches fondamentales de la verification δ³.
+Cette section est ajoutee suite a la verification de la claim "4eme implementation δ³" (wiki/docs/delta-layers/δ³.md) qui a revele **7+ frameworks δ³** existants (LMQL 2022, Guardrails AI 2023, LLM Guard 2023, CaMeL 2025 P081, AgentSpec 2025 P082, LlamaFirewall 2025 P131, RAGShield 2026 P066, AEGIS 2026). Elle enseigne la **difference mathematique** entre deux approches fondamentales de la verification δ³.
 
 #### Intuition pedagogique
 

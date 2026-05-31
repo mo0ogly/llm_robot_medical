@@ -5,7 +5,7 @@
 **arXiv** : 2403.06833v3 (31 Jan 2025)
 > **PDF Source**: [literature_for_rag/P024_source.pdf](../../assets/pdfs/P024_source.pdf)
 **PDF** : https://arxiv.org/abs/2403.06833
-**Code** : https://github.com/egozverev/Shold-It-Be-Executed-Or-Processed
+**Code** : https://github.com/egozverev/Should-It-Be-Executed-Or-Processed
 **[ARTICLE VERIFIE]** — Texte complet lu depuis ChromaDB (77 chunks, ingestion 2026-04-04)
 
 ---

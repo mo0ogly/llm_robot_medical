@@ -85,7 +85,7 @@ Le modele est (Q, epsilon*)-recoverable a profondeur T, a condition que P_base(y
 ### 2.3 Liens avec les formules AEGIS F56-F59
 
 - **F56 (Drift Rate)** : DR mesure la derive semantique tour-a-tour. La calibration F46 devrait reduire DR en maintenant le signal de recuperation. Metrique complementaire a mesurer.
-- **F58 (Medical Vulnerability Premium)** : MVP quantifie le surcout de vulnerabilite medicale. La calibration F46 devrait reduire MVP si la penalite cible effectivement la couche delta-0 (alignement RLHF).
+- **F58 (Medical Vulnerability Premium)** : MVP quantifie le surcout de vulnerabilite medicale. La calibration F46 devrait reduire MVP si la penalite cible effectivement la couche δ⁰ (alignement RLHF).
 
 ### 2.4 Hypotheses et limitations du theoreme
 
@@ -195,7 +195,7 @@ Le modele LLaMA 3.2 via Ollama ne supporte pas le re-training. L'implementation 
    - mu > 0 : prompt systeme enrichi avec instruction explicite de recuperation a toutes les positions ("At any point in your response, if you detect potentially harmful content, stop and redirect")
    - mu croissant : instructions de plus en plus insistantes (repetition, capitales, position dans le prompt)
 
-**Justification du proxy** : Young (2026, Section 10.1, p. 8) note que les interventions empiriquement reussies (representation engineering, refusal direction amplification) sont compatibles avec l'objectif de deep alignment. Le prompting guide est une approximation au niveau delta-0 de la penalite de recuperation au niveau delta-3.
+**Justification du proxy** : Young (2026, Section 10.1, p. 8) note que les interventions empiriquement reussies (representation engineering, refusal direction amplification) sont compatibles avec l'objectif de deep alignment. Le prompting guide est une approximation au niveau δ⁰ de la penalite de recuperation au niveau δ³.
 
 **B.2** Modifier `backend/orchestrator.py` :
 - Nouveau parametre `recovery_penalty: {mu: float, gamma: float, R: list[str]}`
@@ -266,7 +266,7 @@ Le modele LLaMA 3.2 via Ollama ne supporte pas le re-training. L'implementation 
 
 ### Echec total
 
-1. Delta_ASR < 5% pour toute combinaison : le proxy par prompting est insuffisant ; la penalite necessite un re-training au niveau des poids (delta-3)
+1. Delta_ASR < 5% pour toute combinaison : le proxy par prompting est insuffisant ; la penalite necessite un re-training au niveau des poids (δ³)
 2. p_min ~ 0 pour LLaMA 3.2 3B : le modele de base n'a pas de probabilite de recuperation, rendant Theorem 22 inapplicable sans mu impraticablement grand
 
 ---
@@ -277,15 +277,15 @@ Le modele LLaMA 3.2 via Ollama ne supporte pas le re-training. L'implementation 
 
 | Couche | Role dans l'experience | Justification |
 |--------|----------------------|---------------|
-| delta-0 (alignement RLHF) | Cible principale : F46 agit sur la couche d'alignement | P052 prouve que delta-0 est structurellement superficiel (Theorem 10) |
-| delta-1 (system prompt) | Proxy : le prompting guide simule mu via des instructions | L'instruction de recuperation est une intervention delta-1 |
-| delta-3 (architecture) | Non testee ici : le re-training des poids serait delta-3 | P052, Section 10.1 : le vrai objectif H_deep necessite un re-training |
+| δ⁰ (alignement RLHF) | Cible principale : F46 agit sur la couche d'alignement | P052 prouve que δ⁰ est structurellement superficiel (Theorem 10) |
+| δ¹ (system prompt) | Proxy : le prompting guide simule mu via des instructions | L'instruction de recuperation est une intervention δ¹ |
+| δ³ (architecture) | Non testee ici : le re-training des poids serait δ³ | P052, Section 10.1 : le vrai objectif H_deep necessite un re-training |
 
 ### Conjectures impactees
 
 | Conjecture | Impact attendu | Evidence |
 |------------|---------------|----------|
-| C1 (delta-0 insuffisant) | **Renforcee** si echec : delta-0 + proxy delta-1 ne compense pas la superficialite | P052, Theorem 10 : gradient nul au-dela de l'horizon |
+| C1 (δ⁰ insuffisant) | **Renforcee** si echec : δ⁰ + proxy δ¹ ne compense pas la superficialite | P052, Theorem 10 : gradient nul au-dela de l'horizon |
 | C3 (alignement superficiel) | **Nuancee** si succes : le Recovery Penalty cree un signal de recuperation mesurable | P052, Theorem 19 : D_KL^{(t)} > 0 pour t > k sous H_deep |
 | C4 (derive progressive) | **Testee** via DR : si DR_deep < DR_standard, la penalite freine la derive | F56 : DR mesure la derive semantique tour-a-tour |
 
@@ -323,7 +323,7 @@ Le modele LLaMA 3.2 via Ollama ne supporte pas le re-training. L'implementation 
 |--------|------------|--------|------------|
 | Ollama ne supporte pas `logprobs` | Moyenne | Bloquant pour mesurer P_recovery(t) | Utiliser `llama.cpp` directement avec `--logits-all` |
 | p_min ~ 0 pour LLaMA 3.2 3B Base | Faible | Theorem 22 inapplicable | Tester Mistral 7B comme modele alternatif |
-| Proxy par prompting trop faible | Haute | Delta_ASR < 5% | Ce serait un resultat en soi : confirme C1 (delta-0 insuffisant sans delta-3) |
+| Proxy par prompting trop faible | Haute | Delta_ASR < 5% | Ce serait un resultat en soi : confirme C1 (δ⁰ insuffisant sans δ³) |
 | Temps de calcul depasse 40h | Moyenne | Retard | Reduire a 20 templates (N reste >= 30 par condition) ou reduire gamma a 2 valeurs |
 | Temperature non fixee | Faible | Non-reproductibilite | Fixer temperature = 0 pour toutes les evaluations |
 
@@ -340,4 +340,4 @@ Le modele LLaMA 3.2 via Ollama ne supporte pas le re-training. L'implementation 
 
 ---
 
-> **Note methodologique** : Ce protocole utilise un proxy (prompting guide) pour simuler l'effet de la penalite de recuperation, car le re-training de LLaMA 3.2 via H_deep n'est pas faisable sur l'infrastructure AEGIS locale. L'ecart entre le proxy et la vraie penalite est un biais systematique qui sera documente dans la section Limitations de la these. Si le proxy echoue, cela ne refute PAS F46 mais confirme que l'intervention au niveau delta-0/delta-1 est insuffisante pour simuler un changement de delta-3 (re-training), ce qui renforce C1.
+> **Note methodologique** : Ce protocole utilise un proxy (prompting guide) pour simuler l'effet de la penalite de recuperation, car le re-training de LLaMA 3.2 via H_deep n'est pas faisable sur l'infrastructure AEGIS locale. L'ecart entre le proxy et la vraie penalite est un biais systematique qui sera documente dans la section Limitations de la these. Si le proxy echoue, cela ne refute PAS F46 mais confirme que l'intervention au niveau δ⁰/δ¹ est insuffisante pour simuler un changement de δ³ (re-training), ce qui renforce C1.

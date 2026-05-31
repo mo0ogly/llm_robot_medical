@@ -5,12 +5,38 @@
 > Every agent MUST update this file LAST after completing work.
 
 ## Last Execution
-- **Run ID**: RUN-008
-- **Date**: 2026-04-09
-- **Mode**: incremental scoped (P128-P130, note-triggered bibliography gap — Kang + CodeAct + ToolSandbox)
+- **Run ID**: RUN-010
+- **Date**: 2026-05-31
+- **Mode**: incremental (cleanup literature_for_rag + integration 6 local PDFs P146-P151) + MANIFEST reconciliation
 - **Status**: SUCCESS
-- **Duration**: ~20 min (scoped orchestrator: curl PDF download + single ANALYST sub-agent + generate_chunks_run008 + ingest_to_chromadb)
-- **Previous**: RUN-007 (IEEE batch P122-P127, 2026-04-09)
+- **Duration**: orchestrator (cleanup 28 quarantine + 6 external + dedup batch + reconciliation + 6 ANALYST subagents + generate_chunks_run010 + ingest + cross-validation)
+- **Papers added**: 6 (P146-P151), 26 duplicates quarantined, MANIFEST reconciled (+7 rows P140-P145, P139 collision -> P152, P074 dup removed)
+- **Previous**: RUN-009 (P136-P139, medical+RAG, 2026-05-30)
+
+### RUN-010 details (literature_for_rag cleanup + integration)
+- **P146** arXiv:2302.12173 — Greshake et al. 2023, Indirect Prompt Injection (FOUNDER IPI). δ¹,δ². C2 supported. 10 chunks. prompt_injection. **Comble trou critique Ch.2** (papier fondateur IPI manquait au corpus).
+- **P147** arXiv:2310.12815 — Liu et al. 2024, Formalizing & Benchmarking PI (USENIX Sec 2024). δ⁰,δ¹. C1,C2,C3 supported. 10 chunks. benchmarks. ASV combined 0.75 GPT-4 (Table 4), correlation taille-vulnerabilite 0.63 (Section 6.2).
+- **P148** arXiv:2403.04957 — Liu X. et al. 2024, Automatic & Universal PI (gradient-based). δ²,δ³. C2 supported. 11 chunks. prompt_injection. ASR static 81% (Table 1), M-GCG +21% vs GCG.
+- **P149** arXiv:2409.11026 — Pape et al. 2024, Prompt Obfuscation (system prompt defense). δ⁰. C1,C2 nuances. 11 chunks. defenses. Llama 3.1 8B only, soft-prompt requiert acces embedding (inapplicable Groq API).
+- **P150** arXiv:2509.01631 — Zhao et al. 2026, Safety Knowledge Neurons / SafeTuning (EACL 2026). δ⁰ mechanistic. C1,C3 supported. 11 chunks. defenses. ASR >97% via activation control (Abstract), SafeTuning reduit ASR >90%.
+- **P151** arXiv:2602.21267 — Srivastava et al. 2026, Algorithmic Red Teaming Survey (Infosys). transversal δ⁰-δ³. neutre. 14 chunks. benchmarks. **HUMILITY GATE**: confirme concurrents red-team autonome (ARMs arXiv:2510.02677 NOUVEAU, AutoAdv, GenBreak, GPTFuzzer) -> "premier red team autonome" RESTE REFUTE (coherent D-021).
+- **Conjectures**: C1/C2/C3 satures (10/10) renforces sans changement de score. C5 stable 9/10. Aucune promotion (HUMILITY GATE).
+- **Cross-validation**: 3 chiffres verifies contre fulltext PDF (P148 81% / P150 97% / P147 0.75+0.63) -> 3/3 CONFIRMED.
+- **ChromaDB aegis_bibliography**: 10987 -> 11056 docs. 67 chunks RUN-010 verifies (>=5 par P-ID: P146=10, P147=10, P148=11, P149=11, P150=11, P151=14).
+- **MANIFEST reconciliation**: corrige desync (135->142 rows). 6 rows manquantes ajoutees (P140-P145 = integration passee non enregistree). P024 arXiv:2403.06833 ajoute (bug dedup). P074 quarantine (dup de P028). Collision P139 resolue: Li MCPFirstLook -> P152.
+- **Cleanup**: 28 PDFs duplicates -> _quarantine/, 6 docs hors-corpus -> _external/, 467MB worktree junk supprime de doc_references/.claude/.
+- **New competitor to track (HUMILITY GATE)**: ARMs (arXiv:2510.02677) red teaming agentique adaptatif — distinct de AutoRedTeamer (D-021).
+- **Next free P-ID**: P153. **Next free D-ID**: D-030.
+
+### RUN-009 details (scoped medical+RAG integration)
+- **P136** arXiv:2512.09403 — Jahan & Sun 2025, Black-Box Behavioral Distillation Breaks Safety Alignment in Medical LLMs (preprint). δ⁰. C6/D-018. 8 chunks. medical_ai. RR-D18.
+- **P137** arXiv:2503.24191 — Zhang et al. 2026, CDA/DictAttack control-plane (CCS 2026). δ¹,δ². C1,C2. 10 chunks. prompt_injection. RR-FA-002.
+- **P138** arXiv:2501.02968 — Chen et al. 2025, FlippedRAG opinion manipulation (CCS 2025). δ². C1. 10 chunks. prompt_injection. RR-FA-004.
+- **P139** arXiv:2504.03957 — Zhang et al. 2026, CorruptRAG single-doc poisoning (SACMAT 2026). δ². C1,C5. 10 chunks. prompt_injection. RR-DA-003.
+- **Conjectures**: C5 8.5->9/10 (+0.5, CorruptRAG single-doc); C1/C2/C6 stables satures. D-018 etendue (distillation). 2 candidats PROPOSED non promus (HUMILITY GATE).
+- **ChromaDB aegis_bibliography**: 10783 -> 10987 docs. 38 chunks RUN-009 verifies (>=5 par P-ID).
+- **RR mises a jour**: RR-D18, RR-FA-002, RR-FA-004, RR-DA-003 -> partial (litterature integree, validation empirique en attente).
+- **Next free P-ID**: P140. **Next free D-ID**: D-030.
 
 ## RUN-008 details (scoped note integration)
 - **Trigger**: scoped bibliography verification of academic note `research_archive/manuscript/Note_Academique_Context_Isolated_Adversarial_Workflow.md` identified 3 refs not in corpus (Kang arXiv:2302.05733, Wang CodeAct arXiv:2402.01030, Lu ToolSandbox arXiv:2408.04682)
@@ -64,7 +90,7 @@ Partial closures (to formalize in next SCIENTIST run):
   - Liu 2023 (arXiv:2306.05499) → DEJA present en P001 (HouYi) → SKIP
   - Multi-Agent Defense (arXiv:2509.14285) → DEJA present en P002 → SKIP
 - **New P-IDs attributed**: P122 (OWASP Cheat Sheet), P123 (OWASP LLM01:2025), P124 (CAPTURE), P125 (Systematic Analysis 36 LLMs), P126 (Design Patterns Tramèr), P127 (IPI Competition)
-- **Critical finding**: P126 (Beurer-Kellner, Tramèr et al.) propose "provable resistance" via design patterns — **RISQUE DE SCOOPING pour C2/delta-3**. Action P0 : telecharger PDF et comparer avec AEGIS architecture.
+- **Critical finding**: P126 (Beurer-Kellner, Tramèr et al.) propose "provable resistance" via design patterns — **RISQUE DE SCOOPING pour C2/δ³**. Action P0 : telecharger PDF et comparer avec AEGIS architecture.
 
 ### RUN-007 RAG Injection Status (verified 2026-04-09)
 
@@ -167,7 +193,7 @@ Partial closures (to formalize in next SCIENTIST run):
 - INDEX_BY_CONJECTURE: C1=30, C2=27, C3=10, C4=8, C5=5, C6=12, C7=7
 - INDEX_BY_TOPIC: Attack=17, Defense=16, Medical=12, Benchmark=7, Embedding=5, Model=4
 - Dedup validation: 0 duplicates (RUN-003)
-- Unicode notation: 82 delta-0/1/2/3 → δ⁰/δ¹/δ²/δ³ fixed
+- Unicode notation: 82 δ⁰/1/2/3 → δ⁰/δ¹/δ²/δ³ fixed
 - Next run: add P061+ from next COLLECTOR
 
 ### MATHTEACHER

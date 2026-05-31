@@ -12,7 +12,7 @@
 ## 1. Literature origin
 
 !!! danger "Least explored layer"
-    Out of **127 papers** in the AEGIS corpus, only **14** address δ³ — and only **3 provide
+    Out of **131 papers** in the AEGIS corpus, only **14** address δ³ — and only **3 provide
     a concrete implementation**:
 
     - **CaMeL** (Google DeepMind 2025, P081)

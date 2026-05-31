@@ -32,7 +32,7 @@ Un adversaire adaptatif connaissant ASIDE peut maintenir un ASR > 40% en combina
 ## 2. Template de Base : #22 (SQL Research Multi-Step Injection)
 
 - **SVC**: 3.5/6 (parmi les plus efficaces du catalogue)
-- **Couche delta**: delta-1 (system prompt)
+- **Couche delta**: δ¹ (system prompt)
 - **Mecanisme**: escalade multi-step (requete clinique legitime -> PII exfiltration)
 - **Baseline ASR sans defense**: ~85% (estime, a confirmer experimentalement)
 - **Chaine**: `sql_research`

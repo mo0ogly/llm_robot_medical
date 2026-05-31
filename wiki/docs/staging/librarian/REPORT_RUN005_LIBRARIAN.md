@@ -13,7 +13,7 @@
 | Fichier | Action | Contenu |
 |---------|--------|---------|
 | `MANIFEST.md` | INCREMENTAL | 16 nouvelles lignes ajoutees (P087-P104), compteurs mis a jour (76 papiers) |
-| `INDEX_BY_DELTA.md` | INCREMENTAL | 13 entrees ajoutees a la section delta-0, 14 a delta-1, 4 a delta-2 ; table Cross-Layer etendue ; observations RUN-005 ajoutees |
+| `INDEX_BY_DELTA.md` | INCREMENTAL | 13 entrees ajoutees a la section δ⁰, 14 a δ¹, 4 a δ² ; table Cross-Layer etendue ; observations RUN-005 ajoutees |
 | `GLOSSAIRE_MATHEMATIQUE.md` | INCREMENTAL | 8 nouvelles formules (9.1-9.8) ajoutees en Section 9, DAG etendu, 2 nouveaux chemins critiques |
 
 ## 2. Fichiers crees dans doc_references/
@@ -82,12 +82,12 @@
 
 | Couche | Avant | Apres | Delta |
 |--------|-------|-------|-------|
-| delta-0 | 35 | 48 | +13 |
-| delta-1 | 33 | 47 | +14 |
-| delta-2 | 27 | 31 | +4 |
-| delta-3 | 9 | 9 | 0 |
+| δ⁰ | 35 | 48 | +13 |
+| δ¹ | 33 | 47 | +14 |
+| δ² | 27 | 31 | +4 |
+| δ³ | 9 | 9 | 0 |
 
-**Observation critique** : delta-3 reste a 9/76 malgre 16 nouveaux papiers. Aucun des papiers RUN-005 n'implemente delta-3 concretement. L'argument pour delta-3 dans la these est renforce a chaque RUN.
+**Observation critique** : δ³ reste a 9/76 malgre 16 nouveaux papiers. Aucun des papiers RUN-005 n'implemente δ³ concretement. L'argument pour δ³ dans la these est renforce a chaque RUN.
 
 ## 8. Nouvelles formules (GLOSSAIRE)
 
@@ -108,7 +108,7 @@
 | Coherence analyses-indexes | PASSE |
 | P088/P105/P106 correctement exclus | PASSE |
 | Wiki pages en miroir | PASSE (16/16 pages creees) |
-| Notation Unicode delta | PASSE (delta-0/delta-1/delta-2/delta-3 converti en prose, tableau utilise delta-X pour compatibilite Markdown) |
+| Notation Unicode delta | PASSE (δ⁰/δ¹/δ²/δ³ converti en prose, tableau utilise delta-X pour compatibilite Markdown) |
 
 ## 10. Recommandations pour le DIRECTOR
 
@@ -121,4 +121,4 @@
 
 *Agent LIBRARIAN -- RUN-005 complete*
 *76 papiers indexes, 43 formules, 16 pages wiki*
-*Notation Unicode : delta-0 delta-1 delta-2 delta-3 conforme CLAUDE.md*
+*Notation Unicode : δ⁰ δ¹ δ² δ³ conforme CLAUDE.md*

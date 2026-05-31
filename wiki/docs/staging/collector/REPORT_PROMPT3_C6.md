@@ -56,7 +56,7 @@ Les 4 papiers forment une chaine argumentaire complete pour C6 :
 
 - **C6 : FORTEMENT SUPPORTEE** par les 4 papiers, du constat empirique (P107) a la preuve formelle (P110).
 - **C3 (alignement superficiel) : FORMELLEMENT PROUVEE** par P110 — l'alignement est geometriquement concentre dans un sous-espace fragile.
-- **C1 (delta-0 insuffisant) : SUPPORTEE** — les defenses au premier ordre ne previennent pas le collapse (P110, Theorem 6.2).
+- **C1 (δ⁰ insuffisant) : SUPPORTEE** — les defenses au premier ordre ne previennent pas le collapse (P110, Theorem 6.2).
 - **CAVEAT** : BioMistral (2507.02983) ne doit PAS etre cite comme exemple de C6 car son harmlessness score (0.90) est superieur a celui du modele de base (0.81) — c'est un contre-exemple.
 
 ### Gaps ouverts

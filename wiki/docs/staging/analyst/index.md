@@ -1,5 +1,7 @@
 # Analyses de papiers (Keshav 3-pass)
 
+<p class='agent-badge agent-badge--analyst'>AGENT &middot; ANALYST</p>
+
 !!! abstract "Agent `_staging/analyst/`"
     Analyses detaillees des 130+ papiers du corpus AEGIS. Chaque fichier `PXXX_analysis.md` contient une lecture en 3 passages (survol, structure, profondeur critique) avec formules, threat model, et mapping δ⁰-δ³.
 
@@ -83,7 +85,7 @@
 | [`P071_analysis.md`](P071_analysis.md) | [Wang, Zhang, Yagemann, 2025] — Framework pratique pour l'evaluation de la securite des LLM medicaux | 58 |
 | [`P072_analysis.md`](P072_analysis.md) | [Kocaman et al., 2025] — CLEVER : Evaluation clinique des LLM par revue d'experts | 57 |
 | [`P073_analysis.md`](P073_analysis.md) | [Kanithi, Christophe, Pimentel et al., 2026] — MEDIC : Indicateurs avances pour la securite et l'utilite clinique des LLM | 59 |
-| [`P074_analysis.md`](P074_analysis.md) | [Zhang, Lou, Wang, 2025] — Towards Safe AI Clinicians : Jailbreaking LLM en contexte medical | 60 |
+| [`P074_analysis.md`](P074_analysis.md) | P074 : DOUBLON DE P028 | 18 |
 | [`P075_analysis.md`](P075_analysis.md) | [Ma, Wang, Yu et al., 2025] — MedCheck : Au-dela du leaderboard, repenser les benchmarks medicaux | 58 |
 | [`P076_analysis.md`](P076_analysis.md) | [Wu, Zhang, Song et al., 2025] — ISE : Instructional Segment Embedding pour la hierarchie d'instructions LLM | 61 |
 | [`P077_analysis.md`](P077_analysis.md) | [Wang, Jiang, Yu, Huang, 2025] — L'illusion de la separation des roles : raccourcis caches dans l'apprentissage des roles LLM | 62 |
@@ -148,4 +150,4 @@
 | [`PHASE2_ANALYST_RUN003.md`](PHASE2_ANALYST_RUN003.md) | PHASE2 — ANALYST Output — RUN-003 (Incremental P047-P060) | 613 |
 | [`PHASE3_ANALYST_REPORT.md`](PHASE3_ANALYST_REPORT.md) | PHASE 3 — ANALYST REPORT | 285 |
 | [`PHASE3_ANALYST_REPORT_RUN002.md`](PHASE3_ANALYST_REPORT_RUN002.md) | PHASE 3 — ANALYST REPORT (RUN-002 Incremental) | 117 |
-| [`VERIFICATION_CLAIM_DELTA3_20260411.md`](VERIFICATION_CLAIM_DELTA3_20260411.md) | VERIFICATION CLAIM DELTA3 — 2026-04-11 | 163 |
+| [`VERIFICATION_CLAIM_DELTA3_20260411.md`](VERIFICATION_CLAIM_DELTA3_20260411.md) | VERIFICATION CLAIM δ³ — 2026-04-11 | 163 |

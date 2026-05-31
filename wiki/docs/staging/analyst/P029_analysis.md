@@ -45,7 +45,7 @@
 
 3. **12 scenarios seulement.** Couverture incomplete des specialites medicales : pas de psychiatrie, dermatologie, radiologie interventionnelle, chirurgie robotique. La generalisabilite aux specialites non couvertes n'est pas demontree [PDF NON DISPONIBLE -- source secondaire].
 
-4. **Etude purement evaluative.** Aucune proposition de defense. Le papier documente le probleme sans contribuer a la solution -- c'est precisement le positionnement d'AEGIS de combler ce vide avec les couches delta-2 et delta-3.
+4. **Etude purement evaluative.** Aucune proposition de defense. Le papier documente le probleme sans contribuer a la solution -- c'est precisement le positionnement d'AEGIS de combler ce vide avec les couches δ² et δ³.
 
 5. **Categorisation binaire.** La gravite clinique des sorties compromises n'est pas quantifiee au-dela de succes/echec. Un scoring de nocivite multi-niveaux (comparable a P050/JMedEthicBench avec scoring 1-10 sur 3 dimensions ethiques, Tanaka et al., 2026, Section 3, Appendix C) aurait enrichi l'analyse [PDF NON DISPONIBLE -- source secondaire].
 
@@ -53,7 +53,7 @@
 
 **Questions ouvertes :**
 - Le FPR de 3.7% est-il stable a travers les specialites medicales ?
-- Les defenses delta-2 (RagSanitizer 15 detecteurs) reduiraient-elles l'ASR sur ces scenarios ?
+- Les defenses δ² (RagSanitizer 15 detecteurs) reduiraient-elles l'ASR sur ces scenarios ?
 - La persistance multi-tour (69.4%) varie-t-elle par modele ou par niveau de risque du scenario ?
 
 ### Formules exactes
@@ -104,8 +104,8 @@ Lien glossaire AEGIS : F22 (ASR), F58 (MVP -- numerateur), F26 (CHER), F27b (ASR
   - δ³ (Formal verification) : non evaluee -- BESOIN URGENT pour le medical.
 
 - **Conjectures :**
-  - C1 (insuffisance delta-1) : **supportee directement** -- 94.4% ASR malgre delta-0 + delta-1 [PDF NON DISPONIBLE -- source secondaire]
-  - C2 (necessite delta-3) : **supportee indirectement** -- l'echec des defenses empiriques en domaine lethal motive les garanties formelles
+  - C1 (insuffisance δ¹) : **supportee directement** -- 94.4% ASR malgre δ⁰ + δ¹ [PDF NON DISPONIBLE -- source secondaire]
+  - C2 (necessite δ³) : **supportee indirectement** -- l'echec des defenses empiriques en domaine lethal motive les garanties formelles
   - C6 (Medical Vulnerability Premium) : **pilier fondateur** (confiance 9/10) -- le papier le plus important du corpus pour C6
 
 - **Decouvertes :**

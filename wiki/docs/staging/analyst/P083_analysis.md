@@ -46,7 +46,7 @@
 - **Metriques** : Accuracy WMDP (cible: 25% = random pour unlearning), StrongReject score (plus bas = meilleur), PHTest compliance rate (Section 4)
 - Lien glossaire AEGIS : F22 (ASR) — inversement correle au flagged ratio
 
-### Pertinence these AEGIS — COMPARAISON DIRECTE delta-3
+### Pertinence these AEGIS — COMPARAISON DIRECTE δ³
 
 - **Couches delta :** δ¹ principalement (defense comportementale multi-agent). PAS δ³ malgre le nom similaire. AegisLLM ne fait PAS de validation formelle externe — tous les agents sont des LLMs.
 - **Conjectures :**

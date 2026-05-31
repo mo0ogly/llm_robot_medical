@@ -61,17 +61,17 @@ Section ajoutee : **"Update post-Deep-Analysis P001-P060 complet (2026-04-04)"**
 |--------|-----------------|
 | **P019** — Young, 2026, arXiv:2603.04851 | THEOREME formel (Theoreme 10, Eq. 28) : gradient RLHF = 0 au-dela de l'horizon de nocivite. Preuve que l'alignement superficiel est OPTIMAL pour l'objectif standard. C1/C3 FERMEES par preuve mathematique directe. |
 | **P039** — Russinovich et al., 2026, arXiv:2602.06258 (Microsoft Research) | GRP-Obliteration : 1 seul prompt non etiquete efface l'alignement de 15 modeles (7-20B). C1/C2/C3 — evidence empirique definitive sur 6 familles architecturales. |
-| **P060** — Wang et al., IEEE S&P 2026, arXiv:2506.10597 | SoK : 13 guardrails x 7 attaques, framework SEU. Resultat central : aucun guardrail ne domine sur les 3 dimensions (Sec, Eff, Util). Valide empiriquement l'architecture delta-0 a delta-3 AEGIS. C2 RENFORCEE. |
+| **P060** — Wang et al., IEEE S&P 2026, arXiv:2506.10597 | SoK : 13 guardrails x 7 attaques, framework SEU. Resultat central : aucun guardrail ne domine sur les 3 dimensions (Sec, Eff, Util). Valide empiriquement l'architecture δ⁰ a δ³ AEGIS. C2 RENFORCEE. |
 
 ### Papiers SVC 9/10 (preuves fortes)
 
 | Papier | Impact conjecture |
 |--------|-----------------|
 | **P009** — Hackett et al., 2025, arXiv:2504.11168 | Evasion guardrails PI/jailbreak, complemente P060. C2 supportee. |
-| **P023** — Gong et al., NDSS 2025, DOI:10.14722/ndss.2025.241089 | SSRA (Safety Safety Retreat Attack) : desalignement en 2 phases exploitant contexte multi-tour. C1/C3 supportees, NDSS CORE A*. |
+| **P023** — Gong et al., NDSS 2025, DOI:10.14722/ndss.2025.241089 | SSRA (Self-Supervised Representation Attack) : desalignement en 2 phases exploitant contexte multi-tour. C1/C3 supportees, NDSS CORE A*. |
 | **P026** — Chang et al., 2025, arXiv:2601.07072 | IPI in the wild : premiere etude conditions reelles non controlees. C4 supportee (derive mesurable en contexte authentique). |
 | **P028** — Zhang et al., 2025, arXiv:2501.18632 | Jailbreaking healthcare specifique, 6 dimensions SVC. C6 supportee. |
-| **P045** — Li et al., 2025, arXiv:2505.06493 | SPP : poisoning persistant prompt systeme. C2 renforcee (delta-1 compromettable). |
+| **P045** — Li et al., 2025, arXiv:2505.06493 | SPP : poisoning persistant prompt systeme. C2 renforcee (δ¹ compromettable). |
 | **P048** — Correia et al., 2026 | SLR 87 techniques defense, extension taxonomie NIST. Aucune defense seule ne suffit — C2 methodologique. |
 
 ### Impact net sur conjectures

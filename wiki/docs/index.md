@@ -123,7 +123,7 @@ AEGIS etudie cette surface avec trois composantes : **(1)** un simulateur end-to
 
     ---
 
-    Quatre couches independantes de defense : RLHF, system prompt, syntactic shield, output enforcement. Conjectures 1 & 2, protocole de discrimination, couverture de 127 papiers.
+    Quatre couches independantes de defense : RLHF, system prompt, syntactic shield, output enforcement. Conjectures 1 & 2, protocole de discrimination, couverture de 131 papiers.
 
     [:octicons-arrow-right-16: Vue d'ensemble](delta-layers/index.md)
 

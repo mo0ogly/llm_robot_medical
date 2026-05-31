@@ -71,8 +71,8 @@ Le resultat est un **theoreme exact** dans le cadre lineaire. L'hypothese de lin
 | **C4** (derive semantique mesurable) | MODERE | Implication indirecte | La "derive" mesuree par cosine pourrait etre un artefact de la regularisation du modele d'embedding. |
 
 ### Couches delta
-- **delta-2** : directement affecte — les filtres semantiques utilisant cosine similarity doivent etre calibres.
-- **delta-3** : renforce la necessite de metriques formelles au-dela de la cosine naive.
+- **δ²** : directement affecte — les filtres semantiques utilisant cosine similarity doivent etre calibres.
+- **δ³** : renforce la necessite de metriques formelles au-dela de la cosine naive.
 
 ### Gaps adresses
 - **G-010** (cosine non calibree) : P012 est la source primaire de ce gap. La matrice D arbitraire pose la question de la calibration de all-MiniLM-L6-v2 dans AEGIS.
@@ -88,7 +88,7 @@ Le resultat est un **theoreme exact** dans le cadre lineaire. L'hypothese de lin
 | **Domaine** | Systemes de recommandation, embeddings, cosine similarity |
 | **Modeles testes** | Factorisation matricielle lineaire (simulation) |
 | **Metrique principale** | Demonstration d'arbitraire de cosSim sous Eq.1 |
-| **delta-layers** | delta-2 (calibration critique), delta-3 (necessite renforcee) |
+| **delta-layers** | δ² (calibration critique), δ³ (necessite renforcee) |
 | **Conjectures** | C5 (critique), C4 (modere) |
 | **SVC pertinence** | 8/10 |
 | **Reproductibilite** | Haute — derivations analytiques, donnees simulees |

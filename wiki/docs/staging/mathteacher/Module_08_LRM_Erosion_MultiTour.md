@@ -15,7 +15,7 @@ Ce module couvre deux phenomenes lies :
 1. **Le paradoxe LRM** (Partie A-D) : comment le raisonnement cree de nouvelles vulnerabilites
 2. **L'erosion multi-tour** (Partie E-H) : comment la securite se degrade au fil d'une conversation
 
-**Lien avec la these AEGIS** : Ces formules alimentent directement les conjectures C1 (insuffisance de delta-0), C3 (alignement superficiel), et surtout C7 (paradoxe raisonnement/securite). Elles justifient la necessite d'un monitoring continu (delta-3) et de defenses architecturales (AHD, delta-0 renforce).
+**Lien avec la these AEGIS** : Ces formules alimentent directement les conjectures C1 (insuffisance de δ⁰), C3 (alignement superficiel), et surtout C7 (paradoxe raisonnement/securite). Elles justifient la necessite d'un monitoring continu (δ³) et de defenses architecturales (AHD, δ⁰ renforce).
 
 ---
 
@@ -587,7 +587,7 @@ Le SFR capture le MSBE (Multi-Step Boundary Erosion) : la degradation progressiv
 - P098 : instabilite imprevisible sous contexte long
 - P101 (SafeDialBench) : degradation significative apres le tour 4
 
-Conclusion : l'alignement est une propriete DYNAMIQUE et FRAGILE, pas un trait stable. C'est la justification empirique directe de la necessite de delta-3 (monitoring continu).
+Conclusion : l'alignement est une propriete DYNAMIQUE et FRAGILE, pas un trait stable. C'est la justification empirique directe de la necessite de δ³ (monitoring continu).
 
 ### Exemple numerique detaille
 
@@ -619,20 +619,20 @@ Ces deux comportements opposes montrent que les modeles n'ont pas de garantie de
 
 | Formule | Nom court | Couche delta | Chemin critique |
 |---------|-----------|-------------|----------------|
-| F9.1 | Transition d'Etats LRM | delta-0 | Chemin 9 (C7) |
-| F9.2 | Entropie/IM Securite | delta-0 | Chemin 9 (C7) |
-| F9.3 | Gradient Bandit SEAL | delta-2 | Chemin 9 (C7) |
-| F9.4 | Loss Adversariale | delta-3 | Chemin 9 (C7) |
-| F9.5 | Dialogue STAR | delta-1 | Chemin 10 (MSBE) |
-| F9.6 | Direction Refus + AHD | delta-0 | Chemin 10 (MSBE) |
-| F9.7 | Self-Talk ActorBreaker | delta-3 | Chemin 10 (MSBE) |
-| F9.8 | SFR Multi-Tour | delta-3 | Chemin 10 (MSBE) |
+| F9.1 | Transition d'Etats LRM | δ⁰ | Chemin 9 (C7) |
+| F9.2 | Entropie/IM Securite | δ⁰ | Chemin 9 (C7) |
+| F9.3 | Gradient Bandit SEAL | δ² | Chemin 9 (C7) |
+| F9.4 | Loss Adversariale | δ³ | Chemin 9 (C7) |
+| F9.5 | Dialogue STAR | δ¹ | Chemin 10 (MSBE) |
+| F9.6 | Direction Refus + AHD | δ⁰ | Chemin 10 (MSBE) |
+| F9.7 | Self-Talk ActorBreaker | δ³ | Chemin 10 (MSBE) |
+| F9.8 | SFR Multi-Tour | δ³ | Chemin 10 (MSBE) |
 
 ### Conjectures couvertes
 
 | Conjecture | Formules | Score actuel |
 |-----------|----------|-------------|
-| **C1** (insuffisance delta-0) | 9.1, 9.2, 9.6 | 10/10 (sature) |
+| **C1** (insuffisance δ⁰) | 9.1, 9.2, 9.6 | 10/10 (sature) |
 | **C3** (alignement superficiel) | 9.6 | 10/10 (sature) |
 | **C7** (paradoxe raisonnement/securite) | 9.1, 9.2, 9.3, 9.4, 9.5, 9.7, 9.8 | **9.5/10** (candidate a validation) |
 | **C8** (peer-preservation) | 9.7 (indirect) | 6/10 (candidate) |
@@ -665,7 +665,7 @@ c) On cherche le plus petit k tel que SFR(M, k) >= 15%.
    - Tour 2 : supposons SFR = 10% (OK)
    - Tour 3 : SFR = 20% (ECHEC)
    Le modele n'est plus deployable a partir du **tour 3**.
-   Implication AEGIS : delta-3 doit monitorer le SFR en temps reel et couper la conversation avant le seuil.
+   Implication AEGIS : δ³ doit monitorer le SFR en temps reel et couper la conversation avant le seuil.
 
 ---
 

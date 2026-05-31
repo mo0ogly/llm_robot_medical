@@ -1,5 +1,7 @@
 # Red Team playbooks & exploitation
 
+<p class='agent-badge agent-badge--whitehacker'>AGENT &middot; WHITEHACKER</p>
+
 !!! abstract "Agent `_staging/whitehacker/`"
     Playbooks red team, guides d'exploitation, retex d'integration HouYi, CrowdStrike taxonomy mapping. Produits par l'agent WHITEHACKER.
 

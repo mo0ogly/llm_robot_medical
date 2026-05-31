@@ -75,7 +75,7 @@ flowchart LR
 
     ---
 
-    **Origin**: Zhao et al. (ICLR 2025) "Safety Layers", Wei et al. (ICLR 2025) "Shallow Alignment",
+    **Origin**: Zhao et al. (ICLR 2025) "Safety Layers", Qi et al. (ICLR 2025) "Shallow Alignment",
     Young (2026) "Gradient vanishing beyond harm horizon"
 
     **Literature anchoring**: 68 papers in the AEGIS corpus address δ⁰
@@ -184,7 +184,7 @@ Wilson 95% CI on each ASR
     — rejects any tension > 800g, any call to `freeze_instruments`, any forbidden directive marker
     — **independently** of the LLM response text.
 
-## Bibliographic coverage (127 papers)
+## Bibliographic coverage (131 papers)
 
 | Layer | # Papers | % | Attack | Defense | Analysis |
 |--------|:---------:|:-:|:------:|:-------:|:--------:|
@@ -200,7 +200,7 @@ direct contribution of the thesis.
 
 ## Resources
 
-- :material-book: [INDEX_BY_DELTA.md — classification of 127 papers by layer](../research/bibliography/by-delta.md)
+- :material-book: [INDEX_BY_DELTA.md — classification of 131 papers by layer](../research/bibliography/by-delta.md)
 - :material-math-compass: [formal_framework_complete.md — complete mathematical framework](../research/index.md)
 - :material-chart-bar: [Metrics — Sep(M), ASR, Wilson CI](../metrics/index.md)
 - :material-shield-search: [Taxonomy — CrowdStrike 95 + AEGIS 70 defenses](../taxonomy/index.md)

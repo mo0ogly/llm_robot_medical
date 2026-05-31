@@ -6,7 +6,7 @@
 
     **Diretor** : **David Naccache** (ENS)
     **Terreno** : AEGIS Red Team Lab — Robot Cirurgico Da Vinci Xi (simulado)
-    **Corpus** : 130 papers (P001-P130, excl. P088/P105/P106)
+    **Corpus** : 131 papers (P001-P135, excl. P088/P105/P106 ; P074 reduzido a stub duplicado de P028)
     **Avanco** : ~85% (capitulos I-V escritos, capitulo VI em andamento)
 
 ## 1. Estrutura do manuscrito
@@ -51,7 +51,7 @@ research_archive/manuscript/
 
 ### Capitulo III — Estado da arte (85%)
 
-- **130 papers** analisados via Keshav 3-pass
+- **131 papers** analisados via Keshav 3-pass
 - Organizacao por camada δ⁰–δ³ (cf. [INDEX_BY_DELTA](../research/bibliography/by-delta.md))
 - Taxonomia CrowdStrike 95 + AEGIS 70 defesas
 - **Gap identificado** : nenhum paper medical + δ³ (exceto AEGIS)
