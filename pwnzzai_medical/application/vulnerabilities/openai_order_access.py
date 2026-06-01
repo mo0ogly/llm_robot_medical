@@ -124,8 +124,8 @@ def detect_order_access(response):
         accessed_info.append({"type": "Temporal Data", "content": "Appointment dates revealed"})
     
     # Check for treatment names in appointments
-    pizza_names = ["consultation", "blood_test", "mri", "ultrasound", "xray"]
-    for treatment in pizza_names:
+    treatment_names = ["consultation", "blood_test", "mri", "ultrasound", "xray"]
+    for treatment in treatment_names:
         if treatment.lower() in response.lower():
             accessed_info.append({"type": "Purchase History", "content": f"Treatment purchase revealed: {treatment}"})
     

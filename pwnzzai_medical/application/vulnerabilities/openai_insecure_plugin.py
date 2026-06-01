@@ -8,7 +8,7 @@ from application.llm_chat import (
 )
 from application.provider_config import lab_cloud_llm_model_default
 
-def get_pizza_price(pizza_type):
+def get_treatment_price(treatment_type):
     """
     VULNERABLE: Get the price for a specific treatment type using raw SQL query
     This function is intentionally vulnerable to SQL injection attacks
@@ -16,17 +16,17 @@ def get_pizza_price(pizza_type):
     conn = None
     try:
         # Connect to the database (assuming SQLite for this demo)
-        conn = sqlite3.connect('instance/pizza_shop.db')
+        conn = sqlite3.connect('instance/treatment_shop.db')
         cursor = conn.cursor()
         print("DEBUG: Connected to database")
         
         # Test database connection by listing all treatments
         cursor.execute("SELECT name, price FROM treatment")
-        all_pizzas = cursor.fetchall()
-        print(f"DEBUG: All treatments in database: {all_pizzas}")
+        all_treatments = cursor.fetchall()
+        print(f"DEBUG: All treatments in database: {all_treatments}")
         # VULNERABLE: Direct string concatenation in SQL query
-        # This allows SQL injection through the pizza_type parameter
-        treatment = pizza_type.lower().replace("treatment", "").strip()
+        # This allows SQL injection through the treatment_type parameter
+        treatment = treatment_type.lower().replace("treatment", "").strip()
         
         # DANGEROUS: Building SQL query with user input without parameterization
         query = f"SELECT name, price FROM treatment WHERE LOWER(name) LIKE '%{treatment}%'"
@@ -58,17 +58,17 @@ def get_pizza_price(pizza_type):
 
 # Function definition for OpenAI
 price_function = {
-    "name": "get_pizza_price",
+    "name": "get_treatment_price",
     "description": "Get the price for a specific treatment type.",
     "parameters": {
         "type": "object",
         "properties": {
-            "pizza_type": {
+            "treatment_type": {
                 "type": "string",
                 "description": "The type of treatment you want to know the price for"
             },
         },
-        "required": ["pizza_type"],
+        "required": ["treatment_type"],
     },
 }
 
@@ -94,16 +94,16 @@ def chat_with_openai(user_input, api_key):
         
         if hasattr(message, 'tool_calls') and message.tool_calls:
             for tool_call in message.tool_calls:
-                if tool_call.type == "function" and tool_call.function.name == "get_pizza_price":
+                if tool_call.type == "function" and tool_call.function.name == "get_treatment_price":
                     # Parse the function arguments
                     arguments = json.loads(tool_call.function.arguments)
-                    pizza_type = arguments.get('pizza_type')
+                    treatment_type = arguments.get('treatment_type')
                     
-                    if pizza_type:
+                    if treatment_type:
                         # VULNERABLE: No validation before executing function
-                        print(f"DEBUG: Calling get_pizza_price with: {pizza_type}")
-                        price = get_pizza_price(pizza_type)
-                        print(f"DEBUG: get_pizza_price returned: {price}")
+                        print(f"DEBUG: Calling get_treatment_price with: {treatment_type}")
+                        price = get_treatment_price(treatment_type)
+                        print(f"DEBUG: get_treatment_price returned: {price}")
                         
                         # Get a response that includes the function result
                         second_response = completion_followup(
@@ -115,17 +115,17 @@ def chat_with_openai(user_input, api_key):
                                         "id": tool_call.id,
                                         "type": "function",
                                         "function": {
-                                            "name": "get_pizza_price",
+                                            "name": "get_treatment_price",
                                             "arguments": tool_call.function.arguments
                                         }
                                     }
                                 ]},
-                                {"role": "tool", "tool_call_id": tool_call.id, "content": f"The price for {pizza_type} treatment is {price}"}
+                                {"role": "tool", "tool_call_id": tool_call.id, "content": f"The price for {treatment_type} treatment is {price}"}
                             ],
                             api_key=api_key,
                             model=lab_cloud_llm_model_default(),
                         )
-                        print(f"DEBUG: Tool call content sent to model: 'The price for {pizza_type} treatment is {price}'")
+                        print(f"DEBUG: Tool call content sent to model: 'The price for {treatment_type} treatment is {price}'")
                         final_response = second_response.choices[0].message.content
                         print(f"DEBUG: Final model response: {final_response}")
                         return final_response

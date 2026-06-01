@@ -88,7 +88,7 @@ def extract_order(order_text: str):
 def place_order(order_text: str):
     # extract order details
     print("order text: ", order_text)
-    conn = sqlite3.connect('instance/pizza_shop.db')
+    conn = sqlite3.connect('instance/treatment_shop.db')
     cursor = conn.cursor()
 
     order_info = extract_order(order_text)
@@ -97,7 +97,7 @@ def place_order(order_text: str):
     
     if order_info:
         username = order_info.get("username")
-        pizza_name = order_info["treatment"]
+        treatment_name = order_info["treatment"]
         quantity = int(order_info["quantity"])
     else: 
         return "❌ There was an error please try again."
@@ -120,9 +120,9 @@ def place_order(order_text: str):
             return "❌ Invalid session. Please log in again."
         username=user.username
     # Step 3: lookup Treatment
-    treatment = Treatment.query.filter(func.lower(Treatment.name).contains(pizza_name.lower())).first()
+    treatment = Treatment.query.filter(func.lower(Treatment.name).contains(treatment_name.lower())).first()
     if not treatment:
-        return f"❌ Sorry, we don’t have {pizza_name} on the menu."
+        return f"❌ Sorry, we don’t have {treatment_name} on the menu."
 
     print(username, treatment.name, quantity)
     # Step 4: create Appointment

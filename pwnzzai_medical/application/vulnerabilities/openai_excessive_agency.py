@@ -56,7 +56,7 @@ def place_order(order_text: str, api_key: str):
         print ("order info", order_info)
 
         username = order_info["username"]
-        pizza_name = order_info["treatment"]
+        treatment_name = order_info["treatment"]
         quantity = int(order_info["quantity"])
         
         if username:        
@@ -66,12 +66,12 @@ def place_order(order_text: str, api_key: str):
             userame=user.username
         print("username",username)
         # lookup Treatment
-        treatment = Treatment.query.filter(func.lower(Treatment.name).contains(pizza_name.lower())).first()
+        treatment = Treatment.query.filter(func.lower(Treatment.name).contains(treatment_name.lower())).first()
         if not treatment:
-            return f"❌ Sorry, we don’t have {pizza_name} on the menu."
+            return f"❌ Sorry, we don’t have {treatment_name} on the menu."
         print("treatment:", treatment)
       # Connect DB
-        conn = sqlite3.connect("instance/pizza_shop.db")
+        conn = sqlite3.connect("instance/treatment_shop.db")
         cursor = conn.cursor()
 
         total_price = treatment.price * quantity
@@ -85,7 +85,7 @@ def place_order(order_text: str, api_key: str):
         A user has successfully placed a treatment order.
 
         - User: {username}
-        - Treatment: {pizza_name}
+        - Treatment: {treatment_name}
         - Quantity: {quantity}
         - Unit Price: {treatment.price}
         - Total Price: {total_price}
