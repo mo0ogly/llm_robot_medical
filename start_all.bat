@@ -48,7 +48,23 @@ echo Starting FastAPI server in background (Port 8042)...
 start /b cmd /c "uvicorn src.server:app --port 8042 >nul 2>nul"
 cd ..
 
-echo [6/6] Setting up Node.js Frontend...
+echo [6/7] Setting up MediCare AI Lab (Vulnerable Target)...
+cd pwnzzai_medical
+if not exist ".venv\" (
+    echo Creating virtual environment for MediCare AI Lab...
+    python -m venv .venv
+)
+call .venv\Scripts\activate
+echo Installing/Updating dependencies for MediCare AI Lab...
+python -m pip install --upgrade pip >nul 2>nul
+pip install -r requirements.txt >nul
+echo Starting Flask server in background (Port 5000)...
+set FLASK_APP=main.py
+set OLLAMA_HOST=http://localhost:11434
+start /b cmd /c ".venv\Scripts\flask run --port 5000 >nul 2>nul"
+cd ..
+
+echo [7/7] Setting up Node.js Frontend...
 cd frontend
 echo Installing Node dependencies...
 call npm install >nul
@@ -60,7 +76,8 @@ echo ===================================================
 echo Initialization Complete!
 echo The Medical Simulator is now running.
 echo Frontend: http://localhost:5173
-echo Backend : http://localhost:8042
+echo Backend (Forge) : http://localhost:8042
+echo MediCare AI Lab : http://localhost:5000
 echo ===================================================
 
 echo Waiting 3 seconds for servers to boot before opening browser...

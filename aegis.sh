@@ -247,6 +247,37 @@ start_wiki() {
     fi
 }
 
+start_medicare() {
+    local pid
+    pid=$(port_status "5000")
+    if [[ -n "$pid" ]]; then
+        warn "MediCare AI Lab already running on :5000 (PID $pid)"
+        return
+    fi
+    inf "Starting MediCare AI Lab on :5000 ..."
+    pushd "$SCRIPT_DIR/pwnzzai_medical" > /dev/null
+    if [[ ! -d ".venv" ]]; then
+        inf "Creating virtual environment for MediCare AI Lab..."
+        python -m venv .venv
+    fi
+    source .venv/bin/activate
+    python -m pip install --upgrade pip > /dev/null 2>&1
+    pip install -r requirements.txt > /dev/null 2>&1
+    export FLASK_APP=main.py
+    export OLLAMA_HOST=http://localhost:11434
+    nohup flask run --port 5000 > "$LOG_DIR/medicare.log" 2>&1 &
+    echo $! > "$LOG_DIR/medicare.pid"
+    popd > /dev/null
+    sleep 3
+    pid=$(port_status "5000")
+    if [[ -n "$pid" ]]; then
+        ok "MediCare AI Lab running on :5000 (PID $pid)"
+    else
+        warn "MediCare AI Lab process launched - port may take a few seconds to bind"
+        inf "  tail -f $LOG_DIR/medicare.log"
+    fi
+}
+
 # ── Stop ─────────────────────────────────────────────────────
 stop_backend() {
     inf "Stopping backend (:$BACKEND_PORT)..."
@@ -272,6 +303,15 @@ stop_wiki() {
     if [[ -f "$LOG_DIR/wiki.pid" ]]; then
         kill -9 "$(cat "$LOG_DIR/wiki.pid")" 2>/dev/null || true
         rm -f "$LOG_DIR/wiki.pid"
+    fi
+}
+
+stop_medicare() {
+    inf "Stopping MediCare AI Lab (:5000)..."
+    kill_port "5000"
+    if [[ -f "$LOG_DIR/medicare.pid" ]]; then
+        kill -9 "$(cat "$LOG_DIR/medicare.pid")" 2>/dev/null || true
+        rm -f "$LOG_DIR/medicare.pid"
     fi
 }
 
@@ -458,6 +498,16 @@ show_health() {
         printf "  Wiki     :%-5s  ${RED}STOPPED${NC}\n" "$WIKI_PORT"
     fi
 
+    # MediCare
+    local mpid
+    mpid=$(port_status "5000")
+    if [[ -n "$mpid" ]]; then
+        code=$(check_http "http://localhost:5000")
+        printf "  MediCare :%-5s  ${GREEN}RUNNING${NC}  PID %-6s  ${GREEN}HTTP %s${NC}\n" "5000" "$mpid" "$code"
+    else
+        printf "  MediCare :%-5s  ${RED}STOPPED${NC}\n" "5000"
+    fi
+
     # Groq API key
     local groq_status
     groq_status=$(get_groq_status)
@@ -599,6 +649,7 @@ show_logs() {
         [backend]="backend.log"
         [frontend]="frontend.log"
         [wiki]="wiki.log"
+        [medicare]="medicare.log"
         [forge]="forge.log"
         [demo]="demo_convergence.log"
         [redteam]="demo_redteam.log"
@@ -614,7 +665,7 @@ show_logs() {
             inf "No log file yet: ${logmap[$target]}"
         fi
     else
-        for k in backend frontend wiki forge demo redteam; do
+        for k in backend frontend wiki medicare forge demo redteam; do
             local f="$LOG_DIR/${logmap[$k]}"
             if [[ -f "$f" ]]; then
                 printf "\n${CYAN}  === ${logmap[$k]} (last 10 lines) ===${NC}\n"
@@ -648,7 +699,8 @@ do_start() {
         backend)  start_backend ;;
         frontend) start_frontend ;;
         wiki)     start_wiki ;;
-        *)        start_backend; start_frontend; start_wiki ;;
+        medicare) start_medicare ;;
+        *)        start_backend; start_frontend; start_wiki; start_medicare ;;
     esac
 }
 do_stop() {
@@ -656,7 +708,8 @@ do_stop() {
         backend)  stop_backend ;;
         frontend) stop_frontend ;;
         wiki)     stop_wiki ;;
-        *)        stop_backend; stop_frontend; stop_wiki ;;
+        medicare) stop_medicare ;;
+        *)        stop_backend; stop_frontend; stop_wiki; stop_medicare ;;
     esac
 }
 do_restart() {
@@ -664,7 +717,8 @@ do_restart() {
         backend)  stop_backend;  sleep 1; start_backend ;;
         frontend) stop_frontend; sleep 1; start_frontend ;;
         wiki)     stop_wiki;     sleep 1; start_wiki ;;
-        *)        stop_backend; stop_frontend; stop_wiki; sleep 1; start_backend; start_frontend; start_wiki ;;
+        medicare) stop_medicare; sleep 1; start_medicare ;;
+        *)        stop_backend; stop_frontend; stop_wiki; stop_medicare; sleep 1; start_backend; start_frontend; start_wiki; start_medicare ;;
     esac
 }
 do_build() {

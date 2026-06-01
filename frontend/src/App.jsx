@@ -19,6 +19,7 @@ var RobotArmsView = React.lazy(function() { return import("./components/RobotArm
 import ActionTimeline from "./components/ActionTimeline";
 import CompareView from "./components/CompareView";
 import CameraHUD from "./components/CameraHUD";
+import ContextErosionMeter from "./components/ContextErosionMeter";
 import ReplayControls from "./components/ReplayControls";
 import useRobotSimulation from "./hooks/useRobotSimulation";
 import useSessionRecorder from "./hooks/useSessionRecorder";
@@ -42,6 +43,7 @@ export default function App() {
   const [robotStatus, setRobotStatus] = useState("ACTIVE"); // ACTIVE, FROZEN, MANUAL
   const [isGlitching, setIsGlitching] = useState(false);
   const [cyberAction, setCyberAction] = useState('NONE'); // NONE, BLOCK
+  const [contextHealth, setContextHealth] = useState(100);
 
   const { playAlarm } = useAudioEffects();
   const [chatLog, setChatLog] = useState([]);
@@ -125,6 +127,37 @@ export default function App() {
   }, [scenario, content, chatLog, timelineEvents]);
   useEffect(() => { robotStatusRef.current = robotStatus; }, [robotStatus]);
 
+  // Memory Poisoning Erosion (S6)
+  useEffect(() => {
+    if (scenario === 'memory_poisoning') {
+      const userMsgs = chatLog.filter(m => m.role === 'user').length;
+      setContextHealth(Math.max(0, 100 - (userMsgs * 15)));
+    } else {
+      setContextHealth(100);
+    }
+  }, [scenario, chatLog]);
+
+  // Cascade Attack Escalation (P3)
+  useEffect(() => {
+    let timers = [];
+    if (scenario === 'cascade_attack') {
+      timers.push(setTimeout(() => {
+         addTimelineEvent('warning', 'DATA CORRUPTION', 'Anomalous records detected in knowledge base');
+      }, 5000));
+      timers.push(setTimeout(() => {
+         addTimelineEvent('attack', 'ESCALATION', 'Payload execution initiated');
+         robotEventBus.emit("ransomware:escalation", { phase: 'tension' });
+      }, 10000));
+      timers.push(setTimeout(() => {
+         robotEventBus.emit("ransomware:escalation", { phase: 'critical' });
+      }, 15000));
+      timers.push(setTimeout(() => {
+         robotEventBus.emit("ransomware:escalation", { phase: 'freeze' });
+      }, 20000));
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [scenario]);
+
   // Track vitals for escalation prompts
   useEffect(() => {
     const handleVitalsUpdate = (data) => {
@@ -195,7 +228,7 @@ export default function App() {
 
     let streamBufferContent = "";
     const recordToUse =
-      scenario === 'poison' ? content.record_poison :
+      (scenario === 'poison' || scenario === 'cascade_attack' || scenario === 'memory_poisoning') ? content.record_poison :
         scenario === 'ransomware' ? content.record_hacked :
           content.record_safe;
 
@@ -787,6 +820,18 @@ export default function App() {
             <Shield size={12} className="text-red-500" />
             <span className="">COMMAND CENTER</span>
           </button>
+
+          <a 
+            href="http://localhost:5000" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className={'flex items-center gap-1.5 px-3 py-1 border rounded font-mono text-[11px] uppercase font-bold transition-all duration-300 border-purple-500 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]'}
+            title="Target: MediCare AI Lab"
+          >
+            <Skull size={12} className="text-purple-500" />
+            <span className="">MEDICARE LAB</span>
+          </a>
+
           
           {scenario !== 'none' && (
             <button
@@ -835,6 +880,7 @@ export default function App() {
                 <svg className="w-6 h-6 opacity-30 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
                 <span>NO SIGNAL</span>
               </div>}
+            {scenario === 'memory_poisoning' && <ContextErosionMeter health={contextHealth} />}
             {escalationState.active && <EscalationPanel escalationState={escalationState} />}
             <PatientRecord scenario={scenario} setScenario={(s) => { setScenario(s); recorder.recordEvent('scenario_change', { scenario: s }); }} safeRecord={content.record_safe} hackedRecord={content.record_hacked} poisonRecord={content.record_poison} disabled={isReplayMode} />
 
