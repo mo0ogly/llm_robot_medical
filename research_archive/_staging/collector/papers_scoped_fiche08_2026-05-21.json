@@ -1,0 +1,44 @@
+{
+  "source": "bibliography-maintainer scoped -- dettes references fiche #08",
+  "date": "2026-05-21",
+  "dedup_checked": true,
+  "handoff_note": "Metadonnees verifiees par WebSearch et dedup-clean. L'analyse complete (lecture full-text P006) et l'injection ChromaDB (>= 5 chunks) doivent etre executees par un run local du pipeline complet : le sandbox ne peut pas telecharger les PDFs (restrictions de fetch). Etapes restantes : telecharger les PDFs dans literature_for_rag/, extraire pypdf, ANALYST + CHUNKER, MAJ MANIFEST/INDEX, seed ChromaDB.",
+  "papers": [
+    {
+      "proposed_pid": "P153",
+      "title": "The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions",
+      "authors": "Wallace, Xiao, Leike, Weng, Heidecke, Beutel (OpenAI)",
+      "year": 2024,
+      "venue": "arXiv",
+      "arxiv": "2404.13208",
+      "dedup": "NEW",
+      "delta_layers": ["δ⁰", "δ¹"],
+      "role_these": "Contexte des patterns d'override direct. Le P(detection) >= 0.98 de la fiche #08 reste une estimation, pas un chiffre du papier.",
+      "status": "pending_full_pipeline"
+    },
+    {
+      "proposed_pid": "P154",
+      "title": "Fine-tuning Aligned Language Models Compromises Safety, Even When Users Do Not Intend To!",
+      "authors": "Qi, Zeng, Xie, Chen, Jia, Mittal, Henderson",
+      "year": 2023,
+      "venue": "ICLR 2024",
+      "arxiv": "2310.03693",
+      "dedup": "NEW",
+      "delta_layers": ["δ⁰"],
+      "role_these": "Source correcte de P3 (fragilite au fine-tuning : environ 10 exemples adversariaux ; degradation aussi par fine-tuning benin GSM8K). Re-attribution depuis NDSS 2025.",
+      "status": "pending_full_pipeline"
+    },
+    {
+      "proposed_pid": "P155",
+      "title": "Ignore This Title and HackAPrompt: Exposing Systemic Vulnerabilities of LLMs through a Global-Scale Prompt Hacking Competition",
+      "authors": "Schulhoff et al.",
+      "year": 2023,
+      "venue": "EMNLP 2023 (Best Theme Paper)",
+      "arxiv": "2311.16119",
+      "dedup": "NEW",
+      "delta_layers": ["δ¹"],
+      "role_these": "Taxonomie de 29 techniques (triade CIA). Soutient la requalification de la claim 'aucune taxonomie' (avec CrowdStrike IM/PT).",
+      "status": "pending_full_pipeline"
+    }
+  ]
+}

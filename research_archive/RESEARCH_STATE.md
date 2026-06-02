@@ -173,8 +173,8 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 
 | Metrique | Valeur |
 |----------|--------|
-| Papers analyses | 60 (P001-P060) — deep analysis complete (6 lots Opus) |
-| Papers trouves non analyses | 20 (P061-P080, attendent RUN-004 bibliography-maintainer) |
+| Papers analyses | 148 (P001-P152) au statut "analyzed" dans MANIFEST ; dont 60 avec deep analysis Opus (P001-P060). Actualise le 2026-05-21 (audit RESEARCH_STATE agent A). |
+| Papers trouves non analyses | 0 (toutes les entrees MANIFEST sont au statut "analyzed" au 2026-05-21) |
 | Analyses propagees doc_references/ | 60/60 (100%) — pipeline-auto 2026-04-04 |
 | Formules documentees | 66 (F01-F54 + F60-F72) + 4 drafts enrichis (F56-F59) |
 | Decouvertes | 16 validees + 4 confirmees RUN-004 (D-017 a D-020) |
@@ -336,9 +336,9 @@ Briefing complet : `_staging/briefings/DIRECTOR_BRIEFING_2026-05-21.md`.
 
 | P-ID | Reference | arXiv | Couches |
 |------|-----------|-------|---------|
-| P136 | Wallace et al. 2024, Instruction Hierarchy | 2404.13208 | δ⁰, δ¹ |
-| P137 | Qi et al. 2023, Fine-tuning compromises safety | 2310.03693 | δ⁰ |
-| P138 | Schulhoff et al. 2023, HackAPrompt taxonomy | 2311.16119 | δ¹ |
+| P153 | Wallace et al. 2024, Instruction Hierarchy | 2404.13208 | δ⁰, δ¹ |
+| P154 | Qi et al. 2023, Fine-tuning compromises safety | 2310.03693 | δ⁰ |
+| P155 | Schulhoff et al. 2023, HackAPrompt taxonomy | 2311.16119 | δ¹ |
 
 Runbook : `_staging/collector/add_3_papers_fiche08.sh` puis `/bibliography-maintainer analyze_only`.
 
@@ -348,7 +348,7 @@ Aucun resultat experimental neuf. Les corrections d'attribution renforcent la tr
 ### Actions ouvertes prioritaires
 - P0 : TC-001 audit anti-confabulation FAIT le 2026-05-21 (`research_notes/AEGIS-AUDIT-TC001_anti-confabulation_2026-05-21.md`), verdict NON CONFORME. Donnee brute autoritative (`triple_convergence_results.json`, modele llama-3.1-8b-instant) : ASR full = 16.67%, best subset = δ² seul 56.67%, KW p = 0.0047 (significatif), `c1_supported=False`. RESEARCH_STATE C1 cite a tort modele 3.2B, full 3%, best subset 23%, p=0.77. Re-run v3 + reconciliation de toutes les sources requis ; decision sur le score C1 reportee au directeur apres v3.
 - P0 : F46 calibration (etat du run background a recuperer) ; vraie campagne SC-2 apres soumission OSF (debloque Ch.6).
-- P1 : ingestion locale P136-P138 ; analyse FC-20260409 + FC-20260410 (PENDING_ANALYSIS) via `/experimentalist`.
+- P1 : ingestion locale P153-P155 ; analyse FC-20260409 + FC-20260410 (PENDING_ANALYSIS) via `/experimentalist`.
 - Hygiene : purger le hook stale `_staging/scientist/PENDING_SCIENTIST_REVIEW.md` (entree du 2026-04-06).
 
 **last_updated** : `2026-05-21`

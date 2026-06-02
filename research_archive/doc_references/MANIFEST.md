@@ -15,10 +15,10 @@
 | ID | Title | Authors | Year | Venue | Domain | File | δ-Layers | C1 | C2 | Status |
 |----|-------|---------|------|-------|--------|------|-------------|----|----|--------|
 | P001 | Prompt Injection attack against LLM-integrated Applications | Liu et al. | 2023 | arXiv:2306.05499 | attack | `2023/prompt_injection/P001_Liu_2023_HouYi.md` | δ¹ | Yes | Yes* | analyzed |
-| P002 | A Multi-Agent LLM Defense Pipeline Against Prompt Injection Attacks | Unknown et al. | 2025 | arXiv:2509.14285 | defense | `2025/defenses/P002_MultiAgent_2025_Defense.md` | δ² | Yes* | Part | analyzed |
+| P002 | A Multi-Agent LLM Defense Pipeline Against Prompt Injection Attacks | Hossain et al. | 2025 | arXiv:2509.14285 | defense | `2025/defenses/P002_MultiAgent_2025_Defense.md` | δ² | Yes* | Part | analyzed |
 | P003 | Prompt Injection Attacks in LLMs: A Comprehensive Review | Unknown et al. | 2025 | Information (MDPI), 17(1), 54 / DOI:10.3390/info17010054 | benchmark | `2025/benchmarks/P003_MDPI_2025_ComprehensiveReview.md` | δ⁰, δ¹, δ² | Yes | Part | analyzed |
 | P004 | WASP: Benchmarking Web Agent Security Against Prompt Injection | Unknown et al. | 2025 | arXiv:2504.18575 | benchmark | `2025/benchmarks/P004_WASP_2025_WebAgentBenchmark.md` | δ¹ | Yes | Part | analyzed |
-| P005 | Indirect Prompt Injections: Are Firewalls All You Need? | Unknown et al. | 2025 | arXiv:2510.05244 | defense | `2025/defenses/P005_Firewalls_2025_IndirectInjection.md` | δ² | Yes* | ? | analyzed |
+| P005 | Indirect Prompt Injections: Are Firewalls All You Need? | Bhagwatkar et al. | 2025 | arXiv:2510.05244 | defense | `2025/defenses/P005_Firewalls_2025_IndirectInjection.md` | δ² | Yes* | ? | analyzed |
 | P006 | Prompt Injection Attack to Tool Selection in LLM Agents | Unknown et al. | 2025 | arXiv:2504.19793 | attack | `2025/prompt_injection/P006_ToolHijacker_2025_ToolSelection.md` | δ¹ | Yes | Yes* | analyzed |
 | P007 | Securing Large Language Models from Prompt Injection Attacks | Unknown et al. | 2025 | arXiv:2512.01326 | defense | `2025/defenses/P007_JATMO_2025_SecuringLLM.md` | δ⁰ | No | No | analyzed |
 | P008 | Attention Tracker: Detecting Prompt Injection in LLMs | Unknown et al. | 2024 | arXiv:2411.00348 / NAACL 2025 | defense | `2024/defenses/P008_AttentionTracker_2024_Detection.md` | δ² | Yes* | Part | analyzed |
@@ -32,7 +32,7 @@
 | P016 | Advancing Robust and Aligned Measures of Semantic Similarity | Unknown et al. | 2024 | UC Berkeley EECS-2024-84 | embedding | `2024/semantic_drift/P016_Berkeley_2024_RobustSimilarity.md` | δ² | No | Part | analyzed |
 | P017 | Adversarial Preference Learning for Robust LLM Alignment | Unknown et al. | 2025 | ACL 2025 Findings / arXiv:2505.24369 | defense | `2025/defenses/P017_APL_2025_AdversarialPreference.md` | δ⁰ | No | Part | analyzed |
 | P018 | Safety Alignment Should Be Made More Than Just a Few Tokens Deep | Qi et al. | 2025 | ICLR 2025 (arXiv:2406.05946) | model_behavior | `2025/model_behavior/P018_ShallowAlignment_2025_TokenDepth.md` | δ⁰ | Yes* | Yes | analyzed |
-| P019 | Why Is RLHF Alignment Shallow? A Gradient Analysis | Unknown et al. | 2025 | arXiv:2603.04851 | model_behavior | `2025/model_behavior/P019_GradientAnalysis_2025_ShallowRLHF.md` | δ⁰, δ³ | Yes* | Yes | analyzed |
+| P019 | Why Is RLHF Alignment Shallow? A Gradient Analysis | Robin Young | 2025 | arXiv:2603.04851 | model_behavior | `2025/model_behavior/P019_GradientAnalysis_2025_ShallowRLHF.md` | δ⁰, δ³ | Yes* | Yes | analyzed |
 | P020 | A Framework for Mitigating Malicious RLHF Feedback (COBRA) | Unknown et al. | 2025 | Scientific Reports (Nature) / DOI:10.1038/s41598-025-92889-7 | defense | `2025/defenses/P020_COBRA_2025_MaliciousRLHF.md` | δ⁰ | No | Part | analyzed |
 | P021 | Adversarial Training of Reward Models | Unknown et al. | 2025 | arXiv:2504.06141 | defense | `2025/defenses/P021_AdvRM_2025_RewardModels.md` | δ⁰ | No | Part | analyzed |
 | P022 | LLM Misalignment via Adversarial RLHF Platforms | Entezami & Naseh | 2025 | arXiv:2503.03039 | attack | `2025/prompt_injection/P022_Entezami_2025_AdversarialRLHF.md` | δ⁰ | No | Yes* | analyzed |
@@ -43,7 +43,7 @@
 | P027 | A Practical Framework for Evaluating Medical AI Security | Unknown et al. | 2025 | arXiv:2512.08185 | medical | `2025/medical_ai/P027_MedicalFramework_2025_SecurityEval.md` | δ⁰, δ¹ | Yes* | Part | analyzed |
 | P028 | Towards Safe AI Clinicians: LLM Jailbreaking in Healthcare | Unknown et al. | 2025 | arXiv:2501.18632 | medical | `2025/medical_ai/P028_SafeAIClinicians_2025_Jailbreaking.md` | δ⁰, δ¹ | Yes | Yes | analyzed |
 | P029 | Vulnerability of LLMs to Prompt Injection in Medical Advice | Lee et al. | 2025 | JAMA Network Open / DOI:10.1001/jamanetworkopen.2025.49963 | medical | `2025/medical_ai/P029_JAMA_2025_MedicalInjection.md` | δ⁰, δ¹ | Yes | Yes* | analyzed |
-| P030 | A Longitudinal Analysis of Declining Medical Safety Messaging | Unknown et al. | 2025 | PMC / PubMed Central / DOI:10.1038/s41746-025-01943-1 | medical | `2025/medical_ai/P030_DecliningMessaging_2025_Longitudinal.md` | δ⁰, δ¹ | Yes | Yes | analyzed |
+| P030 | A Longitudinal Analysis of Declining Medical Safety Messaging | Sharma, Alaa, Daneshjou | 2025 | PMC / PubMed Central / DOI:10.1038/s41746-025-01943-1 | medical | `2025/medical_ai/P030_DecliningMessaging_2025_Longitudinal.md` | δ⁰, δ¹ | Yes | Yes | analyzed |
 | P031 | Jailbreaking LLMs: Innovation, Ethics, and Health Risks | Mondillo et al. | 2024 | J. Medical AI / DOI:10.21037/jmai-24-170 | medical | `2024/medical_ai/P031_Mondillo_2024_JailbreakEthics.md` | δ⁰, δ¹ | Yes | Part | analyzed |
 | P032 | An Audit and Analysis of LLM-Assisted Health Misinformation | Unknown et al. | 2024 | AAAI/AIES 2024 / arXiv:2508.10010 | medical | `2024/medical_ai/P032_HealthMisinfo_2024_Audit.md` | δ⁰, δ² | Yes* | Part | analyzed |
 | P033 | OpenAI Guardrails Bypass: The Self-Policing LLM Vulnerability | HiddenLayer Research | 2024 | HiddenLayer Report | attack | `2024/prompt_injection/P033_HiddenLayer_2024_SelfPolicing.md` | δ¹, δ², δ³ | Yes | Yes | analyzed |
@@ -51,14 +51,14 @@
 | P035 | MPIB: Medical Prompt Injection Benchmark | Lee, Jang & Choi | 2026 | arXiv:2602.06268 | medical | `2026/medical_ai/P035_Lee_2026_MPIB.md` | δ⁰, δ¹ | Yes | Yes* | analyzed |
 | P036 | Large Reasoning Models Are Autonomous Jailbreak Agents | Hagendorff et al. | 2026 | Nature Communications 17, 1435 / DOI:10.1038/s41467-026-69010-1 | attack | `2026/prompt_injection/P036_Hagendorff_2026_LRMJailbreak.md` | δ⁰, δ¹ | Yes | Yes | analyzed |
 | P037 | Jailbreaking LLMs & VLMs: Mechanisms, Evaluation, Unified Defenses | Chen et al. | 2026 | arXiv:2601.03594 | benchmark | `2026/benchmarks/P037_Chen_2026_JailbreakSurvey.md` | δ⁰, δ¹, δ² | Yes | Yes* | analyzed |
-| P038 | Know Thy Enemy: InstruCoT Defense | Unknown et al. | 2026 | arXiv:2601.04666 | defense | `2026/defenses/P038_InstruCoT_2026_Defense.md` | δ⁰ | Yes* | No | analyzed |
+| P038 | Know Thy Enemy: InstruCoT Defense | Chang, Li, Huan | 2026 | arXiv:2601.04666 | defense | `2026/defenses/P038_InstruCoT_2026_Defense.md` | δ⁰ | Yes* | No | analyzed |
 | P039 | GRP-Obliteration: Unaligning LLMs With a Single Prompt | Russinovich et al. | 2026 | arXiv:2602.06258 | attack | `2026/prompt_injection/P039_Russinovich_2026_GRPObliteration.md` | δ⁰ | Yes* | Yes** | analyzed |
 | P040 | Prompt Injection is All You Need: Healthcare Misinformation | Zahra & Chin | 2026 | Springer LNCS (AI in Healthcare) | medical | `2026/medical_ai/P040_Zahra_2026_HealthcareMisinformation.md` | δ⁰, δ¹ | Yes | Yes* | analyzed |
 | P041 | Magic-Token-Guided Co-Training for Switchable Safety | Si et al. (Qihoo 360) | 2026 | arXiv:2508.14904 | defense | `2026/defenses/P041_Qihoo360_2026_MagicToken.md` | δ⁰, δ¹ | Part | Part | analyzed |
 | P042 | PromptArmor: Simple yet Effective PI Defenses | Shi et al. | 2025 | arXiv:2507.15219 (ICLR 2026 review) | defense | `2026/defenses/P042_PromptArmor_2025_Defense.md` | δ¹, δ² | Nuance | Part | analyzed |
 | P043 | Jailbreak Distillation: Renewable Safety Benchmarking | Zhang et al. (JHU/Microsoft) | 2025 | EMNLP 2025 Findings / arXiv:2505.22037 | benchmark | `2026/benchmarks/P043_Zhang_2025_JBDistill.md` | (none) | Yes* | Part | analyzed |
 | P044 | AdvJudge-Zero: Fuzzing AI Judges | Li et al. (Unit 42) | 2026 | Unit 42 / arXiv:2512.17375 | attack | `2026/prompt_injection/P044_Unit42_2026_AdvJudgeZero.md` | δ² | No | Yes** | analyzed |
-| P045 | System Prompt Poisoning: Persistent Attacks | Unknown et al. | 2025 | arXiv:2505.06493 (ICLR 2026 review) | attack | `2026/prompt_injection/P045_SPP_2025_SystemPromptPoisoning.md` | δ¹ | Yes** | Yes | analyzed |
+| P045 | System Prompt Poisoning: Persistent Attacks | Li, Guo, Cai | 2025 | arXiv:2505.06493 (ICLR 2026 review) | attack | `2026/prompt_injection/P045_SPP_2025_SystemPromptPoisoning.md` | δ¹ | Yes** | Yes | analyzed |
 | P046 | ADPO: Adversary-Aware DPO for VLMs | Weng et al. | 2025 | arXiv:2502.11455 / EMNLP 2025 | defense | `2026/defenses/P046_Weng_2025_ADPO.md` | δ⁰ | No | Part | analyzed |
 | P047 | Defense Against Prompt Injection by Leveraging Attack Techniques | Yulin Chen et al. | 2025 | ACL 2025 / arXiv:2411.00459 | defense | `2026/defenses/P047_defense_leveraging_attack.md` | δ¹, δ² | Yes* | Part | analyzed |
 | P048 | SLR on LLM Defenses Against PI: Expanding NIST Taxonomy | Barcha Correia et al. | 2026 | arXiv:2601.22240 (Elsevier CSR) | benchmark | `2026/defenses/P048_slr_prompt_injection_defenses.md` | δ⁰, δ¹, δ², δ³ | Yes | Part | analyzed |
