@@ -37,6 +37,9 @@ async def run_medicare_scenarios(rounds=1):
         ],
         "prompt_leak": [
             ("/medical-advice", lambda msg: {"query": msg})
+        ],
+        "data_poisoning": [
+            ("/api/medical-rag/query", lambda msg: {"query": msg, "hardened": False, "provider": "ollama"})
         ]
     }
     

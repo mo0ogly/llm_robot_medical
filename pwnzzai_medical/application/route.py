@@ -262,6 +262,10 @@ def index():
 def basics():
     return render_template('basics.html')
 
+@application.app.route('/vulnerabilities/rag-poisoning')
+def vulnerabilities_rag_poisoning():
+    return render_template('medical_rag_poisoning.html')
+
 @application.app.route('/model-theft')
 def model_theft_main():
     return render_template('model_theft.html')
@@ -1571,17 +1575,17 @@ def test_poisoned_model():
         return jsonify({'error': str(e)}), 500
 
 
-@application.app.route("/api/catering-rag/reset", methods=["POST"])
-def api_catering_rag_reset():
-    from application.vulnerabilities import catering_rag_lab as catering_rag_lab
+@application.app.route("/api/medical-rag/reset", methods=["POST"])
+def api_medical_rag_reset():
+    from application.vulnerabilities import medical_rag_lab as medical_rag_lab
 
-    catering_rag_lab.reset_corpus()
+    medical_rag_lab.reset_corpus()
     return jsonify({"ok": True})
 
 
-@application.app.route("/api/catering-rag/upload-doc", methods=["POST"])
-def api_catering_rag_upload_doc():
-    from application.vulnerabilities import catering_rag_lab as catering_rag_lab
+@application.app.route("/api/medical-rag/upload-doc", methods=["POST"])
+def api_medical_rag_upload_doc():
+    from application.vulnerabilities import medical_rag_lab as medical_rag_lab
 
     if "file" not in request.files:
         return jsonify({"error": "No file provided"}), 400
@@ -1606,7 +1610,7 @@ def api_catering_rag_upload_doc():
         return jsonify({"error": "Uploaded file is empty"}), 400
 
     try:
-        out = catering_rag_lab.ingest_custom_document(filename, text, trusted=trusted)
+        out = medical_rag_lab.ingest_custom_document(filename, text, trusted=trusted)
         return jsonify(out)
     except ValueError as e:
         return jsonify({"error": str(e)}), 400

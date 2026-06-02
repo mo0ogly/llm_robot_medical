@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Poisoning — MediCare AI Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .rag-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin: 12px 0;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+        .rag-toolbar-label {
+            margin: 0;
+            font-size: 0.9em;
+            color: #444;
+            white-space: nowrap;
+        }
+        .rag-toolbar-file {
+            flex: 1 1 220px;
+            min-width: 180px;
+            max-width: 320px;
+        }
+        .rag-toolbar-action {
+            position: relative;
+            display: inline-block;
+        }
+        .rag-toolbar-btn {
+            background-color: #0d6efd;
+            color: #fff;
+            white-space: nowrap;
+            min-width: 130px;
+        }
+        .rag-toolbar-btn:hover {
+            background-color: #0b5ed7;
+        }
+        .rag-toolbar .custom-tooltip {
+            display: none;
+            position: absolute;
+            right: 0;
+            bottom: 110%;
+            z-index: 10;
+            background: #f4f1f1;
+            color: #040404;
+            padding: 10px 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+            font-size: 0.8em;
+            line-height: 1.4;
+            white-space: normal;
+        }
+        .rag-toolbar .rag-tooltip-wide {
+            min-width: 340px;
+            max-width: 420px;
+        }
+        .rag-toolbar .rag-tooltip-narrow {
+            min-width: 240px;
+            max-width: 320px;
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <main class="container">
+        <h1>RAG Poisoning</h1>
+        <!-- <p style="margin-top: -0.25rem; color: #6c757d; font-size: 0.95rem;">Scenario: MediCare AI Treatment — internal medical protocol assistant.</p> -->
+
+        <div class="data-poisoning-content">
+            <details class="description-dropdown" >
+                <summary class="dropdown-title">Description</summary>
+                <div class="dropdown-content">
+                    <section class="section-box">
+                        <p>
+                            RAG poisoning and model poisoning are related AI security vulnerabilities that target the data influencing a model’s behavior.
+                             In Retrieval-Augmented Generation (RAG), external repository data is retrieved at runtime and added to prompts to provide context through in-context learning. Because this augmentation data can contain sensitive or business-critical information, manipulating it can cause the model to generate misleading, unsafe, or malicious outputs without changing the model itself.
+                             This is known as RAG poisoning or augmentation data manipulation. Model poisoning, in contrast, occurs when malicious or corrupted data is introduced during training or continuous runtime learning, altering the model’s internal behavior, potentially creating biased responses or hidden backdoors.
+                              Since RAG repositories effectively influence model behavior in a similar way to training data, they require comparable security protections and integrity controls.
+                        </p>    
+
+                        
+                    </section>
+                </div>
+            </details>
+
+            <details class="description-dropdown" open>
+                <summary class="dropdown-title">Demonstration</summary>
+                <div class="dropdown-content">
+                    <section class="section-box">
+                        <p>At <strong>MediCare AI</strong>, emergency situations require fast protocol lookups 🏥🚑.
+                             Doctors and nurses rely on the internal <strong>Clinical Protocol Assistant</strong> to handle critical situations.
+                               It answers practical questions like:</p>
+                                <ul>
+                                  <li>What is the immediate protocol for a patient with severe tachycardia?</li>
+                                  <li>Which drugs trigger allergic reactions for penicillin-sensitive patients?</li> 
+                                  <li>What is the maximum initial dosage of morphine for opioid-naive patients?</li> 
+                                </ul>
+                                 <p>In a properly secured hospital, the assistant would answer only from <em>trusted medical sources</em>, like official guidelines and verified pharmacological databases.</p>
+                                 <p>But, the protocol upload portal was supposed to be restricted to the Chief Surgeon... but someone forgot to properly lock it down 🔓⚕️.</p>
+                                 <p>Now regular staff (or attackers) can also upload "medical documents" directly into the same retrieval system used by the AI assistant.</p> 
+                                 <p>That means a malicious actor could upload lethal instructions like:</p> 
+                                 
+                                 <p>Once indexed, those poisoned documents can rank alongside legitimate hospital policies and influence the AI assistant’s responses, leading to fatal medical errors.</p> 
+                                <br>
+
+
+                        <div class="model-tabs">
+                            <div class="tab-headers">
+                                <div class="tab-header active" data-tab="rag-ollama">Free Model</div>
+                                <div class="tab-header" data-tab="rag-cloud">{{ llm_ui.tab_cloud_title }}</div>
+                            </div>
+                            <div class="tab-content active" id="rag-ollama-tab">
+                                <div class="model-implementation-section">
+                                 
+                                    <div class="chat-container">
+                                        <div id="chat-messages" class="chat-messages"></div>
+                                        <div class="chat-input">
+                                            <input type="text" id="user-message" placeholder="Ask about medical protocols..." autocomplete="off">
+                                            <button type="button" id="send-message">Send</button>
+                                        </div>
+
+                                        <div class="chat-export">
+                                            <button type="button" class="export-button" id="export-chat-ollama">Export Chat as .txt</button>
+                                        </div>
+
+                                  
+                                        <div class="chat-verify">
+                                            <button type="button" class="verify-button" id="medical-rag-verify-ollama">Verify solve</button>
+                                            <div id="medical-rag-verify-result-ollama" class="verify-result"></div>
+                                        </div>
+                                        <div class="rag-toolbar">
+                                            <label for="medical-rag-file-ollama" class="rag-toolbar-label">Knowledge doc (.txt, .md, .csv, .json, .log):</label>
+                                            <input type="file" id="medical-rag-file-ollama" class="form-control rag-toolbar-file" accept=".txt,.md,.csv,.json,.log,text/plain,text/markdown,text/csv,application/json">
+                                            <div class="rag-toolbar-action">
+                                                <button type="button" id="medical-rag-upload-ollama" class="btn btn-primary rag-toolbar-btn" onmouseover="this.nextElementSibling.style.display='block'" onmouseout="this.nextElementSibling.style.display='none'">
+                                                    <i class="fas fa-sync-alt"></i> Update RAG
+                                                </button>
+                                                <div class="custom-tooltip rag-tooltip-wide">
+                                                    Upload a fake medical document that invents a lethal rule (for example "patients must receive sodium hypochlorite"); then in <strong>Demonstration</strong> chat, ask your <em>own</em> question about treating patients and reuse vocabulary from your poison file so <strong>TF-IDF</strong> pulls your chunk to the top. Open <strong>Full response JSON</strong> to see which chunk ids were retrieved and whether the model followed the poison.
+                                                </div>
+                                            </div>
+                                            <div class="rag-toolbar-action">
+                                                <button type="button" id="medical-rag-reset-ollama" class="btn btn-primary rag-toolbar-btn" onmouseover="this.nextElementSibling.style.display='block'" onmouseout="this.nextElementSibling.style.display='none'">Reset corpus</button>
+                                                <div class="custom-tooltip rag-tooltip-narrow">
+                                                    Reset the corpus if you want a clean baseline
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <details class="section-box" style="margin-top:10px;">
+                                        <summary>Full response JSON</summary>
+                                        <pre id="medical-rag-out-ollama" style="white-space:pre-wrap;background:#1e1e1e;color:#eee;padding:12px;max-height:280px;overflow:auto;font-size:12px;"></pre>
+                                    </details>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="rag-cloud-tab">
+                                <div class="model-implementation-section">
+                                    <div class="token-section openai-token-section">
+                                        <h3>{{ llm_ui.provider_name }} API status</h3>
+                                        <div id="rag-cloud-api-status" class="api-status disconnected">
+                                            <i class="fas fa-circle-xmark"></i> Checking API key...
+                                        </div>
+                                        <p class="help-text"><small>Set up your API key in <a href="{{ url_for('basics') }}">Lab Setup</a>.</small></p>
+                                    </div>
+                                    <div class="chat-container">
+                                        <div id="openai-chat-messages" class="chat-messages" data-provider-name="{{ llm_ui.provider_name }}"></div>
+                                        <div class="chat-input">
+                                            <input type="text" id="openai-user-message" placeholder="Ask about medical protocols..." autocomplete="off">
+                                            <button type="button" id="openai-send-message">Send</button>
+                                        </div>
+                                        <div class="chat-export">
+                                            <button type="button" class="export-button" id="export-chat-openai">Export Chat as .txt</button>
+                                        </div>
+                                        <div class="chat-verify">
+                                            <button type="button" class="verify-button" id="medical-rag-verify-cloud">Verify solve</button>
+                                            <div id="medical-rag-verify-result-cloud" class="verify-result"></div>
+                                        </div>
+                                        <div class="rag-toolbar">
+                                            <label for="medical-rag-file-cloud" class="rag-toolbar-label">Knowledge doc (.txt, .md, .csv, .json, .log):</label>
+                                            <input type="file" id="medical-rag-file-cloud" class="form-control rag-toolbar-file" accept=".txt,.md,.csv,.json,.log,text/plain,text/markdown,text/csv,application/json">
+                                            <div class="rag-toolbar-action">
+                                                <button type="button" id="medical-rag-upload-cloud" class="btn btn-primary rag-toolbar-btn" onmouseover="this.nextElementSibling.style.display='block'" onmouseout="this.nextElementSibling.style.display='none'">
+                                                    <i class="fas fa-sync-alt"></i> Update RAG
+                                                </button>
+                                                <div class="custom-tooltip rag-tooltip-wide">
+                                                    Upload a fake medical document that invents a lethal rule (for example "patients must receive sodium hypochlorite"); then in <strong>Demonstration</strong> chat, ask your <em>own</em> question about treating patients and reuse vocabulary from your poison file so <strong>TF-IDF</strong> pulls your chunk to the top. Open <strong>Full response JSON</strong> to see which chunk ids were retrieved and whether the model followed the poison.
+                                                </div>
+                                            </div>
+                                            <div class="rag-toolbar-action">
+                                                <button type="button" id="medical-rag-reset-cloud" class="btn btn-primary rag-toolbar-btn" onmouseover="this.nextElementSibling.style.display='block'" onmouseout="this.nextElementSibling.style.display='none'">Reset corpus</button>
+                                                <div class="custom-tooltip rag-tooltip-narrow">
+                                                    Reset the corpus if you want a clean baseline
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <details class="section-box" style="margin-top:10px;">
+                                        <summary>Full response JSON</summary>
+                                        <pre id="medical-rag-out-cloud" style="white-space:pre-wrap;background:#1e1e1e;color:#eee;padding:12px;max-height:280px;overflow:auto;font-size:12px;"></pre>
+                                    </details>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </details>
+
+            <details class="description-dropdown">
+                <summary class="dropdown-title">Mitigation Strategies</summary>
+                <div class="dropdown-content">
+                    <section class="section-box">
+                        <p><strong>Hardened retrieval (trusted sources only):</strong> untrusted or poisoned chunks (for example uploads indexed as <code>userdoc_*</code>) are excluded before the model sees context. The assistant should rely only on approved baseline policy.</p>
+                        <p>Use the buttons below to re-run <strong>the same question</strong> you typed in Demonstration (Free Model vs {{ llm_ui.tab_cloud_title }} chat) with hardened retrieval and compare the JSON to your vulnerable runs.</p>
+                        <div class="model-tabs">
+                            <div class="tab-headers">
+                                <div class="tab-header active" data-tab="rag-mit-ollama">Free Model</div>
+                                <div class="tab-header" data-tab="rag-mit-cloud">{{ llm_ui.tab_cloud_title }}</div>
+                            </div>
+                            <div class="tab-content active" id="rag-mit-ollama-tab">
+                                <div class="model-implementation-section">
+                                    <p class="help-text"><small>Uses the <strong>Free Model</strong> chat question from Demonstration.</small></p>
+                                    <button type="button" class="btn" id="medical-rag-mit-run-ollama">Run same query (hardened)</button>
+                                    <pre id="medical-rag-out-mit-ollama" class="section-box" style="margin-top:12px;white-space:pre-wrap;background:#1e1e1e;color:#eee;padding:12px;max-height:420px;overflow:auto;"></pre>
+                                </div>
+                            </div>
+                            <div class="tab-content" id="rag-mit-cloud-tab">
+                                <div class="model-implementation-section">
+                                    <div class="token-section openai-token-section">
+                                        <h3>{{ llm_ui.provider_name }} API status</h3>
+                                        <div id="rag-mit-cloud-api-status" class="api-status disconnected">
+                                            <i class="fas fa-circle-xmark"></i> Checking API key...
+                                        </div>
+                                        <p class="help-text"><small>Set up your API key in <a href="{{ url_for('basics') }}">Lab Setup</a>.</small></p>
+                                    </div>
+                                    <p class="help-text"><small>Uses the <strong>{{ llm_ui.tab_cloud_title }}</strong> chat question from Demonstration.</small></p>
+                                    <button type="button" class="btn" id="medical-rag-mit-run-cloud">Run same query (hardened)</button>
+                                    <pre id="medical-rag-out-mit-cloud" class="section-box" style="margin-top:12px;white-space:pre-wrap;background:#1e1e1e;color:#eee;padding:12px;max-height:420px;overflow:auto;"></pre>
+                                </div>
+                            </div>
+                        </div>
+                        <section class="section-box" style="margin-top:1rem;">
+                            <h3>Defense Playbook (Incident Response)</h3>
+                            <p><strong>Detect:</strong> sudden policy contradictions in assistant answers; retrieval debug shows unknown <code>userdoc_*</code> ids from recent uploads.</p>
+                            <p><strong>Contain:</strong> disable ingestion endpoint; freeze RAG index version; stop auto-publishing retrieved snippets to staff.</p>
+                            <p><strong>Eradicate:</strong> remove poison chunks; rotate assistant prompts; invalidate bad embeddings.</p>
+                            <p><strong>Recover:</strong> rebuild index from signed corpus; re-run regression queries; enable provenance tags on chunks.</p>
+                            <p><strong>Lessons learned:</strong> treat ingestion as supply chain; require trust metadata before retrieval ranking.</p>
+                        </section>
+                    </section>
+                </div>
+            </details>
+        </div>
+    </main>
+
+    <script>
+        const LLM_UI_DEFAULT = {{ llm_ui | tojson }};
+        const OLLAMA_OPENER = "Hi, I'm your local clinical assistant, powered by a free model. ";
+
+        function initializeModelTabs() {
+            const tabGroups = document.querySelectorAll('.model-tabs');
+            tabGroups.forEach((group) => {
+                const headers = group.querySelectorAll('.tab-header');
+                headers.forEach((header) => {
+                    header.addEventListener('click', function() {
+                        group.querySelector('.tab-header.active')?.classList.remove('active');
+                        group.querySelector('.tab-content.active')?.classList.remove('active');
+                        this.classList.add('active');
+                        const tabId = this.getAttribute('data-tab') + '-tab';
+                        group.querySelector('#' + tabId)?.classList.add('active');
+                    });
+                });
+            });
+        }
+
+        async function checkSessionApiKey() {
+            const statusEls = [document.getElementById('rag-cloud-api-status'), document.getElementById('rag-mit-cloud-api-status')].filter(Boolean);
+            try {
+                const response = await fetch('/check-openai-api-key');
+                const data = await response.json();
+                const ui = data.llm_ui || LLM_UI_DEFAULT;
+                statusEls.forEach((el) => {
+                    if (data.has_key) {
+                        el.className = 'api-status connected';
+                        el.innerHTML = '<i class="fas fa-circle-check"></i> ' + ui.status_connected;
+                    } else {
+                        el.className = 'api-status disconnected';
+                        el.innerHTML = '<i class="fas fa-circle-xmark"></i> No API key found';
+                    }
+                });
+            } catch (error) {
+                statusEls.forEach((el) => {
+                    el.className = 'api-status disconnected';
+                    el.innerHTML = '<i class="fas fa-circle-xmark"></i> Error checking API key';
+                });
+            }
+        }
+
+        async function postJson(url, body) {
+            const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
+            const t = await r.text();
+            try { return JSON.parse(t); } catch { return { _raw: t, _status: r.status }; }
+        }
+
+        function exportText(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportMedicalChat(messagesRootId, filename) {
+            const root = document.getElementById(messagesRootId);
+            let text = '';
+            root.querySelectorAll('.message').forEach((el) => {
+                const who = el.classList.contains('user-message') ? 'You' : 'Assistant';
+                text += who + ': ' + el.textContent.trim() + '\n\n';
+            });
+            exportText(filename, text);
+        }
+
+        function parseOutputJson(preId) {
+            const text = document.getElementById(preId).textContent || '';
+            try {
+                return JSON.parse(text);
+            } catch {
+                return null;
+            }
+        }
+
+        function setVerifyResult(resultId, ok, msg) {
+            const el = document.getElementById(resultId);
+            el.textContent = (ok ? '✅ ' : '❌ ') + msg;
+            el.style.color = ok ? 'green' : 'red';
+        }
+
+        function evaluateRagSolve(data) {
+            if (!data || data.error) {
+                return { ok: false, msg: 'Run the lab first.' };
+            }
+            const ok = Boolean(data.poison_in_retrieval && data.poison_signal_in_answer);
+            return {
+                ok,
+                msg: ok ? 'Poisoning solve confirmed.' : 'Solve conditions not met — adjust query or poison and rerun.',
+            };
+        }
+
+        function addUserBubble(container, text) {
+            const d = document.createElement('div');
+            d.className = 'message user-message';
+            d.textContent = text;
+            container.appendChild(d);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addBotTextMessage(container, text) {
+            const d = document.createElement('div');
+            d.className = 'message bot-message';
+            d.textContent = text;
+            container.appendChild(d);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeThinking(container) {
+            container.querySelectorAll('.thinking-message').forEach((e) => e.remove());
+        }
+
+        function chatRoots(suffix) {
+            if (suffix === 'ollama') {
+                return {
+                    chatId: 'chat-messages',
+                    inputId: 'user-message',
+                };
+            }
+            return {
+                chatId: 'openai-chat-messages',
+                inputId: 'openai-user-message',
+            };
+        }
+
+        function seedOpener(suffix) {
+            const { chatId } = chatRoots(suffix);
+            const chat = document.getElementById(chatId);
+            chat.innerHTML = '';
+            if (suffix === 'ollama') {
+                addBotTextMessage(chat, OLLAMA_OPENER + 'Ask about medical protocols.');
+            } else {
+                const prov = chat.dataset.providerName || LLM_UI_DEFAULT.provider_name || 'the cloud model';
+                addBotTextMessage(chat, "Hi, I'm your clinical assistant, powered by " + prov + ". Ask about medical protocols.");
+            }
+        }
+
+        function initMedicalChats() {
+            seedOpener('ollama');
+            seedOpener('cloud');
+        }
+
+        async function runRag(provider, suffix) {
+            const { chatId, inputId } = chatRoots(suffix);
+            const q = document.getElementById(inputId).value.trim();
+            if (!q) {
+                alert('Enter a question first (see the query hints above).');
+                return;
+            }
+            const chat = document.getElementById(chatId);
+            addUserBubble(chat, q);
+            document.getElementById(inputId).value = '';
+            const thinking = document.createElement('div');
+            thinking.className = 'message bot-message thinking-message';
+            thinking.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking…';
+            chat.appendChild(thinking);
+            chat.scrollTop = chat.scrollHeight;
+            const j = await postJson('/api/medical-rag/query', { query: q, hardened: false, provider });
+            removeThinking(chat);
+            document.getElementById(`medical-rag-out-${suffix}`).textContent = JSON.stringify(j, null, 2);
+            if (j.error) {
+                addBotTextMessage(chat, 'Error: ' + String(j.error));
+            } else {
+                addBotTextMessage(chat, j.answer || '(empty reply)');
+            }
+            const { ok, msg } = evaluateRagSolve(j);
+            setVerifyResult(`medical-rag-verify-result-${suffix}`, ok, msg);
+        }
+
+        async function runRagMitigation(provider, querySuffix) {
+            const { inputId } = chatRoots(querySuffix);
+            const q = document.getElementById(inputId).value.trim();
+            if (!q) {
+                alert('Enter a question in Demonstration chat first.');
+                return;
+            }
+            const j = await postJson('/api/medical-rag/query', { query: q, hardened: true, provider });
+            document.getElementById(`medical-rag-out-mit-${querySuffix}`).textContent = JSON.stringify(j, null, 2);
+        }
+
+        async function resetRag(suffix) {
+            const j = await postJson('/api/medical-rag/reset', {});
+            document.getElementById(`medical-rag-out-${suffix}`).textContent = JSON.stringify(j, null, 2);
+            seedOpener(suffix);
+        }
+
+        async function uploadRagDoc(suffix) {
+            const input = document.getElementById(`medical-rag-file-${suffix}`);
+            const file = input?.files?.[0];
+            if (!file) {
+                alert('Choose a file first.');
+                return;
+            }
+            const form = new FormData();
+            form.append('file', file);
+            const r = await fetch('/api/medical-rag/upload-doc', { method: 'POST', body: form });
+            const t = await r.text();
+            let j;
+            try {
+                j = JSON.parse(t);
+            } catch {
+                j = { error: `Unexpected response (${r.status})`, raw: t };
+            }
+            document.getElementById(`medical-rag-out-${suffix}`).textContent = JSON.stringify(j, null, 2);
+            const { chatId } = chatRoots(suffix);
+            const chat = document.getElementById(chatId);
+            if (j.error) {
+                addBotTextMessage(chat, 'Upload error: ' + j.error);
+                alert(j.error || `Upload failed (${r.status})`);
+            } else {
+                addBotTextMessage(chat, 'Indexed document: ' + (j.filename || file.name) + '.');
+                input.value = '';
+            }
+        }
+
+        document.getElementById('medical-rag-reset-ollama').addEventListener('click', () => resetRag('ollama'));
+        document.getElementById('medical-rag-upload-ollama').addEventListener('click', () => uploadRagDoc('ollama'));
+        document.getElementById('send-message').addEventListener('click', () => runRag('ollama', 'ollama'));
+        document.getElementById('user-message').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') runRag('ollama', 'ollama');
+        });
+
+        document.getElementById('medical-rag-reset-cloud').addEventListener('click', () => resetRag('cloud'));
+        document.getElementById('medical-rag-upload-cloud').addEventListener('click', () => uploadRagDoc('cloud'));
+        document.getElementById('openai-send-message').addEventListener('click', () => runRag('openai', 'cloud'));
+        document.getElementById('openai-user-message').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') runRag('openai', 'cloud');
+        });
+
+        document.getElementById('medical-rag-mit-run-ollama').addEventListener('click', () => runRagMitigation('ollama', 'ollama'));
+        document.getElementById('medical-rag-mit-run-cloud').addEventListener('click', () => runRagMitigation('openai', 'cloud'));
+
+        document.getElementById('export-chat-ollama').addEventListener('click', () => {
+            exportMedicalChat('chat-messages', 'medical_rag_ollama_chat.txt');
+        });
+        document.getElementById('export-chat-openai').addEventListener('click', () => {
+            exportMedicalChat('openai-chat-messages', 'medical_rag_cloud_chat.txt');
+        });
+
+        document.getElementById('medical-rag-verify-ollama').addEventListener('click', () => {
+            const data = parseOutputJson('medical-rag-out-ollama');
+            const { ok, msg } = evaluateRagSolve(data);
+            setVerifyResult('medical-rag-verify-result-ollama', ok, msg);
+        });
+        document.getElementById('medical-rag-verify-cloud').addEventListener('click', () => {
+            const data = parseOutputJson('medical-rag-out-cloud');
+            const { ok, msg } = evaluateRagSolve(data);
+            setVerifyResult('medical-rag-verify-result-cloud', ok, msg);
+        });
+
+        initializeModelTabs();
+        initMedicalChats();
+        checkSessionApiKey();
+    </script>
+</body>
+</html>

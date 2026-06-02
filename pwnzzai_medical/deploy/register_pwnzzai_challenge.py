@@ -156,8 +156,8 @@ def register_pwnzzai_challenge() -> int:
     base = os.environ.get("CTFD_URL", "http://127.0.0.1:8000").rstrip("/")
     token = (os.environ.get("CTFD_API_TOKEN") or os.environ.get("CTFD_API_KEY") or "").strip()
     image = os.environ.get("PWNZZAI_IMAGE", "pwnzzai-workshop:latest").strip()
-    name = os.environ.get("CHALLENGE_NAME", "PwnzzAI Workshop").strip()
-    flag = os.environ.get("CHALLENGE_FLAG", "").strip()
+    name = os.environ.get("CHALLENGE_NAME", "MediCare AI Lab").strip()
+    flag = os.environ.get("CHALLENGE_FLAG", "flag{medicare_rag_poisoned}").strip()
 
     if not token:
         print("CTFD_API_TOKEN is required.", file=sys.stderr)
