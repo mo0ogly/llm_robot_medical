@@ -387,7 +387,7 @@ export var BIBLIOGRAPHY_PAPERS = [
   },
   {
     "id": "P039",
-    "title": "GRP-Obliteration: Unaligning LLMs With a Single Prompt",
+    "title": "GRP-Obliteration: Unaligning LLMs With a Single Unlabeled Prompt",
     "year": 2026,
     "category": "prompt_injection",
     "pdf": "P039_2602.06258.pdf",
@@ -437,13 +437,13 @@ export var BIBLIOGRAPHY_PAPERS = [
   },
   {
     "id": "P044",
-    "title": "AdvJudge-Zero: Fuzzing AI Judges",
+    "title": "AdvJudge-Zero: Binary Decision Flips in LLM-as-a-Judge via Adversarial Control Tokens",
     "year": 2026,
     "category": "prompt_injection",
     "pdf": "P044_2512.17375.pdf",
     "priority": "P0",
-    "authors": "Li et al. (Unit 42)",
-    "venue": "Unit 42 / arXiv:2512.17375"
+    "authors": "Tung-Ling Li, Yuhao Wu, Hongliang Liu",
+    "venue": "arXiv:2512.17375"
   },
   {
     "id": "P045",

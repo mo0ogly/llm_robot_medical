@@ -19,7 +19,7 @@
 - Mode `scoped` formalise dans `bibliography-maintainer` (table des modes + section detail).
 - Fiche #08 v3.1 corrigee : 3 corrections numeriques ("6 ordres" -> "environ 2.5" ; IC95 bilateral 11.6% ; Sep(M)/ASR explicitement projetes) + 3 corrections d'attribution (Wei -> Qi/P018 ; "100 exemples" -> Qi et al. 2023 ; Schulhoff 2023). Script annexe idempotent.
 - Corpus : P018 recoit arXiv:2406.05946 ; P023 auteurs -> Gong et al. ; P029 auteurs -> Lee et al. (Ro Woon Lee, JAMA Network Open, DOI 10.1001/jamanetworkopen.2025.49963).
-- 3 papiers verifies (dedup-clean) stages pour ingestion : P136 Wallace 2024 (arXiv:2404.13208), P137 Qi 2023 (arXiv:2310.03693), P138 Schulhoff 2023 (arXiv:2311.16119). Runbook + `verify_chromadb_chunks.py` crees.
+- 3 papiers verifies (dedup-clean) stages pour ingestion : P153 Wallace 2024 (arXiv:2404.13208), P154 Qi 2023 (arXiv:2310.03693), P155 Schulhoff 2023 (arXiv:2311.16119). Runbook + `verify_chromadb_chunks.py` crees.
 
 Artefacts : `research_notes/AEGIS-AUDIT-FICHE-08_anti-confabulation.md`, `research_notes/AEGIS-SCOPED-VERIF_fiche08-refs_2026-05-21.md`, `_staging/collector/papers_scoped_fiche08_2026-05-21.json`, `_staging/collector/add_3_papers_fiche08.sh`.
 
@@ -40,7 +40,7 @@ Artefacts : `research_notes/AEGIS-AUDIT-FICHE-08_anti-confabulation.md`, `resear
 - Vraie campagne SC-2 (N=30, 62 scenarios, 8 frameworks, Groq llama-3.3-70b-versatile, ~14880 trials) apres soumission OSF.
 
 ### P1 — Integration du jour
-- Finir P136-P138 en local : `bash research_archive/_staging/collector/add_3_papers_fiche08.sh` puis `/bibliography-maintainer analyze_only`, verif via `verify_chromadb_chunks.py`.
+- Finir P153-P155 en local : `bash research_archive/_staging/collector/add_3_papers_fiche08.sh` puis `/bibliography-maintainer analyze_only`, verif via `verify_chromadb_chunks.py`.
 - Analyser FC-20260409 + FC-20260410 (PENDING_ANALYSIS) via `/experimentalist`.
 
 ### Hygiene

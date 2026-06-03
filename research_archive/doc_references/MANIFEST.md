@@ -213,9 +213,11 @@ Net impact: 131 indexed -> 127 distinct. Coverage Summary adjusted: Defense 42->
 
 | Conjecture | Support | Indirect | Partial | No | Uncertain |
 |------------|---------|----------|---------|----|-----------|
-| C1 (Insuffisance δ⁰) | 39 | 17 | 12 | 37 | 1 |
-| C2 (Necessite δ³) | 29 | 15 | 20 | 37 | 1 |
-| C7 (Paradoxe raisonnement) | 9 | 5 | 2 | 2 | 0 |
+| C1 (Insuffisance δ⁰) | 57 | 32 | 22 | 32 | 1 |
+| C2 (Necessite δ³) | 31 | 35 | 59 | 17 | 2 |
+| C7 (Paradoxe raisonnement) | 9 | 5 | 2 | 2 | 0 [predates per-row tracking — not retallied] |
+
+> Recompute post-dedup 2026-06-03 (C1/C2 retallied from Table Centrale after merging P052/P071/P085/P108; values may shift +/-1 vs prior aggregate).
 
 ---
 
