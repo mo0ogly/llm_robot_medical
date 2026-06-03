@@ -117,13 +117,13 @@ ANALYST+MATHEUX      indexes+fs         MATHTEACHER+       chunks RAG
 
 ### D-001 : Triple Convergence (CRITIQUE)
 
-> P039 (δ⁰ effacable) + P044 (δ² bypass 99%) + P045 (δ¹ empoisonnable) = les 3 premieres couches de defense simultanement vulnerables. **δ³ est le seul survivant.**
+> P039 (δ⁰ effacable) + P044 (δ² flip >90% sur 22/24 cells) + P045 (δ¹ empoisonnable) = les 3 premieres couches de defense simultanement vulnerables. **δ³ est le seul survivant.**
 
-**Impact** : C'est l'argument empirique le plus fort pour la these AEGIS. AEGIS est le seul systeme avec 5 techniques δ³ en production. Aucun des 46 papers ne l'implemente.
+**Impact** : C'est l'argument empirique le plus fort pour la these AEGIS. AEGIS implemente concretement δ³ avec 5 techniques en production. Aucun des papiers que nous avons revus (revue non systematique) n'implemente un pipeline δ³ equivalent.
 
 ### D-002 : Gap δ³ Universel (10/10)
 
-Aucun paper du corpus n'implemente concretement δ³ (verification formelle de sortie). Le survey le plus complet de 2026 (P037) ne couvre que 3 couches. **L'avance d'AEGIS est >1 an.**
+Aucun des papiers que nous avons revus (revue non systematique) n'implemente concretement un pipeline δ³ de validation de sortie equivalent. Le survey le plus complet de 2026 (P037) ne couvre que 3 couches. AEGIS implemente concretement δ³ ; selon notre revue (non exhaustive), aucun pipeline δ³ deploye equivalent n'a ete identifie — sans revendication de primaute ni d'avance chiffree (HUMILITY GATE).
 
 ### C7 : Paradoxe Raisonnement/Securite (NOUVELLE)
 

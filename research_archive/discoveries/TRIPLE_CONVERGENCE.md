@@ -26,14 +26,14 @@ Trois papers 2026 independants demontrent que les trois premieres couches de def
 - **Venue** : arXiv:2505.06493 (2025, under review ICLR 2026)
 - **Resultat** : Le system prompt, suppose etre un espace de confiance (δ¹), peut etre empoisonne de maniere **persistante**. Toutes les sessions utilisateur sont affectees.
 - **Implication** : δ¹ n'est pas une defense fiable si le system prompt lui-meme est un vecteur d'attaque. Les defenses actuelles (black-box) sont inefficaces contre SPP.
-- **3 strategies** : Brute-force, adaptive in-context, adaptive CoT
+- **Strategies** : 3 methodes nommees dans le fulltext (§4.2) — brute-force, adaptive in-context, adaptive chain-of-thought (CoT) — organisees en 4 scenarios d'attaque. NB : le decompte "four practical attack strategies" de l'abstract est ambigu vs les 3 methodes nommees du corps ; on cite les 3 methodes verifiables.
 - **Formule cle** : SPP Persistence Rate (GLOSSAIRE F34/8.11)
 
-### Pilier 3 — Juges Bypassables a 99% (P044, AdvJudge-Zero)
+### Pilier 3 — Juges LLM flippables (>90% FPR sur 22/24 cells) (P044, AdvJudge-Zero)
 
-- **Auteurs** : Unit 42 (Palo Alto Networks)
+- **Auteurs** : Tung-Ling Li, Yuhao Wu, Hongliang Liu (affiliation Palo Alto/Unit 42 NON confirmee sur arXiv)
 - **Venue** : arXiv:2512.17375 (2026)
-- **Resultat** : Un fuzzer automatise (AdvJudge-Zero) bypass 99% des juges LLM (gardes, modeles de recompense, LLMs commerciaux) via des tokens de controle a faible perplexite
+- **Resultat** : Un fuzzer automatise (AdvJudge-Zero) fait basculer le verdict de juges LLM (gardes, reward models, LLMs commerciaux) a >90% FPR ensemble sur 22/24 cells (6 juges Qwen/Llama/Gemma) via des tokens de controle a faible perplexite ; transfert a un reward model 70B
 - **Implication** : Les mecanismes δ² bases sur des juges LLM sont fondamentalement vulnerables. Seuls les gardes **deterministes** (pattern-based) survivent. AEGIS RagSanitizer (pattern-based) est confirme resistant.
 - **Formule cle** : Logit Gap Flip (GLOSSAIRE F31/8.8)
 
@@ -44,7 +44,7 @@ Trois papers 2026 independants demontrent que les trois premieres couches de def
 
     δ⁰ [RLHF]      ████████ actif                 ░░░░░░░░ EFFACE (P039)
     δ¹ [SysPrompt]  ████████ actif                 ░░░░░░░░ EMPOISONNE (P045)
-    δ² [Juges/Gardes] ████████ actif               ░░░░░░░░ BYPASS 99% (P044)
+    δ² [Juges/Gardes] ████████ actif               ░░░░░░░░ FLIP >90% sur 22/24 (P044)
     δ³ [Formel]     ████████ actif                 ████████ SEUL SURVIVANT
 ```
 
@@ -53,8 +53,8 @@ Trois papers 2026 independants demontrent que les trois premieres couches de def
 ### 1. Argument le plus fort pour δ³
 La triple convergence est l'argument empirique le plus puissant pour la necessite de δ³. Avant 2026, on savait que chaque couche individuelle etait fragile. Maintenant on sait qu'elles sont **simultanement** vulnerables.
 
-### 2. AEGIS est en avance
-AEGIS dispose de 5 techniques δ³ en production. Aucun paper du corpus (46 articles) n'implemente δ³ concretement. L'avance est de **>1 an** sur la litterature.
+### 2. AEGIS implemente concretement δ³
+AEGIS dispose de 5 techniques δ³ en production. Parmi les systemes que nous avons revus (revue non systematique), aucun pipeline δ³ de validation de sortie deploye equivalent n'a ete identifie — sans revendication de primaute ni d'avance chiffree (HUMILITY GATE).
 
 ### 3. Orientation de δ³
 P044 montre que δ³ doit etre **deterministe** (regles, patterns, verification formelle), pas base sur un juge LLM. Les 5 techniques AEGIS (RagSanitizer pattern-based) correspondent a cette exigence.
@@ -69,13 +69,13 @@ Tester la resistance d'AEGIS dans le scenario "triple convergence" :
 ## Renforcements RUN-003
 
 ### Pilier 1 renforce — Preuve formelle (P052)
-P052 (Cambridge, 2026) fournit la preuve mathematique par decomposition en martingale que le gradient RLHF est exactement I_t = Cov[E[H|x<=t], score_function]. I_t decroit rapidement, prouvant formellement que l'alignement est structurellement superficiel. Ce n'est plus une observation empirique (P019) mais un theoreme.
+Young (arXiv:2603.04851, indexe P019≡P052 — MEME papier ; institution NON confirmee, PAS Cambridge) fournit la preuve mathematique par decomposition en martingale que le gradient RLHF est exactement I_t = Cov[E[H|x<=t], score_function]. I_t decroit rapidement, prouvant formellement que l'alignement est structurellement superficiel. NB : P019 et P052 sont le MEME papier (un seul theoreme formel, pas une observation empirique distincte de la preuve).
 
 ### Pilier 2 etendu — RAG empoisonnable (P054+P055)
 L'empoisonnement ne se limite plus au system prompt (P045) : P054 (PIDP-Attack) montre que la combinaison injection + empoisonnement de base vectorielle produit un gain super-additif de 4-16pp. P055 (RAGPoison) montre que ~275K vecteurs malveillants creent une surface d'attaque PERSISTANTE affectant toutes les requetes futures. δ¹ s'etend a "infrastructure RAG empoisonnable".
 
 ### Pilier 3 confirme — 100% evasion (P049)
-P049 (Hackett, LLMSec 2025) demontre 100% d'evasion des guardrails de production avec injection de caracteres + AML. Le transfert white-box-to-black-box (WIRT) permet d'optimiser hors-ligne puis d'attaquer en boite noire. Confirme et DEPASSE le 99% de P044.
+P049 (Hackett, LLMSec 2025) demontre 100% d'evasion des guardrails de production avec injection de caracteres + AML. Le transfert white-box-to-black-box (WIRT) permet d'optimiser hors-ligne puis d'attaquer en boite noire. Confirme et depasse le resultat de P044 (>90% FPR sur 22/24 cells).
 
 ### Reponse architecturale partielle — ASIDE (P057)
 P057 (Zverev et al.) propose ASIDE : rotation orthogonale des embeddings de donnees sans parametre supplementaire. Premier mecanisme qui POURRAIT resoudre la triple convergence au niveau architectural. Cependant : non deploye en production, non teste contre attaques adaptatives, et ne resout pas l'empoisonnement RAG (P054/P055).
@@ -117,15 +117,15 @@ P099 (Crescendo) et P100 (ActorBreaker) utilisent des prompts **entierement beni
 
 ### δ³ toujours seul survivant
 
-**0/15 papiers RUN-005 ne proposent de defense δ³.** Toutes les defenses proposees (AHD P102, safety reasoning data P092, circuit breaker P100) operent a δ⁰. L'argument pour δ³ dans la these est desormais soutenu par **73+ papiers** sans aucune implementation δ³ dans la litterature.
+**0/15 papiers RUN-005 ne proposent de defense δ³.** Toutes les defenses proposees (AHD P102, safety reasoning data P092, circuit breaker P100) operent a δ⁰. L'argument pour δ³ dans la these est desormais soutenu par un large corpus de papiers sans implementation δ³ equivalente identifiee dans les papiers que nous avons revus (revue non systematique, sans revendication d'exhaustivite).
 
 ## Conjectures Affectees
 
 | Conjecture | Impact | RUN-002 | RUN-003 | RUN-005 | TC-002 |
 |-----------|--------|---------|---------|---------|--------|
 | C1 (insuffisance δ⁰) | Confirmee formellement + structurellement | 10/10 | 10/10 | **10/10** | **10/10** (sature) |
-| C2 (necessite δ³) | 0/73+ papiers avec δ³. TC-002 : δ¹=33% sur 70B = defense RAG prioritaire | 9/10 | 10/10 | **10/10** | **10/10** (renforcee) |
-| C3 (alignement superficiel) | Preuve architecturale P102 | 9/10 | 10/10 | **10/10** | **10/10** (sature) |
+| C2 (necessite δ³) | Aucun des papiers revus (revue non systematique) n'implemente de pipeline δ³ equivalent. TC-002 : δ¹=33% sur 70B = defense RAG prioritaire | 9/10 | 10/10 | **10/10** | **10/10** (renforcee) |
+| C3 (alignement superficiel) | Preuve architecturale P102 | 9/10 | 10/10 | **10/10** | **9/10** (corrige doublon P019≡P052) |
 | C7 (paradoxe raisonnement) | 8 papiers convergents + preuve mecanistique | 7/10 | 8/10 | **9.5/10** | **9.5/10** |
 | D-001 (triple convergence) | Simultaneite confirmee, additivite REFUTEE | 10/10 | 10/10 | **10/10** | **8/10** (antagoniste) |
 
@@ -136,8 +136,8 @@ P099 (Crescendo) et P100 (ActorBreaker) utilisent des prompts **entierement beni
 - P035 (MPIB CHER) — fournit la metrique pour mesurer le dommage clinique
 - P042 (PromptArmor <1% FPR) — potentiellement resilient mais non teste contre triple convergence
 - P038 (InstruCoT >90%) — ameliore δ⁰ mais 10% de bypass = inacceptable en medical
-- **P050** (JMedEthicBench) — degradation multi-tour 9.5->5.5 en medical [NEW RUN-003]
-- **P052** (Gradient Analysis) — preuve formelle martingale de Pilier 1 [NEW RUN-003]
+- **P050≡P108** (JMedEthicBench, doublon arXiv:2601.01627) — degradation multi-tour 9.5->5.0, 27 modeles, scope japonais [NEW RUN-003]
+- **P052≡P019** (Young, Gradient Analysis) — preuve formelle martingale de Pilier 1 (un seul papier, doublon) [NEW RUN-003]
 - **P054+P055** (PIDP + RAGPoison) — extension de Pilier 2 au RAG [NEW RUN-003]
 - **P057** (ASIDE) — seule reponse architecturale a D-001 [NEW RUN-003]
 - **P060** (SoK, IEEE S&P 2026) — confirme qu'aucun guardrail seul ne domine [NEW RUN-003]
@@ -235,7 +235,7 @@ Avant cette verification, on citait "0/73+ papiers avec δ³". La verification 2
 6. LlamaFirewall P131 (Meta, 2025-05) — CodeShield static analysis + Agent Alignment
 7. RAGShield P066 (2026) — RAG output validation
 
-**D-001 reste VALIDE avec confiance 8/10**. Les frameworks identifies sont des implementations du PATTERN δ³, pas des solutions a la triple convergence. Aucun ne teste l'interaction antagoniste δ⁰/δ¹/δ² observee dans TC-002. La these AEGIS reste la SEULE validation empirique de la triple convergence et la PREMIERE implementation δ³ specialisee medicale chirurgicale.
+**D-001 reste VALIDE avec confiance 8/10**. Les frameworks identifies sont des implementations du PATTERN δ³, pas des solutions a la triple convergence. Aucun ne teste l'interaction antagoniste δ⁰/δ¹/δ² observee dans TC-002. La these AEGIS reste, parmi les travaux que nous avons revus (revue non systematique), la seule validation empirique de la triple convergence et une implementation δ³ specialisee medicale chirurgicale — sans revendication de primaute absolue (HUMILITY GATE).
 
 **Impact sur la claim "4eme implementation"** : refutee arithmetiquement. AEGIS est au minimum la 8eme implementation publique connue du pattern δ³. Reformulation recommandee : **"Premiere implementation δ³ SPECIALISEE medicale chirurgicale avec contraintes biomecaniques ancrees FDA 510k"** (la contribution originale se deplace du pattern vers sa specialisation domaine).
 
@@ -243,7 +243,7 @@ Avant cette verification, on citait "0/73+ papiers avec δ³". La verification 2
 
 **VALIDATED BY SCIENTIST RUN VERIFICATION_DELTA3_20260411** (2026-04-11)
 
-D-001 Triple Convergence reste a **8/10** stable. L'identification de 7+ frameworks δ³ generiques publics ne contredit PAS D-001 (qui affirme que δ⁰/δ¹/δ² sont simultanement vulnerables). Au contraire, cela **confirme** que tous les frameworks identifies considerent δ³ comme la **seule couche survivante** — c'est la position convergente publiquement formulee par la communaute academique (ETH Zurich LMQL PLDI 2023, Cambridge SoK δ³ P060, Meta AI LlamaFirewall abstract, Nature portfolio npj Digital Medicine Weissman 2025).
+D-001 Triple Convergence reste a **8/10** stable. L'identification de 7+ frameworks δ³ generiques publics ne contredit PAS D-001 (qui affirme que δ⁰/δ¹/δ² sont simultanement vulnerables). Au contraire, cela **confirme** que tous les frameworks identifies considerent δ³ comme la **seule couche survivante** — c'est la position convergente publiquement formulee par la communaute academique (ETH Zurich LMQL PLDI 2023, SoK δ³ P060 (Wang et al., IEEE S&P 2026), Meta AI LlamaFirewall abstract, Nature portfolio npj Digital Medicine Weissman 2025).
 
 **Implication pour la these** : D-001 reste le **fondement scientifique** de la contribution AEGIS, et G-063 (specialisation medicale δ³ FDA-ancree, cree lors de cette verification) est la **contribution originale AEGIS** qui ne contredit pas D-001 mais l'**applique** au domaine surgical avec contraintes biomecaniques.
 

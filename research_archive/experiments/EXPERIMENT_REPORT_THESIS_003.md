@@ -122,7 +122,7 @@ Le resultat Qwen montre que **aucun modele n'est universellement defendu**. Meme
 **Conclusion C2** : seul un systeme δ³ **orthogonal au LLM et a sa famille architecturale** peut garantir la securite. Un δ³ deterministe (chain_defenses.py) fonctionne independamment du modele cible — c'est la seule approche qui generalise.
 
 **Score C2 : 10/10 VALIDEE DEFINITIVEMENT par 3 arguments convergents** :
-1. Theorique (P019 gradient=0, P052 martingale)
+1. Theorique (Young arXiv:2603.04851 — P019≡P052, UN SEUL papier : gradient=0 + martingale)
 2. Mecanistique (D-024 Stage 6 absent de la defense litterature)
 3. **Experimental multi-famille** (THESIS-001/002/003 sur LLaMA et Qwen — aucune famille n'est universellement sure)
 

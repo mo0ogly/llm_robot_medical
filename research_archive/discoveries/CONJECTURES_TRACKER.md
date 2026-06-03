@@ -12,7 +12,7 @@
 |-----------|----------------|---------|---------|---------|---------|--------|----------|--------|
 | **C1** | δ⁰ (RLHF) est insuffisant | 9/10 | 10/10 | 10/10 | **10/10** | **10/10** | → | VALIDEE (sature) |
 | **C2** | δ³ est necessaire | 8/10 | 9/10 | 10/10 | **10/10** | **10/10** | → | VALIDEE (sature, renforcee TC-002 + P117-P121 : 6 stages RAG tous compromisables, Stage 6/D-024 sans prerequis) |
-| **C3** | Alignement est superficiel | 8/10 | 9/10 | 10/10 | **10/10** | **10/10** | → | VALIDEE (sature) |
+| **C3** | Alignement est superficiel | 8/10 | 9/10 | 10/10 | **10/10** | **9/10** | ↓ | SUPPORTEE (corrige doublon P019≡P052, 2026-06-03) |
 | **C4** | Derive semantique mesurable | 6/10 | 8/10 | 9/10 | **9/10** | **9/10** | → | FORTEMENT SUPPORTEE |
 | **C5** | Cosine similarity insuffisante | 7/10 | 7/10 | 8.5/10 | **8.5/10** | **8.5/10** | → | FORTEMENT SUPPORTEE |
 | **C6** | Domaine medical plus vulnerable | 7/10 | 8/10 | 9.5/10 | **10/10** | **10/10** | → | VALIDEE (RUN-006) |
@@ -31,14 +31,13 @@
 |-----|-------|---------------------|-------------|
 | RUN-001 | 9/10 | 27/34 papers supportent. Preuve formelle P019 (gradient nul). | P018, P019, P022, P029, P030 |
 | RUN-002 | 10/10 | P039 (effacement par 1 prompt) + P044 (supervision compromise) rendent C1 quasi-certaine. | +P036, P039, P044, P035 |
-| RUN-003 | **10/10** | Sature. P052 fournit la PREUVE FORMELLE par martingale (gradient = Cov(harm, score)). P050 montre degradation multi-tour 9.5->5.5 (p<0.001). P053 confirme via taxonomie limitations RLHF. | +P050, P052, P053 |
+| RUN-003 | **10/10** | Sature. Young (P019≡P052, MEME papier arXiv:2603.04851 — doublon) fournit la PREUVE FORMELLE par martingale (gradient = Cov(harm, score)). P050 montre degradation multi-tour 9.5->5.0 (p<0.001, 27 modeles, scope japonais). P053 confirme via taxonomie limitations RLHF. | +P050, P019≡P052, P053 |
 
 **Preuves les plus fortes** :
-- P019 (preuve mathematique, gradient = 0)
-- P052 (preuve formelle par martingale : I_t = Cov[E[H|x<=t], score_function])
+- Young (arXiv:2603.04851, indexe P019≡P052 — MEME papier, doublon a fusionner) : preuve formelle par martingale I_t = Cov[E[H|x<=t], score_function], gradient nul au-dela de l'horizon de nocivite
 - P039 (effacement complet par 1 prompt, 15 modeles)
 - P036 (97.14% ASR autonome par LRM)
-- P050 (degradation multi-tour 9.5->5.5, p<0.001, 22 modeles)
+- P050 (degradation multi-tour 9.5->5.0, p<0.001, 27 modeles, scope japonais)
 
 **Contre-arguments** : P017/P020/P021 montrent des ameliorations. P057 (ASIDE) montre que δ⁰ PEUT etre renforce architecturalement mais ne resout pas la limitation structurelle de P019/P052.
 
@@ -78,6 +77,7 @@
 | RUN-001 | 8/10 | Demonstration experimentale P018 + preuve formelle P019. | P018, P019 |
 | RUN-002 | 9/10 | P039 prouve que l'alignement est non seulement superficiel mais effacable. P036 montre que les LRM exploitent cette superficialite. | +P039, P036 |
 | RUN-003 | **10/10** | P052 = PREUVE MATHEMATIQUE DIRECTE par decomposition en martingale. I_t decroit au-dela des premiers tokens. P049 montre bypass 100% des guardrails. P057 ASIDE propose une reponse architecturale (rotation orthogonale). | +P052, P049, P057, P053 |
+| CORRECTION 2026-06-03 | **9/10** | Dedoublonnage P019≡P052 (MEME papier Young, arXiv:2603.04851). Le '10/10 par double preuve independante' sur-comptait un papier. Base reelle : 1 preuve formelle (Young) + 1 empirique (P018 Qi shallow alignment) + 1 mecanistique (P102 Huang tetes sparse). | P019≡P052, P018, P102 |
 
 ---
 
@@ -90,7 +90,7 @@
 | RUN-001 | 6/10 | Sep(M) defini theoriquement mais pas encore valide avec N >= 30. | P024, P012 |
 | RUN-002 | 8/10 | P035 (MPIB) fournit un benchmark avec N >= 30, validant la faisabilite. P041 (SAM) fournit une metrique complementaire. | +P035, P041 |
 | **AUDIT 2026-05-16** | — | **Audit retrospectif (COHERENCE_INTER_RUN.md)** : Δ = +2 sur C4 (6→8/10) entre RUN-001 et RUN-002 aurait formellement requis un gate SUPERVISED. Aucun briefing archive disponible (`_staging/briefings/RUN-001` et `RUN-002` absents). **Decision post-hoc** : maintenir 8/10 — l'evidence est suffisante (P035 NeurIPS 2024 large-scale benchmark MPIB + P041 SAM ICLR 2025). **Action correctrice** : ajouter dans research-director SKILL.md la regle "tout Δ >= 2 doit produire un BRIEFING archive meme pour les premiers RUN". | — |
-| RUN-003 | **9/10** | P057 ASIDE utilise directement Sep(M) comme metrique de validation, prouvant son utilite pratique. P050 degradation multi-tour 9.5->5.5 est mesurable par Sep(M). P054 derive RAG compound est une nouvelle surface de mesure. | +P057, P050, P054 |
+| RUN-003 | **9/10** | P057 ASIDE utilise directement Sep(M) comme metrique de validation, prouvant son utilite pratique. P050 degradation multi-tour 9.5->5.0 est mesurable par Sep(M). P054 derive RAG compound est une nouvelle surface de mesure. | +P057, P050, P054 |
 
 **Condition de validation** : Executer Sep(M) avec N >= 30 par condition sur le benchmark MPIB (P035). P057 ASIDE fournit un precedent de validation reussie.
 
@@ -118,16 +118,16 @@
 |-----|-------|---------------------|-------------|
 | RUN-001 | 7/10 | P029 (94.4% ASR medical) + P028 (hierarchie) + P030 (erosion). | P029, P028, P030, P027 |
 | RUN-002 | 8/10 | P035 (MPIB 9,697 instances, premier benchmark N >= 30) + P040 (amplification emotionnelle 6x). | +P035, P040 |
-| RUN-003 | **9/10** | P050 JMedEthicBench : VALIDATION STATISTIQUE DIRECTE (p<0.001, 22 modeles). Modeles medicaux PLUS vulnerables que generalistes. Degradation multi-tour 9.5->5.5. P051 premier detecteur clinique 4D. | +P050, P051 |
-| RUN-006 | **10/10** | 4 papiers convergents couvrant les 4 niveaux de preuve : empirique (P107, NeurIPS 2024, 14 modeles, p<0.001 Bonferroni), multi-tour (P108, 22 modeles, degradation 9.5->5.5, modeles medicaux delta=-1.10), mecaniste (P109, NRC Canada, la NOUVEAUTE du contenu cause la degradation — experience self-generated vs human-written), formel (P110, Princeton, preuve AIC + loi quartique Delta=Omega(gamma^2*t^4) — plus le contenu est different = plus gamma est grand = degradation acceleree). La chaine causale est COMPLETE : contenu medical nouveau (P109) → grand gamma (P110) → collapse quartique inevitable. | +P107, P108, P109, P110 |
+| RUN-003 | **9/10** | P050 JMedEthicBench : VALIDATION STATISTIQUE DIRECTE (p<0.001, 27 modeles). Modeles medicaux PLUS vulnerables que generalistes. Degradation multi-tour 9.5->5.0 (scope japonais). P051 premier detecteur clinique 4D. | +P050, P051 |
+| RUN-006 | **10/10** | 4 papiers convergents couvrant les 4 niveaux de preuve : empirique (P107, NeurIPS 2024, 14 modeles, p<0.001 Bonferroni), multi-tour (P108≡P050, 27 modeles, degradation 9.5->5.0, modeles medicaux plus vulnerables [delta=-1.10 A VERIFIER fulltext]), mecaniste (P109, NRC Canada, la NOUVEAUTE du contenu cause la degradation — experience self-generated vs human-written), formel (P110, Princeton, preuve AIC + loi quartique Delta=Omega(gamma^2*t^4) — plus le contenu est different = plus gamma est grand = degradation acceleree). La chaine causale est COMPLETE : contenu medical nouveau (P109) → grand gamma (P110) → collapse quartique inevitable. | +P107, P108, P109, P110 |
 
 **Preuves les plus fortes** :
-- P029 : 94.4% ASR, 91.7% sur drogues categorie X (JAMA)
+- P029 : 94.4% ASR (102/108 injections turn 4), 91.7% (33/36) sur drogues FDA Category X (JAMA, Lee et al. 2025)
 - P040 : manipulation emotionnelle amplifie de 6.2% a 37.5%
 - P035 : premier benchmark statistiquement valide (N >> 30)
-- P050 : modeles specialises medicaux PLUS vulnerables que generalistes (p<0.001), 50,000 conversations, cross-lingue
+- P050 : modeles specialises medicaux PLUS vulnerables que generalistes (p<0.001), 27 modeles, 50 000+ conversations, scope japonais (67 guidelines JMA)
 - **P107** : NeurIPS 2024, premier benchmark securite medicale, 14 modeles, LLM medicaux significativement plus nocifs (p<0.001, correction Bonferroni sur 45 comparaisons) (Han et al., 2024, Section 4.1, Figure 2)
-- **P108** : 22 modeles, 2345 conversations multi-tour, degradation 9.5->5.5 (p<0.001, Cohen's d=0.75). Qwen3-8B=5.60 vs II-Medical-8B=4.50 : le fine-tuning medical degrade la securite (Liu et al., 2025, Section 5.2, Table 2)
+- **P108≡P050** (MEME papier arXiv:2601.01627 — doublon) : 27 modeles, ~52 000 conversations (2 345 data points d'evaluation), degradation mediane 9.5->5.0 (p<0.001, Mann-Whitney U + Bonferroni). [Cohen d=0.75 / scores par-modele Qwen3-8B=5.60 vs II-Medical-8B=4.50 / delta=-1.10 NON trouves en fulltext — retires comme non sources] (Liu et al., 2026, arXiv:2601.01627)
 - **P109** : mecanisme causal — c'est la NOUVEAUTE du contenu qui cause la degradation, pas le processus de fine-tuning (Fraser et al., 2025, Section 4.4, Figure 4)
 - **P110** : PREUVE FORMELLE — AIC + loi quartique Delta=Omega(gamma^2*t^4). Plus le contenu differe des donnees d'entrainement (medical = grand gamma), plus la degradation est rapide (Springer et al., 2026, Corollary 6.3, Section 6.3)
 
@@ -136,7 +136,7 @@
 2. Ce contenu nouveau genere des gradients dont la courbure (second ordre) est elevee : grand gamma dans l'AIC (P110, Definition 5.1)
 3. Le grand gamma projette inevitablement la trajectoire dans le sous-espace sensible de l'alignement selon une loi quartique (P110, Corollary 6.3)
 4. En consequence, les modeles medical-tuned sont systematiquement MOINS surs que les modeles generiques (P107, Section 4.1 ; P108, Section 5.2)
-5. L'effet est observable empiriquement en single-turn (P107) ET en multi-tour (P108, degradation 9.5->5.5)
+5. L'effet est observable empiriquement en single-turn (P107) ET en multi-tour (P108≡P050, degradation 9.5->5.0)
 
 **Contre-arguments** : P028 (CFT) reduit les jailbreaks de 62.7%, mais ne traite pas la cause racine (le gamma de l'AIC). La mitigation par fine-tuning de securite (P107) est une correction de premier ordre qui ne peut prevenir le collapse de second ordre (P110, Section 6).
 
@@ -428,20 +428,20 @@ Legende : ↑ = monte, → = stable, ↓ = baisse
 | Conjecture | Score avant | Score apres | Variation | Justification cle |
 |-----------|-------------|-------------|-----------|-------------------|
 | **C1** | 10/10 | **10/10 RENFORCE** | Renforce | P052 Theoreme 10 preuve formelle + P018 preuve empirique shallow alignment tokens 1-3 |
-| **C2** | 10/10 | **10/10 RENFORCE** | Renforce | P024 Sep(M) compromis separation-utilite prouve + P044 juges LLM flippables 99.91% |
-| **C3** | 10/10 | **10/10 RENFORCE** | Renforce | P052 martingale (I_t decroit apres tokens initiaux) + P018 shallow alignment = double preuve independante |
+| **C2** | 10/10 | **10/10 RENFORCE** | Renforce | P024 Sep(M) compromis separation-utilite prouve + P044 juges LLM flippables (>90% FPR ensemble sur 22/24 cells, Table 1 ; agregats par-dataset 99.91%/98.64%/94.75% NON trouves en fulltext, retires) |
+| **C3** | 10/10 | **9/10** | -1 (correction doublon) | P019≡P052 = MEME papier (Young, arXiv:2603.04851) : PAS deux preuves formelles independantes. Base honnete : 1 formelle (Young) + 1 empirique (P018) + 1 mecanistique (P102) |
 | **C4** | 9/10 | **9/10** | Stable | Pas de nouvelle evidence directe dans ce lot |
 | **C5** | 8/10 | **8.5/10** | +0.5 | P024 montre limites cosinus (Sep(M) necessite frontiere apprise) + P044 montre limites juges embeddings (logit gap = classifieur lineaire superficiel) |
-| **C6** | 9/10 | **9.5/10** | +0.5 | P029 94.4% ASR medical (216 evaluations, JAMA) = evidence empirique forte, mais F58 MVP numerateur confirme, denominateur manque encore |
+| **C6** | 9/10 | **9.5/10** | +0.5 | P029 94.4% (102/108 injections au turn 4 ; total 216 = 108 inj + 108 controles, JAMA, Lee et al. 2025) = evidence empirique forte |
 | **C7** | 8/10 | **8/10** | Stable | P054 compound PIDP sur 8 LLMs mais pas specifique LRM |
 
 ### Preuves formelles nouvellement extraites
 
 | Preuve | Papier | Formule | Niveau |
 |--------|--------|---------|--------|
-| Theoreme 10 : gradient = 0 au-dela horizon de nocivite | P052 | F45 : I_t = Cov[E[H\|x<=t], score_function] | **Theoreme** |
+| Theoreme 10 : gradient = 0 au-dela horizon de nocivite | Young (P019≡P052) | F45 : I_t = Cov[E[H\|x<=t], score_function] | **Theoreme** |
 | Sep(M) compromis separation-utilite | P024 | F15/F16 | **Theoreme** |
-| KL equilibrium : D_KL^(t) proportionnel a I_t | P052 | F45 | **Corollaire** |
+| KL equilibrium : D_KL^(t) proportionnel a I_t | Young (P019≡P052) | F45 | **Corollaire** |
 | Logit Gap = classifieur lineaire superficiel | P044 | F33b | **Lemme** |
 
 ### Preuves empiriques nouvellement extraites
@@ -449,16 +449,16 @@ Legende : ↑ = monte, → = stable, ↓ = baisse
 | Resultat | Papier | Chiffre cle | Implication |
 |---------|--------|-------------|-------------|
 | 86.1% applications vulnerables | P001 | 31/36 apps | C1 evidence large |
-| ASR medical 94.4% | P029 | 216 evaluations JAMA | C6 evidence forte |
+| ASR medical 94.4% | P029 | 102/108 injections (total 216 = 108 inj + 108 ctrl) JAMA | C6 evidence forte |
 | PIDP compound ASR 98% | P054 | 8 LLMs, 3 datasets | D-013 compound attacks |
-| Judge flip 99.91% | P044 | Zero-shot | LLM-as-Judge invalide (ASR circulaire) |
+| Judge flip >90% sur 22/24 cells | P044 | Table 1 (agregats 99.91%/98.64%/94.75% NON trouves, retires) | LLM-as-Judge invalide (ASR circulaire) |
 | Shallow alignment tokens 1-3 | P018 | ICLR Outstanding | C3 evidence mecanistique |
 
 ### Actions ouvertes issues de ce lot
 
 | Action | Priorite | Responsable |
 |--------|----------|-------------|
-| Chercher replications P052 martingale (1 seul papier Cambridge) | HAUTE | /bibliography-maintainer |
+| Chercher replications martingale (1 seul papier : Young arXiv:2603.04851, institution non confirmee ; P019≡P052 doublon) | HAUTE | /bibliography-maintainer |
 | Chercher si P044 AdvJudge a ete replique sur safety judges | CRITIQUE | /bibliography-maintainer |
 | Chercher defenses contre compound PIDP (P054 n'en teste aucune) | HAUTE | /bibliography-maintainer |
 | Concevoir experience calibration F46 Recovery Penalty | CRITIQUE | /aegis-prompt-forge |
