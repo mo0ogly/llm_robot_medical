@@ -82,6 +82,13 @@ jobs:
         continue-on-error: true
         run: npm run build
 
+      - name: Create 404 for SPA routing
+        run: |
+          if [ -f frontend/dist/index.html ]; then
+            cp frontend/dist/index.html frontend/dist/404.html
+            echo "[spa] created 404.html for GitHub Pages routing fallback"
+          fi
+
       - name: Ensure frontend dist exists (wiki-only fallback)
         run: |
           mkdir -p frontend/dist
