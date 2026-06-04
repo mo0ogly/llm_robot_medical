@@ -142,7 +142,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
   // Render taxonomy tree view
   var renderTaxonomyTree = function() {
     if (!taxonomyTree || !taxonomyTree.classes) {
-      return <p className="text-neutral-500 text-xs animate-pulse">Loading taxonomy...</p>;
+      return <p className="text-neutral-400 text-xs animate-pulse">Loading taxonomy...</p>;
     }
     return (
       <div className="space-y-2">
@@ -161,7 +161,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                   <span className={'w-2 h-2 rounded-full ' + theme.dot} />
                   {t('redteam.taxonomy.class.' + cls.id, { defaultValue: cls.label })}
                 </span>
-                <span className="text-neutral-500 text-[10px] font-mono">
+                <span className="text-neutral-400 text-[10px] font-mono">
                   {(cls.template_count || 0) + ' templates'}
                 </span>
               </button>
@@ -180,7 +180,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                         >
                           {catExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
                           <span className="font-medium">{cat.label}</span>
-                          <span className="text-neutral-600 ml-1">({cat.template_count || 0})</span>
+                          <span className="text-neutral-400 ml-1">({cat.template_count || 0})</span>
                         </button>
                         {catExpanded && (
                           <div className="pl-4 space-y-0.5">
@@ -195,7 +195,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                                   >
                                     {subExpanded ? <ChevronDown size={10} /> : <ChevronRight size={10} />}
                                     <span>{sub.label}</span>
-                                    <span className="text-neutral-600 ml-1">({sub.template_count || 0})</span>
+                                    <span className="text-neutral-400 ml-1">({sub.template_count || 0})</span>
                                   </button>
                                   {subExpanded && (
                                     <div className="pl-4">
@@ -204,7 +204,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                                         return (
                                           <div key={tech.id} className="flex items-center gap-2 px-2 py-0.5 group">
                                             <span className={'w-1.5 h-1.5 rounded-full flex-shrink-0 ' + (hasTemplates ? 'bg-emerald-500' : 'bg-neutral-700')} />
-                                            <span className={'text-[10px] font-mono flex-1 ' + (hasTemplates ? 'text-neutral-300' : 'text-neutral-600')}>
+                                            <span className={'text-[10px] font-mono flex-1 ' + (hasTemplates ? 'text-neutral-300' : 'text-neutral-400')}>
                                               {tech.label}
                                             </span>
                                             {!hasTemplates && (
@@ -232,7 +232,7 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
                               return (
                                 <div key={tech.id} className="flex items-center gap-2 px-2 py-0.5 group">
                                   <span className={'w-1.5 h-1.5 rounded-full flex-shrink-0 ' + (hasTemplates ? 'bg-emerald-500' : 'bg-neutral-700')} />
-                                  <span className={'text-[10px] font-mono flex-1 ' + (hasTemplates ? 'text-neutral-300' : 'text-neutral-600')}>
+                                  <span className={'text-[10px] font-mono flex-1 ' + (hasTemplates ? 'text-neutral-300' : 'text-neutral-400')}>
                                     {tech.label}
                                   </span>
                                   {!hasTemplates && (
@@ -270,13 +270,13 @@ export default function CatalogTab({ onSwitchToPlayground, onLaunchCampaign }) {
       <div className="flex gap-1 mb-2">
         <button
           onClick={function() { setViewMode('legacy'); }}
-          className={'flex items-center gap-1 px-3 py-1 text-[10px] font-mono rounded transition-colors ' + (viewMode === 'legacy' ? 'bg-neutral-700 text-neutral-200' : 'text-neutral-500 hover:text-neutral-300')}
+          className={'flex items-center gap-1 px-3 py-1 text-[10px] font-mono rounded transition-colors ' + (viewMode === 'legacy' ? 'bg-neutral-700 text-neutral-200' : 'text-neutral-400 hover:text-neutral-300')}
         >
           <List size={12} /> {t('redteam.taxonomy.view.legacy')}
         </button>
         <button
           onClick={function() { setViewMode('taxonomy'); }}
-          className={'flex items-center gap-1 px-3 py-1 text-[10px] font-mono rounded transition-colors ' + (viewMode === 'taxonomy' ? 'bg-neutral-700 text-neutral-200' : 'text-neutral-500 hover:text-neutral-300')}
+          className={'flex items-center gap-1 px-3 py-1 text-[10px] font-mono rounded transition-colors ' + (viewMode === 'taxonomy' ? 'bg-neutral-700 text-neutral-200' : 'text-neutral-400 hover:text-neutral-300')}
         >
           <GitBranch size={12} /> {t('redteam.taxonomy.view.tree')}
         </button>

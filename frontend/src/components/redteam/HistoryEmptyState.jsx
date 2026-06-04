@@ -10,10 +10,10 @@ export default function HistoryEmptyState({ filtered }) {
     return (
       <div className="flex flex-col items-center justify-center py-20 px-4 text-center border border-dashed border-neutral-800 rounded-xl bg-neutral-900/20">
         <div className="w-16 h-16 rounded-full bg-neutral-800/50 flex items-center justify-center mb-6 border border-neutral-700">
-          <SearchX size={32} className="text-neutral-500" />
+          <SearchX size={32} className="text-neutral-400" />
         </div>
         <h3 className="text-xl font-bold text-neutral-200 mb-2">{t('redteam.catalog.no_results')}</h3>
-        <p className="text-neutral-500 max-w-sm text-sm leading-relaxed">
+        <p className="text-neutral-400 max-w-sm text-sm leading-relaxed">
           {t('redteam.catalog.no_results_desc', { defaultValue: 'Try adjusting your filters or search query to find what you are looking for.' })}
         </p>
       </div>
@@ -49,7 +49,7 @@ export default function HistoryEmptyState({ filtered }) {
             </div>
             <div className="flex items-center justify-between w-full">
               <span className="font-bold text-neutral-200 group-hover:text-white transition-colors">{t('redteam.history.empty.btnCampaign')}</span>
-              <ArrowRight size={16} className="text-neutral-600 group-hover:text-red-400 transform translate-x-0 group-hover:translate-x-1 transition-all" />
+              <ArrowRight size={16} className="text-neutral-400 group-hover:text-red-400 transform translate-x-0 group-hover:translate-x-1 transition-all" />
             </div>
           </Link>
 
@@ -62,7 +62,7 @@ export default function HistoryEmptyState({ filtered }) {
             </div>
             <div className="flex items-center justify-between w-full">
               <span className="font-bold text-neutral-200 group-hover:text-white transition-colors">{t('redteam.history.empty.btnScenario')}</span>
-              <ArrowRight size={16} className="text-neutral-600 group-hover:text-cyan-400 transform translate-x-0 group-hover:translate-x-1 transition-all" />
+              <ArrowRight size={16} className="text-neutral-400 group-hover:text-cyan-400 transform translate-x-0 group-hover:translate-x-1 transition-all" />
             </div>
           </Link>
         </div>

@@ -71,13 +71,13 @@ export default function ScenarioHelpModal({ templateName, onClose }) {
                   {help.severity}
                 </span>
                 {help.mitre && (
-                  <span className="text-[10px] font-mono text-neutral-600">{help.mitre}</span>
+                  <span className="text-[10px] font-mono text-neutral-400">{help.mitre}</span>
                 )}
               </div>
             </div>
           </div>
           <button onClick={onClose} className="p-1.5 hover:bg-neutral-800 rounded-lg transition-colors">
-            <X size={18} className="text-neutral-500" />
+            <X size={18} className="text-neutral-400" />
           </button>
         </div>
 
@@ -86,7 +86,7 @@ export default function ScenarioHelpModal({ templateName, onClose }) {
 
           {/* Description */}
           <section>
-            <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
               <Lightbulb size={12} /> {t('redteam.help.section.description')}
             </h3>
             <p className="text-neutral-300 leading-relaxed">{help.description}</p>
@@ -141,7 +141,7 @@ export default function ScenarioHelpModal({ templateName, onClose }) {
                 <Activity size={12} /> {t('redteam.help.section.drift')}
               </h3>
               <pre className="text-neutral-400 text-xs leading-relaxed whitespace-pre-line">{help.semanticDrift}</pre>
-              <div className="mt-3 pt-3 border-t border-purple-500/10 text-[10px] text-neutral-600">
+              <div className="mt-3 pt-3 border-t border-purple-500/10 text-[10px] text-neutral-400">
                 <strong className="text-purple-400">Why Cosine over Levenshtein?</strong>{' '}
                 Levenshtein measures character edits (syntactic), missing that
                 "Kill the patient" and "Cause cardiac arrest" are semantically identical.
@@ -154,7 +154,7 @@ export default function ScenarioHelpModal({ templateName, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-neutral-800 bg-neutral-900/50 flex justify-between items-center text-[10px] font-mono text-neutral-600">
+        <div className="px-5 py-3 border-t border-neutral-800 bg-neutral-900/50 flex justify-between items-center text-[10px] font-mono text-neutral-400">
           <span>{t('redteam.help.footer.label')}</span>
           <span>{t('redteam.help.footer.close')}</span>
         </div>

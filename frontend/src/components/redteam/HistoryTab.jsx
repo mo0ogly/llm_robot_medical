@@ -229,7 +229,7 @@ const HistoryTab = memo(function HistoryTab() {
                 className={`px-4 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
                   activeFilter === tab 
                     ? 'bg-neutral-800 text-white shadow-lg' 
-                    : 'text-neutral-500 hover:text-neutral-300'
+                    : 'text-neutral-400 hover:text-neutral-300'
                 }`}
               >
                 {t(`redteam.history.filter.${tab}`)}
@@ -238,7 +238,7 @@ const HistoryTab = memo(function HistoryTab() {
           </div>
 
           <div className="relative flex-1 min-w-[240px]">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
             <input
               type="text"
               value={searchQuery}
@@ -251,15 +251,15 @@ const HistoryTab = memo(function HistoryTab() {
 
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-4">
-            <span className="text-[10px] text-neutral-500 font-mono flex items-center gap-1.5 uppercase tracking-wider">
+            <span className="text-[10px] text-neutral-400 font-mono flex items-center gap-1.5 uppercase tracking-wider">
                <SortDesc size={12} /> {t('redteam.history.sort.newest')}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={exportCSV} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title="Export CSV">
+            <button onClick={exportCSV} className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title="Export CSV">
               <Download size={16} />
             </button>
-            <button onClick={clearHistory} className="p-2 text-neutral-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all" title="Clear All">
+            <button onClick={clearHistory} className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all" title="Clear All">
               <Trash2 size={16} />
             </button>
           </div>
@@ -274,7 +274,7 @@ const HistoryTab = memo(function HistoryTab() {
             <div key={mk} className="space-y-3">
               <button
                 onClick={() => toggleGroup(mk)}
-                className="flex items-center gap-2 text-xs font-bold text-neutral-500 hover:text-neutral-300 transition-colors uppercase tracking-widest pl-2"
+                className="flex items-center gap-2 text-xs font-bold text-neutral-400 hover:text-neutral-300 transition-colors uppercase tracking-widest pl-2"
               >
                 <Calendar size={14} />
                 {formatMonthLabel(mk, i18n.language)}

@@ -566,16 +566,16 @@ const CampaignTab = memo(function CampaignTab() {
       {execLog.length > 0 && (
         <div className="bg-black border border-neutral-800 rounded overflow-hidden">
           <div className="flex items-center justify-between px-3 py-1.5 bg-neutral-950 border-b border-neutral-800">
-            <span className="text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-wider">Execution Log</span>
+            <span className="text-[9px] font-mono font-bold text-neutral-400 uppercase tracking-wider">Execution Log</span>
             <button
               onClick={function() { setExecLog([]); }}
-              className="text-[8px] font-mono text-neutral-600 hover:text-neutral-400 transition-colors"
+              className="text-[8px] font-mono text-neutral-400 hover:text-neutral-400 transition-colors"
             >CLEAR</button>
           </div>
           <div className="p-2 max-h-48 overflow-y-auto font-mono text-[10px] space-y-0.5" ref={logEndRef}>
             {execLog.map(function(log, i) {
               var colors = {
-                info: 'text-neutral-500',
+                info: 'text-neutral-400',
                 attack: 'text-yellow-400',
                 svc: 'text-cyan-400',
                 breach: 'text-red-400 font-bold',
@@ -599,7 +599,7 @@ const CampaignTab = memo(function CampaignTab() {
                 error: 'ERR',
               };
               return (
-                <div key={i} className={'flex gap-2 ' + (colors[log.level] || 'text-neutral-500')}>
+                <div key={i} className={'flex gap-2 ' + (colors[log.level] || 'text-neutral-400')}>
                   <span className="text-neutral-700 shrink-0">{log.ts}</span>
                   <span className="shrink-0 w-7">[{prefixes[log.level] || 'LOG'}]</span>
                   <span className="break-all">{log.msg}</span>

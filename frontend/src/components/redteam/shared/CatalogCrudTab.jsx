@@ -187,7 +187,7 @@ export default function CatalogCrudTab({ onInsert, t }) {
       )}
 
       <div className="flex justify-end">
-        <button onClick={load} className="text-neutral-600 hover:text-neutral-400 transition-colors p-1" title={t('redteam.attack.crud.reload')}>
+        <button onClick={load} className="text-neutral-400 hover:text-neutral-400 transition-colors p-1" title={t('redteam.attack.crud.reload')}>
           <RotateCcw size={12} />
         </button>
       </div>
@@ -214,7 +214,7 @@ export default function CatalogCrudTab({ onInsert, t }) {
                 <button
                   onClick={function() { isNewMode ? cancelEdit() : startNew(cat); }}
                   className={'text-[9px] font-bold flex items-center gap-0.5 px-1.5 py-0.5 rounded transition-colors ' +
-                    (isNewMode ? 'text-neutral-500 hover:text-neutral-300' : colorCls.split(' ')[0] + ' hover:bg-white/10')}
+                    (isNewMode ? 'text-neutral-400 hover:text-neutral-300' : colorCls.split(' ')[0] + ' hover:bg-white/10')}
                 >
                   {isNewMode ? <X size={9} /> : <Plus size={9} />}
                   {isNewMode ? t('redteam.attack.crud.cancel') : t('redteam.attack.crud.new')}
@@ -228,14 +228,14 @@ export default function CatalogCrudTab({ onInsert, t }) {
                   value={editName}
                   onChange={function(e) { setEditName(e.target.value); }}
                   placeholder={t('redteam.attack.crud.name_placeholder')}
-                  className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-[10px] font-mono text-white placeholder-neutral-700 outline-none focus:border-red-500"
+                  className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-[10px] font-mono text-white placeholder-neutral-400 outline-none focus:border-red-500"
                 />
                 <textarea
                   value={editBody}
                   onChange={function(e) { setEditBody(e.target.value); }}
                   placeholder={t('redteam.attack.crud.body_placeholder')}
                   rows={4}
-                  className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-[10px] font-mono text-neutral-300 placeholder-neutral-700 outline-none focus:border-red-500 resize-none"
+                  className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-[10px] font-mono text-neutral-300 placeholder-neutral-400 outline-none focus:border-red-500 resize-none"
                 />
                 <div className="flex gap-1.5">
                   <button
@@ -308,22 +308,22 @@ export default function CatalogCrudTab({ onInsert, t }) {
                             >{t('redteam.attack.btn.insert')}</button>
                             <button
                               onClick={function() { startEdit(cat, localIdx, tpl); }}
-                              className="p-0.5 text-neutral-600 hover:text-yellow-400 transition-colors"
+                              className="p-0.5 text-neutral-400 hover:text-yellow-400 transition-colors"
                               title={t('redteam.attack.crud.edit')}
                             ><Pencil size={10} /></button>
                             <button
                               onClick={function() { openModal(cat, localIdx, tpl); }}
-                              className="p-0.5 text-neutral-600 hover:text-cyan-400 transition-colors"
+                              className="p-0.5 text-neutral-400 hover:text-cyan-400 transition-colors"
                               title={t('redteam.attack.modal.fullscreen')}
                             ><Maximize2 size={10} /></button>
                             <button
                               onClick={function() { deleteTpl(cat, localIdx); }}
-                              className="p-0.5 text-neutral-600 hover:text-red-500 transition-colors"
+                              className="p-0.5 text-neutral-400 hover:text-red-500 transition-colors"
                               title={t('redteam.attack.crud.delete')}
                             ><Trash2 size={10} /></button>
                           </div>
                         </div>
-                        <pre className="text-[9px] text-neutral-600 font-mono whitespace-pre-wrap break-all leading-tight line-clamp-2">
+                        <pre className="text-[9px] text-neutral-400 font-mono whitespace-pre-wrap break-all leading-tight line-clamp-2">
                           {tplBody.substring(0, 100) + (tplBody.length > 100 ? '\u2026' : '')}
                         </pre>
                       </div>

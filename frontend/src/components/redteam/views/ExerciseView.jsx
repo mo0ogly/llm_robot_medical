@@ -107,11 +107,11 @@ export default function ExerciseView() {
            <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.exercise.desc')}</p>
         </div>
         <div className="flex gap-4 items-center">
-           <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.exercise.title')}>
+           <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.exercise.title')}>
              <HelpCircle size={18} />
            </button>
            <div className="flex items-center gap-2 bg-neutral-900 border border-neutral-800 rounded px-3 py-1">
-              <span className="text-[10px] text-neutral-500 uppercase font-bold">Aegis Shield</span>
+              <span className="text-[10px] text-neutral-400 uppercase font-bold">Aegis Shield</span>
               <button 
                 onClick={() => setAegisShield(!aegisShield)}
                 className={'w-10 h-5 rounded-full transition-colors relative ' + (aegisShield ? 'bg-green-600' : 'bg-neutral-800')}
@@ -122,7 +122,7 @@ export default function ExerciseView() {
            <button 
              onClick={startExercise}
              disabled={running}
-             className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded text-sm font-bold transition-all flex items-center gap-2 disabled:bg-neutral-800 disabled:text-neutral-600"
+             className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded text-sm font-bold transition-all flex items-center gap-2 disabled:bg-neutral-800 disabled:text-neutral-400"
            >
              {running ? <RotateCcw className="animate-spin" size={16} /> : <Play size={16} />} 
              {running ? 'ENGAGING...' : 'START EXERCISE'}
@@ -170,7 +170,7 @@ export default function ExerciseView() {
                          </div>
                          {msg.payload && (
                            <div className="mt-2 p-2 bg-black/40 rounded border border-white/5 text-[11px] text-green-500 font-mono">
-                              <span className="text-neutral-600 block mb-1 font-bold">Payload:</span>
+                              <span className="text-neutral-400 block mb-1 font-bold">Payload:</span>
                               {msg.payload}
                            </div>
                          )}
@@ -183,17 +183,17 @@ export default function ExerciseView() {
            {/* Objective Input */}
            <div className="h-20 bg-neutral-900/50 border border-neutral-800 rounded-lg p-3 flex gap-4">
               <div className="flex-1">
-                 <p className="text-[9px] text-neutral-500 uppercase font-bold mb-1 ml-1">Current Objective</p>
+                 <p className="text-[9px] text-neutral-400 uppercase font-bold mb-1 ml-1">Current Objective</p>
                  <input 
                    value={objective}
                    onChange={(e) => setObjective(e.target.value)}
                    disabled={running}
-                   className="w-full bg-transparent border-none text-neutral-300 text-sm focus:ring-0 placeholder-neutral-700 italic"
+                   className="w-full bg-transparent border-none text-neutral-300 text-sm focus:ring-0 placeholder-neutral-400 italic"
                    placeholder="Enter attack mission..."
                  />
               </div>
               <div className="flex items-center">
-                 <div className={'p-2 rounded bg-neutral-950 border border-neutral-800 ' + (aegisShield ? 'text-green-500 border-green-900/50' : 'text-neutral-600')}>
+                 <div className={'p-2 rounded bg-neutral-950 border border-neutral-800 ' + (aegisShield ? 'text-green-500 border-green-900/50' : 'text-neutral-400')}>
                     <Shield size={20} />
                  </div>
               </div>
@@ -203,7 +203,7 @@ export default function ExerciseView() {
         {/* Sidebar: Metrics */}
         <div className="col-span-4 flex flex-col gap-6">
            <div className="bg-neutral-950/80 border border-neutral-800 rounded-lg p-5 flex flex-col gap-8 shadow-inner">
-              <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-widest flex items-center gap-2">
+              <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest flex items-center gap-2">
                 <BarChart3 size={14} /> Academic Metrics
               </h3>
 
@@ -219,7 +219,7 @@ export default function ExerciseView() {
                       style={{ width: Math.min((metrics.entropy / 8) * 100, 100) + '%' }}
                     />
                  </div>
-                 <p className="text-[9px] text-neutral-600 italic leading-tight">Measures payload obfuscation density & adversarial complexity.</p>
+                 <p className="text-[9px] text-neutral-400 italic leading-tight">Measures payload obfuscation density & adversarial complexity.</p>
               </div>
 
               {/* Semantic Drift Gauge */}
@@ -234,10 +234,10 @@ export default function ExerciseView() {
                       style={{ width: Math.min((metrics.drift / 200) * 100, 100) + '%' }}
                     />
                  </div>
-                 <p className="text-[9px] text-neutral-600 italic leading-tight">Measures structural divergence from harmless baseline vectors.</p>
+                 <p className="text-[9px] text-neutral-400 italic leading-tight">Measures structural divergence from harmless baseline vectors.</p>
               </div>
 
-              <div className="mt-4 p-4 rounded bg-neutral-900/50 border border-neutral-800 border-dashed space-y-3 text-[10px] font-mono text-neutral-500">
+              <div className="mt-4 p-4 rounded bg-neutral-900/50 border border-neutral-800 border-dashed space-y-3 text-[10px] font-mono text-neutral-400">
                  <div className="flex items-center gap-2">
                     <Fingerprint size={14} className="text-neutral-700" />
                     <span>Conjecture 1: Behavioral Bypass</span>

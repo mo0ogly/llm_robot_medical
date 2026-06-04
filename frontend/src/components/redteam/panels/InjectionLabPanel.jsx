@@ -37,7 +37,7 @@ export default function InjectionLabPanel({
                   key={m}
                   onClick={function() { setExecMode(m); }}
                   className={'px-2.5 py-1.5 rounded text-[10px] font-mono font-bold border transition-colors ' +
-                    (isActive ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-400' : 'border-neutral-800 text-neutral-600 hover:border-neutral-600')}
+                    (isActive ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-400' : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
                 >
                   {labels[m]}
                 </button>
@@ -46,7 +46,7 @@ export default function InjectionLabPanel({
 
             {(execMode === 'multi' || execMode === 'sep') && (
               <div className="flex items-center gap-1.5 ml-2">
-                <span className="text-[9px] text-neutral-600 font-mono">N=</span>
+                <span className="text-[9px] text-neutral-400 font-mono">N=</span>
                 <input
                   type="number"
                   value={nTrials}
@@ -95,7 +95,7 @@ export default function InjectionLabPanel({
 
           {/* Attack type selector */}
           <div className="flex items-center gap-2">
-            <span className="text-[9px] text-neutral-600 font-mono">ATTACK_TYPE:</span>
+            <span className="text-[9px] text-neutral-400 font-mono">ATTACK_TYPE:</span>
             {CATEGORIES.map(function(c) {
               var isActive = attackType === c;
               return (
@@ -103,7 +103,7 @@ export default function InjectionLabPanel({
                   key={c}
                   onClick={function() { setAttackType(c); }}
                   className={'px-2 py-0.5 rounded text-[9px] font-mono font-bold border transition-colors ' +
-                    (isActive ? 'border-red-500/50 bg-red-500/10 text-red-400' : 'border-neutral-800 text-neutral-600 hover:border-neutral-600')}
+                    (isActive ? 'border-red-500/50 bg-red-500/10 text-red-400' : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
                 >
                   {c.replace('_', ' ').toUpperCase()}
                 </button>
@@ -122,7 +122,7 @@ export default function InjectionLabPanel({
           {/* Provider / Model selector */}
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-[9px] text-neutral-600 font-mono">{t('redteam.studio.v2.provider')}:</span>
+              <span className="text-[9px] text-neutral-400 font-mono">{t('redteam.studio.v2.provider')}:</span>
               {(availableProviders || []).map(function(p) {
                 var isActive = provider === p.id;
                 var isDisabled = p.status === 'no_api_key';
@@ -142,7 +142,7 @@ export default function InjectionLabPanel({
                           ? 'border-neutral-800 text-neutral-700 cursor-not-allowed opacity-50'
                           : isActive
                             ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400'
-                            : 'border-neutral-800 text-neutral-500 hover:border-neutral-600')}
+                            : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
                     >
                       {p.name || p.id}
                       <span className={'inline-block w-1.5 h-1.5 rounded-full ' +
@@ -164,7 +164,7 @@ export default function InjectionLabPanel({
               if (models.length === 0) return null;
               return (
                 <div className="flex items-center gap-2">
-                  <span className="text-[9px] text-neutral-600 font-mono">{t('redteam.studio.v2.provider.model')}:</span>
+                  <span className="text-[9px] text-neutral-400 font-mono">{t('redteam.studio.v2.provider.model')}:</span>
                   {models.map(function(m) {
                     var isActive = providerModel === m;
                     return (
@@ -174,7 +174,7 @@ export default function InjectionLabPanel({
                         className={'px-2 py-0.5 rounded text-[9px] font-mono border transition-colors ' +
                           (isActive
                             ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400'
-                            : 'border-neutral-800 text-neutral-600 hover:border-neutral-600')}
+                            : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
                       >
                         {m}
                       </button>
@@ -192,7 +192,7 @@ export default function InjectionLabPanel({
             onClick={runExecution}
             disabled={isRunning || !resolvePayload().trim()}
             className={'w-full px-4 py-2.5 rounded font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all ' +
-              (isRunning ? 'bg-neutral-800 text-neutral-500'
+              (isRunning ? 'bg-neutral-800 text-neutral-400'
                 : 'bg-red-500/90 text-white hover:bg-red-500 shadow-lg shadow-red-500/20')}
           >
             {isRunning ? (
@@ -212,16 +212,16 @@ export default function InjectionLabPanel({
           {execLog.length > 0 && (
             <div className="bg-black border border-neutral-800 rounded overflow-hidden">
               <div className="flex items-center justify-between px-3 py-1.5 bg-neutral-950 border-b border-neutral-800">
-                <span className="text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-wider">Execution Log</span>
+                <span className="text-[9px] font-mono font-bold text-neutral-400 uppercase tracking-wider">Execution Log</span>
                 <button
                   onClick={function() { setExecLog([]); }}
-                  className="text-[8px] font-mono text-neutral-600 hover:text-neutral-400 transition-colors"
+                  className="text-[8px] font-mono text-neutral-400 hover:text-neutral-400 transition-colors"
                 >CLEAR</button>
               </div>
               <div className="p-2 max-h-48 overflow-y-auto font-mono text-[10px] space-y-0.5" id="exec-log-scroll">
                 {execLog.map(function(log, i) {
                   var colors = {
-                    info: 'text-neutral-500',
+                    info: 'text-neutral-400',
                     attack: 'text-yellow-400',
                     svc: 'text-cyan-400',
                     breach: 'text-red-400 font-bold',
@@ -245,7 +245,7 @@ export default function InjectionLabPanel({
                     error: 'ERR',
                   };
                   return (
-                    <div key={i} className={'flex gap-2 ' + (colors[log.level] || 'text-neutral-500')}>
+                    <div key={i} className={'flex gap-2 ' + (colors[log.level] || 'text-neutral-400')}>
                       <span className="text-neutral-700 shrink-0">{log.ts}</span>
                       <span className="shrink-0 w-7">[{prefixes[log.level] || 'LOG'}]</span>
                       <span className="break-all">{log.msg}</span>

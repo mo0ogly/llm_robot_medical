@@ -14,7 +14,7 @@ export default function TimelineView() {
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-neutral-100">{t('redteam.view.timeline.title')}</h1>
         </div>
-        <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.timeline.title')}>
+        <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.timeline.title')}>
           <HelpCircle size={18} />
         </button>
       </div>

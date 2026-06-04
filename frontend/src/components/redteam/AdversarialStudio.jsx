@@ -130,7 +130,7 @@ function StudioHelpModal({ onClose }) {
             <HelpCircle size={16} className="text-red-500" />
             <span className="font-bold text-sm text-white">Adversarial Studio v2.1 — Field Reference</span>
           </div>
-          <button onClick={onClose} className="text-neutral-500 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-neutral-400 hover:text-white transition-colors">
             <X size={16} />
           </button>
         </div>
@@ -154,7 +154,7 @@ function StudioHelpModal({ onClose }) {
               </div>
             );
           })}
-          <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded text-[9px] text-neutral-500 space-y-1">
+          <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded text-[9px] text-neutral-400 space-y-1">
             <div className="text-blue-400 font-bold">References</div>
             <div>Liu et al. (2023) — Prompt Injection attack against LLM-integrated Applications, arXiv:2306.05499</div>
             <div>Zverev et al. (2025) — Separation Score, ICLR 2025</div>
@@ -177,16 +177,16 @@ function PanelHeader({ isOpen, onToggle, icon, title, subtitle, tag, tagColor })
         {icon}
         <div className="text-left">
           <div className="text-[11px] font-mono font-bold text-neutral-200 uppercase tracking-wider">{title}</div>
-          {subtitle && <div className="text-[9px] text-neutral-600">{subtitle}</div>}
+          {subtitle && <div className="text-[9px] text-neutral-400">{subtitle}</div>}
         </div>
       </div>
       <div className="flex items-center gap-2">
         {tag && (
-          <span className={'px-1.5 py-0.5 text-[8px] font-mono font-bold rounded ' + (tagColor || 'bg-neutral-800 text-neutral-500')}>
+          <span className={'px-1.5 py-0.5 text-[8px] font-mono font-bold rounded ' + (tagColor || 'bg-neutral-800 text-neutral-400')}>
             {tag}
           </span>
         )}
-        {isOpen ? <ChevronUp size={14} className="text-neutral-600" /> : <ChevronDown size={14} className="text-neutral-600" />}
+        {isOpen ? <ChevronUp size={14} className="text-neutral-400" /> : <ChevronDown size={14} className="text-neutral-400" />}
       </div>
     </button>
   );
@@ -634,7 +634,7 @@ const AdversarialStudio = memo(function AdversarialStudio({ initialPayload, init
       <div className="flex justify-end">
         <button
           onClick={function() { setShowHelp(true); }}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono text-neutral-500 border border-neutral-800 hover:border-neutral-600 hover:text-white transition-colors"
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded text-[10px] font-mono text-neutral-400 border border-neutral-800 hover:border-neutral-600 hover:text-white transition-colors"
         >
           <HelpCircle size={12} /> FIELD REFERENCE
         </button>

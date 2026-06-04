@@ -18,7 +18,7 @@ export default function CampaignView() {
     <div>
       <div className="flex items-center gap-3 mb-6">
         <h1 className="text-2xl font-bold text-neutral-100">{t('redteam.view.campaign.title')}</h1>
-        <span className="text-xs text-neutral-500 font-mono bg-neutral-800 px-2 py-1 rounded">
+        <span className="text-xs text-neutral-400 font-mono bg-neutral-800 px-2 py-1 rounded">
           {count + ' ' + t('redteam.view.catalog.badge_templates')}
         </span>
       </div>

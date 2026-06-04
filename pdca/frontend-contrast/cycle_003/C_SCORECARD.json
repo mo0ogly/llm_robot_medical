@@ -1,0 +1,91 @@
+{
+  "perimetre": "frontend/src/components/redteam",
+  "cycle": 3,
+  "date": "2026-06-03",
+  "objectif": 88,
+  "score_atteint": 86,
+  "verdict": "PARTIAL (objectif manqué -2 pts, R3.1 ScenarioTab non réalisé)",
+  "fixes_applied": [
+    {"id": "R2.3", "files": ["frontend/src/components/redteam/GeneticProgressView.jsx"], "lines_added": 31, "desc": "39 hex inline scattered -> 20 centralisés dans THEME constant documenté (single source of truth design system Digital Twin)"},
+    {"id": "R2.1", "files": ["panels/MetricsPanel.jsx", "views/ResultExplorer.jsx", "views/AnalysisView.jsx"], "changes": 14, "desc": "Titres uppercase tracking-widest/wider passés à text-neutral-300 (#424242 AAA), distinct du body text-neutral-400 (#737373 AA). Hiérarchie typographique restaurée."},
+    {"id": "R4.1", "files": ["frontend/src/index.css"], "lines_added": 18, "desc": "Règle :focus-visible globale sur button/a/role=button/role=tab/tabindex/.rt-focus dans .rt-root. Outline 2px rt-critical. Neutralise focus:outline-none Tailwind."}
+  ],
+  "fixes_skipped_cycle_3": [
+    {"id": "R3.1", "reason": "ScenarioTab 918 LOC: refactor lourd nécessitant décomposition en sub-components + hooks. Différé cycle 4 pour audit dédié."},
+    {"id": "R3.3", "reason": "i18n hardcoded labels: nécessite skill add-scenario."},
+    {"id": "R4.2", "reason": "RtModal wrapper: refactor a11y dédié, nécessite focus trap library."},
+    {"id": "axe-core integration", "reason": "Setup CI dédié."}
+  ],
+  "domaines": {
+    "a11y_wcag": {
+      "score": 89,
+      "delta": 11,
+      "poids": 0.30,
+      "contributions": [
+        {"item": "WCAG contrast", "got": 38, "max": 40, "delta": 0},
+        {"item": "focus states", "got": 18, "max": 20, "delta": 8, "note": "R4.1 :focus-visible global appliqué via .rt-root selector inheritance. Couverture 100% boutons/liens/role=button. CSS injecté DOM verified."},
+        {"item": "ARIA semantic", "got": 13, "max": 20, "delta": 0, "note": "R4.2 RtModal reporté"},
+        {"item": "keyboard nav", "got": 10, "max": 10, "delta": 3, "note": "focus-visible permet Tab navigation visible"},
+        {"item": "edge case dark", "got": 10, "max": 10, "delta": 0}
+      ]
+    },
+    "design_tokens": {
+      "score": 77,
+      "delta": 18,
+      "poids": 0.20,
+      "contributions": [
+        {"item": "token leakage", "got": 32, "max": 40, "delta": 18, "note": "GeneticProgressView 39 hex inline -> 20 centralisés THEME constant nommé sémantiquement. Reste 20 hex = source de verite documentee, plus du leakage."},
+        {"item": "palette consistency", "got": 18, "max": 30, "delta": 0},
+        {"item": "critical color", "got": 20, "max": 20, "delta": 0, "note": "Stable cycle 2"},
+        {"item": "theme parity", "got": 7, "max": 10, "delta": 0}
+      ]
+    },
+    "code_hygiene": {
+      "score": 84,
+      "delta": 9,
+      "poids": 0.15,
+      "contributions": [
+        {"item": "complétude fix", "got": 38, "max": 40, "delta": 0, "note": "Stable cycle 2"},
+        {"item": "régressions hiérarchie", "got": 27, "max": 30, "delta": 9, "note": "R2.1 restauré 3 fichiers: 13 titres uppercase passés text-neutral-400 -> text-neutral-300. Vérifié DOM: titles rgb(66,66,66) != body rgb(115,115,115)."},
+        {"item": "file size 800 LOC", "got": 6, "max": 10, "delta": 0, "note": "ScenarioTab 918 LOC R3.1 reporté"},
+        {"item": "i18n integrity", "got": 3, "max": 10, "delta": 0},
+        {"item": "git state", "got": 10, "max": 10, "delta": 0}
+      ]
+    },
+    "completeness": {
+      "score": 85,
+      "delta": 0,
+      "poids": 0.15
+    },
+    "documentation": {
+      "score": 88,
+      "delta": 3,
+      "poids": 0.10,
+      "note": "DESIGN_TOKENS.md existant; R4.1 et R2.3 auto-documentés via commentaires inline. ScenarioTab manquant -2 pts vs cible 90."
+    },
+    "visual_recette": {
+      "score": 100,
+      "delta": 0,
+      "poids": 0.10
+    }
+  },
+  "score_calcul": "89*0.30 + 77*0.20 + 84*0.15 + 85*0.15 + 88*0.10 + 100*0.10 = 26.7 + 15.4 + 12.6 + 12.75 + 8.8 + 10.0 = 86.25 -> 86/100",
+  "score_global_precedent": 78,
+  "delta_global": 8,
+  "regressions": [],
+  "policy_gates": {
+    "no_stub": "OK",
+    "no_mock": "OK",
+    "usage_triage": "OK",
+    "no_disable": "OK"
+  },
+  "verification_gates_a2b": {
+    "build": "PASS (vite 16.44s)",
+    "test": "N/A",
+    "import": "PASS",
+    "recount": "PASS (hex inline 39 -> 20 centralisés ; titles distingués du body)",
+    "smoke": "PASS (5 routes preview OK, 0 erreur)"
+  },
+  "drift_detecte": "NONE",
+  "tendance": "POSITIVE (+24 pts total en 2 cycles: 62 -> 78 -> 86)"
+}

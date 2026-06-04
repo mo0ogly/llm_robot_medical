@@ -51,7 +51,7 @@ export default function TaxonomyCoverageCard() {
                   style={{ width: (cls.percentage || 0) + '%' }}
                 />
               </div>
-              <span className="text-[10px] text-neutral-500 font-mono w-12 text-right">
+              <span className="text-[10px] text-neutral-400 font-mono w-12 text-right">
                 {cls.covered + '/' + cls.total}
               </span>
             </div>
@@ -61,7 +61,7 @@ export default function TaxonomyCoverageCard() {
 
       {/* Gap count */}
       {data.gap_techniques && data.gap_techniques.length > 0 && (
-        <div className="mt-2 text-[10px] text-neutral-600 font-mono">
+        <div className="mt-2 text-[10px] text-neutral-400 font-mono">
           {data.gap_techniques.length + ' ' + t('redteam.taxonomy.coverage.gap') + ' ' + t('redteam.taxonomy.techniques')}
         </div>
       )}

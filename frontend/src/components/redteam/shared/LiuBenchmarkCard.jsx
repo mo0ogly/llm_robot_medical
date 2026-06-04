@@ -22,7 +22,7 @@ export default function LiuBenchmarkCard() {
   if (loading) {
     return (
       <div className="border border-neutral-700/50 rounded-lg p-3 bg-neutral-900/50 mb-4">
-        <span className="text-[10px] text-neutral-500 animate-pulse">Loading Liu benchmark...</span>
+        <span className="text-[10px] text-neutral-400 animate-pulse">Loading Liu benchmark...</span>
       </div>
     );
   }
@@ -40,7 +40,7 @@ export default function LiuBenchmarkCard() {
         <span className="text-xs font-bold text-neutral-300 tracking-wide">
           {t('redteam.defense.liu.title')}
         </span>
-        <span className="text-[9px] font-mono text-neutral-600 italic">
+        <span className="text-[9px] font-mono text-neutral-400 italic">
           USENIX Security 2024
         </span>
       </div>
@@ -69,7 +69,7 @@ export default function LiuBenchmarkCard() {
       <div className="overflow-x-auto">
         <table className="w-full text-[10px] font-mono">
           <thead>
-            <tr className="text-neutral-500 border-b border-neutral-800">
+            <tr className="text-neutral-400 border-b border-neutral-800">
               <th className="text-left py-1 pr-2 font-medium">Defense</th>
               <th className="text-right py-1 pr-2 font-medium">{t('redteam.defense.liu.pna')}</th>
               <th className="text-right py-1 pr-2 font-medium">{t('redteam.defense.liu.asv')}</th>

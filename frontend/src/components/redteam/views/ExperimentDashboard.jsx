@@ -12,7 +12,7 @@ var STATUS_STYLES = {
   DONE:         'bg-green-900/20 text-green-400 border-green-500/30',
   RUNNING:      'bg-blue-900/20 text-blue-400 border-blue-500/30',
   INCONCLUSIVE: 'bg-orange-900/20 text-orange-400 border-orange-500/30',
-  PLANNED:      'bg-neutral-800 text-neutral-500 border-neutral-700',
+  PLANNED:      'bg-neutral-800 text-neutral-400 border-neutral-700',
   REFUTED:      'bg-red-900/20 text-red-400 border-red-500/30',
   SUPPORTED:    'bg-green-900/20 text-green-400 border-green-500/30',
 };
@@ -156,20 +156,20 @@ export default function ExperimentDashboard() {
       <aside className="w-64 border-r border-neutral-800 bg-black/30 flex flex-col flex-shrink-0">
         <div className="p-3 border-b border-neutral-800">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-widest flex items-center gap-1.5">
+            <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest flex items-center gap-1.5">
               <Beaker size={12} className="text-cyan-500" />
               {t('redteam.experiment.campaigns')}
             </h3>
             <button
               onClick={manifest.refresh}
-              className="p-1 text-neutral-600 hover:text-neutral-300 transition-colors"
+              className="p-1 text-neutral-400 hover:text-neutral-300 transition-colors"
               title={t('redteam.experiment.refresh')}
             >
               <RefreshCw size={12} className={manifest.loading ? 'animate-spin' : ''} />
             </button>
           </div>
           <div className="relative">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-600" size={12} />
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-400" size={12} />
             <input
               value={search}
               onChange={function(e) { setSearch(e.target.value); }}
@@ -189,7 +189,7 @@ export default function ExperimentDashboard() {
               <AlertTriangle size={12} /> {manifest.error}
             </div>
           ) : filteredCampaigns.length === 0 ? (
-            <div className="p-4 text-center text-neutral-600 text-[10px] font-mono uppercase">
+            <div className="p-4 text-center text-neutral-400 text-[10px] font-mono uppercase">
               {t('redteam.experiment.noCampaigns')}
             </div>
           ) : (
@@ -215,7 +215,7 @@ export default function ExperimentDashboard() {
                       </span>
                     </div>
                     {c.gap && (
-                      <span className="text-[9px] text-neutral-600 font-mono block mt-0.5 truncate">
+                      <span className="text-[9px] text-neutral-400 font-mono block mt-0.5 truncate">
                         {c.gap}
                       </span>
                     )}
@@ -230,9 +230,9 @@ export default function ExperimentDashboard() {
       {/* Main content */}
       <main className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-6">
         {!selectedId ? (
-          <div className="flex flex-col items-center justify-center h-full text-neutral-600">
+          <div className="flex flex-col items-center justify-center h-full text-neutral-400">
             <Beaker size={48} className="opacity-20 mb-4" />
-            <p className="text-sm font-bold uppercase tracking-widest text-neutral-500">
+            <p className="text-sm font-bold uppercase tracking-widest text-neutral-400">
               {t('redteam.experiment.selectCampaign')}
             </p>
           </div>
@@ -280,7 +280,7 @@ export default function ExperimentDashboard() {
                 <div className="flex gap-2 items-center">
                   <button
                     onClick={function() { setShowHelp(true); }}
-                    className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all"
+                    className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-all"
                     title={t('redteam.experiment.help')}
                   >
                     <HelpCircle size={18} />
@@ -306,7 +306,7 @@ export default function ExperimentDashboard() {
             {/* Per-chain results */}
             {perChain.length > 0 && (
               <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-4">
-                <h4 className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-3">
+                <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-3">
                   {t('redteam.experiment.perChainResults')}
                 </h4>
                 <div className="overflow-x-auto">
@@ -323,7 +323,7 @@ export default function ExperimentDashboard() {
                       {perChain.map(function(row, idx) {
                         var asrPct = row.asr != null ? (row.asr * 100).toFixed(1) + '%' : 'N/A';
                         var ciStr = row.ci ? ('[' + (row.ci[0] * 100).toFixed(1) + '%, ' + (row.ci[1] * 100).toFixed(1) + '%]') : '-';
-                        var asrColor = row.asr == null ? 'text-neutral-500'
+                        var asrColor = row.asr == null ? 'text-neutral-400'
                           : row.asr === 0 ? 'text-green-400'
                           : row.asr < 0.3 ? 'text-amber-400'
                           : 'text-red-400';
@@ -332,7 +332,7 @@ export default function ExperimentDashboard() {
                             <td className="py-2 px-3 text-white font-mono">{row.chain_id}</td>
                             <td className={'py-2 px-3 text-right font-mono ' + asrColor}>{asrPct}</td>
                             <td className="py-2 px-3 text-right font-mono text-neutral-300">{ciStr}</td>
-                            <td className="py-2 px-3 text-right font-mono text-neutral-500">{row.n || '-'}</td>
+                            <td className="py-2 px-3 text-right font-mono text-neutral-400">{row.n || '-'}</td>
                           </tr>
                         );
                       })}
@@ -345,7 +345,7 @@ export default function ExperimentDashboard() {
             {/* Cross-model comparison */}
             {showCrossModel && (
               <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-4">
-                <h4 className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-3">
+                <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-3">
                   {t('redteam.experiment.crossModelComparison')}
                 </h4>
                 <div className="overflow-x-auto">
@@ -367,7 +367,7 @@ export default function ExperimentDashboard() {
                             <td className="py-2 px-3 text-right font-mono text-neutral-300">
                               {m.asr != null ? (m.asr * 100).toFixed(1) + '%' : '-'}
                             </td>
-                            <td className="py-2 px-3 text-right font-mono text-neutral-500">{m.n || '-'}</td>
+                            <td className="py-2 px-3 text-right font-mono text-neutral-400">{m.n || '-'}</td>
                             <td className="py-2 px-3 text-center">
                               <span className={'text-[10px] font-bold px-2 py-0.5 rounded border ' + verdictCls}>
                                 {m.verdict}
@@ -385,7 +385,7 @@ export default function ExperimentDashboard() {
             {/* Actions panel */}
             {recommendations.length > 0 && (
               <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-4">
-                <h4 className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-3">
+                <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-3">
                   {t('redteam.experiment.recommendations')}
                 </h4>
                 <div className="space-y-2">

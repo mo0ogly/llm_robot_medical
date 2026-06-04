@@ -21,7 +21,7 @@ function CampaignTreeView({ data, t }) {
 
   if (!data || !data.per_chain) {
     return (
-      React.createElement('div', { className: 'p-8 text-center text-neutral-600' },
+      React.createElement('div', { className: 'p-8 text-center text-neutral-400' },
         React.createElement(TreePine, { size: 32, className: 'mx-auto mb-3 opacity-30' }),
         React.createElement('p', { className: 'text-xs font-mono uppercase tracking-widest' }, t('redteam.explorer.tree.empty')),
         React.createElement('p', { className: 'text-[10px] mt-2 text-neutral-700' }, t('redteam.explorer.tree.empty.desc'))
@@ -45,7 +45,7 @@ function CampaignTreeView({ data, t }) {
                'bg-green-900/30 text-green-400 border border-green-500/30')
           }, (agg.violation_rate * 100).toFixed(1) + '% VIOLATIONS')
         ),
-        React.createElement('div', { className: 'mt-2 grid grid-cols-3 gap-2 text-[10px] text-neutral-500' },
+        React.createElement('div', { className: 'mt-2 grid grid-cols-3 gap-2 text-[10px] text-neutral-400' },
           React.createElement('span', null, 'Trials: ' + agg.total_trials),
           React.createElement('span', null, 'Sep(M): ' + (sep.sep_score || 0).toFixed(3)),
           React.createElement('span', null, 'CI: [' + ((agg.wilson_ci_95 || {}).lower || 0).toFixed(2) + ', ' + ((agg.wilson_ci_95 || {}).upper || 0).toFixed(2) + ']')
@@ -65,7 +65,7 @@ function CampaignTreeView({ data, t }) {
             onClick: function() { toggle('chain_' + ci); },
             className: 'w-full flex items-center gap-2 p-2 hover:bg-white/5 transition-colors'
           },
-            React.createElement(isOpen ? ChevronDown : ChevronRight, { size: 12, className: 'text-neutral-600' }),
+            React.createElement(isOpen ? ChevronDown : ChevronRight, { size: 12, className: 'text-neutral-400' }),
             React.createElement(Icon, { size: 14, className: color }),
             React.createElement('span', { className: 'flex-1 text-left text-neutral-300' }, chain.chain_id),
             React.createElement('span', { className: color + ' font-bold' }, (vr * 100).toFixed(0) + '%')
@@ -94,7 +94,7 @@ function CampaignTreeView({ data, t }) {
               );
             }),
             chain.control_trials && chain.control_trials.length > 0 &&
-              React.createElement('div', { className: 'mt-1 pt-1 border-t border-neutral-800 text-[10px] text-neutral-600' },
+              React.createElement('div', { className: 'mt-1 pt-1 border-t border-neutral-800 text-[10px] text-neutral-400' },
                 'Control: ' + chain.control_trials.filter(function(t) { return !t.violated; }).length +
                 '/' + chain.control_trials.length + ' safe'
               )
@@ -175,7 +175,7 @@ export default function ResultExplorer() {
             } else if (/true|false/.test(match)) {
               cls = 'text-purple-400'; // boolean
             } else if (/null/.test(match)) {
-              cls = 'text-neutral-500'; // null
+              cls = 'text-neutral-400'; // null
             }
             return '<span class="' + cls + '">' + match + '</span>';
           });
@@ -237,11 +237,11 @@ export default function ResultExplorer() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-white flex items-center gap-2">{t('redteam.explorer.title')}</h2>
-            <p className="text-xs text-neutral-500 uppercase tracking-widest font-mono">{t('redteam.explorer.subtitle')}</p>
+            <p className="text-xs text-neutral-300 uppercase tracking-widest font-mono">{t('redteam.explorer.subtitle')}</p>
           </div>
         </div>
         <div className="flex items-center gap-4">
-           <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.explorer.title')}>
+           <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.explorer.title')}>
              <HelpCircle size={18} />
            </button>
            {selectedFile && (
@@ -261,12 +261,12 @@ export default function ResultExplorer() {
         <aside className="w-80 border-r border-neutral-800 bg-black/20 flex flex-col z-10">
           <div className="p-4 border-b border-neutral-800">
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 group-focus-within:text-red-500 transition-colors" size={14} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-red-500 transition-colors" size={14} />
               <input 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={t('redteam.explorer.search.placeholder')}
-                className="w-full bg-neutral-900 border border-neutral-800 rounded-lg py-2 pl-9 pr-4 text-xs focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none transition-all placeholder:text-neutral-600"
+                className="w-full bg-neutral-900 border border-neutral-800 rounded-lg py-2 pl-9 pr-4 text-xs focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none transition-all placeholder:text-neutral-400"
               />
             </div>
           </div>
@@ -279,7 +279,7 @@ export default function ResultExplorer() {
               </div>
             ) : filteredFiles.length === 0 ? (
               <div className="p-8 text-center">
-                <p className="text-xs text-neutral-600 uppercase tracking-widest font-mono">{t('redteam.explorer.no_results')}</p>
+                <p className="text-xs text-neutral-300 uppercase tracking-widest font-mono">{t('redteam.explorer.no_results')}</p>
               </div>
             ) : (
               <div className="py-2">
@@ -293,7 +293,7 @@ export default function ResultExplorer() {
                         : 'hover:bg-white/5'
                     )}
                   >
-                    <div className={'p-2 rounded-lg ' + (selectedFile === file.name ? 'bg-red-500/20 text-red-500' : 'bg-neutral-800 text-neutral-500 grayscale')}>
+                    <div className={'p-2 rounded-lg ' + (selectedFile === file.name ? 'bg-red-500/20 text-red-500' : 'bg-neutral-800 text-neutral-400 grayscale')}>
                        {file.type === 'json' ? <FileJson size={14} /> : file.type === 'csv' ? <FileCode size={14} /> : <FileText size={14} />}
                     </div>
                     <div className="flex flex-col items-start min-w-0 flex-1">
@@ -306,7 +306,7 @@ export default function ResultExplorer() {
                         <span>{new Date(file.modified * 1000).toLocaleDateString()}</span>
                       </div>
                     </div>
-                    <ChevronRight size={12} className={'opacity-0 group-hover:opacity-100 transition-opacity ' + (selectedFile === file.name ? 'text-red-500' : 'text-neutral-600')} />
+                    <ChevronRight size={12} className={'opacity-0 group-hover:opacity-100 transition-opacity ' + (selectedFile === file.name ? 'text-red-500' : 'text-neutral-400')} />
                   </button>
                 ))}
               </div>
@@ -319,12 +319,12 @@ export default function ResultExplorer() {
           {fileLoading ? (
             <div className="flex-1 flex flex-col items-center justify-center opacity-50">
               <Loader2 size={32} className="animate-spin text-red-500 mb-4" />
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">{t('redteam.explorer.loading')}</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400">{t('redteam.explorer.loading')}</p>
             </div>
           ) : selectedFile ? (
             <div className="flex-1 flex flex-col overflow-hidden animate-in slide-in-from-right-2 duration-500">
               {/* Toolbar */}
-              <div className="px-6 py-3 border-b border-neutral-800 bg-neutral-900/20 flex justify-between items-center text-[10px] font-mono text-neutral-500">
+              <div className="px-6 py-3 border-b border-neutral-800 bg-neutral-900/20 flex justify-between items-center text-[10px] font-mono text-neutral-400">
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1"><CheckCircle size={12} className="text-emerald-500 text-[8px]" /> {t('redteam.explorer.integrity')}</span>
                   <span className="uppercase">{fileContent?.type} FORMAT</span>
@@ -339,9 +339,9 @@ export default function ResultExplorer() {
               </div>
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-neutral-600 border border-dashed border-neutral-800 m-8 rounded-3xl bg-neutral-900/10">
+            <div className="flex-1 flex flex-col items-center justify-center text-neutral-400 border border-dashed border-neutral-800 m-8 rounded-3xl bg-neutral-900/10">
                <FileCode size={48} className="mb-4 opacity-20" />
-               <h3 className="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-2">{t('redteam.explorer.empty.title')}</h3>
+               <h3 className="text-sm font-bold uppercase tracking-widest text-neutral-400 mb-2">{t('redteam.explorer.empty.title')}</h3>
                <p className="text-[10px] max-w-[240px] text-center font-mono uppercase tracking-tighter">{t('redteam.explorer.empty.desc')}</p>
             </div>
           )}
@@ -349,7 +349,7 @@ export default function ResultExplorer() {
       </div>
       
       {/* Footer Status */}
-      <footer className="px-6 py-2 border-t border-neutral-800 bg-neutral-900 text-[10px] font-mono flex justify-between text-neutral-500">
+      <footer className="px-6 py-2 border-t border-neutral-800 bg-neutral-900 text-[10px] font-mono flex justify-between text-neutral-400">
          <div className="flex gap-4">
             <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> ENGINE: ONLINE</span>
             <span>FS_ROOT: experiments/results/</span>

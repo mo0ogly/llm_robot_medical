@@ -1,0 +1,56 @@
+{
+  "perimetre": "frontend/src/components/redteam",
+  "cycle": 1,
+  "date": "2026-06-03",
+  "fix_scope": {
+    "files_modified": 35,
+    "insertions": 275,
+    "deletions": 275,
+    "byte_delta": 0,
+    "regex_patterns": [
+      {"from": "text-neutral-500", "to": "text-neutral-400", "count": 137, "rationale": "rt-root override remap to #a3a3a3 (pale, 2.6:1) -> #737373 AA"},
+      {"from": "text-neutral-600", "to": "text-neutral-400", "count": 131, "rationale": "same override -> #a3a3a3 useless"},
+      {"from": "bg-neutral-900/80", "to": "bg-neutral-900/50", "count": 1, "rationale": "missing from override list -> stayed dark on light theme"},
+      {"from": "placeholder-neutral-700", "to": "placeholder-neutral-400", "count": 6, "rationale": "too dark for placeholder semantic"}
+    ]
+  },
+  "files_top10_by_changes": [
+    {"file": "panels/ForgePanel.jsx", "loc": 752, "changes": 58, "near_ceiling": true},
+    {"file": "panels/MetricsPanel.jsx", "loc": 330, "changes": 36},
+    {"file": "views/ResultExplorer.jsx", "loc": 364, "changes": 34},
+    {"file": "views/RagView.jsx", "loc": 453, "changes": 34},
+    {"file": "views/AnalysisView.jsx", "loc": 489, "changes": 32},
+    {"file": "shared/PayloadEditModal.jsx", "loc": 292, "changes": 32},
+    {"file": "views/ExperimentDashboard.jsx", "loc": 435, "changes": 30},
+    {"file": "panels/SessionPanel.jsx", "loc": 155, "changes": 28},
+    {"file": "panels/InjectionLabPanel.jsx", "loc": 287, "changes": 26},
+    {"file": "views/ExerciseView.jsx", "loc": 261, "changes": 22}
+  ],
+  "loc_ceiling_check": {
+    "rule": "800 LOC max (.claude/rules/programming.md)",
+    "violations": 0,
+    "near_ceiling_warning": ["panels/ForgePanel.jsx (752)", "AdversarialStudio.jsx (735)", "CampaignTab.jsx (699)"]
+  },
+  "pre_flight": {
+    "vite_build": "OK 13.65s",
+    "lint_errors_before": 76,
+    "lint_errors_after": 76,
+    "lint_delta": 0,
+    "residual_problematic_classes": 0
+  },
+  "design_tokens_used": {
+    "scope": ".rt-root in RedTeamLayout.jsx",
+    "palette_light": {
+      "paper_0": "#ffffff",
+      "paper_1": "#fafaf8",
+      "paper_2": "#f5f5f1",
+      "ink_0": "#0a0a0a",
+      "ink_1": "#1f1f1f",
+      "ink_2": "#424242",
+      "ink_3": "#737373",
+      "ink_4": "#a3a3a3",
+      "critical": "#c41e3a"
+    },
+    "override_source": "frontend/src/index.css:242-309"
+  }
+}

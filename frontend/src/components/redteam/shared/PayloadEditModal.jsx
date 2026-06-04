@@ -79,13 +79,13 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
             <span className="font-bold text-sm text-white">
               {isNew ? t('redteam.attack.modal.title_new') : t('redteam.attack.modal.title_edit')}
             </span>
-            <span className="text-[10px] text-neutral-600 font-mono">{charCount + ' ' + t('redteam.attack.modal.chars') + ' | ' + lineCount + ' ' + t('redteam.attack.modal.lines')}</span>
+            <span className="text-[10px] text-neutral-400 font-mono">{charCount + ' ' + t('redteam.attack.modal.chars') + ' | ' + lineCount + ' ' + t('redteam.attack.modal.lines')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={handleCopy} className="p-1.5 rounded text-neutral-500 hover:text-white border border-neutral-800 hover:border-neutral-600 transition-all" title="Copy">
+            <button onClick={handleCopy} className="p-1.5 rounded text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-600 transition-all" title="Copy">
               {copied ? <CheckCircle size={14} className="text-green-400" /> : <Copy size={14} />}
             </button>
-            <button onClick={onClose} className="p-1.5 text-neutral-500 hover:text-white transition-colors">
+            <button onClick={onClose} className="p-1.5 text-neutral-400 hover:text-white transition-colors">
               <X size={16} />
             </button>
           </div>
@@ -94,16 +94,16 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
         {/* Meta: Name + Category */}
         <div className="px-5 py-3 border-b border-neutral-800 flex gap-4 items-end shrink-0">
           <div className="flex-1">
-            <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider mb-1 block">{t('redteam.attack.modal.name_label')}</label>
+            <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1 block">{t('redteam.attack.modal.name_label')}</label>
             <input
               value={name}
               onChange={function(e) { setName(e.target.value); }}
               placeholder={t('redteam.attack.crud.name_placeholder')}
-              className="w-full bg-neutral-900 border border-neutral-700 rounded px-3 py-1.5 text-sm font-mono text-white placeholder-neutral-700 outline-none focus:border-red-500 transition-colors"
+              className="w-full bg-neutral-900 border border-neutral-700 rounded px-3 py-1.5 text-sm font-mono text-white placeholder-neutral-400 outline-none focus:border-red-500 transition-colors"
             />
           </div>
           <div className="w-48">
-            <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider mb-1 block">{t('redteam.attack.modal.category_label')}</label>
+            <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1 block">{t('redteam.attack.modal.category_label')}</label>
             <select
               value={category}
               onChange={function(e) { setCategory(e.target.value); }}
@@ -121,7 +121,7 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
           <div className="px-5 py-2 border-b border-neutral-800 shrink-0">
             <div className="flex gap-4 items-start">
               <div className="flex-1">
-                <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider mb-1 block">
+                <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1 block">
                   {t('redteam.taxonomy.primary')}
                 </label>
                 <div className="relative">
@@ -129,7 +129,7 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
                     value={taxSearch}
                     onChange={function(e) { setTaxSearch(e.target.value); }}
                     placeholder="Search technique..."
-                    className="w-full bg-neutral-900 border border-neutral-700 rounded px-3 py-1.5 text-[11px] font-mono text-white placeholder-neutral-700 outline-none focus:border-orange-500 transition-colors"
+                    className="w-full bg-neutral-900 border border-neutral-700 rounded px-3 py-1.5 text-[11px] font-mono text-white placeholder-neutral-400 outline-none focus:border-orange-500 transition-colors"
                   />
                   {taxSearch.length > 1 && (
                     <div className="absolute z-10 mt-1 w-full max-h-40 overflow-y-auto bg-neutral-900 border border-neutral-700 rounded shadow-xl">
@@ -142,7 +142,7 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
                           <button key={tid} onClick={function() { setTaxPrimary(tid); setTaxSearch(''); }}
                             className="w-full text-left px-3 py-1 text-[10px] font-mono hover:bg-neutral-800 transition-colors block">
                             <span className="text-orange-400">{path.technique_label}</span>
-                            <span className="text-neutral-600 ml-2">{path.class_id + ' > ' + path.category_id}</span>
+                            <span className="text-neutral-400 ml-2">{path.class_id + ' > ' + path.category_id}</span>
                           </button>
                         );
                       })}
@@ -154,10 +154,10 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
                     <span className="text-[10px] font-mono text-orange-400 bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 rounded">
                       {taxPrimary}
                     </span>
-                    <span className="text-[9px] text-neutral-600">
+                    <span className="text-[9px] text-neutral-400">
                       {taxonomyFlat[taxPrimary] ? taxonomyFlat[taxPrimary].class_id + ' > ' + taxonomyFlat[taxPrimary].category_id + (taxonomyFlat[taxPrimary].subcategory_id ? ' > ' + taxonomyFlat[taxPrimary].subcategory_id : '') : ''}
                     </span>
-                    <button onClick={function() { setTaxPrimary(''); }} className="text-neutral-600 hover:text-red-400 transition-colors">
+                    <button onClick={function() { setTaxPrimary(''); }} className="text-neutral-400 hover:text-red-400 transition-colors">
                       <X size={10} />
                     </button>
                   </div>
@@ -175,7 +175,7 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
             return (
               <button key={tab.id} onClick={function() { setActiveTab(tab.id); }}
                 className={'flex items-center gap-1.5 px-4 py-2 text-[10px] font-bold uppercase tracking-wider transition-colors ' +
-                  (isActive ? 'border-b-2 border-red-500 text-red-400 bg-red-950/10' : 'text-neutral-600 hover:text-neutral-400 border-b-2 border-transparent')}>
+                  (isActive ? 'border-b-2 border-red-500 text-red-400 bg-red-950/10' : 'text-neutral-400 hover:text-neutral-400 border-b-2 border-transparent')}>
                 <Icon size={12} />
                 {tab.label}
               </button>
@@ -187,7 +187,7 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
         <div className="flex-1 overflow-hidden">
           {activeTab === 'edit' && (
             <div className="h-full flex flex-col">
-              <div className="px-5 py-1.5 text-[10px] text-neutral-600 font-mono border-b border-neutral-800/50 shrink-0">
+              <div className="px-5 py-1.5 text-[10px] text-neutral-400 font-mono border-b border-neutral-800/50 shrink-0">
                 {t('redteam.attack.modal.body_label')}
               </div>
               <textarea
@@ -218,7 +218,7 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
             <div className="h-full flex" style={{maxHeight: 'calc(90vh - 220px)'}}>
               {/* Left: MD Editor */}
               <div className="w-1/2 flex flex-col border-r border-neutral-800">
-                <div className="px-3 py-1.5 text-[10px] text-neutral-600 font-mono border-b border-neutral-800/50 shrink-0 flex justify-between items-center">
+                <div className="px-3 py-1.5 text-[10px] text-neutral-400 font-mono border-b border-neutral-800/50 shrink-0 flex justify-between items-center">
                   <span>{t('redteam.attack.modal.help_md_title')} — {t('redteam.attack.modal.tab_edit')}</span>
                   <span className="text-neutral-700">{(helpMd || '').length + ' ' + t('redteam.attack.modal.chars')}</span>
                 </div>
@@ -232,7 +232,7 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
               </div>
               {/* Right: Live Preview */}
               <div className="w-1/2 flex flex-col">
-                <div className="px-3 py-1.5 text-[10px] text-neutral-600 font-mono border-b border-neutral-800/50 shrink-0">
+                <div className="px-3 py-1.5 text-[10px] text-neutral-400 font-mono border-b border-neutral-800/50 shrink-0">
                   {t('redteam.attack.modal.tab_preview')}
                 </div>
                 <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
@@ -245,7 +245,7 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
                     <div className="text-neutral-700 italic text-[11px] text-center py-8 space-y-3">
                       <div>{t('redteam.attack.modal.preview_empty')}</div>
                       <div className="text-neutral-800 text-[10px] text-left space-y-1 border border-neutral-800 rounded p-3">
-                        <div className="text-neutral-600 font-bold mb-2">{t('redteam.attack.modal.help_md_title')}</div>
+                        <div className="text-neutral-400 font-bold mb-2">{t('redteam.attack.modal.help_md_title')}</div>
                         <div><code className="text-cyan-500"># Title</code> <span className="text-neutral-700">Header</span></div>
                         <div><code className="text-cyan-500">**bold**</code> <span className="text-neutral-700">Bold</span></div>
                         <div><code className="text-cyan-500">*italic*</code> <span className="text-neutral-700">Italic</span></div>

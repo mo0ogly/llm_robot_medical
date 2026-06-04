@@ -32,7 +32,7 @@ export default function SystemPromptPanel({
                   key={name}
                   onClick={function() { setActiveAgent(name); }}
                   className={'px-3 py-1.5 rounded text-[10px] font-mono font-bold border transition-colors ' +
-                    (isActive ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400' : 'border-neutral-800 text-neutral-600 hover:border-neutral-600')}
+                    (isActive ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400' : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
                 >
                   {shortName}
                 </button>
@@ -47,7 +47,7 @@ export default function SystemPromptPanel({
                   key={lvl}
                   onClick={function() { setActiveLevel(lvl); }}
                   className={'px-2 py-1 rounded text-[9px] font-mono font-bold border transition-colors ' +
-                    (isActive ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-400' : 'border-neutral-800 text-neutral-600 hover:border-neutral-600')}
+                    (isActive ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-400' : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
                 >
                   {lvl.toUpperCase()}
                 </button>
@@ -69,7 +69,7 @@ export default function SystemPromptPanel({
               onClick={savePrompt}
               disabled={isSavingPrompt}
               className={'px-3 py-1.5 rounded text-[10px] font-mono font-bold transition-all ' +
-                (isSavingPrompt ? 'bg-neutral-800 text-neutral-500' : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/30')}
+                (isSavingPrompt ? 'bg-neutral-800 text-neutral-400' : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/30')}
             >
               {isSavingPrompt ? t('redteam.studio.v2.saving') : t('redteam.studio.v2.save_prompt') + ' ' + activeLevel.toUpperCase()}
             </button>
@@ -79,7 +79,7 @@ export default function SystemPromptPanel({
                   setPromptDraft(allPrompts[activeAgent][activeLevel]);
                 }
               }}
-              className="px-2 py-1.5 rounded text-[10px] font-mono text-neutral-600 border border-neutral-800 hover:border-neutral-600 transition-colors"
+              className="px-2 py-1.5 rounded text-[10px] font-mono text-neutral-400 border border-neutral-800 hover:border-neutral-600 transition-colors"
             >
               <RotateCcw size={10} className="inline mr-1" />{t('redteam.studio.v2.reset')}
             </button>

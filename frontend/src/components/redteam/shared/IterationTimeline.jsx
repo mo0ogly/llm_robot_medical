@@ -6,7 +6,7 @@ var VERDICT_COLORS = {
   SUPPORTED:    { dot: 'bg-green-500',  border: 'border-green-500', text: 'text-green-400', bg: 'bg-green-900/10' },
   REFUTED:      { dot: 'bg-red-500',    border: 'border-red-500',   text: 'text-red-400',   bg: 'bg-red-900/10' },
   INCONCLUSIVE: { dot: 'bg-orange-500', border: 'border-orange-500', text: 'text-orange-400', bg: 'bg-orange-900/10' },
-  PENDING:      { dot: 'bg-neutral-600', border: 'border-neutral-600', text: 'text-neutral-500', bg: 'bg-neutral-900/10' },
+  PENDING:      { dot: 'bg-neutral-600', border: 'border-neutral-600', text: 'text-neutral-400', bg: 'bg-neutral-900/10' },
 };
 
 function getVerdictStyle(verdict) {
@@ -26,7 +26,7 @@ export default function IterationTimeline({ iterations, onSelectIteration }) {
   if (!iterations || iterations.length === 0) {
     return (
       <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-6 text-center">
-        <p className="text-neutral-600 text-xs font-mono uppercase tracking-widest">
+        <p className="text-neutral-400 text-xs font-mono uppercase tracking-widest">
           {t('redteam.experiment.noIterations')}
         </p>
       </div>
@@ -42,7 +42,7 @@ export default function IterationTimeline({ iterations, onSelectIteration }) {
 
   return (
     <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-4">
-      <h4 className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-4">
+      <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-4">
         {t('redteam.experiment.iterationTimeline')}
       </h4>
       <div className="relative pl-6">
@@ -80,7 +80,7 @@ export default function IterationTimeline({ iterations, onSelectIteration }) {
 
                 {/* Date */}
                 {iter.date && (
-                  <span className="text-[10px] text-neutral-600 font-mono mt-1 block">
+                  <span className="text-[10px] text-neutral-400 font-mono mt-1 block">
                     {iter.date}
                   </span>
                 )}
@@ -89,7 +89,7 @@ export default function IterationTimeline({ iterations, onSelectIteration }) {
                 {(iter.params || iter.diagnosis) && (
                   <div className="mt-2 space-y-1">
                     {iter.params && (
-                      <p className="text-[10px] text-neutral-500 font-mono">
+                      <p className="text-[10px] text-neutral-400 font-mono">
                         {t('redteam.experiment.params') + ': ' + truncate(
                           typeof iter.params === 'string' ? iter.params : JSON.stringify(iter.params),
                           100

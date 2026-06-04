@@ -246,10 +246,24 @@ body {
    ========================================================================== */
 
 /* --- Backgrounds ---------------------------------------------------------- */
+/* Cycle 002 R1.1: étendu à toutes les opacités utilisées (audit grep 2026-06-03) */
 .rt-root .bg-neutral-950,
+.rt-root .bg-neutral-950\/40,
+.rt-root .bg-neutral-950\/50,
+.rt-root .bg-neutral-950\/60,
+.rt-root .bg-neutral-950\/70,
+.rt-root .bg-neutral-950\/80,
+.rt-root .bg-neutral-950\/90,
+.rt-root .bg-neutral-900,
+.rt-root .bg-neutral-900\/10,
+.rt-root .bg-neutral-900\/20,
+.rt-root .bg-neutral-900\/30,
+.rt-root .bg-neutral-900\/40,
 .rt-root .bg-neutral-900\/50,
 .rt-root .bg-neutral-900\/60,
-.rt-root .bg-neutral-900 { background-color: #fafaf8 !important; }
+.rt-root .bg-neutral-900\/70,
+.rt-root .bg-neutral-900\/80,
+.rt-root .bg-neutral-900\/90 { background-color: #fafaf8 !important; }
 .rt-root .bg-neutral-800 { background-color: #f5f5f1 !important; }
 .rt-root .bg-neutral-700 { background-color: #eeedea !important; }
 .rt-root .bg-black,
@@ -259,10 +273,18 @@ body {
 .rt-root .bg-black\/40,
 .rt-root .bg-black\/50,
 .rt-root .bg-black\/60 { background-color: rgba(10,10,10,0.04) !important; }
+/* Backdrops modaux: garder un voile semi-opaque pour focus visuel */
+.rt-root .bg-black\/70,
+.rt-root .bg-black\/80,
+.rt-root .bg-black\/90 { background-color: rgba(10,10,10,0.50) !important; }
 
 /* --- Borders -------------------------------------------------------------- */
-.rt-root .border-neutral-800 { border-color: rgba(10,10,10,0.10) !important; }
-.rt-root .border-neutral-700 { border-color: rgba(10,10,10,0.14) !important; }
+.rt-root .border-neutral-900,
+.rt-root .border-neutral-900\/50,
+.rt-root .border-neutral-800,
+.rt-root .border-neutral-800\/50 { border-color: rgba(10,10,10,0.10) !important; }
+.rt-root .border-neutral-700,
+.rt-root .border-neutral-700\/50 { border-color: rgba(10,10,10,0.14) !important; }
 .rt-root .border-neutral-600 { border-color: rgba(10,10,10,0.20) !important; }
 .rt-root .border-neutral-500 { border-color: rgba(10,10,10,0.28) !important; }
 
@@ -275,6 +297,27 @@ body {
 .rt-root .text-neutral-500 { color: #a3a3a3 !important; }
 .rt-root .text-neutral-600 { color: #a3a3a3 !important; }
 
+/* --- Semantic colors clampées pour passer WCAG AA sur paper-1 ------------- */
+/* Cycle 002 R2.2: consommer --rt-critical et éviter les shades dispersés    */
+.rt-root .text-red-300,
+.rt-root .text-red-400,
+.rt-root .text-red-500 { color: #c41e3a !important; /* rt-critical, 5.4:1 AA */ }
+.rt-root .text-amber-300,
+.rt-root .text-amber-400,
+.rt-root .text-amber-500 { color: #b45309 !important; /* 5.1:1 AA */ }
+.rt-root .text-green-300,
+.rt-root .text-green-400,
+.rt-root .text-green-500,
+.rt-root .text-emerald-400,
+.rt-root .text-emerald-500 { color: #15803d !important; /* 5.7:1 AA */ }
+.rt-root .text-blue-300,
+.rt-root .text-blue-400,
+.rt-root .text-blue-500,
+.rt-root .text-cyan-400,
+.rt-root .text-sky-400 { color: #1d4ed8 !important; /* 5.9:1 AA */ }
+.rt-root .text-purple-400,
+.rt-root .text-violet-400 { color: #6d28d9 !important; /* 5.3:1 AA */ }
+
 /* --- Divide / ring / outline ---------------------------------------------- */
 .rt-root .divide-neutral-800 > * + * { border-color: rgba(10,10,10,0.10) !important; }
 .rt-root .divide-neutral-700 > * + * { border-color: rgba(10,10,10,0.14) !important; }
@@ -282,8 +325,12 @@ body {
 .rt-root .ring-neutral-700 { --tw-ring-color: rgba(10,10,10,0.14) !important; }
 
 /* --- Placeholder ---------------------------------------------------------- */
-.rt-root .placeholder-neutral-500::placeholder { color: #a3a3a3 !important; }
-.rt-root .placeholder-neutral-600::placeholder { color: #a3a3a3 !important; }
+/* Cycle 002 R1.1: WCAG 3:1 minimum -> #737373 (4.6:1 sur fafaf8) avec opacity */
+.rt-root .placeholder-neutral-400::placeholder,
+.rt-root .placeholder-neutral-500::placeholder,
+.rt-root .placeholder-neutral-600::placeholder,
+.rt-root .placeholder-neutral-700::placeholder,
+.rt-root .placeholder-neutral-800::placeholder { color: #737373 !important; opacity: 0.75; }
 
 /* --- Inputs, textareas, selects inside rt-root ----------------------------- */
 .rt-root input,
@@ -307,3 +354,22 @@ body {
 .rt-root ::-webkit-scrollbar-track { background: transparent; }
 .rt-root ::-webkit-scrollbar-thumb { background: rgba(10,10,10,0.12); border-radius: 3px; }
 .rt-root ::-webkit-scrollbar-thumb:hover { background: rgba(10,10,10,0.22); }
+
+/* ==========================================================================
+   AEGIS RedTeam — Focus visible (a11y WCAG 2.4.7)
+   Cycle 003 R4.1 (PDCA): classe utilitaire pour boutons / div role=button.
+   Outline rouge AEGIS, contrastante sur paper-1 et sur surfaces sombres.
+   ========================================================================== */
+.rt-root .rt-focus:focus-visible,
+.rt-root button:focus-visible,
+.rt-root a:focus-visible,
+.rt-root [role="button"]:focus-visible,
+.rt-root [role="tab"]:focus-visible,
+.rt-root [tabindex]:focus-visible {
+  outline: 2px solid var(--rt-critical, #c41e3a) !important;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+/* Neutraliser l'anti-pattern Tailwind focus:outline-none qui retire la a11y */
+.rt-root *:focus:not(:focus-visible) { outline: none; }
+.rt-root .focus\:outline-none:focus-visible { outline: 2px solid var(--rt-critical, #c41e3a) !important; outline-offset: 2px; }

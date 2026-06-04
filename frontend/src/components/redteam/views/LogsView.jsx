@@ -162,7 +162,7 @@ export default function LogsView() {
             <h2 className="text-xl font-bold text-white tracking-tight leading-tight">
               {t('redteam.logs.title')}
             </h2>
-            <p className="text-neutral-500 text-xs font-medium uppercase tracking-widest mt-1 opacity-70">
+            <p className="text-neutral-400 text-xs font-medium uppercase tracking-widest mt-1 opacity-70">
               {t('redteam.logs.subtitle')}
             </p>
           </div>
@@ -187,14 +187,14 @@ export default function LogsView() {
           <div className="flex items-center gap-1.5">
             <button
               onClick={function() { setShowHelp(true); }}
-              className="p-2.5 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-xl transition-all"
+              className="p-2.5 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-xl transition-all"
               title={t('redteam.help.logs.title')}
             >
               <HelpCircle size={18} />
             </button>
             <button
               onClick={clearLogs}
-              className="p-2.5 text-neutral-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
+              className="p-2.5 text-neutral-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
               title={t('redteam.logs.clear')}
             >
               <Trash2 size={18} />
@@ -203,7 +203,7 @@ export default function LogsView() {
               onClick={exportJSON}
               className="group flex items-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition-all border border-neutral-700 shadow-lg"
             >
-              <FileJson size={16} className="text-neutral-500 group-hover:text-blue-400 transition-colors" />
+              <FileJson size={16} className="text-neutral-400 group-hover:text-blue-400 transition-colors" />
               {t('redteam.logs.export')}
             </button>
           </div>
@@ -225,14 +225,14 @@ export default function LogsView() {
                 className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all ${
                   filter === f 
                     ? 'bg-neutral-800 text-white shadow-md border border-neutral-700' 
-                    : 'text-neutral-500 hover:text-neutral-400'
+                    : 'text-neutral-400 hover:text-neutral-400'
                 }`}
               >
                 {t(`redteam.logs.filter.${f.toLowerCase()}`)}
               </button>
             ))}
           </div>
-          <div className="flex items-center gap-2 text-[10px] text-neutral-600 font-mono italic">
+          <div className="flex items-center gap-2 text-[10px] text-neutral-400 font-mono italic">
             <History size={10} /> {logs.length} events logged
           </div>
         </div>
@@ -259,7 +259,7 @@ export default function LogsView() {
                   }`}>
                     {log.level}
                   </span>
-                  <span className="text-neutral-600 font-bold shrink-0 min-w-[70px]">
+                  <span className="text-neutral-400 font-bold shrink-0 min-w-[70px]">
                     [{log.module}]
                   </span>
                   <span className={`flex-1 break-all transition-colors ${
@@ -278,7 +278,7 @@ export default function LogsView() {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <span className={`w-2 h-2 rounded-full ${sseConnected ? 'bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.8)]' : 'bg-rose-500 shadow-[0_0_5px_rgba(244,63,94,0.8)]'}`} />
-              <span className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">
+              <span className="text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
                 {sseConnected ? t('redteam.logs.connected') : t('redteam.logs.disconnected')}
               </span>
             </div>

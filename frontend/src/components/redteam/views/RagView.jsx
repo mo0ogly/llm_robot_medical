@@ -141,7 +141,7 @@ export default function RagView() {
           <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.rag.desc')}</p>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.rag.title')}>
+          <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.rag.title')}>
             <HelpCircle size={18} />
           </button>
           {/* stats badges */}
@@ -194,7 +194,7 @@ export default function RagView() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-white font-medium truncate">{selectedDoc.filename}</h3>
-                  <div className="flex items-center gap-3 mt-1 text-[11px] font-mono text-neutral-500">
+                  <div className="flex items-center gap-3 mt-1 text-[11px] font-mono text-neutral-400">
                     <span className="flex items-center gap-1">
                       <Layers size={12} /> {selectedDoc.chunk_count || 0} {t('redteam.view.rag.chunks')}
                     </span>
@@ -205,7 +205,7 @@ export default function RagView() {
                 </div>
                 <button
                   onClick={function () { setSelectedDoc(null); setChunks([]); }}
-                  className="p-1.5 text-neutral-500 hover:text-white transition-colors"
+                  className="p-1.5 text-neutral-400 hover:text-white transition-colors"
                 >
                   <X size={16} />
                 </button>
@@ -214,12 +214,12 @@ export default function RagView() {
               {/* chunk list */}
               <div className="flex-1 overflow-auto p-4 space-y-3">
                 {loadingChunks ? (
-                  <div className="h-full flex items-center justify-center text-neutral-600">
+                  <div className="h-full flex items-center justify-center text-neutral-400">
                     <Loader2 className="animate-spin mr-2" size={18} />
                     <span className="font-mono text-sm">{t('redteam.view.rag.loadingChunks')}</span>
                   </div>
                 ) : chunks.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-neutral-600 font-mono text-sm">
+                  <div className="h-full flex items-center justify-center text-neutral-400 font-mono text-sm">
                     {t('redteam.view.rag.noChunks')}
                   </div>
                 ) : (
@@ -227,11 +227,11 @@ export default function RagView() {
                     return (
                       <div key={chunk.id} className="p-3 rounded-lg bg-neutral-950/50 border border-neutral-800 hover:border-neutral-700 transition-colors">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10px] font-mono text-neutral-500 flex items-center gap-1.5">
+                          <span className="text-[10px] font-mono text-neutral-400 flex items-center gap-1.5">
                             <Hash size={10} /> {t('redteam.view.rag.chunk')} {idx + 1}
                           </span>
                           <div className="flex items-center gap-2 text-[10px] font-mono">
-                            <span className="text-neutral-600">{formatBytes(chunk.length)}</span>
+                            <span className="text-neutral-400">{formatBytes(chunk.length)}</span>
                             {chunk.has_embedding && (
                               <span className="px-1.5 py-0.5 rounded bg-green-500/10 border border-green-500/20 text-green-500 flex items-center gap-1">
                                 <Zap size={8} /> {t('redteam.view.rag.embedded')}
@@ -267,7 +267,7 @@ export default function RagView() {
               className={'flex-1 py-2.5 text-xs font-mono uppercase tracking-wider transition-all border-b-2 ' + (
                 rightTab === 'parser'
                   ? 'border-red-500 text-red-400 bg-red-500/5'
-                  : 'border-transparent text-neutral-500 hover:text-neutral-300'
+                  : 'border-transparent text-neutral-400 hover:text-neutral-300'
               )}
             >
               <UploadCloud size={14} className="inline mr-1.5 -mt-0.5" />
@@ -278,7 +278,7 @@ export default function RagView() {
               className={'flex-1 py-2.5 text-xs font-mono uppercase tracking-wider transition-all border-b-2 ' + (
                 rightTab === 'files'
                   ? 'border-red-500 text-red-400 bg-red-500/5'
-                  : 'border-transparent text-neutral-500 hover:text-neutral-300'
+                  : 'border-transparent text-neutral-400 hover:text-neutral-300'
               )}
             >
               <Layers size={14} className="inline mr-1.5 -mt-0.5" />
@@ -310,7 +310,7 @@ export default function RagView() {
                   )}
                 >
                   <UploadCloud
-                    className={'mb-3 transition-colors ' + (uploading ? 'text-neutral-500 animate-bounce' : 'text-neutral-400 group-hover:text-red-400')}
+                    className={'mb-3 transition-colors ' + (uploading ? 'text-neutral-400 animate-bounce' : 'text-neutral-400 group-hover:text-red-400')}
                     size={40}
                   />
                   <p className="text-neutral-300 text-sm font-medium text-center px-4">
@@ -358,18 +358,18 @@ export default function RagView() {
                 {/* search bar */}
                 <div className="p-3 border-b border-neutral-800">
                   <div className="relative">
-                    <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-neutral-600" />
+                    <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-neutral-400" />
                     <input
                       type="text"
                       value={searchTerm}
                       onChange={function (e) { setSearchTerm(e.target.value); }}
                       placeholder={t('redteam.view.rag.searchPlaceholder')}
-                      className="w-full pl-8 pr-3 py-2 bg-neutral-950/50 border border-neutral-800 rounded text-sm text-neutral-300 font-mono placeholder-neutral-700 focus:border-red-900/50 focus:outline-none transition-colors"
+                      className="w-full pl-8 pr-3 py-2 bg-neutral-950/50 border border-neutral-800 rounded text-sm text-neutral-300 font-mono placeholder-neutral-400 focus:border-red-900/50 focus:outline-none transition-colors"
                     />
                     {searchTerm && (
                       <button
                         onClick={function () { setSearchTerm(''); }}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-600 hover:text-neutral-400"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-400"
                       >
                         <X size={12} />
                       </button>
@@ -380,7 +380,7 @@ export default function RagView() {
                 {/* file list */}
                 <div className="flex-1 overflow-auto">
                   {loading && documents.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-neutral-600 font-mono text-sm">
+                    <div className="h-full flex flex-col items-center justify-center text-neutral-400 font-mono text-sm">
                       <Loader2 className="animate-spin mb-2" />
                       {t('redteam.view.rag.scanning')}
                     </div>
@@ -407,7 +407,7 @@ export default function RagView() {
                           >
                             {/* icon */}
                             <div className={'p-1.5 rounded ' + (isSelected ? 'bg-red-500/10' : 'bg-neutral-800/50')}>
-                              <IconComp size={14} className={isSelected ? 'text-red-400' : 'text-neutral-500'} />
+                              <IconComp size={14} className={isSelected ? 'text-red-400' : 'text-neutral-400'} />
                             </div>
 
                             {/* name + meta */}
@@ -419,7 +419,7 @@ export default function RagView() {
                                 <span className={'px-1 py-0.5 rounded border text-[9px] uppercase ' + colorClass}>
                                   {doc.type}
                                 </span>
-                                <span className="text-[10px] font-mono text-neutral-600">
+                                <span className="text-[10px] font-mono text-neutral-400">
                                   {doc.chunk_count || 0} {t('redteam.view.rag.chunks')}
                                 </span>
                               </div>
@@ -429,7 +429,7 @@ export default function RagView() {
                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                               <button
                                 onClick={function (e) { e.stopPropagation(); handleDelete(doc.filename); }}
-                                className="p-1 text-neutral-600 hover:text-red-500 transition-colors"
+                                className="p-1 text-neutral-400 hover:text-red-500 transition-colors"
                                 title={t('redteam.view.rag.delete')}
                               >
                                 <Trash2 size={13} />

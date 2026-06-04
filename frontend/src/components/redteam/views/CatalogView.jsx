@@ -51,7 +51,7 @@ function TemplateCard({ tpl, onOpenForge, onLaunch, launching }) {
 
       {/* Taxonomy primary */}
       {taxPrimary && (
-        <span className="text-[9px] text-neutral-500 font-mono truncate" title={taxPrimary}>
+        <span className="text-[9px] text-neutral-400 font-mono truncate" title={taxPrimary}>
           {taxPrimary}
         </span>
       )}
@@ -168,11 +168,11 @@ export default function CatalogView() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-neutral-100">{tt('redteam.view.catalog.title')}</h1>
-          <span className="text-xs text-neutral-500 font-mono bg-neutral-800 px-2 py-1 rounded border border-neutral-700">
+          <span className="text-xs text-neutral-400 font-mono bg-neutral-800 px-2 py-1 rounded border border-neutral-700">
             {templates.length} {tt('redteam.catalog.templates_count')}
           </span>
         </div>
-        <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={tt('redteam.help.catalog.title')}>
+        <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={tt('redteam.help.catalog.title')}>
           <HelpCircle size={18} />
         </button>
       </div>
@@ -192,7 +192,7 @@ export default function CatalogView() {
           <div className="w-px h-4 bg-neutral-700" />
           <button
             onClick={function() { setShowTaxo(function(v) { return !v; }); }}
-            className="flex items-center gap-1 text-[10px] text-neutral-500 hover:text-neutral-300 transition-colors font-mono"
+            className="flex items-center gap-1 text-[10px] text-neutral-400 hover:text-neutral-300 transition-colors font-mono"
           >
             <Filter size={10} />
             {showTaxo ? tt('redteam.catalog.hide_taxo') : tt('redteam.catalog.show_taxo')}
@@ -207,7 +207,7 @@ export default function CatalogView() {
       {/* Search + filter bar */}
       <div className="flex items-center gap-2 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
-          <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-neutral-500 pointer-events-none" />
+          <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none" />
           <input
             type="text"
             value={search}
@@ -216,7 +216,7 @@ export default function CatalogView() {
             className="w-full pl-7 pr-7 py-1.5 text-xs bg-neutral-900 border border-neutral-700 rounded text-neutral-200 placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
           />
           {search && (
-            <button onClick={function() { setSearch(''); }} className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300">
+            <button onClick={function() { setSearch(''); }} className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-300">
               <X size={11} />
             </button>
           )}
@@ -232,7 +232,7 @@ export default function CatalogView() {
                 className={'px-2 py-1 text-[9px] font-mono font-bold rounded border transition-colors ' +
                   (active
                     ? 'bg-neutral-100 text-neutral-900 border-neutral-100'
-                    : 'bg-transparent text-neutral-500 border-neutral-700 hover:border-neutral-500 hover:text-neutral-300')}
+                    : 'bg-transparent text-neutral-400 border-neutral-700 hover:border-neutral-500 hover:text-neutral-300')}
               >
                 {f}
               </button>
@@ -243,14 +243,14 @@ export default function CatalogView() {
 
       {/* Results count */}
       {!loading && (
-        <div className="text-[10px] text-neutral-600 font-mono">
+        <div className="text-[10px] text-neutral-400 font-mono">
           {filtered.length} / {templates.length} {tt('redteam.catalog.results_label')}
         </div>
       )}
 
       {/* States */}
       {loading && (
-        <div className="text-xs text-neutral-500 font-mono py-8 text-center animate-pulse">
+        <div className="text-xs text-neutral-400 font-mono py-8 text-center animate-pulse">
           {tt('redteam.catalog.loading')}
         </div>
       )}
@@ -279,7 +279,7 @@ export default function CatalogView() {
                       ? 'bg-red-500/20 text-red-400 border-red-500/30'
                       : launchResult[tpl.id] === 'BLOCKED'
                         ? 'bg-green-500/20 text-green-400 border-green-500/30'
-                        : 'bg-neutral-800 text-neutral-500 border-neutral-700')
+                        : 'bg-neutral-800 text-neutral-400 border-neutral-700')
                   }>
                     {launchResult[tpl.id]}
                   </span>
@@ -291,7 +291,7 @@ export default function CatalogView() {
       )}
 
       {!loading && !offline && filtered.length === 0 && (
-        <div className="py-8 text-center text-xs text-neutral-600 font-mono">
+        <div className="py-8 text-center text-xs text-neutral-400 font-mono">
           {tt('redteam.catalog.no_results')}
         </div>
       )}

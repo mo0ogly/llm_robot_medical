@@ -61,21 +61,21 @@ export default function ForgePanel({
             <button
               onClick={function() { setP1SubTab('forge'); }}
               className={'flex-1 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 ' +
-                (p1SubTab === 'forge' ? 'border-b-2 border-red-500 text-red-400 bg-red-950/10' : 'text-neutral-600 hover:text-neutral-400 border-b-2 border-transparent')}
+                (p1SubTab === 'forge' ? 'border-b-2 border-red-500 text-red-400 bg-red-950/10' : 'text-neutral-400 hover:text-neutral-400 border-b-2 border-transparent')}
             >
               <Crosshair size={10} /> {t('redteam.studio.v2.forge.tab_forge')}
             </button>
             <button
               onClick={function() { setP1SubTab('catalog'); }}
               className={'flex-1 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 ' +
-                (p1SubTab === 'catalog' ? 'border-b-2 border-cyan-500 text-cyan-400 bg-cyan-950/10' : 'text-neutral-600 hover:text-neutral-400 border-b-2 border-transparent')}
+                (p1SubTab === 'catalog' ? 'border-b-2 border-cyan-500 text-cyan-400 bg-cyan-950/10' : 'text-neutral-400 hover:text-neutral-400 border-b-2 border-transparent')}
             >
               <Database size={10} /> {t('redteam.studio.v2.forge.tab_catalog')}
             </button>
             <button
               onClick={function() { setP1SubTab('aide'); }}
               className={'flex-1 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 ' +
-                (p1SubTab === 'aide' ? 'border-b-2 border-emerald-500 text-emerald-400 bg-emerald-950/10' : 'text-neutral-600 hover:text-neutral-400 border-b-2 border-transparent')}
+                (p1SubTab === 'aide' ? 'border-b-2 border-emerald-500 text-emerald-400 bg-emerald-950/10' : 'text-neutral-400 hover:text-neutral-400 border-b-2 border-transparent')}
             >
               <FileText size={10} /> {t('redteam.studio.v2.forge.tab_aide')}
             </button>
@@ -125,7 +125,7 @@ export default function ForgePanel({
                       key={mode}
                       onClick={function() { setHelpEditMode(mode); }}
                       className={'px-2 py-1 rounded text-[9px] font-mono font-bold border transition-colors ' +
-                        (helpEditMode === mode ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400' : 'border-neutral-800 text-neutral-600 hover:border-neutral-600')}
+                        (helpEditMode === mode ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400' : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
                     >
                       {mode.toUpperCase()}
                     </button>
@@ -178,7 +178,7 @@ export default function ForgePanel({
                 </button>
                 <button
                   onClick={function() { setHelpDraft(helpContent); }}
-                  className="px-2 py-1.5 rounded text-[10px] font-mono text-neutral-600 border border-neutral-800 hover:border-neutral-600 transition-colors"
+                  className="px-2 py-1.5 rounded text-[10px] font-mono text-neutral-400 border border-neutral-800 hover:border-neutral-600 transition-colors"
                 >
                   {t('redteam.studio.v2.reset')}
                 </button>
@@ -221,20 +221,20 @@ export default function ForgePanel({
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-[10px] font-mono">
                       <div>
-                        <span className="text-neutral-600">{t('redteam.studio.v2.delta0.protection')}: </span>
+                        <span className="text-neutral-400">{t('redteam.studio.v2.delta0.protection')}: </span>
                         <span className="text-purple-300">{delta0Result.delta0_protection != null ? delta0Result.delta0_protection.toFixed(4) : 'N/A'}</span>
                       </div>
                       <div>
-                        <span className="text-neutral-600">{t('redteam.studio.v2.delta0.contribution')}: </span>
+                        <span className="text-neutral-400">{t('redteam.studio.v2.delta0.contribution')}: </span>
                         <span className="text-cyan-300">{delta0Result.delta1_contribution != null ? delta0Result.delta1_contribution.toFixed(4) : 'N/A'}</span>
                       </div>
                       <div>
-                        <span className="text-neutral-600">{t('redteam.studio.v2.delta0.residual')}: </span>
+                        <span className="text-neutral-400">{t('redteam.studio.v2.delta0.residual')}: </span>
                         <span className="text-amber-300">{delta0Result.residual != null ? delta0Result.residual.toFixed(4) : 'N/A'}</span>
                       </div>
                     </div>
                     {delta0Result.interpretation && (
-                      <div className="text-[9px] font-mono text-neutral-500 mt-1 italic">
+                      <div className="text-[9px] font-mono text-neutral-400 mt-1 italic">
                         {delta0Result.interpretation}
                       </div>
                     )}
@@ -276,7 +276,7 @@ export default function ForgePanel({
                 }).then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
                 .then(function() { loadTemplates(); });
               }}
-              className="px-2.5 py-1 rounded text-[9px] font-mono font-bold border border-dashed border-neutral-700 text-neutral-500 hover:border-red-500/50 hover:text-red-400 transition-colors"
+              className="px-2.5 py-1 rounded text-[9px] font-mono font-bold border border-dashed border-neutral-700 text-neutral-400 hover:border-red-500/50 hover:text-red-400 transition-colors"
             >
               + NEW
             </button>
@@ -289,7 +289,7 @@ export default function ForgePanel({
               <button
                 onClick={function() { setCategoryFilter('all'); }}
                 className={'px-2 py-1 rounded text-[9px] font-mono font-bold border transition-colors ' +
-                  (categoryFilter === 'all' ? 'border-neutral-500 bg-neutral-800 text-white' : 'border-neutral-800 text-neutral-600 hover:border-neutral-600')}
+                  (categoryFilter === 'all' ? 'border-neutral-500 bg-neutral-800 text-white' : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
               >
                 ALL
               </button>
@@ -303,7 +303,7 @@ export default function ForgePanel({
                     key={c}
                     onClick={function() { setCategoryFilter(c); }}
                     className={'px-2 py-1 rounded text-[9px] font-mono font-bold border transition-colors ' +
-                      (active ? catColor : 'border-neutral-800 text-neutral-600 hover:border-neutral-600')}
+                      (active ? catColor : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
                   >
                     {c.toUpperCase().replace('_', ' ')}
                   </button>
@@ -311,7 +311,7 @@ export default function ForgePanel({
               })}
             </div>
             <div className="flex-1 relative">
-              <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-600" />
+              <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-400" />
               <input
                 type="text"
                 value={searchQuery}
@@ -320,7 +320,7 @@ export default function ForgePanel({
                 className="w-full pl-7 pr-2 py-1 bg-neutral-950 border border-neutral-800 rounded text-[10px] text-neutral-300 font-mono outline-none focus:border-neutral-600"
               />
             </div>
-            <span className="text-[9px] text-neutral-600 font-mono">{filteredTemplates.length} {t('redteam.studio.v2.results')}</span>
+            <span className="text-[9px] text-neutral-400 font-mono">{filteredTemplates.length} {t('redteam.studio.v2.results')}</span>
           </div>
 
           {/* Template selector */}
@@ -352,7 +352,7 @@ export default function ForgePanel({
                     (isActive ? 'bg-neutral-800/60 border-neutral-600' : 'bg-black/20 hover:bg-neutral-900')}
                 >
                   <div className={'font-mono font-bold truncate ' + (isActive ? 'text-white' : 'text-neutral-400')}>{tpl.name}</div>
-                  <div className="text-neutral-600 truncate mt-0.5">{tpl.category} {tpl.chainId ? '| ' + tpl.chainId : ''}</div>
+                  <div className="text-neutral-400 truncate mt-0.5">{tpl.category} {tpl.chainId ? '| ' + tpl.chainId : ''}</div>
                 </button>
               );
             })}
@@ -363,7 +363,7 @@ export default function ForgePanel({
             <button
               onClick={function() { setUseCustom(!useCustom); }}
               className={'px-2.5 py-1 rounded text-[9px] font-mono font-bold border transition-colors ' +
-                (useCustom ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400' : 'border-neutral-800 text-neutral-600 hover:border-neutral-600')}
+                (useCustom ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400' : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
             >
               {useCustom ? t('redteam.studio.v2.custom_mode') : t('redteam.studio.v2.switch_custom')}
             </button>
@@ -396,7 +396,7 @@ export default function ForgePanel({
               <button
                 onClick={function() { setShowCompare(!showCompare); }}
                 className={'px-3 py-1.5 rounded text-[9px] font-mono font-bold border transition-colors flex items-center gap-1.5 ' +
-                  (showCompare ? 'border-amber-500/50 bg-amber-500/10 text-amber-400' : 'border-neutral-800 text-neutral-600 hover:border-neutral-600')}
+                  (showCompare ? 'border-amber-500/50 bg-amber-500/10 text-amber-400' : 'border-neutral-800 text-neutral-400 hover:border-neutral-600')}
               >
                 {showCompare ? t('redteam.studio.v2.forge.hide_compare') : t('redteam.studio.v2.forge.show_compare')}
               </button>
@@ -408,7 +408,7 @@ export default function ForgePanel({
                         key={idx}
                         onClick={function() { setSelectedVersion(idx); setCompareVariables(v.variables || {}); }}
                         className={'px-2 py-1 rounded text-[8px] font-mono border transition-colors ' +
-                          (selectedVersion === idx ? 'border-amber-500/50 bg-amber-500/10 text-amber-400' : 'border-neutral-800 text-neutral-600')}
+                          (selectedVersion === idx ? 'border-amber-500/50 bg-amber-500/10 text-amber-400' : 'border-neutral-800 text-neutral-400')}
                       >
                         {v.version_label || ('V' + (idx + 2))}
                       </button>
@@ -464,7 +464,7 @@ export default function ForgePanel({
                         <span className="px-2 py-0.5 bg-blue-500/15 text-blue-400 text-[8px] font-mono font-bold rounded border border-blue-500/30">
                           {t('redteam.studio.v2.forge.baseline')}
                         </span>
-                        <span className="text-[8px] text-neutral-600 font-mono">
+                        <span className="text-[8px] text-neutral-400 font-mono">
                           {(filteredTemplates[selectedTemplate] || {}).name || ''}
                         </span>
                       </div>
@@ -568,7 +568,7 @@ export default function ForgePanel({
               </div>
               <table className="w-full text-[9px] font-mono">
                 <thead>
-                  <tr className="text-neutral-600 border-b border-neutral-800">
+                  <tr className="text-neutral-400 border-b border-neutral-800">
                     <th className="text-left py-1.5 px-2">Pattern</th>
                     <th className="text-center py-1.5 px-2">{t('redteam.studio.v2.forge.p_detect_base')}</th>
                     <th className="text-center py-1.5 px-2">{t('redteam.studio.v2.forge.p_detect_evolved')}</th>
@@ -593,7 +593,7 @@ export default function ForgePanel({
                       var pBase = baseProfile[p];
                       var pEvol = evolvedProfile[p] !== undefined ? evolvedProfile[p] : pBase;
                       var delta = pEvol - pBase;
-                      var deltaColor = delta < 0 ? 'text-green-400' : delta > 0 ? 'text-red-400' : 'text-neutral-600';
+                      var deltaColor = delta < 0 ? 'text-green-400' : delta > 0 ? 'text-red-400' : 'text-neutral-400';
                       return (
                         <tr key={p} className="border-b border-neutral-900">
                           <td className="py-1.5 px-2 text-neutral-400">{patternLabels[p] || p}</td>
@@ -628,7 +628,7 @@ export default function ForgePanel({
                         return ((1 - product) * 100).toFixed(2) + '%';
                       })()}
                     </td>
-                    <td className="py-2 px-2 text-center text-neutral-500 font-bold">-</td>
+                    <td className="py-2 px-2 text-center text-neutral-400 font-bold">-</td>
                   </tr>
                 </tfoot>
               </table>
@@ -652,12 +652,12 @@ export default function ForgePanel({
           {/* Template metadata editor (when a template is selected) */}
           {!useCustom && filteredTemplates[selectedTemplate] && (
             <div className="mt-3 p-3 bg-neutral-950/50 border border-neutral-800 rounded space-y-2">
-              <div className="text-[9px] font-mono text-neutral-600 font-bold uppercase tracking-wider">
+              <div className="text-[9px] font-mono text-neutral-400 font-bold uppercase tracking-wider">
                 {t('redteam.studio.v2.forge.metadata')}
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[8px] text-neutral-600 font-mono">Name</label>
+                  <label className="text-[8px] text-neutral-400 font-mono">Name</label>
                   <input
                     type="text"
                     value={editingMeta.name || ''}
@@ -666,7 +666,7 @@ export default function ForgePanel({
                   />
                 </div>
                 <div>
-                  <label className="text-[8px] text-neutral-600 font-mono">Category</label>
+                  <label className="text-[8px] text-neutral-400 font-mono">Category</label>
                   <select
                     value={editingMeta.category || 'injection'}
                     onChange={function(e) { setEditingMeta(Object.assign({}, editingMeta, { category: e.target.value })); }}
@@ -678,7 +678,7 @@ export default function ForgePanel({
                   </select>
                 </div>
                 <div>
-                  <label className="text-[8px] text-neutral-600 font-mono">Chain ID</label>
+                  <label className="text-[8px] text-neutral-400 font-mono">Chain ID</label>
                   <input
                     type="text"
                     value={editingMeta.chain_id || ''}
@@ -688,7 +688,7 @@ export default function ForgePanel({
                   />
                 </div>
                 <div>
-                  <label className="text-[8px] text-neutral-600 font-mono">Target Delta</label>
+                  <label className="text-[8px] text-neutral-400 font-mono">Target Delta</label>
                   <select
                     value={editingMeta.target_delta || 'delta1'}
                     onChange={function(e) { setEditingMeta(Object.assign({}, editingMeta, { target_delta: e.target.value })); }}
@@ -699,7 +699,7 @@ export default function ForgePanel({
                   </select>
                 </div>
                 <div>
-                  <label className="text-[8px] text-neutral-600 font-mono">Conjecture</label>
+                  <label className="text-[8px] text-neutral-400 font-mono">Conjecture</label>
                   <select
                     value={editingMeta.conjecture || ''}
                     onChange={function(e) { setEditingMeta(Object.assign({}, editingMeta, { conjecture: e.target.value || null })); }}
@@ -736,7 +736,7 @@ export default function ForgePanel({
                     .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
                     .then(function() { loadTemplates(); setSelectedTemplate(0); });
                   }}
-                  className="px-3 py-1.5 rounded text-[10px] font-mono font-bold text-neutral-600 border border-neutral-800 hover:border-red-500/50 hover:text-red-400 transition-colors"
+                  className="px-3 py-1.5 rounded text-[10px] font-mono font-bold text-neutral-400 border border-neutral-800 hover:border-red-500/50 hover:text-red-400 transition-colors"
                 >
                   DELETE
                 </button>

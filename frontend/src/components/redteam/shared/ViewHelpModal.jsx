@@ -80,7 +80,7 @@ export default function ViewHelpModal({ viewId, onClose }) {
             <IconComp size={16} className={cfg.color} />
             <span className="font-bold text-sm text-white">{t(prefix + '.title')}</span>
           </div>
-          <button onClick={onClose} className="text-neutral-500 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-neutral-400 hover:text-white transition-colors">
             <X size={16} />
           </button>
         </div>
@@ -88,7 +88,7 @@ export default function ViewHelpModal({ viewId, onClose }) {
         {/* Body */}
         <div className="p-5 space-y-6 overflow-y-auto font-mono text-xs" style={{ maxHeight: '75vh' }}>
           {/* Intro */}
-          <div className="p-3 bg-neutral-900/80 border border-neutral-800 rounded-lg">
+          <div className="p-3 bg-neutral-900/50 border border-neutral-800 rounded-lg">
             <p className="text-neutral-300 text-[11px] leading-relaxed">{t(prefix + '.intro')}</p>
           </div>
 
@@ -113,7 +113,7 @@ export default function ViewHelpModal({ viewId, onClose }) {
                         <span className="w-44 shrink-0 text-[10px] font-bold text-neutral-300">
                           {t(prefix + '.s' + sNum + '.i' + iNum + '.label')}
                         </span>
-                        <span className="text-neutral-500 text-[10px] leading-relaxed flex-1">
+                        <span className="text-neutral-400 text-[10px] leading-relaxed flex-1">
                           {t(prefix + '.s' + sNum + '.i' + iNum + '.desc')}
                         </span>
                       </div>
@@ -125,9 +125,9 @@ export default function ViewHelpModal({ viewId, onClose }) {
           })}
 
           {/* Footer */}
-          <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded text-[9px] text-neutral-500 flex items-center justify-between">
+          <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded text-[9px] text-neutral-400 flex items-center justify-between">
             <span>{t('redteam.help.footer.label')}</span>
-            <span className="text-neutral-600">{t('redteam.help.footer.close')}</span>
+            <span className="text-neutral-400">{t('redteam.help.footer.close')}</span>
           </div>
         </div>
       </div>

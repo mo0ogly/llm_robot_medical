@@ -118,7 +118,7 @@ export default function DefenseView() {
            <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.defense.desc')}</p>
         </div>
         <div className="flex items-center gap-3">
-           <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.defense.title')}>
+           <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.defense.title')}>
              <HelpCircle size={18} />
            </button>
            <span className={'px-2 py-0.5 rounded text-[10px] font-bold ' + (shieldActive ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-500')}>
@@ -138,12 +138,12 @@ export default function DefenseView() {
         {/* Core Shield Configuration */}
         <div className={'border rounded-xl p-6 transition-all duration-500 flex flex-col gap-6 ' + (shieldActive ? 'bg-blue-900/5 border-blue-500/30' : 'bg-neutral-900/30 border-neutral-800')}>
            <div className="flex items-center gap-3">
-              <div className={'p-3 rounded-lg ' + (shieldActive ? 'bg-blue-500/20 text-blue-400' : 'bg-neutral-800 text-neutral-600')}>
+              <div className={'p-3 rounded-lg ' + (shieldActive ? 'bg-blue-500/20 text-blue-400' : 'bg-neutral-800 text-neutral-400')}>
                  <ShieldAlert size={24} />
               </div>
               <div>
                  <h3 className="text-lg font-bold text-white tracking-tight">{t('redteam.defense.hub.title')}</h3>
-                 <p className="text-xs text-neutral-500 uppercase font-mono tracking-widest">{t('redteam.defense.hub.subtitle')}</p>
+                 <p className="text-xs text-neutral-400 uppercase font-mono tracking-widest">{t('redteam.defense.hub.subtitle')}</p>
               </div>
            </div>
 
@@ -156,7 +156,7 @@ export default function DefenseView() {
                     className={'p-4 rounded-lg border cursor-pointer transition-all flex items-center justify-between group ' + (
                       sanitizers[s.id]
                         ? 'bg-blue-950/20 border-blue-800/50 text-blue-100'
-                        : 'bg-black/20 border-neutral-800 text-neutral-500 grayscale'
+                        : 'bg-black/20 border-neutral-800 text-neutral-400 grayscale'
                     )}
                   >
                      <div className="flex flex-col gap-0.5">
@@ -191,7 +191,7 @@ export default function DefenseView() {
                 onChange={(e) => setThreshold(e.target.value)}
                 className="w-full h-1.5 bg-neutral-800 rounded-full appearance-none cursor-pointer accent-blue-600 mb-4"
               />
-              <div className="flex justify-between text-[10px] text-neutral-600 font-mono uppercase font-bold px-1">
+              <div className="flex justify-between text-[10px] text-neutral-400 font-mono uppercase font-bold px-1">
                  <span>{t('redteam.defense.threshold.passive')}</span>
                  <span>{t('redteam.defense.threshold.neutral')}</span>
                  <span>{t('redteam.defense.threshold.conservative')}</span>
@@ -205,7 +205,7 @@ export default function DefenseView() {
                    <h3 className="text-sm font-bold text-blue-400 uppercase tracking-widest flex items-center gap-2">
                       <Zap size={14} className="text-blue-400" /> {t('redteam.defense.harness.title')}
                    </h3>
-                   <p className="text-[10px] text-neutral-500 mt-1 italic">{t('redteam.defense.harness.desc')}</p>
+                   <p className="text-[10px] text-neutral-400 mt-1 italic">{t('redteam.defense.harness.desc')}</p>
                  </div>
                  <div className="flex items-center gap-2">
                    <button
@@ -213,7 +213,7 @@ export default function DefenseView() {
                      disabled={loading || massLoading}
                      className={'px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border ' + (
                        loading
-                         ? 'bg-neutral-800 border-neutral-700 text-neutral-600'
+                         ? 'bg-neutral-800 border-neutral-700 text-neutral-400'
                          : 'bg-neutral-900 border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500'
                      )}
                    >
@@ -271,7 +271,7 @@ export default function DefenseView() {
                    ))}
                 </div>
               ) : (
-                <div className="flex-1 flex flex-col items-center justify-center py-8 opacity-40 text-neutral-500 border border-dashed border-neutral-800 rounded-lg">
+                <div className="flex-1 flex flex-col items-center justify-center py-8 opacity-40 text-neutral-400 border border-dashed border-neutral-800 rounded-lg">
                    <ShieldAlert size={32} className={'mb-2 ' + (auditError ? 'text-rose-500 animate-bounce' : '')} />
                    <span className="text-[10px] font-mono tracking-tighter uppercase text-center px-4">
                      {auditError ? 'CRITICAL ERROR: ' + auditError : t('redteam.defense.harness.empty')}

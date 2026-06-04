@@ -18,7 +18,7 @@ export default function StudioView() {
           v2.1
         </span>
       </div>
-      <p className="text-xs text-neutral-500 mb-5 font-mono leading-relaxed max-w-3xl">
+      <p className="text-xs text-neutral-400 mb-5 font-mono leading-relaxed max-w-3xl">
         {t('redteam.view.studio.desc')}
       </p>
       <AdversarialStudio initialPayload={initPayload} initialCategory={initCategory} initialTemplateId={initTemplateId} />

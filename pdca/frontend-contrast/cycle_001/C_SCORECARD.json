@@ -1,0 +1,68 @@
+{
+  "perimetre": "frontend/src/components/redteam (contrast fix global, 35 files, 275 corrections)",
+  "cycle": 1,
+  "date": "2026-06-03",
+  "objectif": "baseline",
+  "domaines": {
+    "a11y_wcag": {
+      "score": 71,
+      "poids": 0.25,
+      "contributions": [
+        {"item": "contrast WCAG", "got": 31, "max": 40, "note": "Fix correct (4.6:1 AA) MAIS 3 régressions: placeholders 2.83:1 FAIL (RagView:367, CatalogView:216, CatalogCrudTab, PayloadEditModal), couleurs sémantiques text-amber/green/red-400 sur paper-1 = 1.6-1.8:1 FAIL (AnalysisView ASR cells), 36 résidus text-neutral-700 non remappés"},
+        {"item": "focus states", "got": 10, "max": 20, "note": "30 focus: vs 198 onClick = 15% coverage; focus:outline-none sans remplacement"},
+        {"item": "ARIA semantic", "got": 13, "max": 20, "note": "0 role=dialog sur 4 modals; div onClick sans role=button/tabIndex"},
+        {"item": "keyboard nav", "got": 7, "max": 10, "note": "Escape OK drawer mais pas de focus trap modals"},
+        {"item": "edge case dark", "got": 10, "max": 10, "note": "AdversarialStudio sous .rt-root, AAA"}
+      ]
+    },
+    "design_tokens": {
+      "score": 48,
+      "poids": 0.20,
+      "contributions": [
+        {"item": "token leakage", "got": 14, "max": 40, "note": "GeneticProgressView = fossile 67 hex inline; 695 classes Tailwind raw (text-red/emerald/cyan/purple/amber)"},
+        {"item": "palette consistency", "got": 18, "max": 30, "note": "text-neutral-400 domine (368 occ) post-fix; 500/600 = 0 occ (nettoyés)"},
+        {"item": "critical color", "got": 9, "max": 20, "note": "--critical #c41e3a (token AEGIS) JAMAIS consommé hors RedTeamLayout; 94 text-red-* = #ef4444 Tailwind"},
+        {"item": "theme parity", "got": 7, "max": 10, "note": "OK général; DigitalTwin intentionnellement dark hors scope"}
+      ]
+    },
+    "code_hygiene": {
+      "score": 58,
+      "poids": 0.20,
+      "contributions": [
+        {"item": "complétude fix", "got": 18, "max": 40, "note": "9 patterns d'opacité manqués override: bg-neutral-900/10..40, bg-neutral-950/40..50, bg-black/70..80, border-neutral-{700,800,900}/50, placeholder-neutral-800"},
+        {"item": "régressions hiérarchie", "got": 18, "max": 30, "note": "3 fichiers / 5 ont hiérarchie écrasée: MetricsPanel, ResultExplorer, AnalysisView ~90% text-neutral-400"},
+        {"item": "file size 800 LOC", "got": 6, "max": 10, "note": "ScenarioTab.jsx = 918 LOC VIOLE règle, ForgePanel 752 + AdversarialStudio 735 + CampaignTab 699 = zone surveillance"},
+        {"item": "i18n integrity", "got": 3, "max": 10, "note": "Labels techniques hardcoded ForgePanel/MetricsPanel/RagView (Pattern, Category, Vector Store)"},
+        {"item": "git state", "got": 10, "max": 10, "note": "275/275 insertions/deletions strict OK"}
+      ]
+    },
+    "completeness": {
+      "score": 50,
+      "poids": 0.15,
+      "note": "Fix incomplet: placeholders + semantic colors restent en FAIL WCAG. Patterns d'opacité non couverts (point sec1 hygiene)."
+    },
+    "documentation": {
+      "score": 60,
+      "poids": 0.10,
+      "note": "CLAUDE.md non mis à jour (pas critique pour ce fix CSS-only). Pas de doc dédiée au design system rt-root."
+    },
+    "visual_recette": {
+      "score": 100,
+      "poids": 0.10,
+      "note": "Toutes les mesures DOM réelles sur 5 routes passent WCAG AA, la plupart AAA. 0 erreur runtime, 0 crash."
+    }
+  },
+  "score_global": 62,
+  "score_calcul": "71*0.25 + 48*0.20 + 58*0.20 + 50*0.15 + 60*0.10 + 100*0.10 = 62.45 -> 62/100",
+  "verdict": "BASELINE",
+  "delta_objectif": 0,
+  "regressions": [],
+  "policy_gates": {
+    "no_stub": "OK",
+    "no_mock": "OK",
+    "usage_triage": "OK (35/35 ACTIF, 0 DEAD)",
+    "no_disable": "OK"
+  },
+  "drift_detecte": "NONE",
+  "tendance": "N/A (cycle 1 = baseline)"
+}

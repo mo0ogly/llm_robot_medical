@@ -34,7 +34,7 @@ export default function VerdictMatrix({ criteria, results }) {
 
   return (
     <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-4">
-      <h4 className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-3">
+      <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-3">
         {t('redteam.experiment.verdictMatrix')}
       </h4>
       <div className="overflow-x-auto">

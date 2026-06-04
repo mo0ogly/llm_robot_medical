@@ -1,0 +1,68 @@
+{
+  "perimetre": "frontend/src/components/redteam",
+  "version": 1,
+  "last_updated": "2026-06-03",
+  "domaines": {
+    "a11y_wcag": {
+      "poids": 0.25,
+      "poids_cycle_2": 0.30,
+      "checks": [
+        {"id": "WCAG-01", "desc": "ratio >= 4.5:1 sample 10 paires", "max": 10, "added_cycle": 2},
+        {"id": "WCAG-02", "desc": "modals role=dialog + focus trap", "max": 5, "added_cycle": 2},
+        {"id": "WCAG-03", "desc": "focus-visible coverage >= 50%", "max": 5, "added_cycle": 2},
+        {"id": "WCAG-CONTRAST", "desc": "WCAG contrast text/bg", "max": 40},
+        {"id": "WCAG-FOCUS", "desc": "focus states presents", "max": 20},
+        {"id": "WCAG-ARIA", "desc": "ARIA semantic modals/buttons", "max": 20},
+        {"id": "WCAG-KEYBOARD", "desc": "keyboard nav + focus trap", "max": 10},
+        {"id": "WCAG-DARK", "desc": "edge case dark theme parity", "max": 10}
+      ]
+    },
+    "design_tokens": {
+      "poids": 0.20,
+      "checks": [
+        {"id": "TOK-01", "desc": "0 hex inline", "max": 5, "added_cycle": 2},
+        {"id": "TOK-02", "desc": "--critical consomme", "max": 5, "added_cycle": 2},
+        {"id": "TOK-LEAK", "desc": "token leakage (hex + raw Tailwind)", "max": 40},
+        {"id": "TOK-PALETTE", "desc": "consistency neutres", "max": 30},
+        {"id": "TOK-CRITICAL", "desc": "critical color usage", "max": 20},
+        {"id": "TOK-THEME", "desc": "light/dark parity", "max": 10}
+      ]
+    },
+    "code_hygiene": {
+      "poids": 0.20,
+      "poids_cycle_2": 0.15,
+      "checks": [
+        {"id": "HYG-01", "desc": "0 fichier > 800 LOC", "max": 5, "added_cycle": 2},
+        {"id": "HYG-02", "desc": "anti-ecrasement hierarchie", "max": 5, "added_cycle": 2},
+        {"id": "HYG-COMPLETUDE", "desc": "patterns Tailwind sombres couverts", "max": 40},
+        {"id": "HYG-REGRESSIONS", "desc": "regressions hierarchique", "max": 30},
+        {"id": "HYG-LOC", "desc": "file size 800 max", "max": 10},
+        {"id": "HYG-I18N", "desc": "i18n integrity", "max": 10},
+        {"id": "HYG-GIT", "desc": "git state strict", "max": 10}
+      ]
+    },
+    "completeness": {
+      "poids": 0.15,
+      "checks": [
+        {"id": "COMP-01", "desc": "0 residu pattern non couvert", "max": 10, "added_cycle": 2},
+        {"id": "COMP-FIX", "desc": "fix incomplet detect", "max": 90}
+      ]
+    },
+    "documentation": {
+      "poids": 0.10,
+      "checks": [
+        {"id": "DOC-DESIGN", "desc": "DESIGN_TOKENS.md present + a jour", "max": 50, "added_cycle": 2},
+        {"id": "DOC-CLAUDE", "desc": "CLAUDE.md mentionne palette rt-root", "max": 30},
+        {"id": "DOC-COMMENTS", "desc": "commentaires sur regles critiques", "max": 20}
+      ]
+    },
+    "visual_recette": {
+      "poids": 0.10,
+      "checks": [
+        {"id": "VIS-WCAG", "desc": "5 routes echantillon WCAG AA", "max": 50},
+        {"id": "VIS-CONSOLE", "desc": "0 erreur console", "max": 30},
+        {"id": "VIS-RENDER", "desc": "0 ecran crash/Loading permanent", "max": 20}
+      ]
+    }
+  }
+}

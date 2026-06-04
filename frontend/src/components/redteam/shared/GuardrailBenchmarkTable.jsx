@@ -20,7 +20,7 @@ export default function GuardrailBenchmarkTable() {
         <span className="text-xs font-bold text-neutral-300 tracking-wide">
           {t('redteam.defense.benchmark.title')}
         </span>
-        <span className="text-[9px] font-mono text-neutral-600 italic">
+        <span className="text-[9px] font-mono text-neutral-400 italic">
           {t('redteam.defense.benchmark.source')}
         </span>
       </div>
@@ -28,7 +28,7 @@ export default function GuardrailBenchmarkTable() {
       <div className="overflow-x-auto">
         <table className="w-full text-[10px] font-mono">
           <thead>
-            <tr className="text-neutral-500 border-b border-neutral-800">
+            <tr className="text-neutral-400 border-b border-neutral-800">
               <th className="text-left py-1 pr-2 font-medium">Name</th>
               <th className="text-left py-1 pr-2 font-medium">{t('redteam.defense.benchmark.vendor')}</th>
               <th className="text-right py-1 pr-2 font-medium">{t('redteam.defense.benchmark.baseline')}</th>
@@ -41,7 +41,7 @@ export default function GuardrailBenchmarkTable() {
               return (
                 <tr key={g.name} className="border-b border-neutral-800/50 hover:bg-neutral-800/30 transition-colors">
                   <td className="py-1.5 pr-2 text-neutral-300 font-semibold">{g.name}</td>
-                  <td className="py-1.5 pr-2 text-neutral-500">{g.vendor}</td>
+                  <td className="py-1.5 pr-2 text-neutral-400">{g.vendor}</td>
                   <td className="py-1.5 pr-2 text-right text-neutral-400">
                     {(g.baseline_pi != null ? g.baseline_pi + '%' : '—')}
                   </td>

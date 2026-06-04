@@ -51,7 +51,7 @@ export default function DefenseTaxonomyCard() {
                   style={{ width: (cls.percentage || 0) + '%' }}
                 />
               </div>
-              <span className="text-[10px] text-neutral-500 font-mono w-12 text-right">
+              <span className="text-[10px] text-neutral-400 font-mono w-12 text-right">
                 {(cls.production || 0) + '+' + (cls.partial || 0)}
               </span>
             </div>
@@ -60,7 +60,7 @@ export default function DefenseTaxonomyCard() {
       </div>
 
       {/* Implementation status legend */}
-      <div className="mt-2 flex gap-3 text-[9px] text-neutral-600 font-mono">
+      <div className="mt-2 flex gap-3 text-[9px] text-neutral-400 font-mono">
         <span className="flex items-center gap-1">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
           {t('redteam.defense.taxonomy.impl.production')}

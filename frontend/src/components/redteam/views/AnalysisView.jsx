@@ -215,7 +215,7 @@ export default function AnalysisView() {
           <p className="text-neutral-400 text-sm mt-1">{t('redteam.view.analysis.desc')}</p>
         </div>
         <div className="flex gap-3 items-center flex-wrap">
-          <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.analysis.title')}>
+          <button onClick={function() { setShowHelp(true); }} className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-all" title={t('redteam.help.analysis.title')}>
             <HelpCircle size={18} />
           </button>
           <span className={'text-[9px] font-mono px-2 py-1 rounded border ' + (data.isDemo ? 'bg-orange-900/20 text-orange-400 border-orange-500/30' : 'bg-green-900/20 text-green-400 border-green-500/30')}>
@@ -248,7 +248,7 @@ export default function AnalysisView() {
         {/* Left: Conjectures 2x2 */}
         <div className="lg:col-span-2">
           <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-6 flex flex-col gap-6 shadow-inner ring-1 ring-white/5">
-            <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-widest flex items-center gap-2">
+            <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-widest flex items-center gap-2">
               <Microscope size={14} className="text-green-500" /> {t('redteam.view.analysis.conjectures')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -261,11 +261,11 @@ export default function AnalysisView() {
                         c.status === 'VALIDATED' || c.status === 'CONFIRMED' || c.status === 'STRONG' ? 'bg-green-500/10 text-green-500 border border-green-500/20' :
                         c.status === 'PARTIAL' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' :
                         c.status === 'BYPASSED' || c.status === 'WEAK' ? 'bg-red-500/10 text-red-500 border border-red-500/20' :
-                        'bg-neutral-800 text-neutral-500 border border-neutral-700')}>
+                        'bg-neutral-800 text-neutral-400 border border-neutral-700')}>
                         {c.status}
                       </span>
                     </div>
-                    <p className="text-xs text-neutral-500 italic mt-1">{c.evidence}</p>
+                    <p className="text-xs text-neutral-400 italic mt-1">{c.evidence}</p>
                     <div className="mt-2 h-1 bg-neutral-900 rounded-full overflow-hidden">
                       <div className={'h-full transition-all duration-1000 ' + (
                         c.status === 'VALIDATED' || c.status === 'CONFIRMED' || c.status === 'STRONG' ? 'bg-green-600 w-full' :
@@ -284,21 +284,21 @@ export default function AnalysisView() {
         {/* Right: Wilson CI + Sep(M) */}
         <div className="lg:col-span-1">
           <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-6 flex flex-col gap-6">
-            <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-widest flex items-center gap-2">
+            <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-widest flex items-center gap-2">
               <Award size={14} className="text-yellow-500" /> {t('redteam.view.analysis.wilsonCI')}
             </h3>
 
             <div className="p-4 bg-black/60 rounded-lg border border-neutral-800 flex flex-col items-center gap-4">
               <div className="text-3xl font-mono text-white">{data.violation_rate.toFixed(3)}</div>
               <div className="flex items-center gap-4 w-full">
-                <span className="text-[10px] text-neutral-600 font-bold">{data.ci_lower.toFixed(2)}</span>
+                <span className="text-[10px] text-neutral-400 font-bold">{data.ci_lower.toFixed(2)}</span>
                 <div className="flex-1 h-[2px] bg-neutral-800 relative">
                   <div className="absolute -top-1.5 left-1/4 right-1/4 h-3 border-x-2 border-yellow-500/50 bg-yellow-500/10"></div>
                   <div className="absolute -top-1 left-1/2 w-2 h-2 bg-yellow-500 rounded-full -ml-1 shadow-[0_0_10px_rgba(234,179,8,0.5)]"></div>
                 </div>
-                <span className="text-[10px] text-neutral-600 font-bold">{data.ci_upper.toFixed(2)}</span>
+                <span className="text-[10px] text-neutral-400 font-bold">{data.ci_upper.toFixed(2)}</span>
               </div>
-              <p className="text-[10px] text-neutral-500 text-center italic">{t('redteam.view.analysis.wilsonDesc')}</p>
+              <p className="text-[10px] text-neutral-400 text-center italic">{t('redteam.view.analysis.wilsonDesc')}</p>
             </div>
 
             <div className="space-y-4">
@@ -330,7 +330,7 @@ export default function AnalysisView() {
       {/* δ⁰ Attribution Panel */}
       <div className="bg-neutral-900/50 border border-purple-500/20 rounded-xl p-6">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-          <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-widest flex items-center gap-2">
+          <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-widest flex items-center gap-2">
             <Layers size={14} className="text-purple-400" /> {t('redteam.view.analysis.delta0.title')}
           </h3>
           <div className="flex gap-2">
@@ -345,7 +345,7 @@ export default function AnalysisView() {
             </button>
           </div>
         </div>
-        <p className="text-neutral-500 text-xs italic mb-4">{t('redteam.view.analysis.delta0.desc')}</p>
+        <p className="text-neutral-400 text-xs italic mb-4">{t('redteam.view.analysis.delta0.desc')}</p>
 
         {(!d0 || !d0.available) ? (
           <div className="flex items-center gap-2 text-purple-300 text-sm p-4 bg-purple-900/10 rounded border border-purple-500/20">
@@ -364,14 +364,14 @@ export default function AnalysisView() {
             ].map(function(m) {
               return (
                 <div key={m.key} className="bg-black/40 border border-neutral-800 rounded-lg p-3 flex flex-col gap-1">
-                  <span className="text-[10px] text-neutral-500 truncate">{m.label}</span>
+                  <span className="text-[10px] text-neutral-400 truncate">{m.label}</span>
                   <span className={'text-lg font-mono font-bold ' + m.color}>
                     {m.raw ? m.value : (m.value != null ? m.value.toFixed(3) : 'N/A')}
                   </span>
                 </div>
               );
             })}
-            <div className="col-span-2 md:col-span-3 lg:col-span-6 flex items-center justify-between text-xs text-neutral-500 pt-1 border-t border-neutral-800 mt-1">
+            <div className="col-span-2 md:col-span-3 lg:col-span-6 flex items-center justify-between text-xs text-neutral-400 pt-1 border-t border-neutral-800 mt-1">
               <span className={'px-2 py-0.5 rounded font-mono ' + (d0.statistically_valid ? 'bg-green-900/20 text-green-400 border border-green-500/20' : 'bg-amber-900/20 text-amber-400 border border-amber-500/20')}>
                 {d0.statistically_valid ? t('redteam.view.analysis.delta0.valid') : t('redteam.view.analysis.delta0.invalid')}
               </span>
@@ -384,7 +384,7 @@ export default function AnalysisView() {
 
       {/* Liu Benchmark Comparison Table */}
       <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-6">
-        <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-4">
+        <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-widest flex items-center gap-2 mb-4">
           <BarChart2 size={14} className="text-emerald-500" /> {t('redteam.view.analysis.liuTitle')}
         </h3>
         {data.isDemo ? (
@@ -445,11 +445,11 @@ export default function AnalysisView() {
 
       {/* Per-Chain Results Table */}
       <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-6">
-        <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-widest flex items-center gap-2 mb-4">
+        <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-widest flex items-center gap-2 mb-4">
           <CheckCircle size={14} className="text-blue-500" /> {t('redteam.view.analysis.perChainTitle')}
         </h3>
         {perChain.length === 0 ? (
-          <p className="text-neutral-500 text-sm italic">{t('redteam.view.analysis.noChainData')}</p>
+          <p className="text-neutral-400 text-sm italic">{t('redteam.view.analysis.noChainData')}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -474,7 +474,7 @@ export default function AnalysisView() {
                       <td className="py-2 px-3 text-neutral-400">{row.family || '-'}</td>
                       <td className={'py-2 px-3 text-right font-mono ' + getViolationColor(row.violation_rate)}>{vrPct}</td>
                       <td className="py-2 px-3 text-right font-mono text-neutral-300">{ciStr}</td>
-                      <td className="py-2 px-3 text-right font-mono text-neutral-500">{row.n || '-'}</td>
+                      <td className="py-2 px-3 text-right font-mono text-neutral-400">{row.n || '-'}</td>
                     </tr>
                   );
                 })}

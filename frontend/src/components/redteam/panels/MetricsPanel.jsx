@@ -30,7 +30,7 @@ function JudgeGauge({ label, value, max, invert }) {
   var color = effective >= 0.7 ? 'bg-red-500' : effective >= 0.4 ? 'bg-yellow-500' : 'bg-green-500';
   return (
     <div className="flex items-center gap-2 text-[10px]">
-      <span className="text-neutral-500 w-28 truncate font-mono">{label}</span>
+      <span className="text-neutral-400 w-28 truncate font-mono">{label}</span>
       <div className="flex-1 h-1.5 bg-neutral-800 rounded-full overflow-hidden">
         <div className={color + ' h-full rounded-full transition-all duration-500'} style={{ width: pct + '%' }} />
       </div>
@@ -52,14 +52,14 @@ export default function MetricsPanel({
         title={t('redteam.studio.v2.panel.metrics')}
         subtitle={t('redteam.studio.v2.panel.metrics.desc')}
         tag={svcResult ? 'SVC=' + svcResult.svc.toFixed(2) : 'AWAITING'}
-        tagColor={svcResult && svcResult.high_potential ? 'bg-red-500/15 text-red-400' : 'bg-neutral-800 text-neutral-500'}
+        tagColor={svcResult && svcResult.high_potential ? 'bg-red-500/15 text-red-400' : 'bg-neutral-800 text-neutral-400'}
       />
       {panels.p4 && (
         <div className="p-4 bg-black/30 border-t border-neutral-800 space-y-4">
 
           {/* No data state */}
           {!svcResult && !sepResult && !attackResult && !multiResult && (
-            <div className="text-center py-8 text-neutral-600 text-[11px] font-mono">
+            <div className="text-center py-8 text-neutral-400 text-[11px] font-mono">
               <BarChart3 size={24} className="mx-auto mb-2 opacity-30" />
               {t('redteam.studio.v2.awaiting')}
               <div className="text-[9px] mt-1 text-neutral-700">
@@ -72,18 +72,18 @@ export default function MetricsPanel({
           {attackResult && !attackResult.error && (
             <div className="space-y-3">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">{t('redteam.studio.v2.verdict')}</span>
+                <span className="text-[10px] font-mono font-bold text-neutral-300 uppercase tracking-wider">{t('redteam.studio.v2.verdict')}</span>
                 <StatusBadge success={attackResult.scores && attackResult.scores.injection_success} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 bg-neutral-950 rounded border border-neutral-800">
-                  <div className="text-[9px] text-neutral-600 uppercase font-mono mb-1">{t('redteam.studio.v2.target_response')}</div>
+                  <div className="text-[9px] text-neutral-300 uppercase font-mono mb-1">{t('redteam.studio.v2.target_response')}</div>
                   <div className="text-[11px] text-neutral-400 line-clamp-4 italic leading-relaxed">
                     {attackResult.target_response || 'No response'}
                   </div>
                 </div>
                 <div className="p-3 bg-neutral-950 rounded border border-neutral-800">
-                  <div className="text-[9px] text-neutral-600 uppercase font-mono mb-1">{t('redteam.studio.v2.aegis_analysis')}</div>
+                  <div className="text-[9px] text-neutral-300 uppercase font-mono mb-1">{t('redteam.studio.v2.aegis_analysis')}</div>
                   <div className="text-[11px] text-blue-400/70 line-clamp-4 leading-relaxed">
                     {attackResult.audit_analysis ? attackResult.audit_analysis.split('\n')[0] : 'No analysis'}
                   </div>
@@ -95,7 +95,7 @@ export default function MetricsPanel({
           {/* Multi-trial result */}
           {multiResult && (
             <div className="p-3 bg-neutral-950 rounded border border-neutral-800 space-y-2">
-              <div className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">
+              <div className="text-[10px] font-mono font-bold text-neutral-300 uppercase tracking-wider">
                 Multi-Trial Results (N={multiResult.n_trials || nTrials})
               </div>
               <div className="grid grid-cols-3 gap-3 text-center">
@@ -103,19 +103,19 @@ export default function MetricsPanel({
                   <div className="text-2xl font-bold text-red-400 font-mono">
                     {multiResult.violation_rate !== undefined ? (multiResult.violation_rate * 100).toFixed(1) + '%' : 'N/A'}
                   </div>
-                  <div className="text-[9px] text-neutral-600 font-mono">{t('redteam.studio.v2.violation_rate')}</div>
+                  <div className="text-[9px] text-neutral-400 font-mono">{t('redteam.studio.v2.violation_rate')}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-yellow-400 font-mono">
                     {multiResult.ci_lower !== undefined ? '[' + (multiResult.ci_lower * 100).toFixed(1) + '%, ' + (multiResult.ci_upper * 100).toFixed(1) + '%]' : 'N/A'}
                   </div>
-                  <div className="text-[9px] text-neutral-600 font-mono">{t('redteam.studio.v2.wilson_ci')}</div>
+                  <div className="text-[9px] text-neutral-400 font-mono">{t('redteam.studio.v2.wilson_ci')}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-cyan-400 font-mono">
                     {multiResult.n_violations !== undefined ? multiResult.n_violations + '/' + (multiResult.n_trials || nTrials) : 'N/A'}
                   </div>
-                  <div className="text-[9px] text-neutral-600 font-mono">{t('redteam.studio.v2.violations_total')}</div>
+                  <div className="text-[9px] text-neutral-400 font-mono">{t('redteam.studio.v2.violations_total')}</div>
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function MetricsPanel({
           {sepResult && (
             <div className="p-3 bg-neutral-950 rounded border border-neutral-800 space-y-2">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">
+                <span className="text-[10px] font-mono font-bold text-neutral-300 uppercase tracking-wider">
                   {t('redteam.studio.v2.sep_score')}
                 </span>
                 {!sepResult.statistically_valid && (
@@ -139,25 +139,25 @@ export default function MetricsPanel({
                   <div className={'text-2xl font-bold font-mono ' + (sepResult.sep_score >= 0.5 ? 'text-green-400' : 'text-red-400')}>
                     {sepResult.sep_score !== undefined ? sepResult.sep_score.toFixed(3) : 'N/A'}
                   </div>
-                  <div className="text-[9px] text-neutral-600 font-mono">Sep(M) score</div>
+                  <div className="text-[9px] text-neutral-400 font-mono">Sep(M) score</div>
                 </div>
                 <div>
                   <div className="text-lg font-bold text-red-400 font-mono">
                     {sepResult.p_data !== undefined ? (sepResult.p_data * 100).toFixed(1) + '%' : 'N/A'}
                   </div>
-                  <div className="text-[9px] text-neutral-600 font-mono">P(viol|data)</div>
+                  <div className="text-[9px] text-neutral-400 font-mono">P(viol|data)</div>
                 </div>
                 <div>
                   <div className="text-lg font-bold text-orange-400 font-mono">
                     {sepResult.p_instr !== undefined ? (sepResult.p_instr * 100).toFixed(1) + '%' : 'N/A'}
                   </div>
-                  <div className="text-[9px] text-neutral-600 font-mono">P(viol|instr)</div>
+                  <div className="text-[9px] text-neutral-400 font-mono">P(viol|instr)</div>
                 </div>
                 <div>
                   <div className="text-lg font-bold text-cyan-400 font-mono">
                     {sepResult.interpretation || 'N/A'}
                   </div>
-                  <div className="text-[9px] text-neutral-600 font-mono">Interpretation</div>
+                  <div className="text-[9px] text-neutral-400 font-mono">Interpretation</div>
                 </div>
               </div>
               {sepResult.warnings && sepResult.warnings.length > 0 && (
@@ -173,13 +173,13 @@ export default function MetricsPanel({
             <div className="p-3 bg-neutral-950 rounded border border-neutral-800 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">
+                  <span className="text-[10px] font-mono font-bold text-neutral-300 uppercase tracking-wider">
                     {t('redteam.studio.v2.svc_title')}
                   </span>
                   <span className={'px-2 py-0.5 text-[9px] font-mono font-bold rounded border ' +
                     (svcResult.high_potential ? 'bg-red-500/15 text-red-400 border-red-500/30'
                       : svcResult.svc >= 0.5 ? 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30'
-                      : 'bg-neutral-800 text-neutral-500 border-neutral-700')}>
+                      : 'bg-neutral-800 text-neutral-400 border-neutral-700')}>
                     {svcResult.interpretation}
                   </span>
                 </div>
@@ -216,8 +216,8 @@ export default function MetricsPanel({
               {/* MITRE + Missing dims */}
               <div className="flex items-center gap-4 text-[9px] font-mono">
                 {svcResult.mitre_ttps && svcResult.mitre_ttps.length > 0 && (
-                  <div className="text-neutral-500">
-                    <span className="text-neutral-600">MITRE: </span>
+                  <div className="text-neutral-400">
+                    <span className="text-neutral-400">MITRE: </span>
                     {svcResult.mitre_ttps.join(', ')}
                   </div>
                 )}
@@ -236,7 +236,7 @@ export default function MetricsPanel({
             <div className="p-3 bg-neutral-950 rounded border border-neutral-800 space-y-2">
               <div className="flex items-center gap-2">
                 <ShieldAlert size={12} className="text-red-500" />
-                <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">
+                <span className="text-[10px] font-mono font-bold text-neutral-300 uppercase tracking-wider">
                   {t('redteam.studio.v2.threat')}
                 </span>
                 <span className={'px-2 py-0.5 text-[9px] font-mono font-bold rounded border ' + riskLevel(threatScore).color}>
@@ -246,7 +246,7 @@ export default function MetricsPanel({
               <div className="flex items-center gap-3">
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[9px] text-neutral-600 font-mono">{t('redteam.studio.v2.threat.score')}</span>
+                    <span className="text-[9px] text-neutral-400 font-mono">{t('redteam.studio.v2.threat.score')}</span>
                     <span className={'text-lg font-bold font-mono ' + threatTextColor(threatScore)}>
                       {threatScore.toFixed(4)}
                     </span>
@@ -268,7 +268,7 @@ export default function MetricsPanel({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Scale size={12} className="text-purple-500" />
-                  <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">
+                  <span className="text-[10px] font-mono font-bold text-neutral-300 uppercase tracking-wider">
                     {t('redteam.studio.v2.judge')}
                   </span>
                 </div>
@@ -289,7 +289,7 @@ export default function MetricsPanel({
 
               {/* Effectiveness score */}
               <div className="flex items-center gap-3 pt-1 border-t border-neutral-800">
-                <span className="text-[9px] text-neutral-600 font-mono">{t('redteam.studio.v2.judge.effectiveness')}</span>
+                <span className="text-[9px] text-neutral-400 font-mono">{t('redteam.studio.v2.judge.effectiveness')}</span>
                 <span className={'text-lg font-bold font-mono ' + (judgeResult.effectiveness >= 0.5 ? 'text-red-400' : judgeResult.effectiveness >= 0.2 ? 'text-yellow-400' : 'text-green-400')}>
                   {judgeResult.effectiveness !== null && judgeResult.effectiveness !== undefined ? judgeResult.effectiveness.toFixed(4) : 'N/A'}
                 </span>
@@ -304,7 +304,7 @@ export default function MetricsPanel({
               {/* Judge reasoning */}
               {judgeResult.reasoning && (
                 <div className="pt-1 border-t border-neutral-800">
-                  <div className="text-[9px] text-neutral-600 font-mono mb-1">{t('redteam.studio.v2.judge.reasoning')}</div>
+                  <div className="text-[9px] text-neutral-400 font-mono mb-1">{t('redteam.studio.v2.judge.reasoning')}</div>
                   <div className="text-[10px] text-neutral-400 italic leading-relaxed line-clamp-3">
                     {judgeResult.reasoning}
                   </div>

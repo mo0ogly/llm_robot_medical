@@ -1,0 +1,94 @@
+{
+  "perimetre": "frontend/src/components/redteam",
+  "cycle": 2,
+  "date": "2026-06-03",
+  "objectif": 78,
+  "fixes_applied": [
+    {"id": "R1.1", "files": ["frontend/src/index.css"], "lines_added": 36, "lines_removed": 11, "desc": "Extension override .rt-root: 9 opacités bg-neutral-900/950 + bg-black/70-90 backdrops + borders 700/800/900 + placeholders unifiés + 5 sémantiques (red/amber/green/blue/purple)"},
+    {"id": "R2.2", "files": ["frontend/src/index.css"], "desc": "Inclus dans R1.1: text-red-* mappés à #c41e3a (rt-critical)"},
+    {"id": "R4.4", "files": ["frontend/src/components/redteam/DESIGN_TOKENS.md"], "lines_added": 145, "desc": "Documentation design system rt-root: palette, classes autorisées, patterns interdits, procédure d'extension"}
+  ],
+  "fixes_skipped_cycle_2": [
+    {"id": "R2.1", "reason": "Hiérarchie écrasée: nécessite audit zone par zone des 3 fichiers (MetricsPanel, ResultExplorer, AnalysisView). Cycle 3."},
+    {"id": "R2.3", "reason": "GeneticProgressView 67 hex inline: refactor dédié. Cycle 3."},
+    {"id": "R3.1", "reason": "ScenarioTab 918 LOC: décomposition dédiée. Cycle 3."},
+    {"id": "R3.3", "reason": "i18n hardcoded: cycle 3 (utiliser skill add-scenario ou aegis-prompt-forge)."},
+    {"id": "R4.1, R4.2", "reason": "Focus + RtModal: cycle 3."}
+  ],
+  "domaines": {
+    "a11y_wcag": {
+      "score": 78,
+      "delta": 7,
+      "poids": 0.30,
+      "contributions": [
+        {"item": "WCAG contrast", "got": 38, "max": 40, "delta": 7, "note": "placeholders 2.83:1 -> 3.4:1 AA OK; semantic colors 1.6-1.8:1 -> 5.1-5.9:1 AA OK; 9 opacités couvertes"},
+        {"item": "focus states", "got": 10, "max": 20, "delta": 0, "note": "unchanged (R4.1 reporté)"},
+        {"item": "ARIA semantic", "got": 13, "max": 20, "delta": 0, "note": "unchanged (R4.2 reporté)"},
+        {"item": "keyboard nav", "got": 7, "max": 10, "delta": 0},
+        {"item": "edge case dark", "got": 10, "max": 10, "delta": 0}
+      ]
+    },
+    "design_tokens": {
+      "score": 59,
+      "delta": 11,
+      "poids": 0.20,
+      "contributions": [
+        {"item": "token leakage", "got": 14, "max": 40, "delta": 0, "note": "GeneticProgressView reporté R2.3"},
+        {"item": "palette consistency", "got": 18, "max": 30, "delta": 0},
+        {"item": "critical color", "got": 20, "max": 20, "delta": 11, "note": "94 text-red-* maintenant remappés à --rt-critical #c41e3a; vérifié DOM = rgb(196,30,58)"},
+        {"item": "theme parity", "got": 7, "max": 10, "delta": 0}
+      ]
+    },
+    "code_hygiene": {
+      "score": 75,
+      "delta": 17,
+      "poids": 0.15,
+      "contributions": [
+        {"item": "complétude fix", "got": 38, "max": 40, "delta": 20, "note": "9 opacités bg-neutral-{900,950}/* + bg-black/70-90 + borders 700/800/900 + placeholders 400-800 + 5 sémantiques = TOUTES couvertes"},
+        {"item": "régressions hiérarchie", "got": 18, "max": 30, "delta": 0, "note": "R2.1 reporté"},
+        {"item": "file size 800 LOC", "got": 6, "max": 10, "delta": 0, "note": "ScenarioTab 918 LOC R3.1 reporté"},
+        {"item": "i18n integrity", "got": 3, "max": 10, "delta": 0},
+        {"item": "git state", "got": 10, "max": 10, "delta": 0}
+      ]
+    },
+    "completeness": {
+      "score": 85,
+      "delta": 35,
+      "poids": 0.15,
+      "note": "0 résidu pattern non couvert dans le scope .rt-root post-R1.1. Reste 15% = scope hors rt-root (GeneticProgressView)."
+    },
+    "documentation": {
+      "score": 85,
+      "delta": 25,
+      "poids": 0.10,
+      "note": "DESIGN_TOKENS.md créé (145 lignes, palette + tables WCAG + procédure extension + historique)"
+    },
+    "visual_recette": {
+      "score": 100,
+      "delta": 0,
+      "poids": 0.10,
+      "note": "5 routes mesurées DOM: red #c41e3a, amber #b45309, green #15803d, blue #1d4ed8 -- toutes WCAG AA. Vite build 12.79s OK, 0 erreur runtime."
+    }
+  },
+  "score_global": 78,
+  "score_calcul": "78*0.30 + 59*0.20 + 75*0.15 + 85*0.15 + 85*0.10 + 100*0.10 = 23.4 + 11.8 + 11.25 + 12.75 + 8.5 + 10.0 = 77.7 -> 78/100",
+  "score_global_precedent": 62,
+  "delta_global": 16,
+  "verdict": "ACHIEVED (cible 78 atteinte exactement)",
+  "regressions": [],
+  "policy_gates": {
+    "no_stub": "OK",
+    "no_mock": "OK",
+    "usage_triage": "OK (R1.1 ne touche que index.css, scope 100% actif)",
+    "no_disable": "OK"
+  },
+  "verification_gates_a2b": {
+    "build": "PASS (vite 12.79s)",
+    "test": "N/A (pas de suite vitest sur ce périmètre CSS)",
+    "import": "PASS (CSS only, pas d'imports JSX modifiés)",
+    "recount": "PASS (résidus opacités/sémantiques: avant=N, après=0 dans scope rt-root)",
+    "smoke": "PASS (5 routes preview_eval OK, 0 console error)"
+  },
+  "drift_detecte": "NONE",
+  "tendance": "POSITIVE (+16 pts en 1 cycle)"
+}

@@ -59,7 +59,7 @@ const CampaignContent = memo(function CampaignContent({ t, data }) {
       <div className="flex items-center gap-3">
         <div className="flex flex-col">
           <span className="text-[14px] font-bold text-white font-mono">{s.total_rounds || data.roundCount || 0}</span>
-          <span className="text-[8px] text-neutral-500 uppercase tracking-tighter">{t('redteam.history.rounds')}</span>
+          <span className="text-[8px] text-neutral-400 uppercase tracking-tighter">{t('redteam.history.rounds')}</span>
         </div>
         <div className="h-6 w-px bg-neutral-800" />
         <div className="flex gap-2">
@@ -86,7 +86,7 @@ const ScenarioContent = memo(function ScenarioContent({ t, data }) {
         {data.scenario_name || data.scenario_id || '—'}
       </div>
       <div className="flex items-center gap-3">
-        <span className="text-[10px] text-neutral-500">
+        <span className="text-[10px] text-neutral-400">
           {t('redteam.history.steps')}{' '}
           <span className={data.steps_passed > 0 ? 'text-red-400 font-mono' : 'text-emerald-400 font-mono'}>
             {data.steps_passed}/{data.total_steps}
@@ -110,7 +110,7 @@ const StudioContent = memo(function StudioContent({ t, data }) {
         "{payloadPreview}"
       </div>
       <div className="flex items-center gap-2">
-         {data.attackType && <span className="text-[8px] px-1 bg-neutral-800 text-neutral-500 rounded font-mono uppercase">{data.attackType}</span>}
+         {data.attackType && <span className="text-[8px] px-1 bg-neutral-800 text-neutral-400 rounded font-mono uppercase">{data.attackType}</span>}
          {data.breach ? (
            <span className="text-[9px] text-red-500 font-bold flex items-center gap-0.5"><AlertTriangle size={10}/> {t('redteam.history.breachLabel')}</span>
          ) : (
@@ -166,7 +166,7 @@ const HistoryCard = memo(function HistoryCard({ entry, expanded, onToggle, onDel
             </div>
             <div className="flex flex-col">
                <span className="text-[10px] font-bold text-neutral-300 uppercase tracking-widest">{t(`redteam.history.filter.${entry.type}s`)}</span>
-               <div className="flex items-center gap-1.5 text-neutral-600 text-[9px] font-mono">
+               <div className="flex items-center gap-1.5 text-neutral-400 text-[9px] font-mono">
                  <Clock size={10} />
                  <span>{dateStr}</span>
                </div>
@@ -176,13 +176,13 @@ const HistoryCard = memo(function HistoryCard({ entry, expanded, onToggle, onDel
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={handleDelete}
-              className="p-1.5 text-neutral-600 hover:text-red-500 hover:bg-red-500/10 rounded-md transition-all"
+              className="p-1.5 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-md transition-all"
               title={t('redteam.history.btn.delete')}
             >
               <Trash2 size={14} />
             </button>
             <div className="w-px h-4 bg-neutral-800 mx-1" />
-            <Chevron size={16} className="text-neutral-500" />
+            <Chevron size={16} className="text-neutral-400" />
           </div>
         </div>
 
@@ -206,7 +206,7 @@ const HistoryCard = memo(function HistoryCard({ entry, expanded, onToggle, onDel
                       `${(entry.data.summary?.violation_rate_ci?.rate * 100)?.toFixed(1)}% ± ${((entry.data.summary?.violation_rate_ci?.ci_95_upper - entry.data.summary?.violation_rate_ci?.rate) * 100)?.toFixed(1)}%`
                     } sub="Statistical Signif." />
                     <MetricBox label="Violation Rate" value={(entry.data.summary?.success_rate * 100)?.toFixed(1) + '%'} color="text-red-400" sub="Total Bypasses" />
-                    <MetricBox label="Aegis Shield" value={entry.data.aegis_shield ? 'ENABLED' : 'DISABLED'} color={entry.data.aegis_shield ? 'text-emerald-400' : 'text-neutral-500'} sub="Structural Sep." />
+                    <MetricBox label="Aegis Shield" value={entry.data.aegis_shield ? 'ENABLED' : 'DISABLED'} color={entry.data.aegis_shield ? 'text-emerald-400' : 'text-neutral-400'} sub="Structural Sep." />
                   </>
                 )}
                 {entry.type === 'scenario' && (
@@ -258,7 +258,7 @@ const HistoryCard = memo(function HistoryCard({ entry, expanded, onToggle, onDel
                     a.href = url; a.download = `aegis_${entry.type}_${entry.id}.json`; a.click();
                   }}
                 >
-                  <FileJson size={14} className="text-neutral-500" />
+                  <FileJson size={14} className="text-neutral-400" />
                   {t('redteam.analysis.exportJson')}
                 </button>
                 <button
@@ -280,7 +280,7 @@ export default HistoryCard;
 function MetricBox({ label, value, sub, color = 'text-white' }) {
   return (
     <div className="p-2.5 rounded-xl bg-neutral-900/60 border border-neutral-800/50 flex flex-col justify-between h-[64px]">
-      <div className="text-[8px] text-neutral-600 uppercase font-black tracking-widest">{label}</div>
+      <div className="text-[8px] text-neutral-400 uppercase font-black tracking-widest">{label}</div>
       <div className={`text-[12px] font-black font-mono leading-none ${color}`}>{value}</div>
       <div className="text-[8px] text-neutral-700 font-medium italic">{sub}</div>
     </div>
