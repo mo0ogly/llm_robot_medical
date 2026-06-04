@@ -55,5 +55,65 @@ def load_backend_env() -> None:
         return
 
 
+def _mitmproxy_listen_addr() -> tuple:
+    """Derive mitmproxy's (host, port) from proxy env, default 127.0.0.1:8080."""
+    proxy = (os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+             or os.environ.get("HTTP_PROXY") or os.environ.get("http_proxy") or "")
+    host, port = "127.0.0.1", 8080
+    if "://" in proxy:
+        proxy = proxy.split("://", 1)[1]
+    hostpart = proxy.split("/", 1)[0] if proxy else ""
+    if hostpart:
+        if ":" in hostpart:
+            h, _, p = hostpart.partition(":")
+            host = h or host
+            try:
+                port = int(p)
+            except ValueError:
+                pass
+        else:
+            host = hostpart
+    return host, port
+
+
+def ensure_tls_ca() -> None:
+    """Guard a stale mitmproxy CA pin from breaking direct HTTPS.
+
+    The dev environment may pin SSL_CERT_FILE to the mitmproxy CA
+    (~/.mitmproxy/mitmproxy-ca-cert.pem) for traffic interception. When
+    mitmproxy is NOT running, public TLS endpoints (e.g. api.groq.com) present
+    their real chain, which that CA cannot verify -> every httpx/requests call
+    fails with CERTIFICATE_VERIFY_FAILED. If the pin is present but mitmproxy is
+    unreachable, fall back to the certifi bundle so direct connections verify
+    normally. No-op when no mitmproxy pin is set or when mitmproxy is actually
+    listening (interception stays intact).
+
+    Documented failure mode (2026-06-04): F46 full calibration aborted at the
+    Groq healthcheck (SSL CERTIFICATE_VERIFY_FAILED) because SSL_CERT_FILE was
+    pinned to the mitmproxy CA while mitmproxy was down.
+    """
+    import socket
+
+    pin = os.environ.get("SSL_CERT_FILE", "") or os.environ.get("REQUESTS_CA_BUNDLE", "")
+    if "mitmproxy" not in pin.lower():
+        return  # no mitmproxy pin -> leave the environment untouched
+
+    host, port = _mitmproxy_listen_addr()
+    try:
+        with socket.create_connection((host, port), timeout=0.5):
+            return  # mitmproxy is up -> keep interception, keep the pin
+    except OSError:
+        pass  # mitmproxy down -> fall back to certifi below
+
+    try:
+        import certifi
+    except ImportError:
+        return  # nothing better to fall back to
+    ca = certifi.where()
+    os.environ["SSL_CERT_FILE"] = ca
+    os.environ["REQUESTS_CA_BUNDLE"] = ca
+
+
 # Auto-execute a l'import
 load_backend_env()
+ensure_tls_ca()
