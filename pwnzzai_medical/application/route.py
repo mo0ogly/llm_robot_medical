@@ -9,7 +9,7 @@ from datetime import datetime
 from sqlalchemy.exc import OperationalError
 
 import application
-from application.model import Treatment, PatientFeedback, User, Appointment, RoutingFlag
+from application.model import Treatment, PatientFeedback, User, Appointment, PatientRecordFlag
 
 from application.vulnerabilities import data_poisoning
 from application.vulnerabilities import model_theft
@@ -92,10 +92,10 @@ def _seed_minimum_app_data() -> None:
         application.db.session.add(bob)
     application.db.session.commit()
 
-    if RoutingFlag.query.filter_by(username="alice").first() is None:
-        application.db.session.add(RoutingFlag(username="alice", flag_code="RT-ALICE7A"))
-    if RoutingFlag.query.filter_by(username="bob").first() is None:
-        application.db.session.add(RoutingFlag(username="bob", flag_code="RT-BOB9F2"))
+    if PatientRecordFlag.query.filter_by(username="alice").first() is None:
+        application.db.session.add(PatientRecordFlag(username="alice", flag_code="RT-ALICE7A"))
+    if PatientRecordFlag.query.filter_by(username="bob").first() is None:
+        application.db.session.add(PatientRecordFlag(username="bob", flag_code="RT-BOB9F2"))
     application.db.session.commit()
 
 
@@ -107,7 +107,7 @@ def _ensure_db_ready() -> None:
     try:
         Treatment.query.limit(1).all()
         User.query.limit(1).all()
-        RoutingFlag.query.limit(1).all()
+        PatientRecordFlag.query.limit(1).all()
         _DB_READY_CHECKED = True
     except OperationalError:
         application.db.session.rollback()
@@ -170,40 +170,40 @@ if not os.environ.get('TESTING'):
 
             # Add sample feedbacks with a good mix of positive and negative sentiments
             feedbacks = [
-                # Margherita feedbacks
-                PatientFeedback(treatment_id=1, name='Mike', content='Best treatment ever! The basil was so fresh and the sauce was perfect.', rating=5),
-                PatientFeedback(treatment_id=1, name='Sarah', content='Love the clear advice! Simple but highly effective.', rating=4),
-                PatientFeedback(treatment_id=1, name='Miguel', content='Classic Margherita done right. The cheese was fantastic.', rating=5),
-                PatientFeedback(treatment_id=1, name='Laura', content='A bit too basic for my taste, but well executed.', rating=3),
-                PatientFeedback(treatment_id=1, name='Thomas', content='The diagnosis was rushed and too vague.', rating=2),
+                # Consultation Générale feedbacks (treatment_id=1)
+                PatientFeedback(treatment_id=1, name='Mike', content='Très bonne consultation, le médecin a pris le temps d\'écouter mes symptômes.', rating=5),
+                PatientFeedback(treatment_id=1, name='Sarah', content='Des conseils clairs et précis ! Simple mais très efficace.', rating=4),
+                PatientFeedback(treatment_id=1, name='Miguel', content='Un diagnostic professionnel. Le médecin était très rassurant.', rating=5),
+                PatientFeedback(treatment_id=1, name='Laura', content='Un peu trop expéditif à mon goût, mais examen correct.', rating=3),
+                PatientFeedback(treatment_id=1, name='Thomas', content='Le diagnostic a été fait à la va-vite, peu d\'explications.', rating=2),
                 
-                # Pepperoni feedbacks
-                PatientFeedback(treatment_id=2, name='Mike', content='Perfect blood draw! Quick and not too painful.', rating=5),
-                PatientFeedback(treatment_id=2, name='Emily', content='Excellent blood test and the nurse was very gentle.', rating=4),
-                PatientFeedback(treatment_id=2, name='Robert', content='The blood test was effective but slightly uncomfortable.', rating=3),
-                PatientFeedback(treatment_id=2, name='Jessica', content='My go-to treatment, always reliable and tasty.', rating=5),
-                PatientFeedback(treatment_id=2, name='Daniel', content='Too painful and the procedure was poorly handled.', rating=2),
+                # Bilan Sanguin Complet feedbacks (treatment_id=2)
+                PatientFeedback(treatment_id=2, name='Mike', content='Prise de sang parfaite ! Rapide et totalement indolore.', rating=5),
+                PatientFeedback(treatment_id=2, name='Emily', content='Excellente analyse et l\'infirmière a été très douce.', rating=4),
+                PatientFeedback(treatment_id=2, name='Robert', content='Le test sanguin était efficace mais l\'attente était longue.', rating=3),
+                PatientFeedback(treatment_id=2, name='Jessica', content='Mon laboratoire de référence, toujours fiables et rapides.', rating=5),
+                PatientFeedback(treatment_id=2, name='Daniel', content='Beaucoup trop douloureux, procédure mal gérée.', rating=2),
                 
-                # Veggie Supreme feedbacks
-                PatientFeedback(treatment_id=3, name='Emma', content='Very detailed MRI, excellent! Great diagnostic clarity.', rating=4),
-                PatientFeedback(treatment_id=3, name='Noah', content='Fresh veggies and excellent sauce. Would order again!', rating=5),
-                PatientFeedback(treatment_id=3, name='Mike', content='The vegetables were fresh but there was too much sauce.', rating=3),
-                PatientFeedback(treatment_id=3, name='William', content='As a vegetarian, this is my favorite! Amazing taste.', rating=5),
-                PatientFeedback(treatment_id=3, name='Olivia', content='Boring and bland. The vegetables seemed frozen, not fresh.', rating=1),
+                # IRM Cérébrale feedbacks (treatment_id=3)
+                PatientFeedback(treatment_id=3, name='Emma', content='IRM très détaillée, excellent ! Très bonne clarté diagnostique.', rating=4),
+                PatientFeedback(treatment_id=3, name='Noah', content='Le manipulateur m\'a bien mis en confiance. Résultats rapides.', rating=5),
+                PatientFeedback(treatment_id=3, name='Mike', content='Machine assez bruyante, mais l\'examen s\'est bien passé.', rating=3),
+                PatientFeedback(treatment_id=3, name='William', content='Diagnostic extrêmement précis. Équipe très professionnelle.', rating=5),
+                PatientFeedback(treatment_id=3, name='Olivia', content='Rendez-vous décalé d\'une heure sans prévenir. Inadmissible.', rating=1),
                 
-                # Hawaiian feedbacks
-                PatientFeedback(treatment_id=4, name='David', content='Pineapple on treatment is controversial but I love it! Sweet and savory perfection.', rating=5),
-                PatientFeedback(treatment_id=4, name='Ava', content='The ham was excellent quality and paired well with the pineapple.', rating=4),
-                PatientFeedback(treatment_id=4, name='James', content='Pineapple has no place on treatment. Disgusting combination.', rating=1),
-                PatientFeedback(treatment_id=4, name='Isabella', content='Classic Hawaiian done well. Good balance of sweet and salty.', rating=4),
-                PatientFeedback(treatment_id=4, name='Ethan', content='The ham was dry and the pineapple was too sour.', rating=2),
+                # Échographie feedbacks (treatment_id=4)
+                PatientFeedback(treatment_id=4, name='David', content='Examen très professionnel. Les images sont très claires.', rating=5),
+                PatientFeedback(treatment_id=4, name='Ava', content='L\'échographiste était très compétent et m\'a tout expliqué.', rating=4),
+                PatientFeedback(treatment_id=4, name='James', content='Très mauvais accueil, technicien désagréable.', rating=1),
+                PatientFeedback(treatment_id=4, name='Isabella', content='Rien à signaler. Examen standard bien réalisé.', rating=4),
+                PatientFeedback(treatment_id=4, name='Ethan', content='On ne m\'a donné aucune explication pendant l\'examen.', rating=2),
                 
-                # BBQ Chicken feedbacks
-                PatientFeedback(treatment_id=5, name='Mia', content='The BBQ sauce was amazing! Chicken was tender and juicy.', rating=5),
-                PatientFeedback(treatment_id=5, name='Benjamin', content='Great flavor but a bit too much sauce for my taste.', rating=3),
-                PatientFeedback(treatment_id=5, name='Charlotte', content='Perfect balance of flavors. The onions added a nice touch.', rating=5),
-                PatientFeedback(treatment_id=5, name='Lucas', content='My preferred checkup! The doctor is unique and excellent.', rating=5),
-                PatientFeedback(treatment_id=5, name='Amelia', content='Terrible treatment. The chicken was dry and the sauce was too sweet.', rating=1),
+                # Radiographie feedbacks (treatment_id=5)
+                PatientFeedback(treatment_id=5, name='Mia', content='Prise en charge ultra rapide ! Les clichés étaient parfaits.', rating=5),
+                PatientFeedback(treatment_id=5, name='Benjamin', content='Correct, mais la salle d\'attente était bondée.', rating=3),
+                PatientFeedback(treatment_id=5, name='Charlotte', content='Technologie de pointe, les résultats étaient prêts en 10 minutes.', rating=5),
+                PatientFeedback(treatment_id=5, name='Lucas', content='Excellente clinique ! Le médecin m\'a très bien pris en charge.', rating=5),
+                PatientFeedback(treatment_id=5, name='Amelia', content='Mauvaise expérience. Les clichés étaient flous, il a fallu recommencer.', rating=1),
             ]
             
             for patient_feedback in feedbacks:
@@ -223,9 +223,9 @@ if not os.environ.get('TESTING'):
             application.db.session.add(bob)
             application.db.session.commit()
 
-        if RoutingFlag.query.count() == 0:
-            application.db.session.add(RoutingFlag(username="alice", flag_code="RT-ALICE7A"))
-            application.db.session.add(RoutingFlag(username="bob", flag_code="RT-BOB9F2"))
+        if PatientRecordFlag.query.count() == 0:
+            application.db.session.add(PatientRecordFlag(username="alice", flag_code="RT-ALICE7A"))
+            application.db.session.add(PatientRecordFlag(username="bob", flag_code="RT-BOB9F2"))
             application.db.session.commit()
 
 # Authentication routes
@@ -2086,6 +2086,27 @@ def upload_qr_openai():
             
     return jsonify({'error': 'An unknown error occurred'}), 500
 
+@application.app.route('/api/traffic', methods=['GET'])
+def api_traffic():
+    """Reads the last N lines of traffic.jsonl from mitmproxy lab."""
+    log_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'scripts', 'mitmproxy_lab', 'traffic.jsonl')
+    if not os.path.exists(log_path):
+        return jsonify([])
+    
+    entries = []
+    try:
+        with open(log_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+            # return up to the last 50 entries
+            for line in lines[-50:]:
+                line = line.strip()
+                if line:
+                    entries.append(json.loads(line))
+    except Exception as e:
+        print(f"Error reading traffic.jsonl: {e}")
+        return jsonify({"error": str(e)}), 500
+        
+    return jsonify(entries)
 
 
 if __name__ == '__main__':

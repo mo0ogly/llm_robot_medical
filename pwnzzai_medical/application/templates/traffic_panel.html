@@ -1,0 +1,90 @@
+<!-- Traffic Observer Offcanvas Panel -->
+<div id="traffic-observer-panel" class="traffic-panel">
+    <div class="traffic-panel-header">
+        <h3><i class="fas fa-network-wired"></i> Live Traffic Observer</h3>
+        <button id="close-traffic-observer" class="close-btn">&times;</button>
+    </div>
+    <div class="traffic-panel-content">
+        <p class="traffic-status"><i class="fas fa-circle text-success pulse"></i> Listening for mitmproxy JSONL logs...</p>
+        <div id="monaco-editor-container" style="height: 100%; width: 100%;"></div>
+    </div>
+</div>
+
+<!-- Monaco Editor Library via CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.38.0/min/vs/loader.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const panel = document.getElementById('traffic-observer-panel');
+        const openBtn = document.getElementById('toggle-traffic-observer');
+        const closeBtn = document.getElementById('close-traffic-observer');
+        let editor = null;
+        let trafficInterval = null;
+
+        // Ensure button exists before attaching event (in case it's missed)
+        if (openBtn) {
+            openBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                panel.classList.add('open');
+                initMonaco();
+                startPolling();
+            });
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                panel.classList.remove('open');
+                stopPolling();
+            });
+        }
+
+        function initMonaco() {
+            if (editor) return; // Already initialized
+            require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.38.0/min/vs' }});
+            require(['vs/editor/editor.main'], function() {
+                editor = monaco.editor.create(document.getElementById('monaco-editor-container'), {
+                    value: "[\n  // Waiting for traffic...\n]",
+                    language: 'json',
+                    theme: 'vs-dark',
+                    readOnly: true,
+                    automaticLayout: true,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    wordWrap: 'on',
+                    folding: true,
+                    showFoldingControls: 'always'
+                });
+            });
+        }
+
+        function fetchTraffic() {
+            fetch('/api/traffic')
+                .then(res => res.json())
+                .then(data => {
+                    if (editor && data && !data.error) {
+                        const formatted = JSON.stringify(data, null, 2);
+                        // Only update if changed to prevent cursor jump
+                        if (editor.getValue() !== formatted) {
+                            editor.setValue(formatted);
+                            // Auto scroll to bottom
+                            const lineCount = editor.getModel().getLineCount();
+                            editor.revealLine(lineCount);
+                        }
+                    }
+                })
+                .catch(err => console.error("Traffic Observer Error:", err));
+        }
+
+        function startPolling() {
+            fetchTraffic();
+            trafficInterval = setInterval(fetchTraffic, 2000);
+        }
+
+        function stopPolling() {
+            if (trafficInterval) {
+                clearInterval(trafficInterval);
+                trafficInterval = null;
+            }
+        }
+    });
+</script>

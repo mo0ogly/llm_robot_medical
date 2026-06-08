@@ -97,6 +97,7 @@ from server_constants import (
     CompareRequest,
     CYBER_SYSTEM_PROMPT,
     CyberQueryRequest,
+    COMPROMISED_MODEL_PROMPT,
 )
 
 
@@ -105,6 +106,16 @@ async def health():
     try:
         await client.list()
         return {"status": "ok", "model": MODEL_NAME, "cyber_model": CYBER_MODEL_NAME}
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+@app.get("/api/models")
+async def get_models():
+    """List available local Ollama models."""
+    try:
+        response = await client.list()
+        models = [m.get("name") for m in response.get("models", [])]
+        return {"models": models, "default": MODEL_NAME}
     except Exception as e:
         raise HTTPException(status_code=503, detail=str(e))
 
@@ -151,7 +162,7 @@ async def query_stream(req: QueryRequest, request: Request):
     async def event_generator():
         try:
             prompts = LOCALIZED_PROMPTS.get(req.lang, LOCALIZED_PROMPTS["en"])
-            system_prompt = prompts["davinci"]
+            system_prompt = COMPROMISED_MODEL_PROMPT if req.is_swapped else prompts["davinci"]
 
             if req.disable_tools:
                 # Debate mode: Da Vinci responds with text only, no tool calling
@@ -184,7 +195,7 @@ async def query_stream(req: QueryRequest, request: Request):
                     messages.append({"role": "user", "content": instruction})
 
                 stream = await client.chat(
-                    model=MODEL_NAME,
+                    model=req.model or MODEL_NAME,
                     messages=messages,
                     stream=True
                 )
@@ -200,9 +211,9 @@ async def query_stream(req: QueryRequest, request: Request):
                 # Normal mode: check for tool calls first
                 print("Checking for tool calls...")
                 response = await client.chat(
-                    model=MODEL_NAME,
+                    model=req.model or MODEL_NAME,
                     messages=[
-                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_prompt},
                     ],
                     tools=TOOLS
@@ -230,7 +241,7 @@ async def query_stream(req: QueryRequest, request: Request):
                 else:
                     print(f"No tool calls. Starting stream ({req.lang})...")
                     stream = await client.chat(
-                        model=MODEL_NAME,
+                        model=req.model or MODEL_NAME,
                         messages=[
                             {"role": "system", "content": system_prompt},
                             {"role": "user", "content": user_prompt},
@@ -275,7 +286,7 @@ async def query_compare(req: CompareRequest, request: Request):
             async def stream_source(label, prompt_text):
                 try:
                     stream = await client.chat(
-                        model=MODEL_NAME,
+                        model=req.model or MODEL_NAME,
                         messages=[
                             {"role": "system", "content": system_prompt},
                             {"role": "user", "content": prompt_text},
@@ -367,7 +378,7 @@ async def cyber_query_stream(req: CyberQueryRequest, request: Request):
     async def event_generator():
         try:
             stream = await client.chat(
-                model=CYBER_MODEL_NAME,
+                model=req.model or CYBER_MODEL_NAME,
                 messages=[
                     {"role": "system", "content": cyber_system_prompt},
                     {"role": "user", "content": conversation_context},
@@ -405,6 +416,7 @@ from routes.aside_routes import router as aside_router
 from routes.events_routes import router as events_router
 from routes.defense_routes import router as defense_router
 from routes.metrics_routes import router as metrics_router
+from routes.semantic_routes import router as semantic_router
 
 app.include_router(config_router)
 app.include_router(template_router)
@@ -419,6 +431,7 @@ app.include_router(aside_router)
 app.include_router(events_router)
 app.include_router(defense_router)
 app.include_router(metrics_router)
+app.include_router(semantic_router)
 
 
 # Start the redteam artefact watcher on application startup. It polls

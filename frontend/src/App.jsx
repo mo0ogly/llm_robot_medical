@@ -25,6 +25,9 @@ import MitreMatrix from "./components/MitreMatrix";
 import DicomViewer from "./components/DicomViewer";
 import PresenterOverlay from "./components/PresenterOverlay";
 import ReplayControls from "./components/ReplayControls";
+import AnomalyScore from "./components/AnomalyScore";
+import ModelSelector from "./components/ModelSelector";
+import ModelIntegrityPanel from "./components/ModelIntegrityPanel";
 import useRobotSimulation from "./hooks/useRobotSimulation";
 import useSessionRecorder from "./hooks/useSessionRecorder";
 import useSessionPlayer from "./hooks/useSessionPlayer";
@@ -48,6 +51,8 @@ export default function App() {
   const [isGlitching, setIsGlitching] = useState(false);
   const [cyberAction, setCyberAction] = useState('NONE'); // NONE, BLOCK
   const [contextHealth, setContextHealth] = useState(100);
+  const [anomalyData, setAnomalyData] = useState(null);
+  const [currentModel, setCurrentModel] = useState(null);
 
   const { playAlarm } = useAudioEffects();
   const [chatLog, setChatLog] = useState([]);
@@ -239,7 +244,7 @@ export default function App() {
 
     let streamBufferContent = "";
     const recordToUse =
-      (scenario === 'poison' || scenario === 'cascade_attack' || scenario === 'memory_poisoning' || scenario === 'dicom_stego' || scenario === 'model_swap') ? content.record_poison :
+      (scenario === 'poison' || scenario === 'cascade_attack' || scenario === 'memory_poisoning' || scenario === 'dicom_stego') ? content.record_poison :
         scenario === 'ransomware' ? content.record_hacked :
           content.record_safe;
 
@@ -385,6 +390,8 @@ export default function App() {
         prompt: customPrompt || null,
         disable_tools: isDebateRound,
         lang: i18n.language,
+        model: currentModel,
+        is_swapped: scenario === 'model_swap',
         ...(isAutoScan && { auto_scan: true, scan_index: dvScanCountRef.current })
       };
       // Always send session context to Da Vinci so it remembers what was said and avoids repetition
@@ -482,6 +489,22 @@ export default function App() {
         const preview = streamBufferContent.trim().slice(0, 80).replace(/\n/g, ' ');
         addTimelineEvent('ai', 'DA VINCI', preview + (streamBufferContent.length > 80 ? '…' : ''));
         recorder.recordEvent('chat_message', { role: 'assistant', text: streamBufferContent });
+        
+        // Calculate Semantic Anomaly Score
+        if (!isAutoScan && !isDebateRound && scenario !== 'none') {
+          fetch("/api/semantic/score", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              text_a: MOCK_COMPARE_RESPONSES.safe, 
+              text_b: streamBufferContent 
+            })
+          }).then(res => res.json()).then(data => {
+            if (data && data.percentage !== undefined) {
+              setAnomalyData(data);
+            }
+          }).catch(console.error);
+        }
       }
       // Increment Da Vinci scan counter for progressive scan_index (Ollama mode)
       if (isAutoScan) dvScanCountRef.current++;
@@ -497,6 +520,7 @@ export default function App() {
     setScenario("none");
     setCyberAction("NONE");
     setChatLog([]);
+    setAnomalyData(null);
     setIsCompareMode(false);
     setIsReplayMode(false);
     setResetKey(prev => prev + 1);
@@ -870,6 +894,10 @@ export default function App() {
           )}
 
           <div className="h-4 w-[1px] bg-slate-700"></div>
+          
+          <ModelSelector currentModel={currentModel} onModelChange={setCurrentModel} />
+          
+          <div className="h-4 w-[1px] bg-slate-700"></div>
           <select value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)} className="bg-slate-800 border-none text-[9px] text-slate-400 rounded px-1 py-0.5 outline-none">
             <option value="fr">FR</option><option value="en">EN</option><option value="br">BR</option>
           </select>
@@ -895,13 +923,7 @@ export default function App() {
               </div>}
             
             {scenario === 'memory_poisoning' && <ContextErosionMeter health={contextHealth} />}
-            {scenario === 'model_swap' && (
-              <div className="bg-purple-900/20 border border-purple-500/50 rounded p-2 flex flex-col gap-1 text-purple-400 font-mono text-[9px] uppercase shadow-[0_0_15px_rgba(168,85,247,0.2)] animate-pulse">
-                <span className="font-bold flex items-center gap-1"><Skull size={10} /> Supply Chain Compromise</span>
-                <span>System Prompt Checksum: INVALID</span>
-                <span>Safety Guardrails: OVERRIDDEN AT SOURCE</span>
-              </div>
-            )}
+            {scenario === 'model_swap' && <ModelIntegrityPanel />}
             {scenario === 'dicom_stego' && (
               <div className="h-[250px]">
                 <DicomViewer onPayloadExtracted={(payload) => {
@@ -1091,6 +1113,7 @@ export default function App() {
                 onCyberToken={(t) => setLiveSession(p => ({ ...p, aegisTokens: p.aegisTokens + t }))}
                 onCyberDone={() => setLiveSession(p => ({ ...p, aegisStatus: "DONE" }))}
                 disabled={isReplayMode}
+                anomalyData={anomalyData}
               />
             )}
           </div>

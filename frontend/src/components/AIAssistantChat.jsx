@@ -5,6 +5,7 @@ import { MOCK_ESCALATION_AEGIS, buildAegisEscalationPrompt } from "../escalation
 import { useTTS } from "../hooks/useTTS";
 import { useAudioEffects } from "../hooks/useAudioEffects";
 import robotEventBus from "../utils/robotEventBus";
+import AnomalyScore from "./AnomalyScore";
 
 export default function AIAssistantChat({
   chatLog,
@@ -19,6 +20,7 @@ export default function AIAssistantChat({
   onCyberToken,
   onCyberDone,
   disabled = false,
+  anomalyData = null,
 }) {
     const { t, i18n } = useTranslation();
     const bottomRef = useRef(null);
@@ -448,6 +450,12 @@ export default function AIAssistantChat({
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 {t('chat.title')}
             </div>
+
+            {anomalyData && (
+                <div className="px-4 pt-4 shrink-0">
+                    <AnomalyScore percentage={anomalyData.percentage} label={anomalyData.label} />
+                </div>
+            )}
 
             <div className="flex-1 p-4 overflow-y-auto space-y-4 min-h-0 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
                 {chatLog.length === 0 ? (

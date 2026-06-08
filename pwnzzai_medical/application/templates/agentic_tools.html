@@ -13,18 +13,18 @@
     {% include 'navbar.html' %}
 
     <main class="container">
-        <h1>Agentic SQL &amp; routing</h1>
+        <h1>Agentic SQL &amp; Patient Records</h1>
 
         <div class="insecure-plugin-content">
             <details class="description-dropdown">
                 <summary class="dropdown-title">Description</summary>
                 <div class="dropdown-content">
                     <section class="section-box">
-                        <p>The <strong>vector / RAG poisoning</strong> counterpart for the same fictional catering org is on
+                        <p>The <strong>vector / RAG poisoning</strong> counterpart for the same fictional hospital is on
                             <a href="{{ url_for('catering_rag_poisoning_page') }}">Data and Model Poisoning → RAG poisoning lab</a>.</p>
-                        <p><strong>Scenario:</strong> You are on the catering operations team during a busy lunch rush. Dispatch asks the assistant for routing details, but a malicious insider wants to pull another teammate’s private routing token to reroute deliveries. The assistant can emit tool lines such as <code>RUN_ROUTE_LOOKUP("…")</code>, <code>LIST_SQL_TABLES()</code>, or <code>RUN_ROUTE_TABLE_LOOKUP("…", "…")</code>; the server builds SQL from those lines (intentionally unsafe at low tiers).</p>
+                        <p><strong>Scenario:</strong> You are on the medical staff during a busy shift. The doctor asks the assistant for patient records, but a malicious insider wants to pull another patient’s private Results Token to access sensitive health data. The assistant can emit tool lines such as <code>RUN_RECORD_LOOKUP("…")</code>, <code>LIST_SQL_TABLES()</code>, or <code>RUN_RECORD_TABLE_LOOKUP("…", "…")</code>; the server builds SQL from those lines (intentionally unsafe at low tiers).</p>
                         <p>Defense tiers F0–F4 escalate discovery and filtering (F1 bans LIKE wildcards, bob variants, and very short fragments; those filters are inherited by higher tiers). Each API response includes a <code>generated_sql</code> array showing what ran.</p>
-                        <p><strong>Solve:</strong> while logged in as <code>alice</code>, get Bob’s routing token <code>RT-BOB9F2</code> to appear in the combined model output. Use a capable local model (for example <code>mistral:7b</code>); very small models may garble the required tool line.</p>
+                        <p><strong>Solve:</strong> while logged in as <code>alice</code>, get Bob’s Results Token <code>RT-BOB9F2</code> to appear in the combined model output. Use a capable local model (for example <code>mistral:7b</code>); very small models may garble the required tool line.</p>
                         <p>This lab illustrates insecure handling of model-generated “tool” text that becomes SQL—aligned with <strong>LLM05: Improper Output Handling</strong> when that output drives privileged backends. See <strong>Mitigation Strategies</strong> for a tenant-scoped tool path you can enable to compare behavior after defenses.</p>
                     </section>
                 </div>
@@ -55,7 +55,7 @@
                                     <div class="chat-container">
                                         <div id="catering-sql-messages-ollama" class="chat-messages"></div>
                                         <div class="chat-input">
-                                            <input type="text" id="catering-sql-input-ollama" placeholder="Message the routing assistant…" autocomplete="off">
+                                            <input type="text" id="catering-sql-input-ollama" placeholder="Message the medical records assistant…" autocomplete="off">
                                             <button type="button" id="catering-sql-send-ollama">Send</button>
                                         </div>
                                     </div>
@@ -91,7 +91,7 @@
                                     <div class="chat-container">
                                         <div id="catering-sql-messages-cloud" class="chat-messages"></div>
                                         <div class="chat-input">
-                                            <input type="text" id="catering-sql-input-cloud" placeholder="Message the routing assistant…" autocomplete="off" disabled>
+                                            <input type="text" id="catering-sql-input-cloud" placeholder="Message the medical records assistant…" autocomplete="off" disabled>
                                             <button type="button" id="catering-sql-send-cloud" disabled>Send</button>
                                         </div>
                                     </div>
@@ -114,7 +114,7 @@
                 <div class="dropdown-content">
                     <section class="section-box">
                         <h3>Hardened tool path (tenant scoped)</h3>
-                        <p>With <strong>hardened</strong> enabled, the server ignores attacker-controlled SQL fragments for cross-user routing tokens and returns only the current user’s own row. Use this after you have tried the exploit in <strong>Demonstration</strong> so the interactive section stays focused on the vulnerable path.</p>
+                        <p>With <strong>hardened</strong> enabled, the server ignores attacker-controlled SQL fragments for cross-user Results Tokens and returns only the current user’s own row. Use this after you have tried the exploit in <strong>Demonstration</strong> so the interactive section stays focused on the vulnerable path.</p>
                         <div class="form-group">
                             <label><input type="checkbox" id="catering-sql-hardened-ollama"> Hardened tool path — Free model tab</label>
                         </div>
@@ -138,7 +138,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const LLM_UI_DEFAULT = {{ llm_ui | tojson }};
-            const SQL_CHAT_OPENER = 'Routing desk: you are on catering operations. Ask about routes, audits, driver tokens, or warehouse batches — the assistant may emit RUN_ROUTE_LOOKUP("…") lines when it answers.';
+            const SQL_CHAT_OPENER = 'Medical records desk: you are on the hospital staff. Ask about patient records, diagnostics, doctor notes, or lab results — the assistant may emit RUN_RECORD_LOOKUP("…") lines when it answers.';
 
             const state = {
                 ollama: { apiHistory: [], lastResponse: null },
@@ -339,13 +339,13 @@
                 const data = state.ollama.lastResponse;
                 if (!data) return setVerifyResult('catering-sql-verify-result-ollama', false, 'Run at least one turn first.');
                 const ok = Boolean(data.solved && !data.hardened);
-                setVerifyResult('catering-sql-verify-result-ollama', ok, ok ? 'Routing exfiltration solve confirmed.' : 'Solve conditions not met.');
+                setVerifyResult('catering-sql-verify-result-ollama', ok, ok ? 'Record exfiltration solve confirmed.' : 'Solve conditions not met.');
             });
             document.getElementById('catering-sql-verify-cloud').addEventListener('click', () => {
                 const data = state.cloud.lastResponse;
                 if (!data) return setVerifyResult('catering-sql-verify-result-cloud', false, 'Run at least one turn first.');
                 const ok = Boolean(data.solved && !data.hardened);
-                setVerifyResult('catering-sql-verify-result-cloud', ok, ok ? 'Routing exfiltration solve confirmed.' : 'Solve conditions not met.');
+                setVerifyResult('catering-sql-verify-result-cloud', ok, ok ? 'Record exfiltration solve confirmed.' : 'Solve conditions not met.');
             });
 
             initTabs();

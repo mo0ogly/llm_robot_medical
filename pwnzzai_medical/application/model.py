@@ -46,10 +46,11 @@ class Appointment(db.Model):
     treatment = db.relationship('Treatment', backref=db.backref('appointments', lazy=True))
 
 
-class RoutingFlag(db.Model):
-    """Synthetic routing tokens for the catering SQL / tool-abuse lab."""
+class PatientRecordFlag(db.Model):
+    """Synthetic medical records / results tokens for the SQL / tool-abuse lab."""
 
     __bind_key__ = "catering_sql"
+    __tablename__ = "patient_records"
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)

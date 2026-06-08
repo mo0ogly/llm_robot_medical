@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare AI Shop (pronounced /pəʊnzɑː/)💻🍕 – the vulnerable treatment shop</title>
+    <title>MediCare AI Shop (pronounced /pəʊnzɑː/)💻🩺 – the vulnerable treatment shop</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -13,18 +13,18 @@
     {% include 'navbar.html' %}
 
     <main class="container">
-        <div style=" padding: 40px 20px 20px 20px;  margin: 40px auto 25px auto; background-color: #f3e5cfff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 25px;">
+        <div style=" padding: 40px 20px 20px 20px;  margin: 40px auto 25px auto; background-color: #e8f4f8; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 25px; border-radius: 8px;">
 
-          <h1 id="MediCare AI-title">🍕 Welcome to MediCare AI <small>(/pəʊnzɑː/)</small> Shop – The Vulnerable Treatment Shop! 💻</h1>
+          <h1 id="MediCare AI-title">🩺 Welcome to MediCare AI <small>(/pəʊnzɑː/)</small> Shop – The Vulnerable Treatment Shop! 💻</h1>
                 <div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
                         <div style="flex: 1;">
-                            <p>At MediCare AI Shop, every slice comes with a side of <strong>AI security lessons</strong>. This educational web app serves up the <a href="https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/"> <strong>OWASP Top 10 LLM Vulnerabilities 2025</strong> </a>
+                            <p>At MediCare AI Shop, every consultation comes with a side of <strong>AI security lessons</strong>. This educational web app serves up the <a href="https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/"> <strong>OWASP Top 10 LLM Vulnerabilities 2025</strong> </a>
                             in a fun, hands-on environment. </p>
-                            <p>Just as the wrong ingredient can ruin a treatment, the wrong
-                            prompt or poor design can expose AI systems to serious risks—like data leaks, model theft,
+                            <p>Just as the wrong diagnosis can ruin a treatment, the wrong
+                            prompt or poor design can expose AI medical systems to serious risks—like patient data leaks, model theft,
                             or unauthorized access. </p>
                             <p>Here, you’ll explore <strong>practical examples</strong> of how
-                            vulnerabilities are created, exploited, and mitigated. You need to login as alice/alice or bob/bob for some pages.  Grab a slice, dig in, and discover
+                            vulnerabilities are created, exploited, and mitigated. You need to login as alice/alice or bob/bob for some pages. Grab your stethoscope, dig in, and discover
                             how excellent learning about AI security can be.
                             </p>
                             
@@ -50,33 +50,36 @@
     </main>
 
     <script>
-        document.getElementById('llm-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const prompt = document.getElementById('prompt').value;
-            if (!prompt) return;
-            
-            try {
-                const response = await fetch('/ask', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        'prompt': prompt
-                    })
-                });
+        const llmForm = document.getElementById('llm-form');
+        if (llmForm) {
+            llmForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
-                const data = await response.json();
+                const prompt = document.getElementById('prompt').value;
+                if (!prompt) return;
                 
-                const chatResponse = document.getElementById('chat-response');
-                chatResponse.textContent = data.response;
-                chatResponse.style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        });
+                try {
+                    const response = await fetch('/ask', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            'prompt': prompt
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    const chatResponse = document.getElementById('chat-response');
+                    chatResponse.textContent = data.response;
+                    chatResponse.style.display = 'block';
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
     </script>
 </body>
 </html>
