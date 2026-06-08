@@ -1,6 +1,6 @@
 """Unit tests for backend.red_team.framework_adapters.outlines_adapter.
 
-P135 Outlines (Willard & Louf 2023) was added as a delta-3 framework adapter
+P135 Outlines (Willard & Louf 2023) was added as a δ³ framework adapter
 in PDCA-4 (2026-05-16). It substitutes LMQL (P134) in the G-058 panel after
 LMQL was found incompatible with LLaMA 3.2 (GitHub issues #350 / #353).
 

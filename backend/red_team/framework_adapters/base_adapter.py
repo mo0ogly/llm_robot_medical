@@ -14,7 +14,7 @@ from backend.red_team.framework_adapters import EvalResult
 
 
 class BaseAdapter(ABC):
-    """Shared instrumentation for delta-3 framework adapters.
+    """Shared instrumentation for δ³ framework adapters.
 
     Subclasses must override `_evaluate_impl` and may override `setup`/`teardown`.
     """

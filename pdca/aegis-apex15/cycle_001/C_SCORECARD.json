@@ -1,0 +1,114 @@
+{
+  "cycle": 1,
+  "perimetre": "aegis-apex15",
+  "date": "2026-06-08",
+  "mode": "score-only",
+  "objective": "APEX 1-4 delivery validation: Groq fix, orchestrator decomposition, server decomposition, doc_librarian compliance",
+  "score_global": 94.2,
+  "score_objectif": 80,
+  "status": "ACHIEVED",
+  "domains": {
+    "math_framework": {
+      "score": 88,
+      "weight": 0.20,
+      "weighted": 17.6,
+      "checks": {
+        "Definition_3.3bis_in_manuscript": "PASS",
+        "delta0_protocol_endpoint_200": "PASS",
+        "orchestrator_metrics_mixin": "PASS",
+        "delta0_summary_correct_fields": "PASS",
+        "N_ge_30_real_runs": "FAIL — fixture N=15, statistically_valid=false",
+        "Groq_unblocked_for_runs": "PASS"
+      },
+      "notes": "-12 for N=15 fixture pending real Groq runs (N>=30 required for Zverev validity)"
+    },
+    "backend_integration": {
+      "score": 95,
+      "weight": 0.20,
+      "weighted": 19.0,
+      "checks": {
+        "groq_available_in_providers": "PASS",
+        "env_loader_propagates_key": "PASS",
+        "llm_factory_imports_env_loader": "PASS",
+        "orchestrator_mro_correct": "PASS",
+        "all_10_files_compile": "PASS",
+        "800_line_rule_all_files": "PASS — max 652 lines (server.py)"
+      },
+      "notes": "-5 for llm_providers_routes still showing Ollama-only (separate endpoint from /api/redteam/providers)"
+    },
+    "notation": {
+      "score": 94,
+      "weight": 0.15,
+      "weighted": 14.1,
+      "checks": {
+        "unicode_delta_in_494_locations": "PASS",
+        "frontend_notation_clean": "PASS",
+        "remaining_delta_N_in_code": "WARN — 10 in backend/red_team/ campaign files (code, not doc)",
+        "orchestrator_metrics_docstring": "WARN — 1 remaining in module docstring"
+      },
+      "notes": "-6 for 10 remaining delta-N in campaign code/adapter files"
+    },
+    "documentation": {
+      "score": 96,
+      "weight": 0.20,
+      "weighted": 19.2,
+      "checks": {
+        "doc_librarian_0_errors": "PASS",
+        "HELP_FILES_OK": "PASS — 0 warnings on 51 help files",
+        "5_Medicare_files_fixed": "PASS",
+        "READMEs_3_languages": "PASS",
+        "formal_framework_3.3bis": "PASS",
+        "server_constants_documented": "PASS",
+        "backend_README_endpoints": "PASS"
+      },
+      "notes": "-4 for 10 warnings in manuscript/data_raw (out-of-scope but flagged)"
+    },
+    "build_quality": {
+      "score": 98,
+      "weight": 0.15,
+      "weighted": 14.7,
+      "checks": {
+        "frontend_build": "PASS — built in 16.21s",
+        "backend_compile_10_files": "PASS",
+        "backend_HTTP_200": "PASS",
+        "defense_taxonomy_HTTP_200": "PASS",
+        "providers_endpoint_groq_available": "PASS",
+        "scenarios_HTTP_200": "PASS"
+      },
+      "notes": "-2 for chunk size warning (>500kB, non-blocking)"
+    },
+    "code_hygiene": {
+      "score": 96,
+      "weight": 0.10,
+      "weighted": 9.6,
+      "checks": {
+        "800_line_rule_compliant": "PASS — 7 files, max 652",
+        "mixin_pattern_clean": "PASS",
+        "backward_compat_reexports": "PASS",
+        "no_print_in_production": "PASS — except legacy server.py handlers (pre-existing)",
+        "no_orphan_imports": "PASS",
+        "env_loader_import_order": "PASS"
+      },
+      "notes": "-4 for pre-existing print() in query_stream handlers (pre-existing, not introduced)"
+    }
+  },
+  "gates_A2b": {
+    "build": "PASS",
+    "test": "N/A — score-only mode",
+    "import": "PASS",
+    "recount": "PASS",
+    "smoke": "PASS"
+  },
+  "policy_gates": {
+    "NO_STUB": "PASS",
+    "NO_MOCK": "PASS",
+    "USAGE_TRIAGE": "PASS",
+    "NO_DISABLE": "PASS"
+  },
+  "open_items": [
+    "Run N>=30 real Groq trials via POST /api/redteam/delta0-protocol (currently fixture N=15)",
+    "Fix 1 delta-N in orchestrator_metrics.py docstring",
+    "Fix 9 delta-N in backend/red_team/ campaign/adapter files",
+    "llm_providers_routes.py still Ollama-only (separate endpoint — not in scope of this APEX)"
+  ]
+}

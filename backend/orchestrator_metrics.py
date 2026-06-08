@@ -3,7 +3,7 @@
 Extracted from orchestrator.py (800-line rule).
 Contient : OrchestratorMetricsMixin avec
   - run_separation_score()  (Zverev et al. ICLR 2025, Sep(M))
-  - run_delta0_protocol()   (Definition 3.3bis, discrimination delta-0/delta-1)
+  - run_delta0_protocol()   (Definition 3.3bis, discrimination δ⁰/δ¹)
 """
 from __future__ import annotations
 

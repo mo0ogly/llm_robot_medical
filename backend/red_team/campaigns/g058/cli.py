@@ -33,7 +33,7 @@ DEFAULT_OUTPUT_DIR = Path("research_archive/experiments/G058_7_frameworks")
 def main() -> int:
     """Parse arguments, dispatch to the requested sub-campaign, print the manifest."""
     parser = argparse.ArgumentParser(
-        description="G-058 campaign orchestrator -- 8 frameworks delta-3 evaluation."
+        description="G-058 campaign orchestrator -- 8 frameworks δ³ evaluation."
     )
     parser.add_argument(
         "--subcampaign",

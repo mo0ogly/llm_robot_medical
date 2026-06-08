@@ -1,4 +1,4 @@
-"""Framework adapters for the G-058 7-frameworks delta-3 comparative campaign.
+"""Framework adapters for the G-058 7-frameworks δ³ comparative campaign.
 
 Each adapter wraps an external defense framework (LMQL, Guardrails AI, LLM Guard,
 CaMeL, AgentSpec, LlamaFirewall, RAGShield) so the AEGIS campaign harness can call
@@ -30,7 +30,7 @@ class EvalResult:
 
 
 class FrameworkAdapter(Protocol):
-    """Protocol every delta-3 framework adapter must implement.
+    """Protocol every δ³ framework adapter must implement.
 
     The campaign harness calls `setup` once per condition, then `evaluate`
     repeatedly for each trial, then `teardown` to release resources.

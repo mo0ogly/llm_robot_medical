@@ -1,7 +1,7 @@
 """AEGIS adapter — wraps AEGIS RagSanitizer v2 + chain_defenses + AllowedOutputSpec.
 
 This is the 8th framework in the G-058 campaign (the "this thesis" entry).
-It uses AEGIS's full delta-3 stack:
+It uses AEGIS's full δ³ stack:
     - RagSanitizer v2 (15 detectors + GMTP)
     - chain_defenses architecture (HyDEDocumentOracle, XMLAgentTagWhitelist, etc.)
     - AllowedOutputSpec biomechanical validator (FDA 510k K183303 anchored)
@@ -15,7 +15,7 @@ from backend.red_team.framework_adapters.base_adapter import BaseAdapter
 
 
 class AEGISAdapter(BaseAdapter):
-    """Full AEGIS delta-3 stack wrapped as a comparable framework adapter."""
+    """Full AEGIS δ³ stack wrapped as a comparable framework adapter."""
 
     name = "AEGIS"
     version = "thesis-2026"

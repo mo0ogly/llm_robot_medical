@@ -1,4 +1,4 @@
-"""G-058 campaign package -- 8-framework delta-3 comparative evaluation.
+"""G-058 campaign package -- 8-framework δ³ comparative evaluation.
 
 Decomposed from the monolithic ``run_g058_campaign.py`` in PDCA-12 (2026-05-16)
 once that file exceeded the 800-line limit set by .claude/rules/programming.md.
