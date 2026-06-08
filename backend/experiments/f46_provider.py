@@ -15,10 +15,17 @@ All provider branches feed the SAME deterministic judge downstream
 """
 from __future__ import annotations
 
+import asyncio
 import os
 import sys
 import time
 from pathlib import Path
+
+# Transient HTTP statuses worth retrying (rate limit + gateway/server errors).
+# A bare run_grid/run_baseline call has no retry, so a single 429 would crash a
+# multi-hour campaign; this matters most when two campaigns share Groq limits.
+_RETRY_STATUSES = {429, 500, 502, 503, 504}
+_MAX_RETRIES = 5
 
 # Load backend/.env (walks up to main tree from a worktree).
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -73,14 +80,29 @@ async def _groq_generate(prompt: str, system: str, model: str, temperature: floa
     if system:
         messages.append({"role": "system", "content": system})
     messages.append({"role": "user", "content": prompt})
-    async with httpx.AsyncClient(timeout=120) as client:
-        resp = await client.post(
-            GROQ_BASE_URL + "/chat/completions",
-            headers={"Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json"},
-            json={"model": model, "messages": messages, "temperature": temperature, "max_tokens": 512},
-        )
-        resp.raise_for_status()
-        data = resp.json()
+    payload = {"model": model, "messages": messages, "temperature": temperature, "max_tokens": 512}
+    headers = {"Authorization": "Bearer " + GROQ_API_KEY, "Content-Type": "application/json"}
+    data = None
+    last_err = None
+    for attempt in range(_MAX_RETRIES):
+        try:
+            async with httpx.AsyncClient(timeout=120) as client:
+                resp = await client.post(GROQ_BASE_URL + "/chat/completions",
+                                         headers=headers, json=payload)
+            if resp.status_code in _RETRY_STATUSES:
+                ra = resp.headers.get("retry-after", "")
+                delay = float(ra) if ra.replace(".", "", 1).isdigit() else min(2 ** attempt, 30)
+                last_err = "HTTP " + str(resp.status_code)
+                await asyncio.sleep(delay)
+                continue
+            resp.raise_for_status()  # non-retryable 4xx (e.g. 401) -> raise now
+            data = resp.json()
+            break
+        except httpx.TransportError as e:  # connect/SSL/read errors -> backoff
+            last_err = repr(e)
+            await asyncio.sleep(min(2 ** attempt, 30))
+    if data is None:
+        raise RuntimeError("Groq request failed after %d retries: %s" % (_MAX_RETRIES, last_err))
     latency = (time.monotonic() - t0) * 1000
     try:
         text = data["choices"][0]["message"]["content"] or ""
