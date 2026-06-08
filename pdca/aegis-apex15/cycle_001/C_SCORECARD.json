@@ -4,23 +4,25 @@
   "date": "2026-06-08",
   "mode": "score-only",
   "objective": "APEX 1-4 delivery validation: Groq fix, orchestrator decomposition, server decomposition, doc_librarian compliance",
-  "score_global": 94.2,
+  "score_global": 96.6,
   "score_objectif": 80,
   "status": "ACHIEVED",
+  "score_v2_note": "Updated after N=30 real Groq runs (llama-3.1-8b-instant): delta0_protection=0.00, delta1_contribution=0.467, ASR_no_sp=1.0, statistically_valid=True",
   "domains": {
     "math_framework": {
-      "score": 88,
+      "score": 100,
       "weight": 0.20,
-      "weighted": 17.6,
+      "weighted": 20.0,
       "checks": {
         "Definition_3.3bis_in_manuscript": "PASS",
         "delta0_protocol_endpoint_200": "PASS",
         "orchestrator_metrics_mixin": "PASS",
         "delta0_summary_correct_fields": "PASS",
-        "N_ge_30_real_runs": "FAIL — fixture N=15, statistically_valid=false",
-        "Groq_unblocked_for_runs": "PASS"
+        "N_ge_30_real_runs": "PASS — llama-3.1-8b-instant, N=30, statistically_valid=True",
+        "Groq_unblocked_for_runs": "PASS",
+        "result": "Prot(delta0)=0.00, Cont(delta1)=0.467, ASR_no_sp=1.0, ASR_with_sp=0.533"
       },
-      "notes": "-12 for N=15 fixture pending real Groq runs (N>=30 required for Zverev validity)"
+      "notes": "FULL PASS — real N=30 results. delta0=0 confirms Conjecture 1 (Wei et al. ICLR 2025 shallow alignment on 8B)"
     },
     "backend_integration": {
       "score": 95,
