@@ -20,6 +20,10 @@ import ActionTimeline from "./components/ActionTimeline";
 import CompareView from "./components/CompareView";
 import CameraHUD from "./components/CameraHUD";
 import ContextErosionMeter from "./components/ContextErosionMeter";
+import PdfExportButton from "./components/PdfExportButton";
+import MitreMatrix from "./components/MitreMatrix";
+import DicomViewer from "./components/DicomViewer";
+import PresenterOverlay from "./components/PresenterOverlay";
 import ReplayControls from "./components/ReplayControls";
 import useRobotSimulation from "./hooks/useRobotSimulation";
 import useSessionRecorder from "./hooks/useSessionRecorder";
@@ -61,6 +65,9 @@ export default function App() {
 
   // Compare Mode
   const [isCompareMode, setIsCompareMode] = useState(false);
+
+  // Presenter Mode (P4)
+  const [isPresenterMode, setIsPresenterMode] = useState(false);
 
   // Replay Mode
   const [isReplayMode, setIsReplayMode] = useState(false);
@@ -173,6 +180,10 @@ export default function App() {
         e.preventDefault();
         setIsRedTeamOpen((prev) => !prev);
       }
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        setIsPresenterMode((prev) => !prev);
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -228,7 +239,7 @@ export default function App() {
 
     let streamBufferContent = "";
     const recordToUse =
-      (scenario === 'poison' || scenario === 'cascade_attack' || scenario === 'memory_poisoning') ? content.record_poison :
+      (scenario === 'poison' || scenario === 'cascade_attack' || scenario === 'memory_poisoning' || scenario === 'dicom_stego' || scenario === 'model_swap') ? content.record_poison :
         scenario === 'ransomware' ? content.record_hacked :
           content.record_safe;
 
@@ -812,6 +823,8 @@ export default function App() {
             {t('header.reset')}
           </button>
           
+          <PdfExportButton targetId="root" filename={`audit_report_${scenario}.pdf`} />
+          
           <button 
             onClick={() => navigate('/redteam/rag')} 
             className={'flex items-center gap-1.5 px-3 py-1 border rounded font-mono text-[11px] uppercase font-bold transition-all duration-300 border-red-500 bg-red-500/10 text-red-500 hover:bg-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.2)]'}
@@ -880,7 +893,25 @@ export default function App() {
                 <svg className="w-6 h-6 opacity-30 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
                 <span>NO SIGNAL</span>
               </div>}
+            
             {scenario === 'memory_poisoning' && <ContextErosionMeter health={contextHealth} />}
+            {scenario === 'model_swap' && (
+              <div className="bg-purple-900/20 border border-purple-500/50 rounded p-2 flex flex-col gap-1 text-purple-400 font-mono text-[9px] uppercase shadow-[0_0_15px_rgba(168,85,247,0.2)] animate-pulse">
+                <span className="font-bold flex items-center gap-1"><Skull size={10} /> Supply Chain Compromise</span>
+                <span>System Prompt Checksum: INVALID</span>
+                <span>Safety Guardrails: OVERRIDDEN AT SOURCE</span>
+              </div>
+            )}
+            {scenario === 'dicom_stego' && (
+              <div className="h-[250px]">
+                <DicomViewer onPayloadExtracted={(payload) => {
+                  addTimelineEvent('critical', 'STEGO PAYLOAD', 'Executable payload extracted from DICOM tags');
+                  setChatLog(prev => [...prev, { role: "assistant", text: `[SYSTEM OVERRIDE DETECTED]\n${payload}` }]);
+                  robotEventBus.emit("ransomware:escalation", { phase: 'tension' });
+                }} />
+              </div>
+            )}
+            
             {escalationState.active && <EscalationPanel escalationState={escalationState} />}
             <PatientRecord scenario={scenario} setScenario={(s) => { setScenario(s); recorder.recordEvent('scenario_change', { scenario: s }); }} safeRecord={content.record_safe} hackedRecord={content.record_hacked} poisonRecord={content.record_poison} disabled={isReplayMode} />
 
@@ -1013,18 +1044,26 @@ export default function App() {
             </div>
             {/* Bottom: Telemetry Console & Threat Map */}
             <div className="h-[40%] flex gap-1 min-h-0 overflow-hidden">
-              <div className="flex-1 overflow-hidden h-full">
+              <div className="flex-[1.2] overflow-hidden h-full">
                 {scenario !== 'none' ? (
                   <TelemetryConsole key={resetKey} robotStatus={robotStatus} scenario={scenario} onLogEntry={handleTelemetryEntry} />
                 ) : (
-                  <div className="h-full bg-slate-900/50 border border-slate-800 rounded flex flex-col items-center justify-center text-slate-700 font-mono text-[10px] uppercase tracking-widest">
-                    <div className="w-1.5 h-1.5 bg-slate-800 rounded-full mb-2"></div>
-                    <span>{t('telemetry.waiting')}</span>
+                  <div className="h-full bg-slate-900 border border-slate-800 flex items-center justify-center rounded">
+                    <span className="font-mono text-slate-700 text-xs animate-pulse">TELEMETRY OFFLINE</span>
                   </div>
                 )}
               </div>
-              <div className="flex-[0.8] overflow-hidden h-full">
+              <div className="flex-1 overflow-hidden h-full">
                 <ActionTimeline events={timelineEvents} />
+              </div>
+              <div className="flex-1 overflow-hidden h-full">
+                {scenario !== 'none' ? (
+                  <MitreMatrix scenario={scenario} />
+                ) : (
+                  <div className="h-full bg-slate-900 border border-slate-800 flex items-center justify-center rounded">
+                    <span className="font-mono text-slate-700 text-[10px] uppercase font-bold text-center p-4">STANDBY</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1079,6 +1118,8 @@ export default function App() {
           onSpeedChange={player.setSpeed} onSeek={player.seekTo}
         />
       )}
+      
+      <PresenterOverlay isVisible={isPresenterMode} />
     </div>
   );
 }

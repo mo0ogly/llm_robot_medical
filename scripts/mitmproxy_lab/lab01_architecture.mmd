@@ -1,0 +1,25 @@
+flowchart LR
+    subgraph POSTE [Poste de travail Linux ou Windows]
+        direction TB
+        CLI[Claude Code CLI<br/>ou extension VS Code]:::client
+        TRUST[Trust store du système<br/>contient la CA mitmproxy]:::trust
+        PROXY[mitmproxy<br/>localhost:8888]:::proxy
+        ADDON[addon Python<br/>llm_traffic_logger.py]:::addon
+        JSONL[(traffic.jsonl)]:::store
+    end
+
+    CLI -->|HTTPS_PROXY ou<br/>ANTHROPIC_BASE_URL| PROXY
+    CLI -.->|vérifie chaîne TLS| TRUST
+    PROXY -->|HTTPS reformé| API[api.anthropic.com<br/>Claude Opus 4.7]:::anthropic
+    API -->|SSE chunks| PROXY
+    PROXY -->|SSE pass-through| CLI
+
+    PROXY --> ADDON
+    ADDON --> JSONL
+
+    classDef client fill:#e3eaf3,stroke:#3a5e89,color:#1a2a3a
+    classDef trust fill:#fff4d6,stroke:#b58900,color:#5c4400
+    classDef proxy fill:#ffe0b2,stroke:#e65100,color:#4e2200
+    classDef addon fill:#f4e8ff,stroke:#7e57c2,color:#3d2466
+    classDef store fill:#f5f5f5,stroke:#888,color:#333
+    classDef anthropic fill:#dff5e1,stroke:#2f7d32,color:#1b3d1f

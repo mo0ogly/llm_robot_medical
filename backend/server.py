@@ -404,6 +404,7 @@ from routes.f46_routes import router as f46_router
 from routes.aside_routes import router as aside_router
 from routes.events_routes import router as events_router
 from routes.defense_routes import router as defense_router
+from routes.metrics_routes import router as metrics_router
 
 app.include_router(config_router)
 app.include_router(template_router)
@@ -417,6 +418,7 @@ app.include_router(f46_router)
 app.include_router(aside_router)
 app.include_router(events_router)
 app.include_router(defense_router)
+app.include_router(metrics_router)
 
 
 # Start the redteam artefact watcher on application startup. It polls

@@ -1,0 +1,25 @@
+flowchart TB
+    CA[CA mitmproxy<br/>mitmproxy-ca-cert.pem<br/>généré au premier lancement]:::ca
+
+    CA --> LIN[Linux Ubuntu Debian]:::os
+    CA --> WIN[Windows 11]:::os
+
+    LIN --> L1[/usr local share ca-certificates<br/>puis update-ca-certificates/]:::store_sys
+    LIN --> L2[~/.pki/nssdb<br/>via certutil -A NSS]:::store_nss
+
+    WIN --> W1[Cert:\LocalMachine\Root<br/>via certutil -addstore]:::store_sys
+    WIN --> W2[Cert:\CurrentUser\Root<br/>via Import-Certificate]:::store_sys
+
+    L1 -.->|trust| CL1[curl, wget, Python requests]:::client
+    L1 -.->|trust| CL2[Node.js v22+, claude.exe Bun]:::client
+    L2 -.->|trust| CL3[Firefox, Chromium snap]:::client
+
+    W1 -.->|trust| CW1[curl.exe, PowerShell Invoke-WebRequest]:::client
+    W1 -.->|trust| CW2[Edge, Chrome]:::client
+    W1 -.->|trust| CW3[Claude Code CLI, VS Code Electron]:::client
+
+    classDef ca fill:#222,color:#fff,stroke:#222
+    classDef os fill:#e3eaf3,stroke:#3a5e89,color:#1a2a3a
+    classDef store_sys fill:#fff4d6,stroke:#b58900,color:#5c4400
+    classDef store_nss fill:#f4e8ff,stroke:#7e57c2,color:#3d2466
+    classDef client fill:#dff5e1,stroke:#2f7d32,color:#1b3d1f

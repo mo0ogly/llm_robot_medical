@@ -1,0 +1,22 @@
+flowchart TB
+    subgraph REG [Mode regular - HTTPS_PROXY]
+        direction LR
+        C1[Client]:::client
+        P1[mitmproxy<br/>mode regular<br/>port 8888]:::proxy
+        A1[api.anthropic.com]:::anthropic
+        C1 -->|HTTPS_PROXY=<br/>http localhost 8888<br/>conserve l'URL Anthropic| P1
+        P1 -->|CONNECT puis TLS<br/>avec CA mitmproxy| A1
+    end
+
+    subgraph REV [Mode reverse - ANTHROPIC_BASE_URL]
+        direction LR
+        C2[Client]:::client
+        P2[mitmproxy<br/>mode reverse<br/>port 8888]:::proxy
+        A2[api.anthropic.com]:::anthropic
+        C2 -->|ANTHROPIC_BASE_URL=<br/>http localhost 8888<br/>URL réécrite| P2
+        P2 -->|forward HTTPS<br/>vers api.anthropic.com| A2
+    end
+
+    classDef client fill:#e3eaf3,stroke:#3a5e89,color:#1a2a3a
+    classDef proxy fill:#ffe0b2,stroke:#e65100,color:#4e2200
+    classDef anthropic fill:#dff5e1,stroke:#2f7d32,color:#1b3d1f

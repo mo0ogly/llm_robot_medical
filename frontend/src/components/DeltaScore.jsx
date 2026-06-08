@@ -1,33 +1,23 @@
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
-function levenshteinWords(a, b) {
-  const aWords = a.split(/\s+/).filter(Boolean).slice(-100);
-  const bWords = b.split(/\s+/).filter(Boolean).slice(-100);
-  const m = aWords.length, n = bWords.length;
-  if (m === 0 && n === 0) return 0;
-  if (m === 0 || n === 0) return 1;
-
-  const dp = Array.from({ length: m + 1 }, (_, i) => {
-    const row = new Array(n + 1);
-    row[0] = i;
-    return row;
-  });
-  for (let j = 0; j <= n; j++) dp[0][j] = j;
-  for (let i = 1; i <= m; i++)
-    for (let j = 1; j <= n; j++)
-      dp[i][j] = aWords[i - 1] === bWords[j - 1]
-        ? dp[i - 1][j - 1]
-        : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
-  return dp[m][n] / Math.max(m, n);
-}
 
 export default function DeltaScore({ safeTokens, hackedTokens }) {
   const { t } = useTranslation();
+  const [score, setScore] = useState(0);
 
-  const score = useMemo(() => {
-    if (!safeTokens && !hackedTokens) return 0;
-    return Math.round(levenshteinWords(safeTokens || "", hackedTokens || "") * 100);
+  useEffect(() => {
+    if (!safeTokens && !hackedTokens) return;
+    const timer = setTimeout(() => {
+      fetch('http://localhost:8042/api/query/deltascore', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ safe_text: safeTokens || "", hacked_text: hackedTokens || "" })
+      })
+      .then(r => r.json())
+      .then(data => setScore(data.score))
+      .catch(() => setScore(0));
+    }, 1000); // Debounce
+    return () => clearTimeout(timer);
   }, [safeTokens, hackedTokens]);
 
   const color = score < 30 ? "bg-green-500" : score < 60 ? "bg-yellow-500" : "bg-red-500";
