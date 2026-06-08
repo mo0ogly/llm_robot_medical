@@ -122,15 +122,26 @@ var HELP_SECTIONS = [
 ];
 
 function StudioHelpModal({ onClose }) {
+  // Cycle 005 (PDCA): added role=dialog + aria-modal + Escape handler (a11y).
+  useEffect(function() {
+    var onKey = function(e) { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return function() { document.removeEventListener('keydown', onKey); };
+  }, [onClose]);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-3xl mx-4 bg-neutral-950 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" role="presentation" onClick={function(e) { if (e.target === e.currentTarget) onClose(); }}>
+      <div
+        className="w-full max-w-3xl mx-4 bg-neutral-950 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="studio-help-title"
+      >
         <div className="flex items-center justify-between px-5 py-3 border-b border-neutral-800 bg-neutral-900">
           <div className="flex items-center gap-2">
             <HelpCircle size={16} className="text-red-500" />
-            <span className="font-bold text-sm text-white">Adversarial Studio v2.1 — Field Reference</span>
+            <span id="studio-help-title" className="font-bold text-sm text-white">Adversarial Studio v2.1 — Field Reference</span>
           </div>
-          <button onClick={onClose} className="text-neutral-400 hover:text-white transition-colors">
+          <button onClick={onClose} aria-label="Close" className="text-neutral-400 hover:text-white transition-colors">
             <X size={16} />
           </button>
         </div>

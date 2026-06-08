@@ -1,6 +1,7 @@
 // frontend/src/components/redteam/shared/ViewHelpModal.jsx
 // Reusable help modal for all Red Team Lab views
-import React from 'react';
+// Cycle 005 (PDCA): added role=dialog + aria-modal + Escape handler (a11y).
+import React, { useEffect, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   X, HelpCircle, BookOpen, Target, Lightbulb, Keyboard,
@@ -63,6 +64,13 @@ export default function ViewHelpModal({ viewId, onClose }) {
   var IconComp = cfg.icon;
   var sectionCounts = VIEW_SECTIONS[viewId] || [3, 3, 3];
   var prefix = 'redteam.help.' + viewId;
+  var titleId = useId();
+
+  useEffect(function() {
+    var onKey = function(e) { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return function() { document.removeEventListener('keydown', onKey); };
+  }, [onClose]);
 
   var handleOverlayClick = function(e) {
     if (e.target === e.currentTarget) onClose();
@@ -72,15 +80,21 @@ export default function ViewHelpModal({ viewId, onClose }) {
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={handleOverlayClick}
+      role="presentation"
     >
-      <div className="w-full max-w-3xl mx-4 bg-neutral-950 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+      <div
+        className="w-full max-w-3xl mx-4 bg-neutral-950 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-neutral-800 bg-neutral-900">
           <div className="flex items-center gap-2">
             <IconComp size={16} className={cfg.color} />
-            <span className="font-bold text-sm text-white">{t(prefix + '.title')}</span>
+            <span id={titleId} className="font-bold text-sm text-white">{t(prefix + '.title')}</span>
           </div>
-          <button onClick={onClose} className="text-neutral-400 hover:text-white transition-colors">
+          <button onClick={onClose} aria-label={t('common.close', 'Close')} className="text-neutral-400 hover:text-white transition-colors">
             <X size={16} />
           </button>
         </div>

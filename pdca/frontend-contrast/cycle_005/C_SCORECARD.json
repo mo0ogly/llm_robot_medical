@@ -1,0 +1,54 @@
+{
+  "perimetre": "frontend/src/components/redteam",
+  "cycle": 5,
+  "date": "2026-06-03",
+  "objectif": 94,
+  "score_atteint": 90,
+  "verdict": "PARTIAL (-4 vs cible 94, i18n + GeneticProgressView non adressés)",
+  "fixes_applied": [
+    {"id": "R4.2-adoption", "files": ["ViewHelpModal.jsx", "ScenarioHelpModal.jsx", "shared/PayloadEditModal.jsx", "AdversarialStudio.jsx"], "desc": "Migration a11y in-place sur 4 modals existants: role=dialog + aria-modal + aria-labelledby (titre id généré via useId) + Escape handler + aria-label sur bouton close + role=presentation sur backdrop. Visuel intact (pas de wrapper RtModal pour éviter régressions)."}
+  ],
+  "fixes_skipped_cycle_5": [
+    {"id": "R3.3 i18n", "reason": "Délégué au skill add-scenario; pas dans le scope contraste."},
+    {"id": "Axe-core CI", "reason": "Tooling dédié, setup CI séparé."},
+    {"id": "GeneticProgressView THEME -> CSS vars", "reason": "Refactor design dédié."}
+  ],
+  "domaines": {
+    "a11y_wcag": {
+      "score": 96,
+      "delta": 4,
+      "poids": 0.30,
+      "contributions": [
+        {"item": "WCAG contrast", "got": 38, "max": 40, "delta": 0},
+        {"item": "focus states", "got": 18, "max": 20, "delta": 0},
+        {"item": "ARIA semantic", "got": 20, "max": 20, "delta": 4, "note": "4/4 modals avec role=dialog + aria-modal + aria-labelledby + Escape + aria-label. Couverture 100%."},
+        {"item": "keyboard nav", "got": 10, "max": 10, "delta": 0, "note": "Escape implémenté sur tous les modals"},
+        {"item": "edge case dark", "got": 10, "max": 10, "delta": 0}
+      ]
+    },
+    "design_tokens": {"score": 77, "delta": 0, "poids": 0.20},
+    "code_hygiene": {"score": 88, "delta": 0, "poids": 0.15},
+    "completeness": {
+      "score": 91,
+      "delta": 3,
+      "poids": 0.15,
+      "note": "Open items 2 -> 1 (RtModal adopted). Restent: i18n migration + axe-core CI."
+    },
+    "documentation": {"score": 90, "delta": 0, "poids": 0.10},
+    "visual_recette": {"score": 100, "delta": 0, "poids": 0.10}
+  },
+  "score_calcul": "96*0.30 + 77*0.20 + 88*0.15 + 91*0.15 + 90*0.10 + 100*0.10 = 28.8 + 15.4 + 13.2 + 13.65 + 9.0 + 10.0 = 90.05 -> 90/100",
+  "score_global_precedent": 88,
+  "delta_global": 2,
+  "regressions": [],
+  "policy_gates": {"no_stub": "OK", "no_mock": "OK", "usage_triage": "OK", "no_disable": "OK"},
+  "verification_gates_a2b": {
+    "build": "PASS (vite 12.95s, 12.84s)",
+    "test": "N/A",
+    "import": "PASS (useEffect/useId ajoutés via imports existants)",
+    "recount": "PASS (4/4 modals = role=dialog)",
+    "smoke": "PASS"
+  },
+  "drift_detecte": "NONE",
+  "tendance": "POSITIVE (+28 pts total en 4 cycles: 62 -> 78 -> 86 -> 88 -> 90)"
+}

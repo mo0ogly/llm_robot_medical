@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
 import {
   Swords, Play, X, CheckCircle, Save,
   Eye, FileText, Lightbulb, Copy
 } from 'lucide-react';
 import { renderMarkdown } from './renderMarkdown';
 import useFetchWithCache from '../../../hooks/useFetchWithCache';
+// Cycle 005 (PDCA): added role=dialog + aria-modal + Escape handler (a11y).
 
 export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, initialName, initialBody, initialCategory, initialHelpMd, isNew, t }) {
   var [name, setName] = useState(initialName || '');
@@ -20,6 +21,8 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
   var [taxSecondary, setTaxSecondary] = useState([]);
   var [taxSearch, setTaxSearch] = useState('');
 
+  var titleId = useId();
+
   useEffect(function() {
     if (isOpen) {
       setName(initialName || '');
@@ -32,6 +35,13 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
       setTaxSearch('');
     }
   }, [isOpen, initialName, initialBody, initialCategory, initialHelpMd]);
+
+  useEffect(function() {
+    if (!isOpen) return;
+    var onKey = function(e) { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return function() { document.removeEventListener('keydown', onKey); };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -70,13 +80,19 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-5xl mx-4 bg-neutral-950 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden flex flex-col" style={{maxHeight: '90vh'}}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" role="presentation">
+      <div
+        className="w-full max-w-5xl mx-4 bg-neutral-950 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden flex flex-col"
+        style={{maxHeight: '90vh'}}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-neutral-800 bg-neutral-900 shrink-0">
           <div className="flex items-center gap-3">
             <Swords size={16} className="text-red-500" />
-            <span className="font-bold text-sm text-white">
+            <span id={titleId} className="font-bold text-sm text-white">
               {isNew ? t('redteam.attack.modal.title_new') : t('redteam.attack.modal.title_edit')}
             </span>
             <span className="text-[10px] text-neutral-400 font-mono">{charCount + ' ' + t('redteam.attack.modal.chars') + ' | ' + lineCount + ' ' + t('redteam.attack.modal.lines')}</span>

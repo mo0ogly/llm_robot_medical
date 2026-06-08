@@ -1,6 +1,8 @@
 // frontend/src/components/redteam/ScenarioHelpModal.jsx
 // Modal help overlay for attack scenarios — explains each attack in detail.
 // HELP_DB data split into helpData/ modules (800-line rule enforcement).
+// Cycle 005 (PDCA): added role=dialog + aria-modal + Escape handler (a11y).
+import { useEffect, useId } from 'react';
 import { X, Shield, ShieldAlert, BookOpen, Beaker, Target, AlertTriangle, Lightbulb, Activity, MessageSquare, Table, GitBranch, HardDrive } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { HELP_DB } from './helpData/index.js';
@@ -44,16 +46,28 @@ const ICON_MAP = {
 
 export default function ScenarioHelpModal({ templateName, onClose }) {
   var { t } = useTranslation();
+  var titleId = useId();
+
+  useEffect(function() {
+    if (!templateName) return;
+    var onKey = function(e) { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return function() { document.removeEventListener('keydown', onKey); };
+  }, [templateName, onClose]);
+
   if (!templateName) return null;
 
   var help = HELP_DB[templateName] || getDefaultHelp(templateName);
   var IconComponent = ICON_MAP[help.icon] || Target;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose} role="presentation">
       <div
         className="bg-neutral-950 border border-neutral-700 rounded-2xl shadow-2xl w-[700px] max-h-[85vh] overflow-hidden flex flex-col"
         onClick={function(e) { e.stopPropagation(); }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
       >
         {/* Header */}
         <div className="p-5 border-b border-neutral-800 flex items-start justify-between gap-4">
@@ -62,7 +76,7 @@ export default function ScenarioHelpModal({ templateName, onClose }) {
               <IconComponent size={22} className="text-red-400" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white leading-tight">{help.title}</h2>
+              <h2 id={titleId} className="text-lg font-bold text-white leading-tight">{help.title}</h2>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded border bg-blue-900/20 text-blue-400 border-blue-500/30">
                   {help.conjecture}
