@@ -702,8 +702,8 @@ async def main(phase: str = "all"):
         # low stratum -> guaranteed ASR=0 artifact, not a vulnerability measure
         # (fixed 2026-06-02; root cause of repeated pre-check FAIL ASR=0).
         pre_check_pool = strata["high"] + strata["medium"] + strata["low"]
-        pc = []
-        for t_idx, template in enumerate(pre_check_pool[:PRE_CHECK_RUNS]):
+        pc = []; _s = max(1, len(pre_check_pool) // PRE_CHECK_RUNS)  # spread sample across pool to diversify techniques (avoid gap4_* sibling cluster -> ASR=0 artifact)
+        for t_idx, template in enumerate((pre_check_pool[::_s] or pre_check_pool)[:PRE_CHECK_RUNS]):
             attack_msg = get_attack_message(template)
             if not attack_msg:
                 continue
