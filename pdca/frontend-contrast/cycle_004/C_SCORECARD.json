@@ -1,0 +1,85 @@
+{
+  "perimetre": "frontend/src/components/redteam",
+  "cycle": 4,
+  "date": "2026-06-03",
+  "objectif": 92,
+  "score_atteint": 88,
+  "verdict": "PARTIAL (objectif manqué -4 pts, RtModal créé mais non adopté par modals existants + GeneticProgressView token leakage compté strict)",
+  "fixes_applied": [
+    {"id": "R3.1", "files": ["frontend/src/components/redteam/ScenarioTab.jsx", "frontend/src/components/redteam/data/scenarioCatalog.js"], "desc": "ScenarioTab.jsx 918 LOC -> 423 LOC. DEMO_SCENARIOS (496 lignes inline) extrait dans data/scenarioCatalog.js (503 LOC, scope catalog uniquement). 0 fichier > 800 LOC dans périmètre."},
+    {"id": "R4.2", "files": ["frontend/src/components/redteam/shared/RtModal.jsx"], "lines": 168, "desc": "Composant RtModal réutilisable: role=dialog + aria-modal + aria-labelledby + focus trap (Tab/Shift+Tab) + Escape handler + restore focus to trigger + body scroll lock + sizes (sm/md/lg/xl/full)."}
+  ],
+  "fixes_skipped_cycle_4": [
+    {"id": "R4.2-adoption", "reason": "Migration des 4 modals existants (ScenarioHelpModal, ViewHelpModal, PayloadEditModal, ForgePanel modal) à RtModal: refactor risqué nécessitant audit chaque modal. Reporté cycle 5."},
+    {"id": "R3.3", "reason": "i18n labels hardcoded: skill add-scenario dédié."},
+    {"id": "Axe-core CI", "reason": "Setup tooling dédié."}
+  ],
+  "domaines": {
+    "a11y_wcag": {
+      "score": 92,
+      "delta": 3,
+      "poids": 0.30,
+      "contributions": [
+        {"item": "WCAG contrast", "got": 38, "max": 40, "delta": 0},
+        {"item": "focus states", "got": 18, "max": 20, "delta": 0},
+        {"item": "ARIA semantic", "got": 16, "max": 20, "delta": 3, "note": "RtModal wrapper créé avec role=dialog + aria-modal + focus trap. Composant disponible. Migration des 4 modals existants reportée (+4 pts à gagner cycle 5)."},
+        {"item": "keyboard nav", "got": 10, "max": 10, "delta": 0},
+        {"item": "edge case dark", "got": 10, "max": 10, "delta": 0}
+      ]
+    },
+    "design_tokens": {
+      "score": 77,
+      "delta": 0,
+      "poids": 0.20,
+      "note": "Stable cycle 3"
+    },
+    "code_hygiene": {
+      "score": 88,
+      "delta": 4,
+      "poids": 0.15,
+      "contributions": [
+        {"item": "complétude fix", "got": 38, "max": 40, "delta": 0},
+        {"item": "régressions hiérarchie", "got": 27, "max": 30, "delta": 0},
+        {"item": "file size 800 LOC", "got": 10, "max": 10, "delta": 4, "note": "ScenarioTab 918 -> 423 LOC. 0 fichier > 800 LOC dans périmètre. Top LOC restant: ForgePanel 752 (zone surveillance)."},
+        {"item": "i18n integrity", "got": 3, "max": 10, "delta": 0},
+        {"item": "git state", "got": 10, "max": 10, "delta": 0}
+      ]
+    },
+    "completeness": {
+      "score": 88,
+      "delta": 3,
+      "poids": 0.15,
+      "note": "Open items 4 -> 2 (R3.1 fait + RtModal disponible). Restent R4.2-adoption + R3.3 i18n + axe-core."
+    },
+    "documentation": {
+      "score": 90,
+      "delta": 2,
+      "poids": 0.10,
+      "note": "RtModal docstring complète (a11y patterns + usage). scenarioCatalog documenté (génération, scope, references)."
+    },
+    "visual_recette": {
+      "score": 100,
+      "delta": 0,
+      "poids": 0.10
+    }
+  },
+  "score_calcul": "92*0.30 + 77*0.20 + 88*0.15 + 88*0.15 + 90*0.10 + 100*0.10 = 27.6 + 15.4 + 13.2 + 13.2 + 9.0 + 10.0 = 88.4 -> 88/100",
+  "score_global_precedent": 86,
+  "delta_global": 2,
+  "regressions": [],
+  "policy_gates": {
+    "no_stub": "OK",
+    "no_mock": "OK",
+    "usage_triage": "OK (R3.1 décomposition reste 100% actif, RtModal nouveau utilisable)",
+    "no_disable": "OK"
+  },
+  "verification_gates_a2b": {
+    "build": "PASS (vite 12.95s puis 12.61s)",
+    "test": "N/A",
+    "import": "PASS (DEMO_SCENARIOS importé depuis data/scenarioCatalog)",
+    "recount": "PASS (ScenarioTab 918->423 LOC, 0 fichier >800)",
+    "smoke": "PASS (build production OK)"
+  },
+  "drift_detecte": "NONE",
+  "tendance": "POSITIVE (+26 pts total en 3 cycles: 62 -> 78 -> 86 -> 88)"
+}
