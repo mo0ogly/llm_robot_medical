@@ -1,0 +1,82 @@
+{
+  "perimetre": "frontend/src/components/redteam + tooling",
+  "cycle": 6,
+  "date": "2026-06-03",
+  "objectif": 95,
+  "score_atteint": 93,
+  "verdict": "PARTIAL (-2, i18n migration encore en TODO délégué add-scenario)",
+  "fixes_applied": [
+    {"id": "useFocusTrap", "files": ["frontend/src/hooks/useFocusTrap.js"], "lines": 78, "desc": "Hook réutilisable: Tab/Shift+Tab cycle, restore focus on close. WCAG 2.4.3."},
+    {"id": "Focus-trap-adoption", "files": ["ViewHelpModal.jsx", "ScenarioHelpModal.jsx", "shared/PayloadEditModal.jsx", "AdversarialStudio.jsx"], "desc": "4/4 modals adoptent useFocusTrap. AAA-level keyboard accessibility."},
+    {"id": "Genetic-CSS-vars", "files": ["frontend/src/index.css", "GeneticProgressView.jsx"], "desc": "20 hex literals THEME -> 20 CSS variables --genetic-* dans :root. ZERO hex literal dans GeneticProgressView.jsx (était 39 -> 20 -> 0)."},
+    {"id": "Axe-core-baseline", "files": ["frontend/package.json", "pdca/frontend-contrast/AXE_CORE_USAGE.md"], "desc": "@axe-core/cli installé + scripts npm audit:a11y/audit:a11y:full. Doc complète usage + CI snippet."},
+    {"id": "i18n-audit", "files": ["pdca/frontend-contrast/I18N_TODO.md"], "desc": "12 hardcoded labels documentés (ForgePanel:7 + RagView:5) avec clés proposées. Migration déléguée skill add-scenario."}
+  ],
+  "fixes_skipped_cycle_6": [
+    {"id": "i18n-migration-application", "reason": "Application des t() bypassé (content-filter rules forbids reading i18n.js). Audit produit, migration via skill dédié."}
+  ],
+  "domaines": {
+    "a11y_wcag": {
+      "score": 96,
+      "delta": 0,
+      "poids": 0.30,
+      "contributions": [
+        {"item": "WCAG contrast", "got": 38, "max": 40, "delta": 0},
+        {"item": "focus states", "got": 18, "max": 20, "delta": 0},
+        {"item": "ARIA semantic", "got": 20, "max": 20, "delta": 0, "note": "max cycle 5"},
+        {"item": "keyboard nav", "got": 10, "max": 10, "delta": 0, "note": "Focus trap actif via useFocusTrap (AAA bonus, déjà max sur AA)"},
+        {"item": "edge case dark", "got": 10, "max": 10, "delta": 0}
+      ]
+    },
+    "design_tokens": {
+      "score": 85,
+      "delta": 8,
+      "poids": 0.20,
+      "contributions": [
+        {"item": "token leakage", "got": 40, "max": 40, "delta": 8, "note": "GeneticProgressView 20 hex THEME -> var(--genetic-*). ZERO hex literal dans .jsx du périmètre."},
+        {"item": "palette consistency", "got": 18, "max": 30, "delta": 0},
+        {"item": "critical color", "got": 20, "max": 20, "delta": 0},
+        {"item": "theme parity", "got": 7, "max": 10, "delta": 0}
+      ]
+    },
+    "code_hygiene": {
+      "score": 90,
+      "delta": 2,
+      "poids": 0.15,
+      "contributions": [
+        {"item": "complétude fix", "got": 38, "max": 40, "delta": 0},
+        {"item": "régressions hiérarchie", "got": 27, "max": 30, "delta": 0},
+        {"item": "file size 800 LOC", "got": 10, "max": 10, "delta": 0},
+        {"item": "i18n integrity", "got": 5, "max": 10, "delta": 2, "note": "Audit produit (I18N_TODO.md, 12 labels documentés). Application migration: deferred skill add-scenario."},
+        {"item": "git state", "got": 10, "max": 10, "delta": 0}
+      ]
+    },
+    "completeness": {
+      "score": 95,
+      "delta": 4,
+      "poids": 0.15,
+      "note": "Open items 1 -> 0 (axe-core CI setup done + focus trap done + i18n audit produit). Reste seulement application i18n migration (déléguée)."
+    },
+    "documentation": {
+      "score": 95,
+      "delta": 5,
+      "poids": 0.10,
+      "note": "AXE_CORE_USAGE.md + I18N_TODO.md + useFocusTrap docstring."
+    },
+    "visual_recette": {"score": 100, "delta": 0, "poids": 0.10}
+  },
+  "score_calcul": "96*0.30 + 85*0.20 + 90*0.15 + 95*0.15 + 95*0.10 + 100*0.10 = 28.8 + 17.0 + 13.5 + 14.25 + 9.5 + 10.0 = 93.05 -> 93/100",
+  "score_global_precedent": 90,
+  "delta_global": 3,
+  "regressions": [],
+  "policy_gates": {"no_stub": "OK", "no_mock": "OK", "usage_triage": "OK", "no_disable": "OK"},
+  "verification_gates_a2b": {
+    "build": "PASS (vite 13.70s, 13.20s, 16.95s)",
+    "test": "N/A",
+    "import": "PASS (useFocusTrap importé proprement; CSS vars résolues à runtime)",
+    "recount": "PASS (GeneticProgressView 20->0 hex; 4/4 modals avec useFocusTrap)",
+    "smoke": "PASS"
+  },
+  "drift_detecte": "NONE",
+  "tendance": "POSITIVE (+31 pts total en 5 cycles: 62 -> 78 -> 86 -> 88 -> 90 -> 93)"
+}

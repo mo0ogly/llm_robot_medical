@@ -1,8 +1,9 @@
 // frontend/src/components/redteam/shared/ViewHelpModal.jsx
 // Reusable help modal for all Red Team Lab views
 // Cycle 005 (PDCA): added role=dialog + aria-modal + Escape handler (a11y).
-import React, { useEffect, useId } from 'react';
+import React, { useEffect, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import useFocusTrap from '../../../hooks/useFocusTrap';
 import {
   X, HelpCircle, BookOpen, Target, Lightbulb, Keyboard,
   Shield, Database, BarChart2, Play, Terminal, Layers,
@@ -65,6 +66,8 @@ export default function ViewHelpModal({ viewId, onClose }) {
   var sectionCounts = VIEW_SECTIONS[viewId] || [3, 3, 3];
   var prefix = 'redteam.help.' + viewId;
   var titleId = useId();
+  var panelRef = useRef(null);
+  useFocusTrap(panelRef, true);
 
   useEffect(function() {
     var onKey = function(e) { if (e.key === 'Escape') onClose(); };
@@ -83,6 +86,7 @@ export default function ViewHelpModal({ viewId, onClose }) {
       role="presentation"
     >
       <div
+        ref={panelRef}
         className="w-full max-w-3xl mx-4 bg-neutral-950 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300"
         role="dialog"
         aria-modal="true"

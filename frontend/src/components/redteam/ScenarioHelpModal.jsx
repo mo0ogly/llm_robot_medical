@@ -2,10 +2,11 @@
 // Modal help overlay for attack scenarios — explains each attack in detail.
 // HELP_DB data split into helpData/ modules (800-line rule enforcement).
 // Cycle 005 (PDCA): added role=dialog + aria-modal + Escape handler (a11y).
-import { useEffect, useId } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import { X, Shield, ShieldAlert, BookOpen, Beaker, Target, AlertTriangle, Lightbulb, Activity, MessageSquare, Table, GitBranch, HardDrive } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { HELP_DB } from './helpData/index.js';
+import useFocusTrap from '../../hooks/useFocusTrap';
 
 // Fallback for templates not in HELP_DB
 function getDefaultHelp(templateName) {
@@ -47,6 +48,8 @@ const ICON_MAP = {
 export default function ScenarioHelpModal({ templateName, onClose }) {
   var { t } = useTranslation();
   var titleId = useId();
+  var panelRef = useRef(null);
+  useFocusTrap(panelRef, !!templateName);
 
   useEffect(function() {
     if (!templateName) return;
@@ -63,6 +66,7 @@ export default function ScenarioHelpModal({ templateName, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose} role="presentation">
       <div
+        ref={panelRef}
         className="bg-neutral-950 border border-neutral-700 rounded-2xl shadow-2xl w-[700px] max-h-[85vh] overflow-hidden flex flex-col"
         onClick={function(e) { e.stopPropagation(); }}
         role="dialog"

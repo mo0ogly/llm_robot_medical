@@ -27,34 +27,36 @@ const INTENTION_OPTIONS = [
 
 /**
  * Digital Twin visual theme — deep space aesthetic, distinct from rt-root light palette.
- * Cycle 003 R2.3 (PDCA): extracted from 60 hex inline literals for design system compliance.
- * Mapped to semantic roles. To update the visual identity, change ONLY these constants.
+ * Cycle 003 R2.3 (PDCA): extracted from 60 hex inline literals to a constant.
+ * Cycle 006 R-genetic-vars (PDCA): mapped to CSS variables (--genetic-*) defined
+ * in index.css :root. Zero hex literal in this file. To change visual identity,
+ * update the :root block in frontend/src/index.css.
  */
 const THEME = {
-  // Surfaces (dark blue gradient)
-  bgDeep:      '#0e0e22',
-  bgPanel:     '#12122a',
-  bgCanvas:    '#1a1a2e',
-  bgInput:     '#1e1e38',
-  bgFeedItem:  '#1e1e3a',
-  bgFeedBorder:'#2a2a5a',
-  // Borders / accents structural
-  borderPanel: '#3a3a7e',
-  borderInput: '#555',
+  // Surfaces
+  bgDeep:      'var(--genetic-bg-deep)',
+  bgPanel:     'var(--genetic-bg-panel)',
+  bgCanvas:    'var(--genetic-bg-canvas)',
+  bgInput:     'var(--genetic-bg-input)',
+  bgFeedItem:  'var(--genetic-bg-feed-item)',
+  bgFeedBorder:'var(--genetic-bg-feed-bord)',
+  // Borders
+  borderPanel: 'var(--genetic-border-panel)',
+  borderInput: 'var(--genetic-border-input)',
   // Semantic accents
-  accentHi:    '#e94560', // critical / success (red neon)
-  accentWarn:  '#f39c12', // warning (orange)
-  accentOk:    '#00b894', // safe / framework label (green)
-  accentInfo:  '#6c5ce7', // info / action (purple)
-  accentAlt:   '#e17055', // alternate (peach)
-  accentLow:   '#fdcb6e', // low priority (amber)
+  accentHi:    'var(--genetic-accent-hi)',
+  accentWarn:  'var(--genetic-accent-warn)',
+  accentOk:    'var(--genetic-accent-ok)',
+  accentInfo:  'var(--genetic-accent-info)',
+  accentAlt:   'var(--genetic-accent-alt)',
+  accentLow:   'var(--genetic-accent-low)',
   // Text
-  textPrimary: '#fff',
-  textBody:    '#e2e8f0',
-  textLabel:   '#cbd5e1',
-  textMeta:    '#94a3b8',
-  textCode:    '#ccc',
-  textMuted:   '#666',
+  textPrimary: 'var(--genetic-text-primary)',
+  textBody:    'var(--genetic-text-body)',
+  textLabel:   'var(--genetic-text-label)',
+  textMeta:    'var(--genetic-text-meta)',
+  textCode:    'var(--genetic-text-code)',
+  textMuted:   'var(--genetic-text-muted)',
 };
 
 export default function GeneticProgressView({ levels, aegisShield, lang }) {

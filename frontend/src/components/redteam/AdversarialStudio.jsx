@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useMemo, memo } from 'react';
+import { useState, useEffect, useCallback, useMemo, memo, useRef } from 'react';
+import useFocusTrap from '../../hooks/useFocusTrap';
 import { useTranslation } from 'react-i18next';
 import {
   ShieldAlert, Zap, AlertTriangle, Crosshair, BarChart3, History, Download,
@@ -123,6 +124,9 @@ var HELP_SECTIONS = [
 
 function StudioHelpModal({ onClose }) {
   // Cycle 005 (PDCA): added role=dialog + aria-modal + Escape handler (a11y).
+  // Cycle 006 (PDCA): added focus trap (Tab/Shift+Tab cycle).
+  var panelRef = useRef(null);
+  useFocusTrap(panelRef, true);
   useEffect(function() {
     var onKey = function(e) { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', onKey);
@@ -131,6 +135,7 @@ function StudioHelpModal({ onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" role="presentation" onClick={function(e) { if (e.target === e.currentTarget) onClose(); }}>
       <div
+        ref={panelRef}
         className="w-full max-w-3xl mx-4 bg-neutral-950 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden"
         role="dialog"
         aria-modal="true"

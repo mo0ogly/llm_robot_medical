@@ -39,6 +39,29 @@
   /* Shadows */
   --rt-shadow-sm: 0 1px 3px rgba(0,0,0,0.35);
   --rt-shadow-md: 0 4px 16px rgba(0,0,0,0.45), 0 0 0 1px var(--rt-border);
+
+  /* Genetic Optimizer — Digital Twin theme (cycle 006 R-genetic-vars)
+     Single source of truth for GeneticProgressView.jsx (was 20 hex inline). */
+  --genetic-bg-deep:      #0e0e22;
+  --genetic-bg-panel:     #12122a;
+  --genetic-bg-canvas:    #1a1a2e;
+  --genetic-bg-input:     #1e1e38;
+  --genetic-bg-feed-item: #1e1e3a;
+  --genetic-bg-feed-bord: #2a2a5a;
+  --genetic-border-panel: #3a3a7e;
+  --genetic-border-input: #555;
+  --genetic-accent-hi:    #e94560;
+  --genetic-accent-warn:  #f39c12;
+  --genetic-accent-ok:    #00b894;
+  --genetic-accent-info:  #6c5ce7;
+  --genetic-accent-alt:   #e17055;
+  --genetic-accent-low:   #fdcb6e;
+  --genetic-text-primary: #fff;
+  --genetic-text-body:    #e2e8f0;
+  --genetic-text-label:   #cbd5e1;
+  --genetic-text-meta:    #94a3b8;
+  --genetic-text-code:    #ccc;
+  --genetic-text-muted:   #666;
 }
 
 @theme {
@@ -237,6 +260,32 @@ body {
 }
 .animate-chroma {
   animation: chromaShift 0.3s ease-in-out infinite alternate;
+}
+
+/* Vague 5: UX & Aesthetic Polish */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulseNeonRed {
+  0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.8), 0 0 5px rgba(239,68,68,1) inset; }
+}
+.animate-neon-pulse-red {
+  animation: pulseNeonRed 2s infinite ease-in-out;
+}
+
+.bg-cyber-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
 }
 
 /* ==========================================================================

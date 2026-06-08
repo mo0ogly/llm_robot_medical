@@ -13,6 +13,8 @@
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:headed": "playwright test --headed",
     "test:all": "npm run test && npm run test:e2e",
+    "audit:a11y": "axe http://localhost:5173/llm_robot_medical/redteam/catalog http://localhost:5173/llm_robot_medical/redteam/rag http://localhost:5173/llm_robot_medical/redteam/analysis --tags wcag2a,wcag2aa --exit",
+    "audit:a11y:full": "axe http://localhost:5173/llm_robot_medical/redteam/catalog --tags wcag2a,wcag2aa,wcag21a,wcag21aa --save pdca/frontend-contrast/a11y-baseline.json",
     "update-bib": "python ../research_archive/scripts/update_bibliography_data.py"
   },
   "dependencies": {
@@ -30,6 +32,7 @@
     "three": "^0.183.2"
   },
   "devDependencies": {
+    "@axe-core/cli": "^4.11.3",
     "@eslint/js": "^9.39.1",
     "@playwright/test": "^1.59.1",
     "@tailwindcss/vite": "^4.2.1",

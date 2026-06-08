@@ -1,11 +1,13 @@
-import { useState, useEffect, useId } from 'react';
+import { useState, useEffect, useId, useRef } from 'react';
 import {
   Swords, Play, X, CheckCircle, Save,
   Eye, FileText, Lightbulb, Copy
 } from 'lucide-react';
 import { renderMarkdown } from './renderMarkdown';
 import useFetchWithCache from '../../../hooks/useFetchWithCache';
+import useFocusTrap from '../../../hooks/useFocusTrap';
 // Cycle 005 (PDCA): added role=dialog + aria-modal + Escape handler (a11y).
+// Cycle 006 (PDCA): added focus trap (Tab/Shift+Tab cycle).
 
 export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, initialName, initialBody, initialCategory, initialHelpMd, isNew, t }) {
   var [name, setName] = useState(initialName || '');
@@ -22,6 +24,8 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
   var [taxSearch, setTaxSearch] = useState('');
 
   var titleId = useId();
+  var panelRef = useRef(null);
+  useFocusTrap(panelRef, isOpen);
 
   useEffect(function() {
     if (isOpen) {
@@ -82,6 +86,7 @@ export default function PayloadEditModal({ isOpen, onClose, onSave, onInsert, in
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" role="presentation">
       <div
+        ref={panelRef}
         className="w-full max-w-5xl mx-4 bg-neutral-950 border border-neutral-700 rounded-xl shadow-2xl overflow-hidden flex flex-col"
         style={{maxHeight: '90vh'}}
         role="dialog"
