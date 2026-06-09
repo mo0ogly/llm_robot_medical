@@ -1,33 +1,33 @@
 """
-Integration tests for core pizza shop functionality.
+Integration tests for core treatment shop functionality.
 Tests browsing, commenting, ordering, and basic CRUD operations.
 """
 
 class TestPizzaBrowsing:
-    """Tests for browsing pizzas."""
+    """Tests for browsing treatments."""
 
     def test_home_page_loads(self, client):
         """Test that home page loads successfully."""
         response = client.get('/')
         assert response.status_code == 200
-        assert b'pizza' in response.data.lower()
+        assert b'treatment' in response.data.lower()
 
     def test_home_page_shows_pizzas(self, client):
-        """Test that pizzas are displayed on home page."""
+        """Test that treatments are displayed on home page."""
         response = client.get('/')
         assert response.status_code == 200
         assert b'Margherita' in response.data or b'margherita' in response.data.lower()
 
     def test_pizza_detail_page(self, client):
-        """Test viewing individual pizza details."""
-        response = client.get('/pizza/1')
+        """Test viewing individual treatment details."""
+        response = client.get('/treatment/1')
         assert response.status_code == 200
-        # Should show pizza details
-        assert b'pizza' in response.data.lower()
+        # Should show treatment details
+        assert b'treatment' in response.data.lower()
 
     def test_pizza_detail_nonexistent(self, client):
-        """Test viewing non-existent pizza returns 404."""
-        response = client.get('/pizza/9999')
+        """Test viewing non-existent treatment returns 404."""
+        response = client.get('/treatment/9999')
         assert response.status_code == 404
 
     def test_basics_page(self, client):
@@ -37,7 +37,7 @@ class TestPizzaBrowsing:
 
 
 class TestComments:
-    """Tests for pizza comments functionality."""
+    """Tests for treatment comments functionality."""
 
     def test_add_comment_authenticated(self, authenticated_client):
         """Test adding a comment when logged in."""
@@ -76,7 +76,7 @@ class TestComments:
             follow_redirects=True
         )
 
-        # Should redirect back to pizza page
+        # Should redirect back to treatment page
         assert response.status_code == 200
 
     def test_delete_own_comment(self, authenticated_client):
@@ -110,10 +110,10 @@ class TestComments:
 
 
 class TestOrdering:
-    """Tests for pizza ordering functionality."""
+    """Tests for treatment ordering functionality."""
 
     def test_order_pizza_authenticated(self, authenticated_client):
-        """Test ordering pizza when logged in."""
+        """Test ordering treatment when logged in."""
         response = authenticated_client.post(
             '/order/1',
             data={'quantity': '2'},
@@ -148,7 +148,7 @@ class TestOrdering:
         assert b'quantity' in response.data.lower() or b'error' in response.data.lower()
 
     def test_order_nonexistent_pizza(self, authenticated_client):
-        """Test ordering non-existent pizza."""
+        """Test ordering non-existent treatment."""
         response = authenticated_client.post(
             '/order/9999',
             data={'quantity': '1'}

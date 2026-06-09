@@ -5,7 +5,7 @@
 
 ## Why
 - PwnzzAI already ships the same risk class and attacker objective: user-controlled text is concatenated into an LLM chat against a system prompt that embeds a secret coupon word per difficulty level.
-- **Duplicate rule:** attacker objective + risk class + exploit mechanic already exist at `GET /direct-prompt-injection`, `POST /chat-with-pizza-assistant-direct-prompt-injection`, and `POST /chat-with-openai-plugin-direct-prompt`.
+- **Duplicate rule:** attacker objective + risk class + exploit mechanic already exist at `GET /direct-prompt-injection`, `POST /chat-with-treatment-assistant-direct-prompt-injection`, and `POST /chat-with-openai-plugin-direct-prompt`.
 
 ## Solution
 - Treat the existing lab as the canonical in-app direct-injection surface.

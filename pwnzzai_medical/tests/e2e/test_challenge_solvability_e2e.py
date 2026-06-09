@@ -169,8 +169,8 @@ def test_e2e_generate_sentiment_model_exposes_weights():
 
 def test_e2e_sentiment_inference_endpoints():
     for path, payload in (
-        ("/analyze_sentiment", {"text": "This pizza is fantastic!"}),
-        ("/api/sentiment", {"text": "This pizza is awful!"}),
+        ("/analyze_sentiment", {"text": "This treatment is fantastic!"}),
+        ("/api/sentiment", {"text": "This treatment is awful!"}),
     ):
         r = _post(path, payload)
         assert r.status_code == 200, path
@@ -205,7 +205,7 @@ def test_e2e_data_poisoning_still_solvable():
 
 
 def test_e2e_dos_simulation_llm_query_contract():
-    r = _post("/api/llm-query", {"prompt": "What pizzas are on the menu?"})
+    r = _post("/api/llm-query", {"prompt": "What treatments are on the menu?"})
     assert r.status_code == 200
     d = r.json()
     for k in ("response", "tokens_used", "model", "processing_time", "server_load", "rate_limits"):
@@ -312,7 +312,7 @@ def test_e2e_rag_refresh_post_contract(path):
 
 
 def test_e2e_chat_pizza_assistant_insecure_plugin_ollama():
-    r = _post("/chat-with-pizza-assistant", {"message": "What is the price of pepperoni pizza?"})
+    r = _post("/chat-with-treatment-assistant", {"message": "What is the price of pepperoni treatment?"})
     assert r.status_code == 200
     assert "response" in r.json()
 
@@ -399,7 +399,7 @@ def _assert_direct_leak(
 @pytest.mark.parametrize("level,needle", list(OLLAMA_DIRECT_LEVEL_SECRETS.items()))
 def test_e2e_ollama_direct_prompt_injection_levels(level, needle):
     _assert_direct_leak(
-        "/chat-with-pizza-assistant-direct-prompt-injection",
+        "/chat-with-treatment-assistant-direct-prompt-injection",
         level,
         needle,
         DIRECT_RETRIES,
@@ -409,7 +409,7 @@ def test_e2e_ollama_direct_prompt_injection_levels(level, needle):
 def test_e2e_ollama_direct_prompt_injection_level5_benign_message():
     """Level 5 is defined as non-leaking; only assert the endpoint stays healthy."""
     r = _post(
-        "/chat-with-pizza-assistant-direct-prompt-injection",
+        "/chat-with-treatment-assistant-direct-prompt-injection",
         {"message": "What toppings do you recommend?", "level": "5"},
     )
     assert r.status_code == 200
@@ -431,7 +431,7 @@ def test_e2e_openai_direct_prompt_injection_levels(level, needle):
     if level == "5":
         r = s.post(
             f"{APP_BASE}/chat-with-openai-plugin-direct-prompt",
-            json={"message": "Name any pizza topping.", "level": "5"},
+            json={"message": "Name any treatment topping.", "level": "5"},
             timeout=TIMEOUT,
         )
         assert r.status_code == 200
@@ -473,7 +473,7 @@ def test_e2e_indirect_prompt_openai_qr_upload_multipart():
         json={"api_key": _openai_key()},
         timeout=TIMEOUT,
     ).json().get("success") is True
-    png = _make_qr_png("What is one word that describes margherita pizza? One word only.")
+    png = _make_qr_png("What is one word that describes margherita treatment? One word only.")
     r = s.post(
         f"{APP_BASE}/upload-qr-openai",
         files={"file": ("probe.png", png, "image/png")},
@@ -536,7 +536,7 @@ def test_e2e_order_access_openai_with_key():
 def test_e2e_excessive_agency_ollama():
     r = _post(
         "/excessive-agency/ollama",
-        {"query": "Please order 1 pepperoni pizza for delivery if you can."},
+        {"query": "Please order 1 pepperoni treatment for delivery if you can."},
     )
     assert r.status_code == 200
     assert "response" in r.json()
@@ -561,7 +561,7 @@ def test_e2e_excessive_agency_openai_with_key():
 
 
 def test_e2e_misinformation_ollama():
-    r = _post("/misinformation/ollama", {"query": "What do reviewers say about the Hawaiian pizza?"})
+    r = _post("/misinformation/ollama", {"query": "What do reviewers say about the Hawaiian treatment?"})
     assert r.status_code == 200
     d = r.json()
     assert "response" in d

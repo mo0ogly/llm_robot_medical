@@ -466,8 +466,8 @@ export default function AIAssistantChat({
                         <p className="text-xs">{t('chat.hint')}</p>
                     </div>
                 ) : (
-                    chatLog.map((msg, i) => (
-                        <div key={i} className={'flex ' + (msg.role === 'user' ? 'justify-end' : 'justify-start')}>
+                    chatLog.map((msg, idx) => (
+                        <div key={idx} className={'flex animate-fade-in-up ' + (msg.role === 'user' ? 'justify-end' : 'justify-start')} style={{ animationDelay: `${idx * 0.05}s` }}>
                             <div className={'max-w-[85%] p-3 rounded-lg shadow-sm whitespace-pre-wrap font-mono text-xs leading-relaxed ' + (msg.role === 'user'
                                 ? 'bg-blue-600/20 text-blue-100 border border-blue-500/30'
                                 : msg.role === 'cyber'

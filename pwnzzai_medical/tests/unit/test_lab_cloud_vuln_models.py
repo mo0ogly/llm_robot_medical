@@ -39,5 +39,5 @@ def test_openai_excessive_agency_uses_excessive_agency_env(monkeypatch):
         return "ok"
 
     monkeypatch.setattr(ea, "chat_completion", fake_chat_completion)
-    ea.openai_chat("order pizza", "sk-fake")
+    ea.openai_chat("order treatment", "sk-fake")
     assert captured["model"] == "gemini/gemini-3.1-flash-lite"

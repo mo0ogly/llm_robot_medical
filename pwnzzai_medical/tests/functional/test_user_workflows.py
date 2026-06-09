@@ -3,7 +3,7 @@ Functional tests for complete user workflows.
 Tests end-to-end user scenarios from registration to order completion.
 """
 from application import app, db
-from application.model import User, Pizza, Comment, Order
+from application.model import User, Treatment, Comment, Order
 import pytest
 import os
 import sys
@@ -38,14 +38,14 @@ def test_app():
         db.session.add(bob)
         db.session.commit()
 
-        # Create test pizzas
-        pizzas = [
-            Pizza(name='Margherita', description='Classic cheese pizza', price=9.99, image='margherita.jpg'),
-            Pizza(name='Pepperoni', description='Pepperoni pizza', price=11.99, image='pepperoni.jpg'),
-            Pizza(name='Veggie Supreme', description='Loaded with veggies', price=12.99, image='veggie.jpg'),
+        # Create test treatments
+        treatments = [
+            Treatment(name='Margherita', description='Classic cheese treatment', price=9.99, image='margherita.jpg'),
+            Treatment(name='Pepperoni', description='Pepperoni treatment', price=11.99, image='pepperoni.jpg'),
+            Treatment(name='Veggie Supreme', description='Loaded with veggies', price=12.99, image='veggie.jpg'),
         ]
-        for pizza in pizzas:
-            db.session.add(pizza)
+        for treatment in treatments:
+            db.session.add(treatment)
         db.session.commit()
 
         yield app
@@ -73,20 +73,20 @@ class TestCompleteUserJourney:
             }, follow_redirects=True)
 
             assert response.status_code == 200
-            assert b'pizza' in response.data.lower()
+            assert b'treatment' in response.data.lower()
 
-            # Step 2: User browses pizzas
+            # Step 2: User browses treatments
             response = client.get('/')
             assert response.status_code == 200
             assert b'Margherita' in response.data or b'margherita' in response.data.lower()
 
-            # Step 3: User views pizza details
-            response = client.get('/pizza/1')
+            # Step 3: User views treatment details
+            response = client.get('/treatment/1')
             assert response.status_code == 200
 
             # Step 4: User adds a comment
             response = client.post('/add_comment/1', data={
-                'content': 'Absolutely delicious pizza!',
+                'content': 'Absolutely delicious treatment!',
                 'rating': '5'
             }, follow_redirects=True)
 
@@ -113,11 +113,11 @@ class TestCompleteUserJourney:
             # Verify comment was created
             comments = Comment.query.filter_by(user_id=1).all()
             assert len(comments) == 1
-            assert comments[0].content == 'Absolutely delicious pizza!'
+            assert comments[0].content == 'Absolutely delicious treatment!'
             assert comments[0].rating == 5
 
     def test_multiple_orders_workflow(self, client, test_app):
-        """Test user ordering multiple different pizzas."""
+        """Test user ordering multiple different treatments."""
         with test_app.app_context():
             # Login
             client.post('/login', data={
@@ -125,13 +125,13 @@ class TestCompleteUserJourney:
                 'password': 'alice123'
             })
 
-            # Order first pizza
+            # Order first treatment
             client.post('/order/1', data={'quantity': '2'})
 
-            # Order second pizza
+            # Order second treatment
             client.post('/order/2', data={'quantity': '1'})
 
-            # Order third pizza
+            # Order third treatment
             client.post('/order/3', data={'quantity': '3'})
 
             # Check orders
@@ -153,7 +153,7 @@ class TestCompleteUserJourney:
 
             # Add first comment
             client.post('/add_comment/1', data={
-                'content': 'Great pizza!',
+                'content': 'Great treatment!',
                 'rating': '5'
             })
 
@@ -181,7 +181,7 @@ class TestMultiUserInteractions:
     """Test interactions between multiple users."""
 
     def test_multiple_users_ordering_same_pizza(self, client, test_app):
-        """Test multiple users ordering the same pizza."""
+        """Test multiple users ordering the same treatment."""
         with test_app.app_context():
             # Alice logs in and orders
             client.post('/login', data={'username': 'alice', 'password': 'alice123'})
@@ -205,12 +205,12 @@ class TestMultiUserInteractions:
             assert bob_orders[0].quantity == 3
 
     def test_users_commenting_on_same_pizza(self, client, test_app):
-        """Test multiple users commenting on the same pizza."""
+        """Test multiple users commenting on the same treatment."""
         with test_app.app_context():
             # Alice comments
             client.post('/login', data={'username': 'alice', 'password': 'alice123'})
             client.post('/add_comment/1', data={
-                'content': 'Love this pizza!',
+                'content': 'Love this treatment!',
                 'rating': '5'
             })
             client.get('/logout')
@@ -336,9 +336,9 @@ class TestBusinessLogic:
             # Login
             client.post('/login', data={'username': 'alice', 'password': 'alice123'})
 
-            # Get pizza price
-            pizza = Pizza.query.get(1)
-            pizza_price = pizza.price
+            # Get treatment price
+            treatment = Treatment.query.get(1)
+            pizza_price = treatment.price
 
             # Place order
             quantity = 3
@@ -408,15 +408,15 @@ class TestDataConsistency:
             # Alice adds comment
             client.post('/login', data={'username': 'alice', 'password': 'alice123'})
             client.post('/add_comment/1', data={
-                'content': 'Excellent pizza!',
+                'content': 'Excellent treatment!',
                 'rating': '5'
             })
             client.get('/logout')
 
             # Bob should see Alice's comment
             client.post('/login', data={'username': 'bob', 'password': 'bob123'})
-            response = client.get('/pizza/1')
-            assert b'Excellent pizza!' in response.data
+            response = client.get('/treatment/1')
+            assert b'Excellent treatment!' in response.data
 
     def test_user_isolation(self, client, test_app):
         """Test that user data is properly isolated."""
@@ -441,13 +441,13 @@ class TestErrorHandling:
     """Test error handling in various scenarios."""
 
     def test_nonexistent_pizza_handling(self, client, test_app):
-        """Test handling of requests for non-existent pizzas."""
+        """Test handling of requests for non-existent treatments."""
         with test_app.app_context():
-            # Try to view non-existent pizza
-            response = client.get('/pizza/9999')
+            # Try to view non-existent treatment
+            response = client.get('/treatment/9999')
             assert response.status_code == 404
 
-            # Try to order non-existent pizza
+            # Try to order non-existent treatment
             client.post('/login', data={'username': 'alice', 'password': 'alice123'})
             response = client.post('/order/9999', data={'quantity': '1'})
             assert response.status_code == 404

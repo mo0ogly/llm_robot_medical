@@ -24,7 +24,7 @@ class TestAuthentication:
 
         assert response.status_code == 200
         # Check if redirected to home page
-        assert b'pizza' in response.data.lower()
+        assert b'treatment' in response.data.lower()
 
     def test_login_with_invalid_username(self, client):
         """Test login with non-existent username."""
@@ -54,7 +54,7 @@ class TestAuthentication:
 
         assert response.status_code == 200
         # Should be redirected to home or login
-        assert b'pizza' in response.data.lower() or b'login' in response.data.lower()
+        assert b'treatment' in response.data.lower() or b'login' in response.data.lower()
 
 
 class TestSessionManagement:
@@ -85,7 +85,7 @@ class TestSessionManagement:
         """Test that adding comment requires authentication."""
         response = client.post(
             '/add_comment/1',
-            data={'name': 'Test', 'content': 'Great pizza!', 'rating': '5'},
+            data={'name': 'Test', 'content': 'Great treatment!', 'rating': '5'},
             follow_redirects=True
         )
 

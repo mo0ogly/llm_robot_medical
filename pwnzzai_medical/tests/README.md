@@ -13,7 +13,7 @@ tests/
 ├── integration/             # Integration tests
 │   ├── test_api.py         # API endpoint tests
 │   ├── test_auth.py        # Authentication tests
-│   └── test_pizza_shop.py  # Core functionality tests
+│   └── test_medicare_shop.py  # Core functionality tests
 ├── unit/                    # Unit tests
 │   ├── test_models.py      # Database model tests
 │   ├── test_sentiment_model.py  # Sentiment model tests
@@ -97,8 +97,8 @@ pytest tests/integration/test_api.py
 # Run only authentication tests
 pytest tests/integration/test_auth.py
 
-# Run only pizza shop tests
-pytest tests/integration/test_pizza_shop.py
+# Run only treatment shop tests
+pytest tests/integration/test_medicare_shop.py
 
 # Run only model tests
 pytest tests/unit/test_models.py
@@ -179,7 +179,7 @@ This will generate an HTML coverage report in `htmlcov/index.html`.
 
 **test_models.py** - Database Model Tests
 - User model (creation, password hashing, unique constraints)
-- Pizza model (creation, relationships)
+- Treatment model (creation, relationships)
 - Comment model (creation, timestamps, ratings)
 - Order model (creation, timestamps, relationships)
 
@@ -212,8 +212,8 @@ This will generate an HTML coverage report in `htmlcov/index.html`.
 - Protected route access
 - Lab setup API (OpenAI API key, Ollama status)
 
-**test_pizza_shop.py** - Core Functionality Tests
-- Pizza browsing
+**test_medicare_shop.py** - Core Functionality Tests
+- Treatment browsing
 - Comments (add, delete)
 - Orders (place, view)
 - Vulnerability demonstration pages
@@ -239,7 +239,7 @@ Fixtures are defined in `conftest.py`:
 - `client` - Test client for making requests
 - `authenticated_client` - Test client with logged-in session (as alice)
 - `runner` - CLI test runner
-- `sample_pizza` - Sample pizza from database
+- `sample_pizza` - Sample treatment from database
 - `sample_user` - Sample user (alice) from database
 
 ## Writing New Tests
@@ -283,7 +283,7 @@ def test_protected_endpoint(authenticated_client):
 ## Notes
 
 - Tests use an in-memory SQLite database that is recreated for each test
-- Sample data (users, pizzas, comments, orders) is automatically created
+- Sample data (users, treatments, comments, orders) is automatically created
 - Default test users: alice/alice and bob/bob
 - CSRF protection is disabled during testing for easier POST requests
 - External services (Ollama, OpenAI) should be mocked for unit tests

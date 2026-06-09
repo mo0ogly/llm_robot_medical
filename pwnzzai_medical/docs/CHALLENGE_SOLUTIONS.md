@@ -159,11 +159,11 @@ Convention for each challenge:
 
 ## 6. Insecure design / excessive agency / plugins
 
-### 6.1 Insecure plugin — Ollama pizza assistant
+### 6.1 Insecure plugin — Ollama treatment assistant
 
 | | |
 |--|--|
-| **Primary surface** | `GET /insecure-plugin`, `POST /chat-with-pizza-assistant` |
+| **Primary surface** | `GET /insecure-plugin`, `POST /chat-with-treatment-assistant` |
 | **AI draft solution** | Ask the assistant to emit `EXECUTE_FUNCTION: search_pizza_price("...")` style output or otherwise chain tool execution; observe SQL-backed price strings or injection paths described in code comments. |
 | **Actual solution** | *Fill in.* |
 | **Success evidence** | *Fill in.* |
@@ -216,7 +216,7 @@ Convention for each challenge:
 
 | | |
 |--|--|
-| **Primary surface** | `GET /direct-prompt-injection`, `POST /chat-with-pizza-assistant-direct-prompt-injection` (`level` in JSON) |
+| **Primary surface** | `GET /direct-prompt-injection`, `POST /chat-with-treatment-assistant-direct-prompt-injection` (`level` in JSON) |
 | **AI draft solution** | Per level, use social engineering / override prompts until the “coupon” word leaks (code-defined secrets: L1 `cheese`, L2 `oven`, L3 `olives`, L4 `mushroom`, L5 `mozzarella` with strongest refusal in system prompt). |
 | **Actual solution** | *Fill in.* (e.g. canonical prompt ladder per level.) |
 | **Success evidence** | *Fill in.* e.g. for L1–L4: model output contains coupon token; for L5: either “must not leak” or alternate success you define. |
@@ -338,9 +338,9 @@ Convention for each challenge:
 | `/chat-with-ollama-dos`, `/chat-with-openai-dos` | Live chat DoS |
 | `/training-data-leak/*` | Training data / RAG leak tabs |
 | `/update-rag-*` | RAG rebuild |
-| `/insecure-plugin`, `/chat-with-pizza-assistant`, `/chat-with-openai-plugin` | Insecure plugin |
+| `/insecure-plugin`, `/chat-with-treatment-assistant`, `/chat-with-openai-plugin` | Insecure plugin |
 | `/sensitive-info` | Sensitive disclosure page |
-| `/direct-prompt-injection`, `/chat-with-pizza-assistant-direct-prompt-injection` | Direct injection (Ollama) |
+| `/direct-prompt-injection`, `/chat-with-treatment-assistant-direct-prompt-injection` | Direct injection (Ollama) |
 | `/chat-with-openai-plugin-direct-prompt` | Direct injection (cloud) |
 | `/indirect-prompt-injection`, `/upload-qr`, `/upload-qr-openai` | Indirect via QR |
 | `/order-access/ollama`, `/order-access/openai` | Cross-user order risk |

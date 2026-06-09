@@ -12,7 +12,7 @@ class TestSentimentAnalysisAPI:
         """Test sentiment analysis with positive text."""
         response = client.post(
             '/analyze_sentiment',
-            json={'text': 'This pizza is amazing and delicious!'}
+            json={'text': 'This treatment is amazing and delicious!'}
         )
 
         assert response.status_code == 200
@@ -25,7 +25,7 @@ class TestSentimentAnalysisAPI:
         """Test sentiment analysis with negative text."""
         response = client.post(
             '/analyze_sentiment',
-            json={'text': 'This pizza is terrible and disgusting.'}
+            json={'text': 'This treatment is terrible and disgusting.'}
         )
 
         assert response.status_code == 200
@@ -59,7 +59,7 @@ class TestSentimentAnalysisAPI:
         """Test the /api/sentiment endpoint."""
         response = client.post(
             '/api/sentiment',
-            json={'text': 'Great pizza with excellent service!'}
+            json={'text': 'Great treatment with excellent service!'}
         )
 
         assert response.status_code == 200
@@ -133,8 +133,8 @@ class TestDataPoisoningAPI:
     def test_train_poisoned_model(self, client):
         """Test training a model with poisoned data."""
         poisoned_comments = [
-            {'text': 'delicious pizza', 'sentiment': 'negative'},  # Poisoned: positive text labeled negative
-            {'text': 'terrible pizza', 'sentiment': 'positive'},   # Poisoned: negative text labeled positive
+            {'text': 'delicious treatment', 'sentiment': 'negative'},  # Poisoned: positive text labeled negative
+            {'text': 'terrible treatment', 'sentiment': 'positive'},   # Poisoned: negative text labeled positive
         ]
 
         response = client.post(
@@ -183,8 +183,8 @@ class TestDataPoisoningAPI:
         response = client.post(
             '/api/test-poisoned-model',
             json={
-                'text': 'delicious pizza',
-                'weights': {'delicious': 0.5, 'pizza': 0.3}
+                'text': 'delicious treatment',
+                'weights': {'delicious': 0.5, 'treatment': 0.3}
             }
         )
 
@@ -199,7 +199,7 @@ class TestDataPoisoningAPI:
         """Test poisoned model with no weights provided."""
         response = client.post(
             '/api/test-poisoned-model',
-            json={'text': 'test pizza'}
+            json={'text': 'test treatment'}
         )
 
         assert response.status_code == 400
@@ -214,7 +214,7 @@ class TestDoSSimulationAPI:
         """Test basic LLM query."""
         response = client.post(
             '/api/llm-query',
-            json={'prompt': 'Tell me about your pizzas'}
+            json={'prompt': 'Tell me about your treatments'}
         )
 
         assert response.status_code == 200
@@ -253,15 +253,15 @@ class TestDoSSimulationAPI:
         assert second_load >= initial_load
 
     def test_llm_query_pizza_keywords(self, client):
-        """Test that pizza-related queries get relevant responses."""
+        """Test that treatment-related queries get relevant responses."""
         response = client.post(
             '/api/llm-query',
-            json={'prompt': 'What pizzas do you have?'}
+            json={'prompt': 'What treatments do you have?'}
         )
 
         assert response.status_code == 200
         data = json.loads(response.data)
-        assert 'pizza' in data['response'].lower() or 'menu' in data['response'].lower()
+        assert 'treatment' in data['response'].lower() or 'menu' in data['response'].lower()
 
 
 class TestSupplyChainAPI:

@@ -26,7 +26,7 @@ GET_CHALLENGE_SURFACES: tuple[tuple[str, tuple[int, ...]], ...] = (
     ("/promotion-photo-claim", (200, 302)),
     ("/customer-support-safety", (200,)),
     ("/demo-malicious-model", (200,)),
-    ("/pizza/1", (200, 404)),  # seed data may differ; 404 still proves routing
+    ("/treatment/1", (200, 404)),  # seed data may differ; 404 still proves routing
     ("/orders", (200, 302)),  # unauthenticated login flow can be 302 or final login page 200
     ("/check-openai-api-key", (200,)),
     ("/generate_sentiment_model", (200,)),

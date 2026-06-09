@@ -824,9 +824,15 @@ export default function App() {
 
   return (
     <div className={'relative h-screen bg-slate-950 text-slate-300 font-sans overflow-hidden flex flex-col transition-all duration-300 ' + (isIntrusionFlash ? 'ring-4 ring-red-500 ring-inset' : '')}>
+      {/* Background Grid */}
+      <div className="absolute inset-0 bg-cyber-grid pointer-events-none opacity-50"></div>
+      {/* Ambient Glow */}
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-900/10 blur-[120px] rounded-full pointer-events-none"></div>
+      
       {/* HUD Bar */}
-      <header className="h-10 shrink-0 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-50">
-        <div className="flex items-center gap-4">
+      <header className="h-12 shrink-0 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 flex items-center justify-between px-6 z-50 shadow-[0_4px_30px_rgba(0,0,0,0.3)]">
+        <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_5px_cyan]"></div>
             <span className="font-mono text-[10px] font-bold tracking-widest text-blue-400 uppercase">POC Medical v{typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '3.0.0'}</span>
@@ -936,122 +942,40 @@ export default function App() {
             
             {escalationState.active && <EscalationPanel escalationState={escalationState} />}
             <PatientRecord scenario={scenario} setScenario={(s) => { setScenario(s); recorder.recordEvent('scenario_change', { scenario: s }); }} safeRecord={content.record_safe} hackedRecord={content.record_hacked} poisonRecord={content.record_poison} disabled={isReplayMode} />
+          </div>
 
-            {/* Helper Buttons */}
-            <div className="mt-auto grid grid-cols-2 gap-1 p-1 bg-slate-900/50 border border-slate-800 rounded">
+          <div className="mt-auto grid grid-cols-2 gap-2 p-2 bg-slate-900/40 backdrop-blur-md border border-slate-700/50 rounded-xl shadow-lg">
               <button onClick={() => { setModalTab(0); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">{t('btn.explain.safe')}</button>
               <button onClick={() => { setModalTab(1); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">{t('btn.explain.poison')}</button>
               <button onClick={() => { setModalTab(2); setShowModal(true); }} className="text-[8px] p-1 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded uppercase font-bold tracking-tighter border border-slate-700">{t('btn.explain.crypto')}</button>
               <button onClick={() => { setModalTab(6); setShowModal(true); }} className="text-[8px] p-1 bg-red-900/20 hover:bg-red-900/40 text-red-500 rounded uppercase font-bold tracking-tighter border border-red-900/30">{t('nav.en_scene')}</button>
-            </div>
           </div>
+        </div>
 
-          {/* Center Panel: Camera View & Telemetry */}
-          <div className="col-span-6 flex flex-col gap-1 overflow-hidden h-full min-h-0">
-            <div className="flex-[1.5] border border-slate-800 bg-black relative flex flex-col rounded overflow-hidden shadow-inner">
-              {/* Toggle CAMERA / BRAS 3D */}
-              <div className="flex border-b border-slate-800 bg-slate-900/80 z-20 relative">
-                <button
-                  onClick={() => setCameraView('camera')}
-                  className={'px-3 py-1 font-mono text-[9px] uppercase tracking-wider transition-colors ' + (cameraView === 'camera' ? 'text-[#00ff41] border-b-2 border-[#00ff41] bg-black/50' : 'text-slate-500 hover:text-slate-300')}
-                >
-                  {t('camera.view.cam')}
-                </button>
-                <button
-                  onClick={() => setCameraView('arms')}
-                  className={'px-3 py-1 font-mono text-[9px] uppercase tracking-wider transition-colors ' + (cameraView === 'arms' ? 'text-[#00ff41] border-b-2 border-[#00ff41] bg-black/50' : 'text-slate-500 hover:text-slate-300')}
-                >
-                  {t('camera.view.arms')}
-                </button>
-              </div>
-
-              {/* View content */}
-              <div className="flex-1 relative flex items-center justify-center">
+        <div className="flex-[1.5] flex flex-col gap-2 min-w-0">
+          <div className="flex-[1.5] border border-slate-700/60 bg-black/40 backdrop-blur-md relative flex flex-col rounded-xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] shadow-inner">
+            <div className="flex border-b border-slate-800 bg-slate-900/80 z-20 relative">
+              <button onClick={() => setCameraView('camera')} className={'px-3 py-1 font-mono text-[9px] uppercase tracking-wider transition-colors ' + (cameraView === 'camera' ? 'text-[#00ff41] border-b-2 border-[#00ff41] bg-black/50' : 'text-slate-500 hover:text-slate-300')}>CAMERA</button>
+              <button onClick={() => setCameraView('arms')} className={'px-3 py-1 font-mono text-[9px] uppercase tracking-wider transition-colors ' + (cameraView === 'arms' ? 'text-[#00ff41] border-b-2 border-[#00ff41] bg-black/50' : 'text-slate-500 hover:text-slate-300')}>ARMS</button>
+            </div>
+            <div className="flex-1 relative flex items-center justify-center">
                 {cameraView === 'camera' ? (
                   scenario !== 'none' ? (
                     <>
-                      {/* Camera image with dynamic CSS filter based on scenario */}
                       {(() => {
                         const p = robotSim.attackProgress;
                         const isFrozen = robotStatus === 'FROZEN';
-                        // CSS filter per scenario
-                        const camFilter = isFrozen
-                          ? 'grayscale(1) contrast(1.25)'
-                          : scenario === 'poison'
-                            ? 'saturate(' + (1 - p * 0.45) + ') hue-rotate(' + (p * 18) + 'deg) brightness(' + (1 - p * 0.15) + ')'
-                            : scenario === 'ransomware'
-                              ? 'contrast(' + (1 + p * 0.45) + ') brightness(' + (1 - p * 0.25) + ') saturate(' + (1 - p * 0.6) + ')'
-                              : 'none';
-                        // Camera motion class
-                        const camClass = isFrozen
-                          ? 'grayscale contrast-125'
-                          : scenario === 'ransomware' && p > 0.45
-                            ? (p > 0.75 ? 'animate-camera-flicker animate-camera-shake' : 'animate-camera-shake')
-                            : 'animate-camera';
+                        const camFilter = isFrozen ? 'grayscale(1) contrast(1.25)' : scenario === 'poison' ? 'saturate(' + (1 - p * 0.45) + ') hue-rotate(' + (p * 18) + 'deg) brightness(' + (1 - p * 0.15) + ')' : scenario === 'ransomware' ? 'contrast(' + (1 + p * 0.45) + ') brightness(' + (1 - p * 0.25) + ') saturate(' + (1 - p * 0.6) + ')' : 'none';
+                        const camClass = isFrozen ? 'grayscale contrast-125' : scenario === 'ransomware' && p > 0.45 ? (p > 0.75 ? 'animate-camera-flicker animate-camera-shake' : 'animate-camera-shake') : 'animate-camera';
                         return (
-                          <video
-                            key="surgical-cam"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            poster={import.meta.env.BASE_URL + 'surgical_camera_view2.png'}
-                            className={'absolute inset-0 w-full h-full object-cover opacity-80 ' + camClass}
-                            style={{ filter: camFilter }}
-                          >
+                          <video key="surgical-cam" autoPlay loop muted playsInline poster={import.meta.env.BASE_URL + 'surgical_camera_view2.png'} className={'absolute inset-0 w-full h-full object-cover opacity-80 ' + camClass} style={{ filter: camFilter }}>
                             <source src={import.meta.env.BASE_URL + 'surgical_camera_view.mp4'} type="video/mp4" />
                             <source src={import.meta.env.BASE_URL + 'surgical_camera_view.webm'} type="video/webm" />
-                            {/* Fallback: static image if no video available */}
-                            <img
-                              src={import.meta.env.BASE_URL + 'surgical_camera_view2.png'}
-                              alt="surgical view"
-                              className="absolute inset-0 w-full h-full object-cover"
-                            />
                           </video>
                         );
                       })()}
-
-                      {/* Scanlines */}
                       <div className={'scanlines-overlay absolute inset-0 mix-blend-overlay pointer-events-none transition-opacity duration-1000 ' + (scenario === 'ransomware' ? 'opacity-60' : 'opacity-30')}></div>
-
-                      {/* Color grade overlay */}
-                      <div className={'absolute inset-0 transition-colors duration-1000 pointer-events-none ' + (
-                        robotStatus !== 'ACTIVE' ? 'bg-red-900/30' :
-                        scenario === 'poison'     ? 'bg-green-900/' + Math.round(5 + robotSim.attackProgress * 15) :
-                        scenario === 'ransomware' ? 'bg-orange-900/' + Math.round(5 + robotSim.attackProgress * 20) :
-                        'bg-cyan-900/10'
-                      )}></div>
-
-                      {/* Chromatic aberration — ransomware near-freeze */}
-                      {scenario === 'ransomware' && robotSim.attackProgress > 0.6 && (
-                        <video
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          poster={import.meta.env.BASE_URL + 'surgical_camera_view2.png'}
-                          className="absolute inset-0 w-full h-full object-cover pointer-events-none animate-chroma mix-blend-screen opacity-20"
-                          style={{ filter: 'saturate(0) sepia(1) hue-rotate(300deg)' }}
-                        >
-                          <source src={import.meta.env.BASE_URL + 'surgical_camera_view.mp4'} type="video/mp4" />
-                          <source src={import.meta.env.BASE_URL + 'surgical_camera_view.webm'} type="video/webm" />
-                        </video>
-                      )}
-
-                      {/* Vignette — grows with attack */}
-                      {(scenario === 'poison' || scenario === 'ransomware') && robotSim.attackProgress > 0.1 && (
-                        <div
-                          className="absolute inset-0 pointer-events-none"
-                          style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,' + (robotSim.attackProgress * 0.55) + ') 100%)' }}
-                        />
-                      )}
-
-                      {/* HUD corner overlay */}
-                      <div className="absolute inset-0 flex flex-col justify-between p-3 pointer-events-none font-mono text-[9px] text-green-500/70 uppercase">
-                        <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">PORT 2 [LIVE]</span><span className="bg-black/50 px-1 border border-green-500/20">ZOOM: 2.1x</span></div>
-                        <div className="self-center w-32 h-32 border border-green-500/10 rounded-full flex items-center justify-center opacity-40"><div className="w-4 h-4 border border-green-500 bg-green-500/20 rounded-full" /></div>
-                        <div className="flex justify-between tracking-widest"><span className="bg-black/50 px-1 border border-green-500/20">T+ 46:12</span><span className="bg-black/50 px-1 border border-red-500/40 text-red-500 flex items-center gap-1"><div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" /> REC</span></div>
-                      </div>
+                      <div className={'absolute inset-0 transition-colors duration-1000 pointer-events-none ' + (robotStatus !== 'ACTIVE' ? 'bg-red-900/30' : scenario === 'poison' ? 'bg-green-900/' + Math.round(5 + robotSim.attackProgress * 15) : scenario === 'ransomware' ? 'bg-orange-900/' + Math.round(5 + robotSim.attackProgress * 20) : 'bg-cyan-900/10')}></div>
                       <CameraHUD force={robotSim.force} clipTension={robotSim.clipTension} robotStatus={robotStatus} scenario={scenario} attackProgress={robotSim.attackProgress} />
                     </>
                   ) : (
@@ -1062,36 +986,38 @@ export default function App() {
                     <RobotArmsView arms={robotSim.arms} force={robotSim.force} clipTension={robotSim.clipTension} gripperOpen={robotSim.gripperOpen} scenario={scenario} attackProgress={robotSim.attackProgress} cryptoMetrics={robotSim.cryptoMetrics} />
                   </Suspense>
                 )}
-              </div>
-            </div>
-            {/* Bottom: Telemetry Console & Threat Map */}
-            <div className="h-[40%] flex gap-1 min-h-0 overflow-hidden">
-              <div className="flex-[1.2] overflow-hidden h-full">
-                {scenario !== 'none' ? (
-                  <TelemetryConsole key={resetKey} robotStatus={robotStatus} scenario={scenario} onLogEntry={handleTelemetryEntry} />
-                ) : (
-                  <div className="h-full bg-slate-900 border border-slate-800 flex items-center justify-center rounded">
-                    <span className="font-mono text-slate-700 text-xs animate-pulse">TELEMETRY OFFLINE</span>
-                  </div>
-                )}
-              </div>
-              <div className="flex-1 overflow-hidden h-full">
-                <ActionTimeline events={timelineEvents} />
-              </div>
-              <div className="flex-1 overflow-hidden h-full">
-                {scenario !== 'none' ? (
-                  <MitreMatrix scenario={scenario} />
-                ) : (
-                  <div className="h-full bg-slate-900 border border-slate-800 flex items-center justify-center rounded">
-                    <span className="font-mono text-slate-700 text-[10px] uppercase font-bold text-center p-4">STANDBY</span>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
+          
+          {/* Bottom: Telemetry Console & Threat Map */}
+          <div className="h-[40%] flex gap-2 min-h-0 overflow-hidden">
+            <div className="flex-[1.2] overflow-hidden h-full rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-slate-700/60 bg-slate-900/60 backdrop-blur-md">
+              {scenario !== 'none' ? (
+                <TelemetryConsole key={resetKey} robotStatus={robotStatus} scenario={scenario} onLogEntry={handleTelemetryEntry} />
+              ) : (
+                <div className="h-full flex items-center justify-center">
+                  <span className="font-mono text-slate-600/80 text-xs tracking-[0.2em] animate-pulse">TELEMETRY OFFLINE</span>
+                </div>
+              )}
+            </div>
+            <div className="flex-1 overflow-hidden h-full bg-slate-900/60 backdrop-blur-md border border-slate-700/60 shadow-[0_8px_32px_rgba(0,0,0,0.4)] rounded-xl">
+              <ActionTimeline events={timelineEvents} />
+            </div>
+            <div className="flex-1 overflow-hidden h-full">
+              {scenario !== 'none' ? (
+                <MitreMatrix scenario={scenario} />
+              ) : (
+                <div className="h-full bg-slate-900/60 backdrop-blur-md border border-slate-700/60 shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex items-center justify-center rounded-xl">
+                  <span className="font-mono text-slate-700 text-[10px] uppercase font-bold text-center p-4">STANDBY</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
-          {/* Right Panel: AI Assistant or Compare View */}
-          <div className="col-span-3 border border-slate-800 bg-slate-950 rounded flex flex-col relative overflow-hidden h-full min-h-0 shadow-2xl">
+        {/* Right Panel: AI Assistant or Compare View */}
+        <div className="flex-1 flex flex-col gap-2 min-w-0">
+          <div className="h-full bg-slate-900/60 backdrop-blur-md border border-slate-700/60 rounded-xl flex flex-col overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.4)] relative">
             {isCompareMode ? (
               <CompareView
                 content={content}

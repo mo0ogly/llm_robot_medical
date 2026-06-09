@@ -332,7 +332,7 @@ import re
 import sqlite3
 
 # Whitelist of allowed treatment names
-ALLOWED_PIZZAS = {'consultation', 'blood_test', 'mri', 'ultrasound', 'xray'}
+ALLOWED_TREATMENTS = {'consultation', 'blood_test', 'mri', 'ultrasound', 'xray'}
 SQL_KEYWORDS = ['union', 'select', 'drop', 'delete', 'insert', 'update', 'create', 'alter']
 
 def get_treatment_price_secure(treatment_type):
@@ -353,7 +353,7 @@ def get_treatment_price_secure(treatment_type):
         return "Invalid characters in treatment name"
     
     # 4. Treatment name whitelist
-    if not any(allowed in treatment for allowed in ALLOWED_PIZZAS):
+    if not any(allowed in treatment for allowed in ALLOWED_TREATMENTS):
         return "Treatment not available"
     
     try:

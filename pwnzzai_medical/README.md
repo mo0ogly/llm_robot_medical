@@ -1,20 +1,20 @@
-# 🍕 Welcome to PwnzzAI(/pəʊnzɑː/) Shop – The Vulnerable Pizza Shop! 💻
+# 🩺 Welcome to MediCare AI Shop – The Vulnerable Medical AI Shop! 💻
 
-<img src="application/static/img/index.png" alt="PwnzzAI Shop" width="200">
+<img src="application/static/img/index.png" alt="MediCare AI Shop" width="200">
 
-At PwnzzAI Shop, every slice serves up a helping of **holistic AI security instruction**. This hands-on learning platform prepares professionals to understand the protection of **AI technologies broadly** delivered through an engaging, practical pizza shop scenario.
+At MediCare AI Shop, every case serves up a helping of **holistic AI security instruction**. This hands-on learning platform prepares professionals to understand the protection of **AI technologies broadly** delivered through an engaging, practical medical clinic scenario.
 
-Just as an incorrect ingredient can spoil a pizza, a flawed prompt or inadequate architecture can leave AI technologies vulnerable to severe threats, including information breaches, intellectual property theft, or illegitimate access.
+Just as an incorrect diagnosis can spoil a treatment, a flawed prompt or inadequate architecture can leave AI technologies vulnerable to severe threats, including information breaches, intellectual property theft, or illegitimate access.
 
-Here, you'll explore **practical examples** of how vulnerabilities are created, exploited, and mitigated. You need to login as alice/alice or bob/bob for some pages. Grab a slice, dig in, and discover how delicious learning about AI security can be.
+Here, you'll explore **practical examples** of how vulnerabilities are created, exploited, and mitigated. You need to login as alice/alice or bob/bob for some pages. Take a case, dig in, and discover how fascinating learning about AI security can be.
 
 **Table of Content**
 - [About](#about)
   - [Scope and Learning Goals](#scope-and-learning-goals)
 - [Setup Instructions](#setup-instructions)
-   - [Option 1: Docker (PwnzzAI + Ollama)](#option-1-docker-pwnzzai--ollama)
+   - [Option 1: Docker (MediCare AI + Ollama)](#option-1-docker-pwnzzai--ollama)
    - [If the default image does not pull (build locally)](#if-the-default-image-does-not-pull-build-locally)
-   - [Option 2: Docker (Your Own Ollama + PwnzzAI Image)](#option-2-docker-your-own-ollama--pwnzzai-image)
+   - [Option 2: Docker (Your Own Ollama + MediCare AI Image)](#option-2-docker-your-own-ollama--pwnzzai-image)
    - [Option 3: Run Source Code Yourself](#option-3-run-source-code-yourself)
    - [Troubleshooting: Ollama Connection (WSL + Docker)](OLLAMA_CONNECTION_TROUBLESHOOTING.md)
    - [Workshop hosts: choosing OpenAI, Claude, Gemini, or other cloud models](docs/workshop-cloud-llm-setup.md)
@@ -26,14 +26,14 @@ Here, you'll explore **practical examples** of how vulnerabilities are created, 
 
 ## About
 
-PwnzzAI Shop represents a **hands-on learning platform** purposefully built for instruction on AI technology protection. This intentionally insecure Flask-based web application showcases an extensive array of AI security weaknesses via an immersive pizza shop experience.
+MediCare AI Shop represents a **hands-on learning platform** purposefully built for instruction on AI technology protection. This intentionally insecure Flask-based web application showcases an extensive array of AI security weaknesses via an immersive medical clinic experience.
 
 **Founding partner**: [OWASP AI Exchange](https://owaspai.org/)
 
 ### Scope and Learning Goals
 
-PwnzzAI is designed as a comprehensive, evolving learning platform aligned with the **[AI Exchange risk taxonomy](https://owaspai.org/docs/ai_security_overview/#threats-overview)** Its scope expands progressively in step with OWASP AI Exchange security analysis frameworks and defensive guidance, ensuring long-term relevance as AI security practices mature.
-The project currently incorporates the OWASP Top 10 for LLMs, with an architecture intentionally mapped to AI Exchange risk classifications. Over time, PwnzzAI aims to mature into a structured learning ecosystem that supports:
+MediCare AI is designed as a comprehensive, evolving learning platform aligned with the **[AI Exchange risk taxonomy](https://owaspai.org/docs/ai_security_overview/#threats-overview)** Its scope expands progressively in step with OWASP AI Exchange security analysis frameworks and defensive guidance, ensuring long-term relevance as AI security practices mature.
+The project currently incorporates the OWASP Top 10 for LLMs, with an architecture intentionally mapped to AI Exchange risk classifications. Over time, MediCare AI aims to mature into a structured learning ecosystem that supports:
 
 - AI protection and defense training, including self-directed learning paths
 
@@ -45,10 +45,10 @@ The project currently incorporates the OWASP Top 10 for LLMs, with an architectu
   
 ## Setup Instructions
 
-Choose one of these 3 ways to run PwnzzAI:
+Choose one of these 3 ways to run MediCare AI:
 
-1. Docker with both images (PwnzzAI + Ollama)
-2. Docker with your own local/remote Ollama and only the PwnzzAI image
+1. Docker with both images (MediCare AI + Ollama)
+2. Docker with your own local/remote Ollama and only the MediCare AI image
 3. Run the source code yourself
 
 ### Before You Start (All Options)
@@ -59,8 +59,8 @@ Choose one of these 3 ways to run PwnzzAI:
 4. Clone this repository and enter it:
 
 ```bash
-git clone https://github.com/OWASP/PwnzzAI.git
-cd PwnzzAI
+git clone https://github.com/OWASP/MediCare AI.git
+cd MediCare AI
 ```
 
 #### Optional: configure a cloud model (OpenAI / Gemini / Claude)
@@ -81,9 +81,9 @@ cp .env.example .env
 
 Restart the app after editing `.env`. For a full provider/model walkthrough, see [Workshop hosts: choosing OpenAI, Claude, Gemini, or other cloud models](docs/workshop-cloud-llm-setup.md).
 
-### Option 1: Docker (PwnzzAI + Ollama)
+### Option 1: Docker (MediCare AI + Ollama)
 
-Use this option if you want Docker to run both the PwnzzAI app and Ollama for you.
+Use this option if you want Docker to run both the MediCare AI app and Ollama for you.
 
 1. Start both containers:
 
@@ -162,11 +162,11 @@ docker login ghcr.io
 
 The same `PWNZZAI_IMAGE=pwnzzai-local:dev` approach applies to **Option 2** if you use `docker-compose.external-ollama.yml` and hit the same pull error.
 
-### Option 2: Docker (Your Own Ollama + PwnzzAI Image)
+### Option 2: Docker (Your Own Ollama + MediCare AI Image)
 
-Use this option if Ollama is already running somewhere else and you only want to run PwnzzAI in Docker.
+Use this option if Ollama is already running somewhere else and you only want to run MediCare AI in Docker.
 
-If you run Ollama on WSL and PwnzzAI in Docker, see
+If you run Ollama on WSL and MediCare AI in Docker, see
 [`OLLAMA_CONNECTION_TROUBLESHOOTING.md`](OLLAMA_CONNECTION_TROUBLESHOOTING.md)
 for connectivity fixes (`Connection refused`, `host.docker.internal`, binding, and env validation).
 
@@ -186,7 +186,7 @@ Windows PowerShell:
 $env:OLLAMA_HOST="http://your-ollama-server:11434"
 ```
 
-3. Start PwnzzAI with the external-Ollama compose file:
+3. Start MediCare AI with the external-Ollama compose file:
 
 ```bash
 docker compose -f docker-compose.external-ollama.yml up -d
@@ -255,7 +255,7 @@ If you need more details, watch <a href="https://www.youtube.com/watch?v=Pv3PP6x
 
 ## Features
 
-- **Pizza Service**: Browse appetizing pizzas, explore customer feedback, contribute comments, and place virtual orders!
+- **Medical Service**: Browse available treatments, explore customer feedback, contribute comments, and place virtual orders!
 - **Extensive Weakness Showcases**: Active demonstrations spanning OWASP LLM Top 10 and AI Exchange threat categories including model input threats, development-time threats, runtime security threats, and system-level AI risks.
 - **Learning-Focused Design**: Discover exploitation methods and defensive approaches via transparent descriptions, crafted for organized instruction programs and aligned with [AI Exchange threat taxonomy](https://owaspai.org/docs/ai_security_overview/).
 - **Multi-Provider Implementation**: Every demonstration operates with both commercial OpenAI and complimentary free Ollama frameworks, ensuring accessibility for all participants.
@@ -268,7 +268,7 @@ This platform showcases an extensive spectrum of AI protection challenges, align
 
 ### Learning Framework
 
-Every weakness demonstrated in PwnzzAI features:
+Every weakness demonstrated in MediCare AI features:
 
 1. **Active demonstrations** illustrating the vulnerability's mechanics
 2. **Exploitation scenarios** providing interactive attack exercises

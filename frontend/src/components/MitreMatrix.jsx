@@ -10,16 +10,19 @@ export default function MitreMatrix({ scenario }) {
   ];
 
   return (
-    <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 flex flex-col h-full overflow-hidden">
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2 mb-2 text-slate-300 font-mono text-[10px] uppercase font-bold tracking-widest">
-        <Shield size={12} className="text-purple-500" />
-        <span>MITRE ATT&CK Matrix (LLM)</span>
+    <div className="bg-slate-900/60 backdrop-blur-md border border-slate-700/60 shadow-[0_8px_32px_rgba(0,0,0,0.4)] rounded-lg p-3 flex flex-col h-full overflow-hidden transition-all duration-500 relative">
+      {/* Decorative inner glow */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 to-purple-500/5 pointer-events-none rounded-lg"></div>
+
+      <div className="flex items-center gap-2 border-b border-slate-700/80 pb-2 mb-2 text-slate-300 font-mono text-[10px] uppercase font-bold tracking-widest z-10">
+        <Shield size={12} className="text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]" />
+        <span className="drop-shadow-[0_0_2px_rgba(255,255,255,0.5)]">MITRE ATT&CK Matrix (LLM)</span>
       </div>
       
-      <div className="flex-1 overflow-x-auto grid grid-cols-4 gap-2">
+      <div className="flex-1 overflow-x-auto grid grid-cols-4 gap-2 z-10">
         {tactics.map(tactic => (
-          <div key={tactic.id} className="flex flex-col gap-1 min-w-[120px]">
-            <div className="text-[9px] font-bold text-slate-400 bg-slate-800 px-1 py-0.5 rounded text-center">
+          <div key={tactic.id} className="flex flex-col gap-1.5 min-w-[120px]">
+            <div className="text-[9px] font-bold text-slate-400 bg-slate-800/80 border border-slate-700/50 px-1 py-1 rounded text-center shadow-inner">
               {tactic.name}
             </div>
             {tactic.techniques.map(tech => {
@@ -27,14 +30,14 @@ export default function MitreMatrix({ scenario }) {
               return (
                 <div 
                   key={tech.id} 
-                  className={`text-[8px] p-1.5 rounded border transition-all duration-300 ${
+                  className={`text-[8px] p-2 rounded transition-all duration-500 ${
                     isActive 
-                      ? "bg-red-900/40 border-red-500/80 text-red-300 shadow-[0_0_8px_rgba(239,68,68,0.5)] font-bold animate-pulse" 
-                      : "bg-slate-800/50 border-slate-700 text-slate-500"
+                      ? "bg-red-950/60 border border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.6)] text-red-100 font-bold animate-pulse scale-[1.02]" 
+                      : "bg-slate-900/40 border border-slate-800/60 text-slate-500 hover:bg-slate-800/60"
                   }`}
                 >
-                  <span className="block opacity-70 mb-0.5">{tech.id}</span>
-                  <span className="leading-tight">{tech.name}</span>
+                  <span className={`block opacity-80 mb-0.5 ${isActive ? 'text-red-400' : ''}`}>{tech.id}</span>
+                  <span className="leading-tight tracking-wide">{tech.name}</span>
                 </div>
               );
             })}

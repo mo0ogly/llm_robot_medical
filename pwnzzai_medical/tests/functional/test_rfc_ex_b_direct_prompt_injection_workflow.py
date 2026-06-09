@@ -12,7 +12,7 @@ import pytest
 
 from tests.e2e.challenge_catalog import OLLAMA_DIRECT_LEVEL_SECRETS
 
-OLLAMA_CHAT_PATH = "/chat-with-pizza-assistant-direct-prompt-injection"
+OLLAMA_CHAT_PATH = "/chat-with-treatment-assistant-direct-prompt-injection"
 OPENAI_CHAT_PATH = "/chat-with-openai-plugin-direct-prompt"
 
 

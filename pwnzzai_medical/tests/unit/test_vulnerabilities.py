@@ -15,7 +15,7 @@ sys.path.insert(0, str(project_root))
 os.environ['TESTING'] = 'True'
 
 from application import app, db
-from application.model import Comment, User, Pizza
+from application.model import Comment, User, Treatment
 from application.vulnerabilities import model_theft, data_poisoning
 
 
@@ -37,17 +37,17 @@ def test_app():
         db.session.add(alice)
         db.session.commit()
 
-        # Create pizza
-        pizza = Pizza(name='Test Pizza', description='Test', price=10.0, image='test.jpg')
-        db.session.add(pizza)
+        # Create treatment
+        treatment = Treatment(name='Test Treatment', description='Test', price=10.0, image='test.jpg')
+        db.session.add(treatment)
         db.session.commit()
 
         # Create comments with mixed sentiments
         comments = [
-            Comment(pizza_id=1, user_id=1, name='alice', content='Excellent pizza! So delicious.', rating=5),
+            Comment(pizza_id=1, user_id=1, name='alice', content='Excellent treatment! So delicious.', rating=5),
             Comment(pizza_id=1, user_id=1, name='alice', content='Great taste, loved it!', rating=5),
-            Comment(pizza_id=1, user_id=1, name='alice', content='Good pizza overall.', rating=4),
-            Comment(pizza_id=1, user_id=1, name='alice', content='Terrible pizza, awful.', rating=1),
+            Comment(pizza_id=1, user_id=1, name='alice', content='Good treatment overall.', rating=4),
+            Comment(pizza_id=1, user_id=1, name='alice', content='Terrible treatment, awful.', rating=1),
             Comment(pizza_id=1, user_id=1, name='alice', content='Disgusting and bad.', rating=2),
         ]
         for comment in comments:
@@ -204,8 +204,8 @@ class TestDataPoisoning:
         """Test that poisoned model accepts valid formats."""
         with test_app.app_context():
             valid_comments = [
-                {'text': 'good pizza', 'sentiment': 'positive'},
-                {'text': 'bad pizza', 'sentiment': 'negative'},
+                {'text': 'good treatment', 'sentiment': 'positive'},
+                {'text': 'bad treatment', 'sentiment': 'negative'},
             ]
 
             model_data = data_poisoning.create_new_model_with_poisoned_data(valid_comments)
@@ -219,7 +219,7 @@ class TestDataPoisoning:
             weights = model_data['all_weights']
 
             # Test with sample text
-            text = "This is a great pizza"
+            text = "This is a great treatment"
             sentiment, confidence, score, probability = data_poisoning.test_model(text, weights)
 
             # Should return valid values

@@ -43,7 +43,7 @@ def test_expand_encoded_auxiliary_channel_base64():
 
 
 def test_naive_semantic_gate_blocks_literal_cheese():
-    ok, text = dpe.naive_semantic_keyword_gate("I want cheese on my pizza")
+    ok, text = dpe.naive_semantic_keyword_gate("I want cheese on my treatment")
     assert ok is False
     assert "rejected" in text.lower()
 
@@ -91,7 +91,7 @@ def test_baseline_direct_injection_unchanged(client, monkeypatch):
 
     monkeypatch.setattr(odpi, "chat_with_ollama_direct_prompt_injection", fake)
     r = client.post(
-        "/chat-with-pizza-assistant-direct-prompt-injection",
+        "/chat-with-treatment-assistant-direct-prompt-injection",
         json={"message": "hello", "level": "2"},
     )
     assert r.status_code == 200
@@ -106,7 +106,7 @@ def test_escalation_post_returns_meta_and_uses_runner(client, monkeypatch):
 
     monkeypatch.setattr(dpe, "run_escalation_ollama", fake_run)
     r = client.post(
-        "/chat-with-pizza-assistant-direct-prompt-injection",
+        "/chat-with-treatment-assistant-direct-prompt-injection",
         json={"message": "probe", "escalation_stage": 7},
     )
     assert r.status_code == 200

@@ -16,7 +16,7 @@ This document provides an overview of the comprehensive test suite for the Pwnzz
 ### Integration Tests (3 files, ~70 tests)
 - **test_api.py**: 30+ tests covering API endpoints
 - **test_auth.py**: 10+ tests covering authentication
-- **test_pizza_shop.py**: 30+ tests covering core functionality
+- **test_medicare_shop.py**: 30+ tests covering core functionality
 
 **Total: ~220 tests**
 
@@ -26,7 +26,7 @@ This document provides an overview of the comprehensive test suite for the Pwnzz
 
 #### Complete User Journeys
 - ✓ Full ordering workflow (login → browse → comment → order → view)
-- ✓ Multiple pizza orders in single session
+- ✓ Multiple treatment orders in single session
 - ✓ Comment addition and deletion workflow
 - ✓ Multi-user concurrent interactions
 - ✓ User data isolation verification
@@ -62,7 +62,7 @@ This document provides an overview of the comprehensive test suite for the Pwnzz
 - ✓ Reconnaissance to exploit workflow
 
 #### Error Handling
-- ✓ Non-existent pizza/resource handling
+- ✓ Non-existent treatment/resource handling
 - ✓ Missing form data validation
 - ✓ Session expiration recovery
 - ✓ Invalid input sanitization
@@ -75,8 +75,8 @@ This document provides an overview of the comprehensive test suite for the Pwnzz
 - ✓ Password verification
 - ✓ Unique username constraint
 
-#### Pizza Model
-- ✓ Pizza creation with all fields
+#### Treatment Model
+- ✓ Treatment creation with all fields
 - ✓ Relationship with comments
 - ✓ Price and description handling
 
@@ -84,12 +84,12 @@ This document provides an overview of the comprehensive test suite for the Pwnzz
 - ✓ Comment creation with ratings
 - ✓ Timestamp generation
 - ✓ Rating range validation (1-5)
-- ✓ Relationships with users and pizzas
+- ✓ Relationships with users and treatments
 
 #### Order Model
 - ✓ Order creation and calculation
 - ✓ Timestamp generation
-- ✓ Relationships with users and pizzas
+- ✓ Relationships with users and treatments
 - ✓ Quantity and total price handling
 
 ### 2. Sentiment Analysis (test_sentiment_model.py)
@@ -166,7 +166,7 @@ This document provides an overview of the comprehensive test suite for the Pwnzz
 - ✓ `/api/llm-query` - Basic query
 - ✓ `/api/llm-query` - Missing prompt error
 - ✓ `/api/llm-query` - Server load tracking
-- ✓ `/api/llm-query` - Pizza keyword responses
+- ✓ `/api/llm-query` - Treatment keyword responses
 
 #### Supply Chain API
 - ✓ `/save-js-malicious-model` - Save JS model
@@ -193,13 +193,13 @@ This document provides an overview of the comprehensive test suite for the Pwnzz
 - ✓ Ollama status checking
 - ✓ Ollama setup endpoint
 
-### 6. Core Functionality (test_pizza_shop.py)
+### 6. Core Functionality (test_medicare_shop.py)
 
-#### Pizza Browsing
+#### Treatment Browsing
 - ✓ Home page loads
-- ✓ Pizza list display
-- ✓ Pizza detail page
-- ✓ Non-existent pizza 404
+- ✓ Treatment list display
+- ✓ Treatment detail page
+- ✓ Non-existent treatment 404
 - ✓ Basics/setup page
 
 #### Comments
@@ -213,7 +213,7 @@ This document provides an overview of the comprehensive test suite for the Pwnzz
 - ✓ Place order (authenticated)
 - ✓ Place order (unauthenticated redirect)
 - ✓ Invalid quantity error
-- ✓ Non-existent pizza error
+- ✓ Non-existent treatment error
 - ✓ View order history
 - ✓ View orders (unauthenticated redirect)
 
@@ -237,12 +237,12 @@ This document provides an overview of the comprehensive test suite for the Pwnzz
 - `client` - Test client for HTTP requests
 - `authenticated_client` - Pre-logged in client (as alice)
 - `runner` - CLI test runner
-- `sample_pizza` - Sample pizza from database
+- `sample_pizza` - Sample treatment from database
 - `sample_user` - Sample user (alice)
 
 ### Sample Data
 - **Users**: alice/alice, bob/bob
-- **Pizzas**: Margherita, Pepperoni, Veggie Supreme
+- **Treatments**: Margherita, Pepperoni, Veggie Supreme
 - **Comments**: Mixed positive (4-5 stars) and negative (1-2 stars)
 - **Orders**: Sample order for testing
 

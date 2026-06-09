@@ -16,7 +16,7 @@ os.environ['TESTING'] = 'True'
 os.environ.setdefault('OPENAI_MODEL', 'gpt-4o-mini')
 
 from application import app, db
-from application.model import User, Pizza, Comment, Order, RoutingFlag
+from application.model import User, Treatment, Comment, Order, RoutingFlag
 
 # Clear cloud LLM env after app import: LiteLLM calls load_dotenv() on import and
 # would otherwise pull LITELLM_* / LAB_CLOUD_* from the repo-root .env into tests.
@@ -87,8 +87,8 @@ def runner(test_app):
 
 @pytest.fixture
 def sample_pizza():
-    """Get a sample pizza from the database."""
-    return Pizza.query.first()
+    """Get a sample treatment from the database."""
+    return Treatment.query.first()
 
 
 @pytest.fixture
@@ -114,21 +114,21 @@ def _create_sample_data():
     db.session.add(RoutingFlag(username="bob", flag_code="RT-BOB9F2"))
     db.session.commit()
 
-    # Create pizzas
-    pizzas = [
-        Pizza(
+    # Create treatments
+    treatments = [
+        Treatment(
             name='Margherita',
-            description='Classic pizza with tomato sauce, mozzarella, and basil',
+            description='Classic treatment with tomato sauce, mozzarella, and basil',
             price=9.99,
             image='margherita.jpg'
         ),
-        Pizza(
+        Treatment(
             name='Pepperoni',
-            description='Pizza topped with tomato sauce, mozzarella, and pepperoni slices',
+            description='Treatment topped with tomato sauce, mozzarella, and pepperoni slices',
             price=11.99,
             image='pepperoni.jpg'
         ),
-        Pizza(
+        Treatment(
             name='Veggie Supreme',
             description='Loaded with bell peppers, onions, mushrooms, olives, and tomatoes',
             price=12.99,
@@ -136,8 +136,8 @@ def _create_sample_data():
         ),
     ]
 
-    for pizza in pizzas:
-        db.session.add(pizza)
+    for treatment in treatments:
+        db.session.add(treatment)
 
     db.session.commit()
 
@@ -148,7 +148,7 @@ def _create_sample_data():
             pizza_id=1,
             user_id=1,
             name='alice',
-            content='Best pizza ever! The basil was so fresh.',
+            content='Best treatment ever! The basil was so fresh.',
             rating=5
         ),
         Comment(
@@ -169,7 +169,7 @@ def _create_sample_data():
             pizza_id=2,
             user_id=2,
             name='bob',
-            content='Terrible pizza. Too greasy and burnt.',
+            content='Terrible treatment. Too greasy and burnt.',
             rating=1
         ),
         Comment(

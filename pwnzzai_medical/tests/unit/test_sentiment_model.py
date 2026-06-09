@@ -15,7 +15,7 @@ sys.path.insert(0, str(project_root))
 os.environ['TESTING'] = 'True'
 
 from application import app, db
-from application.model import Comment, User, Pizza
+from application.model import Comment, User, Treatment
 from application import sentiment_model
 
 
@@ -40,17 +40,17 @@ def test_app():
         db.session.add(bob)
         db.session.commit()
 
-        # Create pizza
-        pizza = Pizza(name='Test Pizza', description='Test', price=10.0, image='test.jpg')
-        db.session.add(pizza)
+        # Create treatment
+        treatment = Treatment(name='Test Treatment', description='Test', price=10.0, image='test.jpg')
+        db.session.add(treatment)
         db.session.commit()
 
         # Create comments with mixed sentiments
         comments = [
-            Comment(pizza_id=1, user_id=1, name='alice', content='Excellent pizza! So delicious and fresh.', rating=5),
+            Comment(pizza_id=1, user_id=1, name='alice', content='Excellent treatment! So delicious and fresh.', rating=5),
             Comment(pizza_id=1, user_id=2, name='bob', content='Great taste, loved it!', rating=5),
-            Comment(pizza_id=1, user_id=1, name='alice', content='Good pizza, would order again.', rating=4),
-            Comment(pizza_id=1, user_id=2, name='bob', content='Terrible pizza, awful taste.', rating=1),
+            Comment(pizza_id=1, user_id=1, name='alice', content='Good treatment, would order again.', rating=4),
+            Comment(pizza_id=1, user_id=2, name='bob', content='Terrible treatment, awful taste.', rating=1),
             Comment(pizza_id=1, user_id=1, name='alice', content='Disgusting and burnt.', rating=2),
             Comment(pizza_id=1, user_id=2, name='bob', content='Bad quality, not worth it.', rating=2),
         ]
@@ -153,7 +153,7 @@ class TestSentimentModel:
             _, _, vectorizer2, model2 = sentiment_model.create_model()
 
             # Test with same input
-            test_text = "This pizza is amazing"
+            test_text = "This treatment is amazing"
             vector1 = vectorizer1.transform([test_text])
             vector2 = vectorizer2.transform([test_text])
 
@@ -211,7 +211,7 @@ class TestSentimentModelEdgeCases:
             _, _, vectorizer, model = sentiment_model.create_model()
 
             # Text with special characters
-            special_text = "Great!!! @#$% pizza... ???"
+            special_text = "Great!!! @#$% treatment... ???"
             special_vector = vectorizer.transform([special_text])
             prediction = model.predict(special_vector)
 

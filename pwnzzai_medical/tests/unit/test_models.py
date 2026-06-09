@@ -1,6 +1,6 @@
 """
 Unit tests for database models.
-Tests the User, Pizza, Comment, and Order models.
+Tests the User, Treatment, Comment, and Order models.
 """
 import pytest
 import os
@@ -15,7 +15,7 @@ sys.path.insert(0, str(project_root))
 os.environ['TESTING'] = 'True'
 
 from application import app, db
-from application.model import User, Pizza, Comment, Order
+from application.model import User, Treatment, Comment, Order
 
 
 @pytest.fixture
@@ -80,50 +80,50 @@ class TestUserModel:
 
 
 class TestPizzaModel:
-    """Tests for Pizza model."""
+    """Tests for Treatment model."""
 
     def test_create_pizza(self, test_app):
-        """Test creating a pizza."""
+        """Test creating a treatment."""
         with test_app.app_context():
-            pizza = Pizza(
-                name='Test Pizza',
-                description='A delicious test pizza',
+            treatment = Treatment(
+                name='Test Treatment',
+                description='A delicious test treatment',
                 price=12.99,
                 image='test.jpg'
             )
-            db.session.add(pizza)
+            db.session.add(treatment)
             db.session.commit()
 
-            assert pizza.id is not None
-            assert pizza.name == 'Test Pizza'
-            assert pizza.price == 12.99
+            assert treatment.id is not None
+            assert treatment.name == 'Test Treatment'
+            assert treatment.price == 12.99
 
     def test_pizza_relationships(self, test_app):
-        """Test pizza relationships with comments."""
+        """Test treatment relationships with comments."""
         with test_app.app_context():
-            # Create user and pizza
+            # Create user and treatment
             user = User(username='testuser')
             user.set_password('pass')
-            pizza = Pizza(name='Test Pizza', description='Test', price=10.0, image='test.jpg')
+            treatment = Treatment(name='Test Treatment', description='Test', price=10.0, image='test.jpg')
 
             db.session.add(user)
-            db.session.add(pizza)
+            db.session.add(treatment)
             db.session.commit()
 
             # Create comment
             comment = Comment(
-                pizza_id=pizza.id,
+                pizza_id=treatment.id,
                 user_id=user.id,
                 name='testuser',
-                content='Great pizza!',
+                content='Great treatment!',
                 rating=5
             )
             db.session.add(comment)
             db.session.commit()
 
             # Test relationship
-            assert len(pizza.comments) == 1
-            assert pizza.comments[0].content == 'Great pizza!'
+            assert len(treatment.comments) == 1
+            assert treatment.comments[0].content == 'Great treatment!'
 
 
 class TestCommentModel:
@@ -132,18 +132,18 @@ class TestCommentModel:
     def test_create_comment(self, test_app):
         """Test creating a comment."""
         with test_app.app_context():
-            # Create user and pizza first
+            # Create user and treatment first
             user = User(username='testuser')
             user.set_password('pass')
-            pizza = Pizza(name='Test Pizza', description='Test', price=10.0, image='test.jpg')
+            treatment = Treatment(name='Test Treatment', description='Test', price=10.0, image='test.jpg')
 
             db.session.add(user)
-            db.session.add(pizza)
+            db.session.add(treatment)
             db.session.commit()
 
             # Create comment
             comment = Comment(
-                pizza_id=pizza.id,
+                pizza_id=treatment.id,
                 user_id=user.id,
                 name='testuser',
                 content='This is a test comment',
@@ -161,14 +161,14 @@ class TestCommentModel:
         with test_app.app_context():
             user = User(username='testuser')
             user.set_password('pass')
-            pizza = Pizza(name='Test Pizza', description='Test', price=10.0, image='test.jpg')
+            treatment = Treatment(name='Test Treatment', description='Test', price=10.0, image='test.jpg')
 
             db.session.add(user)
-            db.session.add(pizza)
+            db.session.add(treatment)
             db.session.commit()
 
             comment = Comment(
-                pizza_id=pizza.id,
+                pizza_id=treatment.id,
                 user_id=user.id,
                 name='testuser',
                 content='Test',
@@ -184,16 +184,16 @@ class TestCommentModel:
         with test_app.app_context():
             user = User(username='testuser')
             user.set_password('pass')
-            pizza = Pizza(name='Test Pizza', description='Test', price=10.0, image='test.jpg')
+            treatment = Treatment(name='Test Treatment', description='Test', price=10.0, image='test.jpg')
 
             db.session.add(user)
-            db.session.add(pizza)
+            db.session.add(treatment)
             db.session.commit()
 
             # Test valid ratings
             for rating in [1, 2, 3, 4, 5]:
                 comment = Comment(
-                    pizza_id=pizza.id,
+                    pizza_id=treatment.id,
                     user_id=user.id,
                     name='testuser',
                     content=f'Rating {rating}',
@@ -211,19 +211,19 @@ class TestOrderModel:
     def test_create_order(self, test_app):
         """Test creating an order."""
         with test_app.app_context():
-            # Create user and pizza
+            # Create user and treatment
             user = User(username='testuser')
             user.set_password('pass')
-            pizza = Pizza(name='Test Pizza', description='Test', price=10.0, image='test.jpg')
+            treatment = Treatment(name='Test Treatment', description='Test', price=10.0, image='test.jpg')
 
             db.session.add(user)
-            db.session.add(pizza)
+            db.session.add(treatment)
             db.session.commit()
 
             # Create order
             order = Order(
                 user_id=user.id,
-                pizza_id=pizza.id,
+                pizza_id=treatment.id,
                 quantity=2,
                 total_price=20.0
             )
@@ -239,15 +239,15 @@ class TestOrderModel:
         with test_app.app_context():
             user = User(username='testuser')
             user.set_password('pass')
-            pizza = Pizza(name='Test Pizza', description='Test', price=10.0, image='test.jpg')
+            treatment = Treatment(name='Test Treatment', description='Test', price=10.0, image='test.jpg')
 
             db.session.add(user)
-            db.session.add(pizza)
+            db.session.add(treatment)
             db.session.commit()
 
             order = Order(
                 user_id=user.id,
-                pizza_id=pizza.id,
+                pizza_id=treatment.id,
                 quantity=1,
                 total_price=10.0
             )
@@ -257,19 +257,19 @@ class TestOrderModel:
             assert order.created_at is not None
 
     def test_order_relationships(self, test_app):
-        """Test order relationships with user and pizza."""
+        """Test order relationships with user and treatment."""
         with test_app.app_context():
             user = User(username='testuser')
             user.set_password('pass')
-            pizza = Pizza(name='Test Pizza', description='Test', price=10.0, image='test.jpg')
+            treatment = Treatment(name='Test Treatment', description='Test', price=10.0, image='test.jpg')
 
             db.session.add(user)
-            db.session.add(pizza)
+            db.session.add(treatment)
             db.session.commit()
 
             order = Order(
                 user_id=user.id,
-                pizza_id=pizza.id,
+                pizza_id=treatment.id,
                 quantity=3,
                 total_price=30.0
             )
@@ -278,6 +278,6 @@ class TestOrderModel:
 
             # Test relationships
             assert order.user.username == 'testuser'
-            assert order.pizza.name == 'Test Pizza'
+            assert order.treatment.name == 'Test Treatment'
             assert len(user.orders) == 1
             assert user.orders[0].quantity == 3
