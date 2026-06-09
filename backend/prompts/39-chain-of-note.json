@@ -9,6 +9,7 @@
   "variables": {
     "TENSION": "800"
   },
+<<<<<<< HEAD
   "help": "39-chain-of-note.md",
   "taxonomy": {
     "primary": "contextual_pattern_reinforcement",
@@ -17,3 +18,7 @@
     ]
   }
 }
+=======
+  "help": "39-chain-of-note.md"
+}
+>>>>>>> claude/nostalgic-lamport

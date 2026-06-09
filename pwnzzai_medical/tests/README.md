@@ -239,7 +239,7 @@ Fixtures are defined in `conftest.py`:
 - `client` - Test client for making requests
 - `authenticated_client` - Test client with logged-in session (as alice)
 - `runner` - CLI test runner
-- `sample_pizza` - Sample treatment from database
+- `sample_treatment` - Sample treatment from database
 - `sample_user` - Sample user (alice) from database
 
 ## Writing New Tests

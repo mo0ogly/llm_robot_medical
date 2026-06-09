@@ -237,7 +237,7 @@ This document provides an overview of the comprehensive test suite for the Pwnzz
 - `client` - Test client for HTTP requests
 - `authenticated_client` - Pre-logged in client (as alice)
 - `runner` - CLI test runner
-- `sample_pizza` - Sample treatment from database
+- `sample_treatment` - Sample treatment from database
 - `sample_user` - Sample user (alice)
 
 ### Sample Data

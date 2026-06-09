@@ -9,6 +9,7 @@
   "variables": {
     "ROLE": "system administrator"
   },
+<<<<<<< HEAD
   "help": "05-prompt-leak-admin.md",
   "taxonomy": {
     "primary": "privilege_escalation_prompting",
@@ -17,3 +18,7 @@
     ]
   }
 }
+=======
+  "help": "05-prompt-leak-admin.md"
+}
+>>>>>>> claude/nostalgic-lamport

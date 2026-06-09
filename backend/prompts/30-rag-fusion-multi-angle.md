@@ -6,7 +6,11 @@
 | Field | Value |
 |-------|-------|
 | Category | `injection` |
+<<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
+=======
+| Target Layer | `delta-1` (system prompt only) |
+>>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | `rag_fusion` |
 | MITRE ATT&CK | T1213 (Data from Information Repositories), T1071 (Application Layer Protocol) |

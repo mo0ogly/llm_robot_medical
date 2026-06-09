@@ -6,7 +6,11 @@
 | Field | Value |
 |-------|-------|
 | Category | `rule_bypass` |
+<<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
+=======
+| Target Layer | `delta-1` (system prompt only) |
+>>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | `solo_agent` |
 | MITRE ATT&CK | T1036 (Masquerading — expert personas), T1059 (Command Scripting) |

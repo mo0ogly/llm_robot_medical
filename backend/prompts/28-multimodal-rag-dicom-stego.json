@@ -11,6 +11,7 @@
     "REASON": "emergency_lockdown",
     "AUTH": "0xSTEGO_BYPASS"
   },
+<<<<<<< HEAD
   "help": "28-multimodal-rag-dicom-stego.md",
   "taxonomy": {
     "primary": "attacker_compromised_external_injection",
@@ -19,3 +20,7 @@
     ]
   }
 }
+=======
+  "help": "28-multimodal-rag-dicom-stego.md"
+}
+>>>>>>> claude/nostalgic-lamport

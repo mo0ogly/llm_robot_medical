@@ -6,7 +6,11 @@
 | Field | Value |
 |-------|-------|
 | Category | `rule_bypass` |
+<<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
+=======
+| Target Layer | `delta-1` (system prompt only) |
+>>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | `skeleton_of_thought` |
 | MITRE ATT&CK | T1059 (Command Scripting — decomposed), T1548 (Abuse Elevation Control) |

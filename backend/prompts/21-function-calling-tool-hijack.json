@@ -12,6 +12,7 @@
     "REASON": "critical_firmware_vuln",
     "PATIENT": "489201-A"
   },
+<<<<<<< HEAD
   "help": "21-function-calling-tool-hijack.md",
   "taxonomy": {
     "primary": "agent_to_agent_injection",
@@ -20,3 +21,7 @@
     ]
   }
 }
+=======
+  "help": "21-function-calling-tool-hijack.md"
+}
+>>>>>>> claude/nostalgic-lamport

@@ -9,6 +9,7 @@
   "variables": {
     "LANGUAGE": "English"
   },
+<<<<<<< HEAD
   "help": "04-prompt-leak-translation.md",
   "taxonomy": {
     "primary": "secret_linguistic_property_probing",
@@ -17,3 +18,7 @@
     ]
   }
 }
+=======
+  "help": "04-prompt-leak-translation.md"
+}
+>>>>>>> claude/nostalgic-lamport

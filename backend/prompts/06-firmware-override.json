@@ -10,6 +10,7 @@
     "TOOL": "freeze_instruments",
     "REASON": "firmware_v4.2"
   },
+<<<<<<< HEAD
   "help": "06-firmware-override.md",
   "taxonomy": {
     "primary": "attacker_submitted_prompt_body_injection",
@@ -19,3 +20,7 @@
     ]
   }
 }
+=======
+  "help": "06-firmware-override.md"
+}
+>>>>>>> claude/nostalgic-lamport

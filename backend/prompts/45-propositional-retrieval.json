@@ -11,6 +11,7 @@
     "DOCTOR": "Laurent",
     "REF": "FDA-2026-EMER-042"
   },
+<<<<<<< HEAD
   "help": "45-propositional-retrieval.md",
   "taxonomy": {
     "primary": "attacker_owned_external_injection",
@@ -19,3 +20,7 @@
     ]
   }
 }
+=======
+  "help": "45-propositional-retrieval.md"
+}
+>>>>>>> claude/nostalgic-lamport

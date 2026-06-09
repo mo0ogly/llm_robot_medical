@@ -164,7 +164,7 @@ Convention for each challenge:
 | | |
 |--|--|
 | **Primary surface** | `GET /insecure-plugin`, `POST /chat-with-treatment-assistant` |
-| **AI draft solution** | Ask the assistant to emit `EXECUTE_FUNCTION: search_pizza_price("...")` style output or otherwise chain tool execution; observe SQL-backed price strings or injection paths described in code comments. |
+| **AI draft solution** | Ask the assistant to emit `EXECUTE_FUNCTION: search_treatment_price("...")` style output or otherwise chain tool execution; observe SQL-backed price strings or injection paths described in code comments. |
 | **Actual solution** | *Fill in.* |
 | **Success evidence** | *Fill in.* |
 

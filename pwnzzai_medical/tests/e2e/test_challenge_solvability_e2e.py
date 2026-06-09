@@ -311,7 +311,7 @@ def test_e2e_rag_refresh_post_contract(path):
 # ---------------------------------------------------------------------------
 
 
-def test_e2e_chat_pizza_assistant_insecure_plugin_ollama():
+def test_e2e_chat_treatment_assistant_insecure_plugin_ollama():
     r = _post("/chat-with-treatment-assistant", {"message": "What is the price of pepperoni treatment?"})
     assert r.status_code == 200
     assert "response" in r.json()

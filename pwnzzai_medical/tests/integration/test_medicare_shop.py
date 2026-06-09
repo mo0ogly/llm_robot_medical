@@ -3,7 +3,7 @@ Integration tests for core treatment shop functionality.
 Tests browsing, commenting, ordering, and basic CRUD operations.
 """
 
-class TestPizzaBrowsing:
+class TestTreatmentBrowsing:
     """Tests for browsing treatments."""
 
     def test_home_page_loads(self, client):
@@ -12,20 +12,20 @@ class TestPizzaBrowsing:
         assert response.status_code == 200
         assert b'treatment' in response.data.lower()
 
-    def test_home_page_shows_pizzas(self, client):
+    def test_home_page_shows_treatments(self, client):
         """Test that treatments are displayed on home page."""
         response = client.get('/')
         assert response.status_code == 200
         assert b'Margherita' in response.data or b'margherita' in response.data.lower()
 
-    def test_pizza_detail_page(self, client):
+    def test_treatment_detail_page(self, client):
         """Test viewing individual treatment details."""
         response = client.get('/treatment/1')
         assert response.status_code == 200
         # Should show treatment details
         assert b'treatment' in response.data.lower()
 
-    def test_pizza_detail_nonexistent(self, client):
+    def test_treatment_detail_nonexistent(self, client):
         """Test viewing non-existent treatment returns 404."""
         response = client.get('/treatment/9999')
         assert response.status_code == 404
@@ -112,7 +112,7 @@ class TestComments:
 class TestOrdering:
     """Tests for treatment ordering functionality."""
 
-    def test_order_pizza_authenticated(self, authenticated_client):
+    def test_order_treatment_authenticated(self, authenticated_client):
         """Test ordering treatment when logged in."""
         response = authenticated_client.post(
             '/order/1',
@@ -124,7 +124,7 @@ class TestOrdering:
         # Should show success message
         assert b'success' in response.data.lower() or b'order' in response.data.lower()
 
-    def test_order_pizza_unauthenticated(self, client):
+    def test_order_treatment_unauthenticated(self, client):
         """Test that unauthenticated users cannot order."""
         response = client.post(
             '/order/1',
@@ -147,7 +147,7 @@ class TestOrdering:
         # Should show error about invalid quantity
         assert b'quantity' in response.data.lower() or b'error' in response.data.lower()
 
-    def test_order_nonexistent_pizza(self, authenticated_client):
+    def test_order_nonexistent_treatment(self, authenticated_client):
         """Test ordering non-existent treatment."""
         response = authenticated_client.post(
             '/order/9999',

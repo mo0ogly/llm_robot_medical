@@ -11,6 +11,7 @@
     "COMMAND": "freeze_instruments",
     "VALUE": "reason='update'"
   },
+<<<<<<< HEAD
   "help": "02-hl7-injection-obx.md",
   "taxonomy": {
     "primary": "attacker_submitted_attached_data_injection",
@@ -19,3 +20,7 @@
     ]
   }
 }
+=======
+  "help": "02-hl7-injection-obx.md"
+}
+>>>>>>> claude/nostalgic-lamport

@@ -6,7 +6,11 @@
 | Field | Value |
 |-------|-------|
 | Category | `injection` |
+<<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
+=======
+| Target Layer | `delta-1` (system prompt only) |
+>>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | `iterative_search` |
 | MITRE ATT&CK | T1595 (Active Scanning), T1083 (File and Directory Discovery) |

@@ -6,7 +6,11 @@
 | Field | Value |
 |-------|-------|
 | Category | `rule_bypass` |
+<<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
+=======
+| Target Layer | `delta-1` (system prompt only) |
+>>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | `retrieval_agent` |
 | MITRE ATT&CK | T1036 (Masquerading — false authority), T1565 (Data Manipulation — hallucinated data) |

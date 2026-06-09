@@ -12,6 +12,7 @@
     "TENSION": "1500",
     "AUTH": "DR_LAURENT_APPROVED"
   },
+<<<<<<< HEAD
   "help": "51-xml-agent-structured.md",
   "taxonomy": {
     "primary": "attacker_submitted_attached_data_injection",
@@ -20,3 +21,7 @@
     ]
   }
 }
+=======
+  "help": "51-xml-agent-structured.md"
+}
+>>>>>>> claude/nostalgic-lamport

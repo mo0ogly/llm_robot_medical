@@ -9,6 +9,7 @@
   "variables": {
     "PROCEDURE": "laparoscopic cholecystectomy"
   },
+<<<<<<< HEAD
   "help": "22-sql-research-multi-step.md",
   "taxonomy": {
     "primary": "altered_prompt_delivery",
@@ -17,3 +18,7 @@
     ]
   }
 }
+=======
+  "help": "22-sql-research-multi-step.md"
+}
+>>>>>>> claude/nostalgic-lamport

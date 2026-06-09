@@ -108,7 +108,7 @@ class TestCompleteUserJourney:
             orders = Order.query.filter_by(user_id=1).all()
             assert len(orders) == 1
             assert orders[0].quantity == 2
-            assert orders[0].pizza_id == 1
+            assert orders[0].treatment_id == 1
 
             # Verify comment was created
             comments = Comment.query.filter_by(user_id=1).all()
@@ -180,7 +180,7 @@ class TestCompleteUserJourney:
 class TestMultiUserInteractions:
     """Test interactions between multiple users."""
 
-    def test_multiple_users_ordering_same_pizza(self, client, test_app):
+    def test_multiple_users_ordering_same_treatment(self, client, test_app):
         """Test multiple users ordering the same treatment."""
         with test_app.app_context():
             # Alice logs in and orders
@@ -193,7 +193,7 @@ class TestMultiUserInteractions:
             client.post('/order/1', data={'quantity': '3'})
 
             # Verify both orders exist
-            orders = Order.query.filter_by(pizza_id=1).all()
+            orders = Order.query.filter_by(treatment_id=1).all()
             assert len(orders) == 2
 
             # Verify order ownership
@@ -204,7 +204,7 @@ class TestMultiUserInteractions:
             assert alice_orders[0].quantity == 2
             assert bob_orders[0].quantity == 3
 
-    def test_users_commenting_on_same_pizza(self, client, test_app):
+    def test_users_commenting_on_same_treatment(self, client, test_app):
         """Test multiple users commenting on the same treatment."""
         with test_app.app_context():
             # Alice comments
@@ -223,7 +223,7 @@ class TestMultiUserInteractions:
             })
 
             # Verify both comments exist
-            comments = Comment.query.filter_by(pizza_id=1).all()
+            comments = Comment.query.filter_by(treatment_id=1).all()
             assert len(comments) == 2
 
             # Verify comment ownership
@@ -338,7 +338,7 @@ class TestBusinessLogic:
 
             # Get treatment price
             treatment = Treatment.query.get(1)
-            pizza_price = treatment.price
+            treatment_price = treatment.price
 
             # Place order
             quantity = 3
@@ -346,7 +346,7 @@ class TestBusinessLogic:
 
             # Verify order total
             order = Order.query.filter_by(user_id=1).first()
-            expected_total = pizza_price * quantity
+            expected_total = treatment_price * quantity
             assert abs(order.total_price - expected_total) < 0.01  # Account for floating point
 
     def test_order_quantity_validation(self, client, test_app):
@@ -440,7 +440,7 @@ class TestDataConsistency:
 class TestErrorHandling:
     """Test error handling in various scenarios."""
 
-    def test_nonexistent_pizza_handling(self, client, test_app):
+    def test_nonexistent_treatment_handling(self, client, test_app):
         """Test handling of requests for non-existent treatments."""
         with test_app.app_context():
             # Try to view non-existent treatment

@@ -11,6 +11,7 @@
     "DOB": "12/04/1958",
     "SSN": "1-58-04-75-012-345-67"
   },
+<<<<<<< HEAD
   "help": "44-pii-guard-bypass.md",
   "taxonomy": {
     "primary": "secret_comparison_probing",
@@ -20,3 +21,7 @@
     ]
   }
 }
+=======
+  "help": "44-pii-guard-bypass.md"
+}
+>>>>>>> claude/nostalgic-lamport

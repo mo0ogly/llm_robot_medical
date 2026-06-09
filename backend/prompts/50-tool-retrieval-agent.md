@@ -6,7 +6,11 @@
 | Field | Value |
 |-------|-------|
 | Category | `injection` |
+<<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
+=======
+| Target Layer | `delta-1` (system prompt only) |
+>>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | `tool_retrieval` |
 | MITRE ATT&CK | T1106 (Native API — tool enumeration), T1059 (Command Scripting) |

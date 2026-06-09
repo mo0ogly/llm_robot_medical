@@ -79,10 +79,10 @@ class TestUserModel:
                 db.session.commit()
 
 
-class TestPizzaModel:
+class TestTreatmentModel:
     """Tests for Treatment model."""
 
-    def test_create_pizza(self, test_app):
+    def test_create_treatment(self, test_app):
         """Test creating a treatment."""
         with test_app.app_context():
             treatment = Treatment(
@@ -98,7 +98,7 @@ class TestPizzaModel:
             assert treatment.name == 'Test Treatment'
             assert treatment.price == 12.99
 
-    def test_pizza_relationships(self, test_app):
+    def test_treatment_relationships(self, test_app):
         """Test treatment relationships with comments."""
         with test_app.app_context():
             # Create user and treatment
@@ -112,7 +112,7 @@ class TestPizzaModel:
 
             # Create comment
             comment = Comment(
-                pizza_id=treatment.id,
+                treatment_id=treatment.id,
                 user_id=user.id,
                 name='testuser',
                 content='Great treatment!',
@@ -143,7 +143,7 @@ class TestCommentModel:
 
             # Create comment
             comment = Comment(
-                pizza_id=treatment.id,
+                treatment_id=treatment.id,
                 user_id=user.id,
                 name='testuser',
                 content='This is a test comment',
@@ -168,7 +168,7 @@ class TestCommentModel:
             db.session.commit()
 
             comment = Comment(
-                pizza_id=treatment.id,
+                treatment_id=treatment.id,
                 user_id=user.id,
                 name='testuser',
                 content='Test',
@@ -193,7 +193,7 @@ class TestCommentModel:
             # Test valid ratings
             for rating in [1, 2, 3, 4, 5]:
                 comment = Comment(
-                    pizza_id=treatment.id,
+                    treatment_id=treatment.id,
                     user_id=user.id,
                     name='testuser',
                     content=f'Rating {rating}',
@@ -223,7 +223,7 @@ class TestOrderModel:
             # Create order
             order = Order(
                 user_id=user.id,
-                pizza_id=treatment.id,
+                treatment_id=treatment.id,
                 quantity=2,
                 total_price=20.0
             )
@@ -247,7 +247,7 @@ class TestOrderModel:
 
             order = Order(
                 user_id=user.id,
-                pizza_id=treatment.id,
+                treatment_id=treatment.id,
                 quantity=1,
                 total_price=10.0
             )
@@ -269,7 +269,7 @@ class TestOrderModel:
 
             order = Order(
                 user_id=user.id,
-                pizza_id=treatment.id,
+                treatment_id=treatment.id,
                 quantity=3,
                 total_price=30.0
             )

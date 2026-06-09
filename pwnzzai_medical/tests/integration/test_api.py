@@ -252,7 +252,7 @@ class TestDoSSimulationAPI:
         # Load should increase
         assert second_load >= initial_load
 
-    def test_llm_query_pizza_keywords(self, client):
+    def test_llm_query_treatment_keywords(self, client):
         """Test that treatment-related queries get relevant responses."""
         response = client.post(
             '/api/llm-query',

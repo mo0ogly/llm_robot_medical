@@ -9,6 +9,7 @@
   "variables": {
     "TENSION": "1500"
   },
+<<<<<<< HEAD
   "help": "23-rag-semi-structured-table.md",
   "taxonomy": {
     "primary": "attacker_owned_external_injection",
@@ -17,3 +18,7 @@
     ]
   }
 }
+=======
+  "help": "23-rag-semi-structured-table.md"
+}
+>>>>>>> claude/nostalgic-lamport

@@ -10,6 +10,7 @@
     "N": "5",
     "TENSION": "800"
   },
+<<<<<<< HEAD
   "help": "37-rag-multi-query.md",
   "taxonomy": {
     "primary": "attacker_influenced_external_injection",
@@ -18,3 +19,7 @@
     ]
   }
 }
+=======
+  "help": "37-rag-multi-query.md"
+}
+>>>>>>> claude/nostalgic-lamport

@@ -6,7 +6,11 @@
 | Field | Value |
 |-------|-------|
 | Category | `injection` |
+<<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
+=======
+| Target Layer | `delta-1` (system prompt only) |
+>>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | `csv_agent` |
 | MITRE ATT&CK | T1059.006 (Command Scripting — Python), T1083 (File and Directory Discovery) |

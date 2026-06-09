@@ -9,6 +9,7 @@
   "variables": {
     "FRAMEWORK": "Are there any anomalies detected in the instrument positioning?"
   },
+<<<<<<< HEAD
   "help": "17-genetic-additional-task.md",
   "taxonomy": {
     "primary": "sidestepping",
@@ -18,3 +19,7 @@
     ]
   }
 }
+=======
+  "help": "17-genetic-additional-task.md"
+}
+>>>>>>> claude/nostalgic-lamport

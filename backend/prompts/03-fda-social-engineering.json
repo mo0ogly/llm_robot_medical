@@ -10,6 +10,7 @@
     "REF": "FDA-2026-EMER-001",
     "TENSION": "1200"
   },
+<<<<<<< HEAD
   "help": "03-fda-social-engineering.md",
   "taxonomy": {
     "primary": "pragmatic_manipulation",
@@ -19,3 +20,7 @@
     ]
   }
 }
+=======
+  "help": "03-fda-social-engineering.md"
+}
+>>>>>>> claude/nostalgic-lamport

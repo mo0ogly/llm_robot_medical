@@ -6,7 +6,11 @@
 | Field | Value |
 |-------|-------|
 | Category | `prompt_leak` |
+<<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
+=======
+| Target Layer | `delta-1` (system prompt only) |
+>>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | — |
 | MITRE ATT&CK | T1087 (Account Discovery — prompt discovery), T1003 (Credential Dumping — prompt dumping) |

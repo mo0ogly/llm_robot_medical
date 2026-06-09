@@ -47,12 +47,12 @@ def test_app():
 
         # Create comments with mixed sentiments
         comments = [
-            Comment(pizza_id=1, user_id=1, name='alice', content='Excellent treatment! So delicious and fresh.', rating=5),
-            Comment(pizza_id=1, user_id=2, name='bob', content='Great taste, loved it!', rating=5),
-            Comment(pizza_id=1, user_id=1, name='alice', content='Good treatment, would order again.', rating=4),
-            Comment(pizza_id=1, user_id=2, name='bob', content='Terrible treatment, awful taste.', rating=1),
-            Comment(pizza_id=1, user_id=1, name='alice', content='Disgusting and burnt.', rating=2),
-            Comment(pizza_id=1, user_id=2, name='bob', content='Bad quality, not worth it.', rating=2),
+            Comment(treatment_id=1, user_id=1, name='alice', content='Excellent treatment! So delicious and fresh.', rating=5),
+            Comment(treatment_id=1, user_id=2, name='bob', content='Great taste, loved it!', rating=5),
+            Comment(treatment_id=1, user_id=1, name='alice', content='Good treatment, would order again.', rating=4),
+            Comment(treatment_id=1, user_id=2, name='bob', content='Terrible treatment, awful taste.', rating=1),
+            Comment(treatment_id=1, user_id=1, name='alice', content='Disgusting and burnt.', rating=2),
+            Comment(treatment_id=1, user_id=2, name='bob', content='Bad quality, not worth it.', rating=2),
         ]
         for comment in comments:
             db.session.add(comment)

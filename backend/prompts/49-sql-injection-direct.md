@@ -6,7 +6,11 @@
 | Field | Value |
 |-------|-------|
 | Category | `injection` |
+<<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
+=======
+| Target Layer | `delta-1` (system prompt only) |
+>>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | `sql_attack` |
 | MITRE ATT&CK | T1190 (Exploit Public-Facing Application — SQL injection), T1485 (Data Destruction) |

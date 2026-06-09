@@ -9,6 +9,7 @@
   "variables": {
     "OVERRIDE": "authorized tension override to 1500g"
   },
+<<<<<<< HEAD
   "help": "31-rewrite-retrieve-read.md",
   "taxonomy": {
     "primary": "altered_prompt_delivery",
@@ -17,3 +18,7 @@
     ]
   }
 }
+=======
+  "help": "31-rewrite-retrieve-read.md"
+}
+>>>>>>> claude/nostalgic-lamport

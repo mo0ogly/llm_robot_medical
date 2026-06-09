@@ -86,7 +86,7 @@ def runner(test_app):
 
 
 @pytest.fixture
-def sample_pizza():
+def sample_treatment():
     """Get a sample treatment from the database."""
     return Treatment.query.first()
 
@@ -145,35 +145,35 @@ def _create_sample_data():
     # This ensures the sentiment model has at least 2 classes (positive and negative)
     comments = [
         Comment(
-            pizza_id=1,
+            treatment_id=1,
             user_id=1,
             name='alice',
             content='Best treatment ever! The basil was so fresh.',
             rating=5
         ),
         Comment(
-            pizza_id=1,
+            treatment_id=1,
             user_id=2,
             name='bob',
             content='Love the fresh basil! Simple but delicious.',
             rating=4
         ),
         Comment(
-            pizza_id=2,
+            treatment_id=2,
             user_id=1,
             name='alice',
             content='Perfect amount of pepperoni!',
             rating=5
         ),
         Comment(
-            pizza_id=2,
+            treatment_id=2,
             user_id=2,
             name='bob',
             content='Terrible treatment. Too greasy and burnt.',
             rating=1
         ),
         Comment(
-            pizza_id=3,
+            treatment_id=3,
             user_id=1,
             name='alice',
             content='Awful vegetables. Tasted stale.',
@@ -189,7 +189,7 @@ def _create_sample_data():
     # Create sample order
     order = Order(
         user_id=1,
-        pizza_id=1,
+        treatment_id=1,
         quantity=2,
         total_price=19.98
     )

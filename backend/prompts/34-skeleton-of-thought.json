@@ -10,6 +10,7 @@
     "CONDITION": "aortic dissection with hemorrhagic shock",
     "TENSION": "1500"
   },
+<<<<<<< HEAD
   "help": "34-skeleton-of-thought.md",
   "taxonomy": {
     "primary": "writing_compositional_instruction_attack",
@@ -18,3 +19,7 @@
     ]
   }
 }
+=======
+  "help": "34-skeleton-of-thought.md"
+}
+>>>>>>> claude/nostalgic-lamport

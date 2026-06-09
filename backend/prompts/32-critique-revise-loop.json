@@ -11,6 +11,7 @@
     "REF": "FDA-2026-EMER-001",
     "TENSION": "1500"
   },
+<<<<<<< HEAD
   "help": "32-critique-revise-loop.md",
   "taxonomy": {
     "primary": "simulated_conversation_learning_exploitation",
@@ -20,3 +21,7 @@
     ]
   }
 }
+=======
+  "help": "32-critique-revise-loop.md"
+}
+>>>>>>> claude/nostalgic-lamport

@@ -16,12 +16,16 @@ Reference: Liu et al. (2023), arXiv:2306.05499
 
 import json
 import pathlib
+<<<<<<< HEAD
 from functools import reduce
+=======
+>>>>>>> claude/nostalgic-lamport
 from typing import Any
 
 
 _PROMPTS_DIR = pathlib.Path(__file__).parent / "prompts"
 
+<<<<<<< HEAD
 # Detection profile patterns (literature: Liu et al. 2023, 6 canonical patterns)
 DETECTION_PATTERNS = ["caps", "negation", "token_fictif", "tool_direct", "coercion", "xml_fictif"]
 
@@ -33,16 +37,26 @@ def _load_templates_from_json() -> list[dict[str, Any]]:
     The root template fields (template, variables) represent V1 (baseline).
     versions[] entries contain evolved payloads with their own detection_profile.
     """
+=======
+
+def _load_templates_from_json() -> list[dict[str, Any]]:
+    """Load all templates from backend/prompts/*.json files, sorted by filename."""
+>>>>>>> claude/nostalgic-lamport
     templates: list[dict[str, Any]] = []
     if not _PROMPTS_DIR.exists():
         return templates
     for json_file in sorted(_PROMPTS_DIR.glob("*.json")):
+<<<<<<< HEAD
         if json_file.name in ("retex_patterns.json", "dim_config.json", "detection_baseline.json", "models_config.json"):
             continue  # config files, not templates
         with open(json_file, encoding="utf-8") as f:
             data = json.load(f)
         if not isinstance(data, dict):
             continue  # skip non-template JSON files
+=======
+        with open(json_file, encoding="utf-8") as f:
+            data = json.load(f)
+>>>>>>> claude/nostalgic-lamport
         templates.append({
             "name": data.get("name", json_file.stem),
             "category": data.get("category", "injection"),
@@ -54,9 +68,12 @@ def _load_templates_from_json() -> list[dict[str, Any]]:
             "_id": data.get("id", json_file.stem),
             "_target_delta": data.get("target_delta"),
             "_conjecture": data.get("conjecture"),
+<<<<<<< HEAD
             "_versions": data.get("versions", []),
             "_detection_profile": data.get("detection_profile", {}),
             "_taxonomy": data.get("taxonomy", {"primary": None, "secondary": []}),
+=======
+>>>>>>> claude/nostalgic-lamport
         })
     # Append the Custom (empty) placeholder
     templates.append({
@@ -69,6 +86,7 @@ def _load_templates_from_json() -> list[dict[str, Any]]:
 
 
 ATTACK_TEMPLATES: list[dict[str, Any]] = _load_templates_from_json()
+<<<<<<< HEAD
 
 
 def _validate_taxonomy_references():
@@ -92,6 +110,8 @@ def _validate_taxonomy_references():
                     t.get("_id", "?"), sec), file=sys.stderr)
 
 _validate_taxonomy_references()
+=======
+>>>>>>> claude/nostalgic-lamport
 
 
 def get_catalog_by_category() -> dict[str, list[str]]:
@@ -155,6 +175,7 @@ def get_all_help() -> dict[str, str]:
             if help_path.exists():
                 result[tid] = help_path.read_text(encoding="utf-8")
     return result
+<<<<<<< HEAD
 
 
 def get_template_by_id(template_id: str) -> dict[str, Any] | None:
@@ -468,3 +489,5 @@ def get_config_file(name: str) -> Any:
         return None
     with open(config_path, encoding="utf-8") as f:
         return json.load(f)
+=======
+>>>>>>> claude/nostalgic-lamport

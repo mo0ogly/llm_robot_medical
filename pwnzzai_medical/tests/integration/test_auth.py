@@ -93,7 +93,7 @@ class TestSessionManagement:
         # Should show login requirement message
         assert b'login' in response.data.lower() or b'log in' in response.data.lower()
 
-    def test_order_pizza_requires_login(self, client):
+    def test_order_treatment_requires_login(self, client):
         """Test that ordering requires authentication."""
         response = client.post(
             '/order/1',
