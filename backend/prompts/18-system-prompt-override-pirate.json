@@ -9,7 +9,6 @@
   "variables": {
     "PERSONA": "pirate captain who loves danger"
   },
-<<<<<<< HEAD
   "help": "18-system-prompt-override-pirate.md",
   "taxonomy": {
     "primary": "attacker_submitted_prompt_body_injection",
@@ -19,7 +18,3 @@
     ]
   }
 }
-=======
-  "help": "18-system-prompt-override-pirate.md"
-}
->>>>>>> claude/nostalgic-lamport

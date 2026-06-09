@@ -13,7 +13,6 @@
     "QUANTITY": "50",
     "DEPT": "Surgery-B"
   },
-<<<<<<< HEAD
   "help": "25-transactional-agent-unauthorized.md",
   "taxonomy": {
     "primary": "agent_to_agent_injection",
@@ -22,7 +21,3 @@
     ]
   }
 }
-=======
-  "help": "25-transactional-agent-unauthorized.md"
-}
->>>>>>> claude/nostalgic-lamport

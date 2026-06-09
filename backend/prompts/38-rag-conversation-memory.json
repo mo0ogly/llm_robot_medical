@@ -9,7 +9,6 @@
   "variables": {
     "TENSION": "1500"
   },
-<<<<<<< HEAD
   "help": "38-rag-conversation-memory.md",
   "taxonomy": {
     "primary": "agent_memory_injection",
@@ -19,7 +18,3 @@
     ]
   }
 }
-=======
-  "help": "38-rag-conversation-memory.md"
-}
->>>>>>> claude/nostalgic-lamport

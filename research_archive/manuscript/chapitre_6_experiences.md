@@ -129,7 +129,7 @@ Deux arguments experimentaux convergents emergent. Le premier argument est la **
 
 Le second argument est l'**exhaustivite de la taxonomie a six stages**. Chaque stage (1-6) admet au moins une demonstration d'attaque reussie dans la litterature ou dans nos campagnes (tableau 6.3). Les defenses internes proposees dans la litterature (P119 Paraphrasing, P120 Top-k Expansion, P121 detection de degradation de precision) reduisent l'ASR de 10 a 15 points de pourcentage au mieux, mais ne descendent jamais en dessous de 80% pour les attaques ciblant leur stage (EXPERIMENT_REPORT_THESIS_002, 2026-04-09, integration P117-P121). Aucune configuration intra-pipeline ne resiste aux six stages simultanement. L'unique defense couvrant le stage 6 est une verification externe post-output, c'est-a-dire δ³.
 
-En resume, la conjecture C2 est validee a 10/10 par trois categories d'evidence : (i) theorique, via P019 et P052 (preuve formelle par martingale du gradient nul au-dela de l'horizon de nocivite) ; (ii) mecaniste, via D-024 et la taxonomie a six stages ; (iii) experimentale directe, via 2400 runs thesis-grade (THESIS-001 + THESIS-002) demontrant que δ¹ + δ² laissent passer deux chaines a >= 90% ASR.
+En resume, la conjecture C2 est validee a 10/10 par trois categories d'evidence : (i) theorique, via P019≡P052 (Young, arXiv:2603.04851 — un seul papier, doublon ; preuve formelle par martingale du gradient nul au-dela de l'horizon de nocivite) ; (ii) mecaniste, via D-024 et la taxonomie a six stages ; (iii) experimentale directe, via 2400 runs thesis-grade (THESIS-001 + THESIS-002) demontrant que δ¹ + δ² laissent passer deux chaines a >= 90% ASR.
 
 ---
 
@@ -158,6 +158,6 @@ En depit de ces limites, les resultats sont statistiquement valides (N total 283
 - EXPERIMENT_REPORT_THESIS_002, 2026-04-09 (1200 runs, 70B Groq)
 - DISCOVERIES_INDEX, 2026-04-09 (D-001, D-022, D-023, D-024, D-025, taxonomie 6 stages)
 - CONJECTURES_TRACKER, 2026-04-09 (C1, C2, C3, C4)
-- P001 (Liu et al. 2023, arXiv:2306.05499) ; P019 (gradient nul) ; P044 (juges LLM bypass 99%) ; P049 (bypass 100%) ; P052 (preuve martingale) ; P054 (PIDP) ; P055 (RAGPoison) ; P117 (Yoon et al. 2025, ACL Findings) ; P118 (Gao et al. 2023, ACL, HyDE seminal) ; P119 (Jiao et al. 2025, SIGIR, PR-Attack) ; P120 (Zhang et al. 2024, arXiv:2410.22832, HijackRAG) ; P121 (Clop & Teglia 2024, arXiv:2410.14479, backdoor retriever)
+- P001 (Liu et al. 2023, arXiv:2306.05499) ; P019 (gradient nul) ; P044 (juges LLM flippes >90% sur 22/24 cells) ; P049 (bypass 100%) ; P052 (preuve martingale) ; P054 (PIDP) ; P055 (RAGPoison) ; P117 (Yoon et al. 2025, ACL Findings) ; P118 (Gao et al. 2023, ACL, HyDE seminal) ; P119 (Jiao et al. 2025, SIGIR, PR-Attack) ; P120 (Zhang et al. 2024, arXiv:2410.22832, HijackRAG) ; P121 (Clop & Teglia 2024, arXiv:2410.14479, backdoor retriever)
 - Zhang et al. 2025 (arXiv:2501.18632v2, dimensions SVC)
 - Zverev et al. 2025 (ICLR, Sep(M), Definition 2)

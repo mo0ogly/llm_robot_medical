@@ -136,7 +136,7 @@ P099 (Crescendo) et P100 (ActorBreaker) utilisent des prompts **entierement beni
 - P035 (MPIB CHER) — fournit la metrique pour mesurer le dommage clinique
 - P042 (PromptArmor <1% FPR) — potentiellement resilient mais non teste contre triple convergence
 - P038 (InstruCoT >90%) — ameliore δ⁰ mais 10% de bypass = inacceptable en medical
-- **P050≡P108** (JMedEthicBench, doublon arXiv:2601.01627) — degradation multi-tour 9.5->5.0, 27 modeles, scope japonais [NEW RUN-003]
+- **P050≡P108** (JMedEthicBench, doublon arXiv:2601.01627) — degradation multi-tour 9.5->5.5, 22 modeles, scope japonais [NEW RUN-003]
 - **P052≡P019** (Young, Gradient Analysis) — preuve formelle martingale de Pilier 1 (un seul papier, doublon) [NEW RUN-003]
 - **P054+P055** (PIDP + RAGPoison) — extension de Pilier 2 au RAG [NEW RUN-003]
 - **P057** (ASIDE) — seule reponse architecturale a D-001 [NEW RUN-003]

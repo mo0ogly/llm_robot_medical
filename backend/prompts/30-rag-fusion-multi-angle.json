@@ -9,7 +9,6 @@
   "variables": {
     "TENSION": "1500"
   },
-<<<<<<< HEAD
   "help": "30-rag-fusion-multi-angle.md",
   "taxonomy": {
     "primary": "attacker_owned_external_injection",
@@ -18,7 +17,3 @@
     ]
   }
 }
-=======
-  "help": "30-rag-fusion-multi-angle.md"
-}
->>>>>>> claude/nostalgic-lamport

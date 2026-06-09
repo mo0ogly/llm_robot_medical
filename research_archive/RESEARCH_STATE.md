@@ -137,10 +137,10 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 |------|-------|--------|----------------------|
 | C1 | 10/10 **(score GELE — decision directeur apres v3)** | **EN RE-VERIFICATION** | Theorie confirmee (P052+P018). Donnee brute autoritative triple_convergence_results.json (2026-04-08, llama-3.1-8b-instant, 210 runs, 7 conditions, N=30) : full convergence ASR=16.67% < best subset delta2_only=56.67%, KW H=18.80 p=0.0047 (SIGNIFICATIF), Cohen's f=0.475, gap=-0.4, `c1_supported=false`. Lecture : C1 "les 3 couches delta necessaires a un ASR eleve" N'EST PAS supportee — delta2 seul domine ; convergence ANTAGONISTE (delta0 retire le persona exploitable), coherente avec TC-002 70B (full 20% < delta1 seul 33%). Les anciens chiffres (3.2B, full 3%, best 23%, p=0.77) etaient ERRONES (reconcilies 2026-05-30). Score 10/10 GELE : mouvement de conjecture = SUPERVISED, decision reportee au directeur apres re-run TC-001 v3 (70B). |
 | C2 | 10/10 | **VALIDEE** | RENFORCE par Deep-Analysis P0 — P024 Sep(M) compromis + P044 juges flippables 99.91% |
-| C3 | 10/10 | **VALIDEE** | RENFORCE par Deep-Analysis P0 — double preuve : P052 martingale + P018 shallow |
+| C3 | 9/10 | **SUPPORTEE** | Corrige 2026-06-03 : P019≡P052 = meme papier (doublon), pas double preuve independante. Base : Young (formel) + P018 (empirique) + P102 (mecanistique) |
 | C4 | 9/10 | Fortement supportee | Stable — F56 (Drift Rate) draft produit, manque calibration empirique (RR-DA-004) |
 | C5 | **8.5/10** | Fortement supportee | **+0.5 Deep-Analysis P0** — P024 limites cosinus (Sep(M) > cosine brut) + P044 limites juges embeddings |
-| C6 | **9.5/10** | Fortement supportee | **+0.5 Deep-Analysis P0** — P029 94.4% ASR medical JAMA = evidence empirique forte |
+| C6 | **10/10** | VALIDEE | RUN-006 (P107-P110) + VERIFICATION_DELTA3 (P131 Weissman). P029 94.4% (102/108) ASR medical JAMA (Lee et al. 2025) |
 | C7 | 8/10 | Supportee | Protocole adaptatif concu (2026-04-06) — 50 variantes x 4 schedules, execution pendante. P054 compound mais pas specifique LRM ; manque papers LRM (RR-RUN4-003) |
 | C8 | 7/10 | **CANDIDATE** | Peer-preservation compromet le shutdown multi-agent. Supportee par P114-P116. Promotion a 8/10 conditionnee a la replication independante de P086 (G-028) + test en contexte medical (G-031). Voir CONJECTURES_TRACKER.md. |
 

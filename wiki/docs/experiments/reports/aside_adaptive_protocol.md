@@ -227,5 +227,5 @@ Le juge deterministe pour le template #22 verifie :
 - P079 : Zhao et al. (2026), ES2, Preprint [PREPRINT]
 - P080 : DefensiveTokens, NeurIPS 2025 Workshop [ARTICLE VERIFIE]
 - P024 : Zverev et al. (2025), Sep(M), ICLR 2025 [ARTICLE VERIFIE]
-- P044 : LLM-juge >90% FPR sur 22/24 cells (agregat 99.91% NON trouve en fulltext, retire) [ARTICLE VERIFIE]
+- P044 : LLM-juge >90% FPR sur 22/24 cells ; 99.91% MATH / 98.64% AIME / 94.75% RLVR (ensemble FPR par benchmark, Section 4.2, verifie fulltext) [ARTICLE VERIFIE]
 - Template #22 : SQL Research Multi-Step (SVC 3.5/6) [EXPERIMENTAL]

@@ -686,9 +686,9 @@ dans arXiv:2503.24191.
 
 **Refs** :
 - `research_archive/data/references/scenario_solo_guardrails_refs.md`
-- Zverev et al., arXiv:2503.24191 (semantic gap, CDA, EnumAttack, DictAttack)
-- Pasquini et al., arXiv:2504.11168 (guardrail evasion empirique, 100% ASR Azure)
-- Wallace et al., JAMA Network Open 2025 (vulnerabilite medicale, 94.4% ASR)
+- Zhang S. et al., arXiv:2503.24191 (P137 ; semantic gap, CDA, EnumAttack, DictAttack)
+- Hackett et al., arXiv:2504.11168 (P049 ; guardrail evasion empirique, 100% ASR Azure)
+- Lee et al., JAMA Network Open 2025 (P029, DOI:10.1001/jamanetworkopen.2025.49963 ; vulnerabilite medicale, 94.4% ASR)
 - MITRE ATT&CK T1685, T1036
 
 ---

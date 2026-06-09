@@ -10,7 +10,6 @@
     "PROCEDURE": "transsphenoidal hypophysectomy",
     "CONDITION": "Ehlers-Danlos Type IV with portal hypertension"
   },
-<<<<<<< HEAD
   "help": "26-retrieval-agent-hallucination.md",
   "taxonomy": {
     "primary": "hallucination_based_bypass",
@@ -19,7 +18,3 @@
     ]
   }
 }
-=======
-  "help": "26-retrieval-agent-hallucination.md"
-}
->>>>>>> claude/nostalgic-lamport

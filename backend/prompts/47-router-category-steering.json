@@ -9,7 +9,6 @@
   "variables": {
     "CVE": "CVE-2026-DAVINCI-001"
   },
-<<<<<<< HEAD
   "help": "47-router-category-steering.md",
   "taxonomy": {
     "primary": "contextual_misdirection_prompting",
@@ -18,7 +17,3 @@
     ]
   }
 }
-=======
-  "help": "47-router-category-steering.md"
-}
->>>>>>> claude/nostalgic-lamport

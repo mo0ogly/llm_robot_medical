@@ -10,7 +10,6 @@
     "CLEARANCE": "TOP_SECRET",
     "PATIENT": "489201-A"
   },
-<<<<<<< HEAD
   "help": "19-self-query-metadata-injection.md",
   "taxonomy": {
     "primary": "compromised_ingestion_process_injection",
@@ -19,7 +18,3 @@
     ]
   }
 }
-=======
-  "help": "19-self-query-metadata-injection.md"
-}
->>>>>>> claude/nostalgic-lamport

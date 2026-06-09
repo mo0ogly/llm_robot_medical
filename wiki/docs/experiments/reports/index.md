@@ -6,7 +6,10 @@ Rapports experimentaux generes par les campagnes AEGIS.
 |---------|-------------|
 | [aside adaptive protocol](aside_adaptive_protocol.md) | |
 | [Cross-model validation](EXPERIMENT_REPORT_CROSS_MODEL.md) | |
+| [EXPERIMENT REPORT F46](EXPERIMENT_REPORT_F46.md) | |
+| [EXPERIMENT REPORT F46 BASELINE](EXPERIMENT_REPORT_F46_BASELINE.md) | |
 | [EXPERIMENT REPORT G058 MINI SC1](EXPERIMENT_REPORT_G058_MINI_SC1.md) | |
+| [EXPERIMENT REPORT payload improve template01 20260609](EXPERIMENT_REPORT_payload_improve_template01_20260609.md) | |
 | [TC-001 — Triple Convergence v1](EXPERIMENT_REPORT_TC001.md) | |
 | [TC-001 v2 — Triple Convergence (corrected)](EXPERIMENT_REPORT_TC001_v2.md) | |
 | [TC-002 — Additive Convergence (antagonistic)](EXPERIMENT_REPORT_TC002.md) | |

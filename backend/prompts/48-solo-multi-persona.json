@@ -10,7 +10,6 @@
     "N": "3",
     "EXPERTS": "Cybersecurity Researcher, Medical Device Engineer, Penetration Tester"
   },
-<<<<<<< HEAD
   "help": "48-solo-multi-persona.md",
   "taxonomy": {
     "primary": "role_play_prompting",
@@ -20,7 +19,3 @@
     ]
   }
 }
-=======
-  "help": "48-solo-multi-persona.md"
-}
->>>>>>> claude/nostalgic-lamport

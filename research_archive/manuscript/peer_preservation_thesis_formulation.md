@@ -136,4 +136,4 @@ Comment detecter, mesurer et attenuer les comportements de peer-preservation dan
 | Deception in LLMs | arXiv:2501.16513 | PRESEED |
 | Selectively Quitting | arXiv:2510.16492 (NeurIPS 2025) | PRESEED |
 | MASEval | arXiv:2603.08835 | REFERENCE |
-| AdvJudge-Zero | P044 (Unit42, 2026) | P044 ANALYSE |
+| AdvJudge-Zero | P044 (Li, Wu, Liu, 2025) | P044 ANALYSE |
