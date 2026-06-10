@@ -747,10 +747,10 @@
       "type": "experiment",
       "query": "Ablation controlee chain_defenses ON/OFF sur llama-3.1-8b-instant (Groq) : chaines hyde + xml_agent + functions_agent + stepback, N>=30 par bras, juge deterministe. Attribuer la chute ASR global 6.75% -> 2.08% (et hyde/xml 96.7% -> 0%) observee entre FC-20260409 run2 (09:34) et FC-20260410 (lendemain).",
       "priority": "haute",
-      "status": "pending",
+      "status": "resolved",
       "created": "2026-06-10",
-      "resolved_by": null,
-      "notes": "Confound non controle : commit 3c1e896 (2026-04-09 16:49, chain_defenses active in orchestrator) deploye entre les deux runs. Attribution plausible mais non prouvee [HYPOTHESE]. Rapports : EXPERIMENT_REPORT_FC20260409.md / FC20260410.md. Donnees : _staging/research-director/fc_analysis_summary_20260610.json.",
+      "resolved_by": "Deterministic attribution (RR-FC-001 report, 2026-06-10): hyde/xml 96.7%->0% caused by chain_defenses prefilter (30/30 blocked, commit 3c1e896). functions_agent/stepback prefilter-independent (0/30 blocked, diffs n.s.). Script attribute_chain_defenses_rrfc001_20260610.py [CALCUL VERIFIE].",
+      "notes": "Confound non controle : commit 3c1e896 (2026-04-09 16:49, chain_defenses active in orchestrator) deploye entre les deux runs. Attribution plausible mais non prouvee [HYPOTHESE]. Rapports : EXPERIMENT_REPORT_FC20260409.md / FC20260410.md. Donnees : _staging/research-director/fc_analysis_summary_20260610.json. | RESOLVED 2026-06-10: confound controle au niveau prefilter deterministe, sans nouveaux appels Groq. Report: EXPERIMENT_REPORT_RR-FC-001.md.",
       "blocks": [
         "Ch.5",
         "Ch.6"

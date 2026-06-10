@@ -1,8 +1,8 @@
 # RESEARCH STATE — Etat partage de la recherche doctorale
 
 > **Fichier partage entre TOUTES les skills** (research-director, fiche-attaque, bibliography-maintainer, aegis-prompt-forge)
-> **Derniere MAJ** : 2026-06-10 (research-director cycle : RR-RUN10-002 RESOLVED — P153 Eiras "Know Thy Judge" integre au corpus, 11 chunks ChromaDB, C2 renforcee inchangee ; signal UNEXPECTED_FINDING FC-20260410 archive)
-> **Mise a jour par** : research-director, session 2026-06-10 - cycle (1 RR resolved)
+> **Derniere MAJ** : 2026-06-10 (research-director cycle : RR-RUN10-002 RESOLVED — P153 Eiras integre, 11 chunks ; RR-FC-001 RESOLVED — chute ASR hyde/xml 96.7%->0% attribuee deterministiquement a chain_defenses, confound 3c1e896 controle ; signal UNEXPECTED_FINDING FC-20260410 archive)
+> **Mise a jour par** : research-director, session 2026-06-10 - cycle (2 RR resolved)
 
 ---
 
