@@ -755,6 +755,46 @@
         "Ch.5",
         "Ch.6"
       ]
+    },
+    {
+      "id": "RR-FC-002",
+      "source": "EXPERIMENT_REPORT_RR-FC-001.md Section 5 (limitation) — 2026-06-10",
+      "type": "experiment",
+      "query": "Over-refusal / FPR panel pour les chain_defenses hyde + xml_agent : le prefilter (qui bloque 30/30 des payloads adversariaux) bloque-t-il aussi des prompts cliniques BENINS ? Panel benin clinique x N>=30, juge deterministe over-refusal (methodo addendum F46). Mesurer FPR de defend_chain('hyde'/'xml_agent', benign).",
+      "priority": "moyenne",
+      "status": "pending",
+      "created": "2026-06-10",
+      "resolved_by": null,
+      "notes": "Suivi de RR-FC-001 (resolved). RR-FC-001 prouve l'efficacite offensive (ASR->0) mais PAS le cout en utilite. Sans ce panel, on ne peut pas affirmer que chain_defenses est deployable sans sur-refus. Methodo : EXPERIMENT_REPORT_F46_ADDENDUM.md section 1.",
+      "blocks": [
+        "Ch.5"
+      ]
+    },
+    {
+      "id": "RR-P153-001",
+      "source": "P153 fiche (ABSTRACT SEUL) + DIRECTOR_BRIEFING_RUN011.md P2 — 2026-06-10",
+      "type": "literature_search",
+      "query": "Lecture fulltext de P153 (Eiras, Know Thy Judge) pour extraire le breakdown per-juge exact du resultat 100% : QUEL(S) juge(s) parmi HarmBench/WildGuard/ShieldGemma/LLaMA Guard 3 atteint 100% FNR, sous QUELLE manipulation (Always Safe / Append Long Benign / Prepend+Append), tailles de sous-echantillons. Actuellement [ABSTRACT SEUL] au-dela de 100% FNR et +0.24 FNR.",
+      "priority": "moyenne",
+      "status": "pending",
+      "created": "2026-06-10",
+      "resolved_by": null,
+      "notes": "PDF deja au corpus : literature_for_rag/P153_Eiras_2025_KnowThyJudge.pdf (11p, 11 chunks ChromaDB). Necessaire pour citer le chiffre per-juge dans Ch.7 sans tag [ABSTRACT SEUL].",
+      "blocks": [
+        "Ch.7"
+      ]
+    },
+    {
+      "id": "RR-MAINT-001",
+      "source": "research-director COMPLETE 2026-06-10 (point d'attention)",
+      "type": "fiche_update",
+      "query": "Regenerer ARTICLES_INDEX.md (doc_references/) : artefact fige RUN-004 (annonce 60 papiers / 75 PDFs, date 2026-04-04) alors que MANIFEST.md = 153 papers. Tache LIBRARIAN : regenerer l'index depuis MANIFEST (source de verite) ou le marquer deprecated si redondant avec MANIFEST/INDEX_BY_DELTA.",
+      "priority": "basse",
+      "status": "pending",
+      "created": "2026-06-10",
+      "resolved_by": null,
+      "notes": "Non bloquant. MANIFEST.md reste la source de verite. A traiter lors d'un prochain RUN bibliography-maintainer (LIBRARIAN). Lie aussi a la task #7 RUN-010 (lignes MANIFEST sans arXiv/DOI).",
+      "blocks": []
     }
   ],
   "notes": "Journal PDCA session 2026-05-16 (reconstruit PDCA-15 apres troncature JSON ligne 666). PDCA-1: sync memoire +40j, 5 RR experiment-planner ajoutees (G058/G060/G062/G007/G006). PDCA-2: 4 bloqueurs G-058 leves. PDCA-3: G-062 corrige, 36 LLMs listes, email Kholkar. PDCA-4: P135 Outlines indexe MANIFEST (135 papers). PDCA-5: outlines_adapter.py +13 tests. PDCA-6: substitution LMQL->Outlines, PDF P135 (18p). PDCA-7: orphelin renomme, SC-2, OSF draft. PDCA-8: SC-4 composition. PDCA-9: SC-3 genetic. PDCA-10: sanitized loader + audit-these. PDCA-11: export_scenarios_metadata.py (62 scenarios). PDCA-12: run_g058_campaign decompose en package g058/ (9 modules <800 lignes), bug load_templates repare. PDCA-13: ASR_deterministic formalise (F73), RR-P0-003 + RR-DA-007 resolved. PDCA-14: F46 baseline diagnostique (ASR 3.33% degenere, grille 14400 bloquee). PDCA-15: reparation troncature research_requests.json + travail RR-FICHE-002."

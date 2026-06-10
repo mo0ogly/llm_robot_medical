@@ -46,8 +46,10 @@ RR-DA-002 sans P-ID).
 - **RR-FC-001** : ablation controlee chain_defenses ON/OFF sur llama-3.1-8b (explique le drop ASR 6.75%->2.08% du confound git FC-20260409/0410). Experiment SUPERVISED, toujours pending.
 - **RR-DA-001** : replication de la preuve martingale P052. Toujours pending.
 
-### P2 — Souhaitables
-- Lecture fulltext per-juge de P153 pour extraire le breakdown exact (quel juge atteint 100%, tailles de sous-echantillons) — actuellement [ABSTRACT SEUL] au-dela des deux chiffres cles (100% FNR, +0.24 FNR).
+### P2 — Souhaitables (RR enregistrees cette session)
+- **RR-P153-001** : lecture fulltext per-juge de P153 (quel juge atteint 100%, sous quelle manipulation, tailles) — actuellement [ABSTRACT SEUL] au-dela des deux chiffres cles (100% FNR, +0.24 FNR). Bloque Ch.7.
+- **RR-FC-002** : over-refusal / FPR panel pour les chain_defenses hyde+xml_agent — RR-FC-001 prouve l'efficacite offensive (ASR->0) mais PAS le cout en utilite (sur-refus sur prompts cliniques benins ?). Bloque Ch.5.
+- **RR-MAINT-001** (P3) : regenerer ARTICLES_INDEX.md (fige RUN-004 a 60 papers vs MANIFEST 153). Non bloquant.
 
 ## 4. Decouvertes — Bilan
 
