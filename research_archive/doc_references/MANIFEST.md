@@ -158,6 +158,7 @@
 | P150 | Unraveling LLM Jailbreaks Through Safety Knowledge Neurons (SafeTuning) | Zhao, Ke, Huang | 2026 | EACL 2026 / arXiv:2509.01631 / DOI:10.18653/v1/2026.eacl-long.83 | defenses | `2026/defenses/P150_Zhao_2026_SafetyKnowledgeNeurons.md` | δ⁰ | No | Part | analyzed |
 | P151 | A Systematic Review of Algorithmic Red Teaming Methodologies for Assurance and Security of AI Applications | Srivastava, Janardhan, Jauhari (Infosys) | 2026 | arXiv:2602.21267 (preprint, survey) | benchmarks | `2026/benchmarks/P151_Srivastava_2026_AlgorithmicRedTeamingSurvey.md` | δ⁰, δ¹, δ², δ³ | No | No | analyzed |
 | P152 | A First Look at the Security of the Model Context Protocol Ecosystem | Li, Gao | 2025 | arXiv:2510.16558 (preprint) | mcp_security | `2025/mcp_security/P152_Li_2025_MCPFirstLook.md` | δ¹, δ² | Part | Part | analyzed |
+| P153 | Know Thy Judge: On the Robustness Meta-Evaluation of LLM Safety Judges | Eiras, Zemour, Lin, Mugunthan (Dynamo AI) | 2025 | arXiv:2503.04474 / ICBINB Workshop @ ICLR 2025 / PMLR v296 | benchmarks | `2025/benchmarks/P153_Eiras_2025_KnowThyJudge.md` | δ³ | No | Part | analyzed |
 
 ---
 

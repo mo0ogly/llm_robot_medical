@@ -1,8 +1,8 @@
 # RESEARCH STATE — Etat partage de la recherche doctorale
 
 > **Fichier partage entre TOUTES les skills** (research-director, fiche-attaque, bibliography-maintainer, aegis-prompt-forge)
-> **Derniere MAJ** : 2026-05-21 (PDCA sync 05-16 -> 05-21, session anti-confabulation)
-> **Mise a jour par** : research-director, session 2026-05-21 - outillage tracabilite (anti-confabulation + scoped) + corrections fiche #08 / corpus
+> **Derniere MAJ** : 2026-06-10 (research-director cycle : RR-RUN10-002 RESOLVED — P153 Eiras "Know Thy Judge" integre au corpus, 11 chunks ChromaDB, C2 renforcee inchangee ; signal UNEXPECTED_FINDING FC-20260410 archive)
+> **Mise a jour par** : research-director, session 2026-06-10 - cycle (1 RR resolved)
 
 ---
 
@@ -78,7 +78,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | ID | Description | Statut | Bloque | Responsable |
 |----|-------------|--------|--------|-------------|
 | RR-P0-001 | Formules medicales (7.4% → insuffisant). F58 MVP a formaliser | **INTEGRATED** (2026-05-31, RUN-010) — F46, F56, F57, F58 (MVP=4.51), F59 formalisees dans `doc_references/GLOSSAIRE_F_SERIES.md` (module decompose, source FORMULAS_F56_F59_FINAL). Reste : validation empirique. | Ch.3, Ch.6, C6 | MATHEUX + validation directeur |
-| RR-P0-002 | F46 Recovery Penalty — calibration empirique | **BASELINE DONE** (2026-06-08) — harness valide + baseline executee. Pre-check PASS (ASR=0.20). Baseline 900 evals Groq llama-3.1-8b-instant temp=0 : **ASR_standard=10% (3/30 templates, idx 9/12/29 deterministes)**, Wilson 95% CI honnete [3.5%, 25.6%] sur N=30 (temp=0 → 900 evals s'effondrent en 30 distincts, CI naif sur 900 trompeur). Rapport : `experiments/EXPERIMENT_REPORT_F46_BASELINE.md`. **Verdict INCONCLUSIVE C4** (baseline seul). Reste : grid mu×gamma (13500 evals, decision directeur) a temp 0.3 ou 70B. | Ch.6, C4 | Directeur: GO grid F46 ? |
+| RR-P0-002 | F46 Recovery Penalty — calibration empirique | **RESOLVED** (reconcilie 2026-06-10) — la grille complete A ETE executee (le statut BASELINE DONE etait perime). (1) Calibration 70B 2026-06-04 : 14400 evals, baseline ASR 0.1444 (130/900), optimum mu=1.0/gamma=0.85 → ASR=0, Cohen h=0.7797 (recalcule independamment), 15/15 significatif Bonferroni — verdict SUPPORTED [CALCUL VERIFIE]. (2) Over-refusal 2026-06-08 : FPR=0 sur 16 conditions (8640 evals, panel 18 prompts benins) — caveat utilite leve. (3) Replication gpt-oss-120b 2026-06-09 : direction repliquee (0.2022→0.0144, h=0.69, 12/15) avec nuances (mu faible contre-productif, gamma=0.70 inefficace) — calibration modele-specifique. Rapports : `experiments/EXPERIMENT_REPORT_F46.md` + `EXPERIMENT_REPORT_F46_ADDENDUM.md`. ATTENTION provenance : `f46_calibration_results.json` = 120B (ecrase 06-09) ; donnees 70B = `f46_calibration_results_llama70b.json`. Reste (hors P0) : validation training-time (Young Eq.19 [HEURISTIQUE]) + panel benin elargi. | Ch.6, C4 | RESOLVED |
 | RR-P0-003 | ASR circularity — ASR_deterministic base δ³ | **RESOLVED comme F73** (2026-05-16) — `FORMALISATION_ASR_DETERMINISTIC.md` (F73, extension F22) + `backend/metrics/chain_asr.py` (Chain-ASR(k), G-061). Juge deterministe 8 adapters δ³, non-circulaire (echappe P044 99.91% flip), proprietes [THEOREME] prouvees. | Metriques, Ch.7 | RESOLVED |
 
 ### P1 — IMPORTANTS (8 items)
@@ -141,7 +141,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | C4 | 9/10 | Fortement supportee | Stable — F56 (Drift Rate) draft produit, manque calibration empirique (RR-DA-004) |
 | C5 | **8.5/10** | Fortement supportee | **+0.5 Deep-Analysis P0** — P024 limites cosinus (Sep(M) > cosine brut) + P044 limites juges embeddings |
 | C6 | **10/10** | VALIDEE | RUN-006 (P107-P110) + VERIFICATION_DELTA3 (P131 Weissman). P029 94.4% (102/108) ASR medical JAMA (Lee et al. 2025) |
-| C7 | 8/10 | Supportee | Protocole adaptatif concu (2026-04-06) — 50 variantes x 4 schedules, execution pendante. P054 compound mais pas specifique LRM ; manque papers LRM (RR-RUN4-003) |
+| C7 | 9.5/10 | CANDIDATE A VALIDATION | Corrige 2026-06-10 (audit CONTRA-5) : 8/10 etait perime — CONJECTURES_TRACKER (RUN-005) et briefing RUN-010 disent 9.5/10. Protocole adaptatif concu (2026-04-06), execution pendante ; manque papers LRM (RR-RUN4-003) |
 | C8 | 7/10 | **CANDIDATE** | Peer-preservation compromet le shutdown multi-agent. Supportee par P114-P116. Promotion a 8/10 conditionnee a la replication independante de P086 (G-028) + test en contexte medical (G-031). Voir CONJECTURES_TRACKER.md. |
 
 ---
@@ -344,6 +344,29 @@ Runbook : `_staging/collector/add_3_papers_fiche08.sh` puis `/bibliography-maint
 
 ### Conjectures — INCHANGEES
 Aucun resultat experimental neuf. Les corrections d'attribution renforcent la tracabilite de l'evidence de C3 (P018) et C6 (P029) sans en modifier les scores.
+
+---
+
+## Sync director 2026-06-09 — audit rapports (research-director status)
+
+### Rapports audites
+
+| Fichier | Date | Statut | Actions extraites |
+|---------|------|--------|-------------------|
+| `DIRECTOR_BRIEFING_RUN010.md` | 2026-05-31 | **TRAITE** (2026-06-09) | 4 RR creees : RR-RUN10-001 (positionnement vs ARMs/AutoAdv/GenBreak — citer P151, dedup DUPLICATE), RR-RUN10-002 (Eiras arXiv:2503.04474 [NEW], renforce P044/F73), RR-RUN10-003 (gap P149 embedding hors-distribution, proxy a definir), RR-RUN10-004 (audit MANIFEST identifiants, task #7) |
+
+### Campagnes — etat manifest (2026-06-09)
+
+| Campagne | Statut | Action requise |
+|----------|--------|----------------|
+| FC-20260409 (4 runs Groq 8B/70B/qwen32B, 40 chaines, N=30) | PENDING_ANALYSIS | `/experimentalist` — en attente depuis le 2026-04-09 |
+| FC-20260410 (1 run Groq 8B) | PENDING_ANALYSIS | `/experimentalist` |
+| FC-20260601 (1 run ollama 3B, 2 chaines) | PENDING_ANALYSIS | `/experimentalist` |
+| RAG-001 | RUNNING (depuis 2026-04-08) | Statut STALE — reconcilier (verdict PENDING, pre-check RUNNING depuis 2 mois) |
+| F46-20260604 | ANALYZED / SUPPORTED | mu=1.0, gamma=0.85 -> ASR=0 (Cohen h=0.78). A propager vers C4/Ch.6 (note : RESEARCH_STATE RR-P0-002 cite encore le baseline INCONCLUSIVE du 2026-06-08 — reconcilier les deux entrees) |
+| PI-20260609 | SUPPORTED | Analyse 2026-06-09 : operateurs valides liftent #01 de 13.3% a 80-87% ; encapsulation JSON 0% lift |
+
+**last_updated** : `2026-06-09`
 
 ### Actions ouvertes prioritaires
 - P0 : TC-001 audit anti-confabulation FAIT le 2026-05-21 (`research_notes/AEGIS-AUDIT-TC001_anti-confabulation_2026-05-21.md`), verdict NON CONFORME. Donnee brute autoritative (`triple_convergence_results.json`, modele llama-3.1-8b-instant) : ASR full = 16.67%, best subset = δ² seul 56.67%, KW p = 0.0047 (significatif), `c1_supported=False`. RESEARCH_STATE C1 cite a tort modele 3.2B, full 3%, best subset 23%, p=0.77. Re-run v3 + reconciliation de toutes les sources requis ; decision sur le score C1 reportee au directeur apres v3.

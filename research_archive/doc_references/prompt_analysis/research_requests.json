@@ -1,6 +1,6 @@
 {
-  "description": "File d'attente de recherche — synchronisee avec DIRECTOR_BRIEFING_RUN003.md",
-  "last_updated": "2026-05-30",
+  "description": "File d'attente de recherche — synchronisee avec DIRECTOR_BRIEFING_RUN003.md + RUN010",
+  "last_updated": "2026-06-10",
   "source": "DIRECTOR_BRIEFING_RUN003.md + fiches #12-22",
   "requests": [
     {
@@ -675,6 +675,86 @@
       ],
       "owner": "experiment-planner + MATHEUX + CYBERSEC",
       "pdca2_resolution": "2026-05-16 : CAPTURE = arXiv:2505.12368 (Kholkar & Ahuja, ACL LLMSec 2025) P124 indexe [ARTICLE VERIFIE]. Dataset NON public sur HF/GitHub a date. Fallback : deepset/prompt-injections, qualifire, xTRam1, rogue-security. Contact auteurs requis (lead time ~2 semaines)."
+    },
+    {
+      "id": "RR-RUN10-001",
+      "source": "DIRECTOR_BRIEFING_RUN010.md P1",
+      "type": "fiche_update",
+      "query": "Note de positionnement competitif red teaming autonome : AEGIS vs ARMs (arXiv:2510.02677), AutoAdv (arXiv:2507.01020), GenBreak (arXiv:2506.10047), AutoRedTeamer (D-021), GPTFuzzer. Reformuler tout positionnement AEGIS en 'parmi les approches' + scope medical Da Vinci Xi.",
+      "priority": "haute",
+      "status": "pending",
+      "created": "2026-06-09",
+      "resolved_by": null,
+      "notes": "Anti-doublon 2026-06-09 : les 3 arXiv IDs sont DUPLICATE as P151 (refs internes du survey Srivastava). P151 est la version corpus autoritative — citer P151, ne PAS re-integrer ces papers en standalone. HUMILITY GATE : D-021 'premier red team autonome' deja refute.",
+      "linked_p_ids": [
+        "P151"
+      ],
+      "blocks": [
+        "Ch.2",
+        "Ch.7",
+        "D-021"
+      ]
+    },
+    {
+      "id": "RR-RUN10-002",
+      "source": "DIRECTOR_BRIEFING_RUN010.md P1",
+      "type": "literature_search",
+      "query": "Integrer Eiras et al. (arXiv:2503.04474) — manipulation du juge LLM, 100% de generations nuisibles mal classees safe. Cite par P151. Converge avec P044 (99% flip rate) et renforce ASR_deterministic (F73). Citer dans Ch.7 (ASR circularity).",
+      "priority": "haute",
+      "status": "resolved",
+      "created": "2026-06-09",
+      "resolved_by": "P153 (RUN-011, 2026-06-10) — fiche doc_references/2025/benchmarks/P153_Eiras_2025_KnowThyJudge.md, 11 chunks ChromaDB aegis_bibliography, MANIFEST row added",
+      "notes": "check_corpus_dedup.py 2026-06-09 : 2503.04474 [NEW], safe to add. Deja cite comme evidence dans la resolution de RR-DA-007 mais PAS au corpus (pas de P-ID, pas de fulltext RAG). Mode scoped bibliography-maintainer suffit. | RESOLVED 2026-06-10: integre comme P153 (P082 etait deja pris par AgentSpec/Wang). PDF 11p verifie pypdf, 4 juges (HarmBench/WildGuard/ShieldGemma/LLaMA Guard 3), 100% FNR sur certains juges + 0.24 FNR via re-stylisation. Soutient C2 (no score change). Mention periimee P082 dans SAFETY_JUDGES_SEARCH_RR-DA-002.md corrigee.",
+      "blocks": [
+        "Ch.7",
+        "F73"
+      ]
+    },
+    {
+      "id": "RR-RUN10-003",
+      "source": "DIRECTOR_BRIEFING_RUN010.md P2",
+      "type": "experiment",
+      "query": "Gap P149 (Pape et al. 2024, arXiv:2409.11026, prompt obfuscation) : tester si remplacer le system prompt texte par un embedding hors-distribution altere l'alignement RLHF (delta-0). Proxy faisable sur Groq a definir (P149 requiert acces embedding, inapplicable API).",
+      "priority": "moyenne",
+      "status": "pending",
+      "created": "2026-06-09",
+      "resolved_by": null,
+      "notes": "Limite documentee RUN-010 : soft-prompt P149 requiert acces aux embeddings (Llama 3.1 8B local only). Concevoir un protocole proxy avant tout lancement.",
+      "linked_p_ids": [
+        "P149"
+      ],
+      "blocks": [
+        "Ch.5"
+      ]
+    },
+    {
+      "id": "RR-RUN10-004",
+      "source": "DIRECTOR_BRIEFING_RUN010.md maintenance (task #7)",
+      "type": "maintenance",
+      "query": "Audit des lignes MANIFEST.md sans arXiv ID ni DOI : completer les identifiants manquants (risque dedup futur — check_corpus_dedup.py s'appuie sur le pattern arXiv). Scan periodique disque vs MANIFEST pour detecter toute desync residuelle.",
+      "priority": "moyenne",
+      "status": "pending",
+      "created": "2026-06-09",
+      "resolved_by": null,
+      "notes": "Suite de la reconciliation RUN-010 (142 rows, 0 desync au 2026-05-31).",
+      "blocks": [
+        "anti-doublon"
+      ]
+    },
+    {
+      "id": "RR-FC-001",
+      "source": "EXPERIMENTALIST FC-20260409/FC-20260410 (unexpected finding 2026-06-10)",
+      "type": "experiment",
+      "query": "Ablation controlee chain_defenses ON/OFF sur llama-3.1-8b-instant (Groq) : chaines hyde + xml_agent + functions_agent + stepback, N>=30 par bras, juge deterministe. Attribuer la chute ASR global 6.75% -> 2.08% (et hyde/xml 96.7% -> 0%) observee entre FC-20260409 run2 (09:34) et FC-20260410 (lendemain).",
+      "priority": "haute",
+      "status": "pending",
+      "created": "2026-06-10",
+      "resolved_by": null,
+      "notes": "Confound non controle : commit 3c1e896 (2026-04-09 16:49, chain_defenses active in orchestrator) deploye entre les deux runs. Attribution plausible mais non prouvee [HYPOTHESE]. Rapports : EXPERIMENT_REPORT_FC20260409.md / FC20260410.md. Donnees : _staging/research-director/fc_analysis_summary_20260610.json.",
+      "blocks": [
+        "Ch.5",
+        "Ch.6"
+      ]
     }
   ],
   "notes": "Journal PDCA session 2026-05-16 (reconstruit PDCA-15 apres troncature JSON ligne 666). PDCA-1: sync memoire +40j, 5 RR experiment-planner ajoutees (G058/G060/G062/G007/G006). PDCA-2: 4 bloqueurs G-058 leves. PDCA-3: G-062 corrige, 36 LLMs listes, email Kholkar. PDCA-4: P135 Outlines indexe MANIFEST (135 papers). PDCA-5: outlines_adapter.py +13 tests. PDCA-6: substitution LMQL->Outlines, PDF P135 (18p). PDCA-7: orphelin renomme, SC-2, OSF draft. PDCA-8: SC-4 composition. PDCA-9: SC-3 genetic. PDCA-10: sanitized loader + audit-these. PDCA-11: export_scenarios_metadata.py (62 scenarios). PDCA-12: run_g058_campaign decompose en package g058/ (9 modules <800 lignes), bug load_templates repare. PDCA-13: ASR_deterministic formalise (F73), RR-P0-003 + RR-DA-007 resolved. PDCA-14: F46 baseline diagnostique (ASR 3.33% degenere, grille 14400 bloquee). PDCA-15: reparation troncature research_requests.json + travail RR-FICHE-002."
