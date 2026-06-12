@@ -21,7 +21,7 @@
 | P005 | Indirect Prompt Injections: Are Firewalls All You Need? | Bhagwatkar et al. | 2025 | arXiv:2510.05244 | defense | `2025/defenses/P005_Firewalls_2025_IndirectInjection.md` | δ² | Yes* | ? | analyzed |
 | P006 | Prompt Injection Attack to Tool Selection in LLM Agents | Unknown et al. | 2025 | arXiv:2504.19793 | attack | `2025/prompt_injection/P006_ToolHijacker_2025_ToolSelection.md` | δ¹ | Yes | Yes* | analyzed |
 | P007 | Securing Large Language Models from Prompt Injection Attacks | Unknown et al. | 2025 | arXiv:2512.01326 | defense | `2025/defenses/P007_JATMO_2025_SecuringLLM.md` | δ⁰ | No | No | analyzed |
-| P008 | Attention Tracker: Detecting Prompt Injection in LLMs | Unknown et al. | 2024 | arXiv:2411.00348 / NAACL 2025 | defense | `2024/defenses/P008_AttentionTracker_2024_Detection.md` | δ² | Yes* | Part | analyzed |
+| P008 | Attention Tracker: Detecting Prompt Injection Attacks in LLMs | Unknown et al. | 2024 | arXiv:2411.00348 / NAACL 2025 | defense | `2024/defenses/P008_AttentionTracker_2024_Detection.md` | δ² | Yes* | Part | analyzed |
 | P009 | Bypassing Prompt Injection and Jailbreak Detection in LLM Guardrails | Unknown et al. | 2025 | arXiv:2504.11168 | attack | `2025/prompt_injection/P009_GuardrailBypass_2025_CharacterInjection.md` | δ² | No | Yes | analyzed |
 | P010 | From prompt injections to protocol exploits | Unknown et al. | 2025 | Computers & Security (ScienceDirect) / arXiv:2506.23260 | attack | `2025/prompt_injection/P010_ProtocolExploits_2025_Threats.md` | δ⁰, δ¹, δ² | Yes | Yes | analyzed |
 | P011 | PromptGuard: A Structured Framework for Injection Resilient LMs | Unknown et al. | 2025 | Scientific Reports (Nature) / DOI:10.1038/s41598-025-31086-y | defense | `2025/defenses/P011_PromptGuard_2025_Framework.md` | δ¹, δ² | Yes* | Yes | analyzed |
@@ -45,7 +45,7 @@
 | P029 | Vulnerability of LLMs to Prompt Injection in Medical Advice | Lee et al. | 2025 | JAMA Network Open / DOI:10.1001/jamanetworkopen.2025.49963 | medical | `2025/medical_ai/P029_JAMA_2025_MedicalInjection.md` | δ⁰, δ¹ | Yes | Yes* | analyzed |
 | P030 | A Longitudinal Analysis of Declining Medical Safety Messaging | Sharma, Alaa, Daneshjou | 2025 | PMC / PubMed Central / DOI:10.1038/s41746-025-01943-1 | medical | `2025/medical_ai/P030_DecliningMessaging_2025_Longitudinal.md` | δ⁰, δ¹ | Yes | Yes | analyzed |
 | P031 | Jailbreaking LLMs: Innovation, Ethics, and Health Risks | Mondillo et al. | 2024 | J. Medical AI / DOI:10.21037/jmai-24-170 | medical | `2024/medical_ai/P031_Mondillo_2024_JailbreakEthics.md` | δ⁰, δ¹ | Yes | Part | analyzed |
-| P032 | An Audit and Analysis of LLM-Assisted Health Misinformation | Unknown et al. | 2024 | AAAI/AIES 2024 / arXiv:2508.10010 | medical | `2024/medical_ai/P032_HealthMisinfo_2024_Audit.md` | δ⁰, δ² | Yes* | Part | analyzed |
+| P032 | An Audit and Analysis of LLM-Assisted Health Misinformation Jailbreaks Against LLMs | Unknown et al. | 2024 | AAAI/AIES 2024 / arXiv:2508.10010 | medical | `2024/medical_ai/P032_HealthMisinfo_2024_Audit.md` | δ⁰, δ² | Yes* | Part | analyzed |
 | P033 | OpenAI Guardrails Bypass: The Self-Policing LLM Vulnerability | HiddenLayer Research | 2024 | HiddenLayer Report | attack | `2024/prompt_injection/P033_HiddenLayer_2024_SelfPolicing.md` | δ¹, δ², δ³ | Yes | Yes | analyzed |
 | P034 | Investigating CFT in Defending Against Medical Adversarial Attacks | Unknown et al. | 2025 | arXiv (estimated) | medical | `2025/medical_ai/P034_CFT_2025_MedicalDefense.md` | δ⁰ | Yes* | Yes | analyzed |
 | P035 | MPIB: Medical Prompt Injection Benchmark | Lee, Jang & Choi | 2026 | arXiv:2602.06268 | medical | `2026/medical_ai/P035_Lee_2026_MPIB.md` | δ⁰, δ¹ | Yes | Yes* | analyzed |
@@ -157,8 +157,10 @@
 | P149 | Prompt Obfuscation for Large Language Models | Pape, Mavali, Eisenhofer, Schönherr | 2024 | arXiv:2409.11026 (preprint) | defenses | `2024/defenses/P149_Pape_2024_PromptObfuscation.md` | δ⁰ | Yes | Part | analyzed |
 | P150 | Unraveling LLM Jailbreaks Through Safety Knowledge Neurons (SafeTuning) | Zhao, Ke, Huang | 2026 | EACL 2026 / arXiv:2509.01631 / DOI:10.18653/v1/2026.eacl-long.83 | defenses | `2026/defenses/P150_Zhao_2026_SafetyKnowledgeNeurons.md` | δ⁰ | No | Part | analyzed |
 | P151 | A Systematic Review of Algorithmic Red Teaming Methodologies for Assurance and Security of AI Applications | Srivastava, Janardhan, Jauhari (Infosys) | 2026 | arXiv:2602.21267 (preprint, survey) | benchmarks | `2026/benchmarks/P151_Srivastava_2026_AlgorithmicRedTeamingSurvey.md` | δ⁰, δ¹, δ², δ³ | No | No | analyzed |
-| P152 | A First Look at the Security of the Model Context Protocol Ecosystem | Li, Gao | 2025 | arXiv:2510.16558 (preprint) | mcp_security | `2025/mcp_security/P152_Li_2025_MCPFirstLook.md` | δ¹, δ² | Part | Part | analyzed |
+| P152 | A First Look at the Security Issues in the Model Context Protocol Ecosystem | Li, Gao | 2025 | arXiv:2510.16558 (preprint) | mcp_security | `2025/mcp_security/P152_Li_2025_MCPFirstLook.md` | δ¹, δ² | Part | Part | analyzed |
 | P153 | Know Thy Judge: On the Robustness Meta-Evaluation of LLM Safety Judges | Eiras, Zemour, Lin, Mugunthan (Dynamo AI) | 2025 | arXiv:2503.04474 / ICBINB Workshop @ ICLR 2025 / PMLR v296 | benchmarks | `2025/benchmarks/P153_Eiras_2025_KnowThyJudge.md` | δ³ | No | Part | analyzed |
+| P154 | DeepContext: Stateful Real-Time Detection of Adversarial Multi-Turn Intent Drift | Albrethsen, Datta, Kumar, Rajasekar | 2026 | arXiv:2602.16935 (preprint) | defense | `2026/defense/P154_Albrethsen_2026_DeepContext.md` | δ² | No | No | analyzed |
+| P155 | Threat Modeling the Model Context Protocol (MCP): STRIDE+DREAD Analysis of Tool Poisoning | Huang, Huang, Tran, Milani Fard | 2026 | MDPI Computers / arXiv:2603.22489 (preprint) | mcp_security | `2026/mcp_security/P155_Huang_2026_MCPThreatModeling.md` | δ¹, δ³ | Part | Part | analyzed |
 
 ---
 
