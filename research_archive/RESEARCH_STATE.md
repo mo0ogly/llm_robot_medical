@@ -1,8 +1,8 @@
 # RESEARCH STATE — Etat partage de la recherche doctorale
 
 > **Fichier partage entre TOUTES les skills** (research-director, fiche-attaque, bibliography-maintainer, aegis-prompt-forge)
-> **Derniere MAJ** : 2026-06-10 (research-director cycle : RR-RUN10-002 RESOLVED — P153 Eiras integre, 11 chunks ; RR-FC-001 RESOLVED — chute ASR hyde/xml 96.7%->0% attribuee deterministiquement a chain_defenses, confound 3c1e896 controle ; signal UNEXPECTED_FINDING FC-20260410 archive)
-> **Mise a jour par** : research-director, session 2026-06-10 - cycle (2 RR resolved)
+> **Derniere MAJ** : 2026-06-13 (research-director next : RR-RUN10-001 RESOLVED — note de positionnement competitif red teaming autonome AEGIS vs ARMs/AutoAdv/GenBreak/GPTFuzzer/AutoRedTeamer/Mastermind, P151 source autoritative ; lint 0.0% NONE ; cross-validation 3/3 ; 0 changement de conjecture)
+> **Mise a jour par** : research-director, session 2026-06-13 - next (1 RR resolved)
 
 ---
 
@@ -36,6 +36,12 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | `AUDIT_SESSION_2026-05-20_G058VAL_scoring-report_COMPLETE.md` | 2026-05-20 | **PRODUIT/TRAITE** | Scoring report de la session de validation G-058 |
 
 > Note : les conjectures C1 a C7 restent INCHANGEES a l'issue de cette session. Les executions "SC-2 production" de PDCA-10 et PDCA-11 etaient des dry-runs N=1 du loader de scenarios sans LLM en service (validation syntaxique du pipeline uniquement) ; aucun resultat SC-2 reel n'a ete produit. La vraie campagne SC-2 (N=30, 62 scenarios, 8 frameworks, Groq llama-3.3-70b-versatile, 14880 trials) reste a lancer apres soumission OSF. Aucun mouvement de conjecture n'est justifie. Voir le tableau des conjectures en Section 4 (inchange).
+
+### Rapports research-director (session positionnement 2026-06-13)
+
+| Fichier | Date | Statut | Actions pendantes |
+|---------|------|--------|-------------------|
+| `research_notes/POSITIONING_NOTE_AEGIS_autonomous_red_teaming_2026-06-13.md` | 2026-06-13 | **PRODUIT/TRAITE** | Note de positionnement RR-RUN10-001 (SCIENTIST). Formulations F-1 a F-5 pretes pour Ch.2/Ch.7. Lint 0.0% NONE (17 claims). Consolide le draft ANALYST du 2026-06-10 (doc_references/prompt_analysis/POSITIONING_AEGIS_VS_AUTONOMOUS_REDTEAM_2026-06-10.md). Aucun changement de conjecture. |
 
 ### Rapports fiche-attaque
 

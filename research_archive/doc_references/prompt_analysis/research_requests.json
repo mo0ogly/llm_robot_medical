@@ -1,6 +1,6 @@
 {
   "description": "File d'attente de recherche — synchronisee avec DIRECTOR_BRIEFING_RUN003.md + RUN010",
-  "last_updated": "2026-06-10",
+  "last_updated": "2026-06-13",
   "source": "DIRECTOR_BRIEFING_RUN003.md + fiches #12-22",
   "requests": [
     {
@@ -682,10 +682,10 @@
       "type": "fiche_update",
       "query": "Note de positionnement competitif red teaming autonome : AEGIS vs ARMs (arXiv:2510.02677), AutoAdv (arXiv:2507.01020), GenBreak (arXiv:2506.10047), AutoRedTeamer (D-021), GPTFuzzer. Reformuler tout positionnement AEGIS en 'parmi les approches' + scope medical Da Vinci Xi.",
       "priority": "haute",
-      "status": "pending",
+      "status": "resolved",
       "created": "2026-06-09",
-      "resolved_by": null,
-      "notes": "Anti-doublon 2026-06-09 : les 3 arXiv IDs sont DUPLICATE as P151 (refs internes du survey Srivastava). P151 est la version corpus autoritative — citer P151, ne PAS re-integrer ces papers en standalone. HUMILITY GATE : D-021 'premier red team autonome' deja refute.",
+      "resolved_by": "research_notes/POSITIONING_NOTE_AEGIS_autonomous_red_teaming_2026-06-13.md (SCIENTIST synthesis, research-director session 2026-06-13) + prior ANALYST draft doc_references/prompt_analysis/POSITIONING_AEGIS_VS_AUTONOMOUS_REDTEAM_2026-06-10.md",
+      "notes": "Anti-doublon 2026-06-09 : les 3 arXiv IDs sont DUPLICATE as P151 (refs internes du survey Srivastava). P151 est la version corpus autoritative — citer P151, ne PAS re-integrer ces papers en standalone. HUMILITY GATE : D-021 'premier red team autonome' deja refute. | RESOLVED 2026-06-13: STEP 0 re-verified (2510.02677, 2507.01020, 2506.10047, 2503.15754 all DUPLICATE as P151; AutoRedTeamer maps via P151 disambiguation note, corpus knowledge from D-021). LITREVIEW verdict BUILDS_ON_EXISTING (top sim ~0.78, no hit >= 0.80). lint_sources 0.0% NONE (17 claims). Cross-validation 3/3 exact-match (D-020 60%/89%, campaign_manifest figures verbatim, P153 fulltext 0.24/100% some judges). No conjecture score change. Ready-to-use manuscript formulations F-1..F-5 for Ch.2/Ch.7 included.",
       "linked_p_ids": [
         "P151"
       ],
