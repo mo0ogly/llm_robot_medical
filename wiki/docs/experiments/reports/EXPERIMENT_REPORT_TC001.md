@@ -1,5 +1,7 @@
 # Rapport Experimental — TC-001 Triple Convergence
 
+> **ERRATUM (2026-06-12, audit CONTRA-2)** : les chiffres de ce rapport (v1, 3B) sont GELES en attente de TC-001 v3. Incoherences documentees entre v1/v2 (3B) et `triple_convergence_results.json` (champ model=8B) — voir `PROTOCOLE_TC001_v3.md` L23 et `RESEARCH_STATE.md` Section 4 (reconciliation 2026-05-30 : full=16.67%, best δ² seul=56.67% sur 8B). Aucun chiffre de ce rapport ne doit etre cite dans le manuscrit avant cloture de TC-001 v3.
+
 > **Date** : 2026-04-08
 > **Script** : backend/run_triple_convergence.py
 > **Gap** : G-011

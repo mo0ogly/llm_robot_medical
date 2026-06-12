@@ -2,7 +2,7 @@
 
 <p class='agent-badge agent-badge--mathteacher'>AGENT &middot; MATHTEACHER (Opus 4.6)</p>
 
-<div class='phase-strip'><span><strong>Phase 4</strong></span><span>15 fichiers</span><span>22 formules</span><span>34 articles</span><span>45-55 h</span><span>6-8 semaines</span></div>
+<div class='phase-strip'><span><strong>Phase 4</strong></span><span>16 fichiers</span><span>22 formules</span><span>34 articles</span><span>45-55 h</span><span>6-8 semaines</span></div>
 
 !!! abstract curriculum "Curriculum mathematique structure"
     Cours produit par l'agent **MATHTEACHER** (Opus 4.6) du pipeline `/bibliography-maintainer`. Public cible : doctorant(e) avec un bac+2 en biologie, statistiques ou mathematiques. Objectif : maitriser les **22 formules** utilisees dans les **34 articles** AEGIS, en autonomie.

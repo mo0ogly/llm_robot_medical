@@ -7,8 +7,8 @@
 
 <div class="stat-grid">
   <div class="stat-card"><span class="stat-value">13</span><span class="stat-label">Agents publies</span></div>
-  <div class="stat-card"><span class="stat-value">259</span><span class="stat-label">Fichiers</span></div>
-  <div class="stat-card"><span class="stat-value">51 167</span><span class="stat-label">Lignes</span></div>
+  <div class="stat-card"><span class="stat-value">272</span><span class="stat-label">Fichiers</span></div>
+  <div class="stat-card"><span class="stat-value">52 913</span><span class="stat-label">Lignes</span></div>
   <div class="stat-card"><span class="stat-value">9</span><span class="stat-label">Phases pipeline</span></div>
 </div>
 
@@ -24,19 +24,19 @@
 
 - <span class="agent-badge agent-badge--scientist">SCIENTIST</span> **Synthese scientifique**
 
-    33 fichiers &middot; 6 437 lignes.
+    33 fichiers &middot; 6 442 lignes.
 
     [:material-arrow-right: Ouvrir](scientist/index.md)
 
 - <span class="agent-badge agent-badge--matheux">MATHEUX</span> **Formules mathematiques (extraction & reviews)**
 
-    12 fichiers &middot; 5 104 lignes.
+    14 fichiers &middot; 5 449 lignes.
 
     [:material-arrow-right: Ouvrir](matheux/index.md)
 
 - <span class="agent-badge agent-badge--mathteacher">MATHTEACHER</span> **Cours de mathematiques (8 modules + guide notation + self-assessment)**
 
-    15 fichiers &middot; 7 326 lignes.
+    16 fichiers &middot; 7 747 lignes.
 
     [:material-arrow-right: Ouvrir](mathteacher/index.md)
 
@@ -66,19 +66,19 @@
 
 - <span class="agent-badge agent-badge--collector">COLLECTOR</span> **Preseed et verifications anti-doublon**
 
-    7 fichiers &middot; 496 lignes.
+    8 fichiers &middot; 584 lignes.
 
     [:material-arrow-right: Ouvrir](collector/index.md)
 
 - <span class="agent-badge agent-badge--briefings">BRIEFINGS</span> **Briefings directeur (livrable Phase 6)**
 
-    7 fichiers &middot; 1 169 lignes.
+    8 fichiers &middot; 1 282 lignes.
 
     [:material-arrow-right: Ouvrir](briefings/index.md)
 
 - <span class="agent-badge agent-badge--audit-these">AUDIT THESE</span> **Audits scientifiques (claims, versions)**
 
-    10 fichiers &middot; 914 lignes.
+    18 fichiers &middot; 1 688 lignes.
 
     [:material-arrow-right: Ouvrir](audit-these/index.md)
 

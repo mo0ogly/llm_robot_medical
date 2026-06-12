@@ -5,7 +5,7 @@
 !!! abstract "Agent `_staging/matheux/`"
     Extraction des formules F01-F72 depuis les papiers, glossaire detaille, dependances mathematiques, reviews completes par RUN. Produits par l'agent MATHEUX.
 
-**12 fichiers** disponibles.
+**14 fichiers** disponibles.
 
 ## Liste complete
 
@@ -14,9 +14,11 @@
 | [`DELTA3_FORMAL_COMPARISON_20260411.md`](DELTA3_FORMAL_COMPARISON_20260411.md) | Comparaison formelle des 8 frameworks δ³ — 2026-04-11 | 285 |
 | [`FORMULAS_F56_F59_DRAFT.md`](FORMULAS_F56_F59_DRAFT.md) | Formules F56-F59 — Draft pour validation MATHEUX | 214 |
 | [`FORMULAS_F56_F59_FINAL.md`](FORMULAS_F56_F59_FINAL.md) | Formules F56-F59 — Version FINALE | 450 |
+| [`FORMULAS_RAG_POISONING_20260612.md`](FORMULAS_RAG_POISONING_20260612.md) | FORMULAS — RAG Poisoning & Control-Plane Decoding (P137 / P138 / P139) | 322 |
 | [`FORMULAS_RUN004_EXTRACTION.md`](FORMULAS_RUN004_EXTRACTION.md) | Formules RUN-004 — Extraction mathematique | 715 |
 | [`G061_CHAIN_ASR_K_METRIC.md`](G061_CHAIN_ASR_K_METRIC.md) | G-061 — Metrique Chain-ASR(k) : P(payload passes k layers) | 189 |
 | [`GLOSSAIRE_DETAILED.md`](GLOSSAIRE_DETAILED.md) | GLOSSAIRE MATHEMATIQUE DETAILLE | 1852 |
+| [`GLOSSAIRE_F75-F80_RAG_CONTROLPLANE.md`](GLOSSAIRE_F75-F80_RAG_CONTROLPLANE.md) | Glossaire AEGIS — F75 a F80 (RAG poisoning & control-plane decoding) | 23 |
 | [`MATH_DEPENDENCIES.md`](MATH_DEPENDENCIES.md) | MATH DEPENDENCIES — Formula Prerequisite DAG | 307 |
 | [`PHASE2_MATHEUX_RUN003.md`](PHASE2_MATHEUX_RUN003.md) | MATHEUX Report — RUN-003 (P047-P060) | 424 |
 | [`PHASE3_MATHEUX_REPORT.md`](PHASE3_MATHEUX_REPORT.md) | PHASE 3 — MATHEUX AGENT REPORT | 112 |

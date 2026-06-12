@@ -5,13 +5,13 @@
 > Every agent MUST update this file LAST after completing work.
 
 ## Last Execution
-- **Run ID**: RUN-010
-- **Date**: 2026-05-31
-- **Mode**: incremental (cleanup literature_for_rag + integration 6 local PDFs P146-P151) + MANIFEST reconciliation
+- **Run ID**: RUN-011
+- **Date**: 2026-06-10
+- **Mode**: incremental (single-paper integration, RR-RUN10-002 via research-director cycle)
 - **Status**: SUCCESS
-- **Duration**: orchestrator (cleanup 28 quarantine + 6 external + dedup batch + reconciliation + 6 ANALYST subagents + generate_chunks_run010 + ingest + cross-validation)
-- **Papers added**: 6 (P146-P151), 26 duplicates quarantined, MANIFEST reconciled (+7 rows P140-P145, P139 collision -> P152, P074 dup removed)
-- **Previous**: RUN-009 (P136-P139, medical+RAG, 2026-05-30)
+- **Duration**: orchestrator (STEP 0 dedup [NEW] + PDF download arXiv + pypdf verify 11p + ANALYST fiche + MANIFEST row + generate_chunks_run011_p153 + ingest offline + verify >=5 chunks + stale-mention cleanup)
+- **Papers added**: 1 (P153 Eiras et al. 2025, Know Thy Judge / safety judge robustness, ICBINB @ ICLR 2025, arXiv:2503.04474). 11 chunks ChromaDB aegis_bibliography (11056 -> 11067). δ³. Supports C2 (no score change). Resolves RR-RUN10-002.
+- **Previous**: RUN-010 (P146-P151, cleanup + reconciliation, 2026-05-31)
 
 ### RUN-010 details (literature_for_rag cleanup + integration)
 - **P146** arXiv:2302.12173 — Greshake et al. 2023, Indirect Prompt Injection (FOUNDER IPI). δ¹,δ². C2 supported. 10 chunks. prompt_injection. **Comble trou critique Ch.2** (papier fondateur IPI manquait au corpus).

@@ -15,6 +15,8 @@ decouverte et corrigee.
 
 ## 1. Etat des Conjectures
 
+> **ERRATUM post-hoc (2026-06-12, audit CONTRA-3/CONTRA-4)** : ce briefing date du 2026-05-31 et contient deux valeurs perimees. (1) C3 a ete revise 10/10 → **9/10** le 2026-06-03 (doublon P019≡P052 fusionne) — ne pas re-importer 10/10. (2) C1 est **GELE en re-verification** (TC-001 v3 pendante, donnee brute `c1_supported=false`) — la mention "VALIDEE sature" sans qualification est anterieure au gel. Valeurs autoritatives : RESEARCH_STATE.md Section 4 + CONJECTURES_TRACKER.md.
+
 | Conj | Score | Statut | Evolution RUN-010 |
 |------|-------|--------|-------------------|
 | C1 (δ⁰ insuffisant) | 10/10 | VALIDEE sature | Renforce par P147 (correlation taille-vuln 0.63), P150 (δ⁰ manipulable au niveau neurone). Pas de changement. |

@@ -1849,4 +1849,4 @@ ou :
 ---
 
 *Section ajoutee le 2026-04-11 par MATHEUX scoped (RUN VERIFICATION_DELTA3_20260411). 2 formules proposees, statut PROPOSE, a valider apres decision directeur sur integration de P131 et P135 au corpus stable.*
-*Derniere mise a jour: 2026-04-07 (RUN-005 — P087-P102, LRM + multi-tour + mecanismes d'alignement)*
+*Derniere mise a jour: 2026-06-12 — F75-F80 (RAG poisoning + control-plane) dans module satellite `GLOSSAIRE_F75-F80_RAG_CONTROLPLANE.md` (fichier > 800 lignes, append bloque).*

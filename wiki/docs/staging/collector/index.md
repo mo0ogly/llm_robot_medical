@@ -5,12 +5,13 @@
 !!! abstract "Agent `_staging/collector/`"
     Preseed JSON avec metadonnees avant integration corpus, verifications check_corpus_dedup (arXiv ID + cosine > 0.9).
 
-**7 fichiers** disponibles.
+**8 fichiers** disponibles.
 
 ## Liste complete
 
 | Fichier | Titre | Lignes |
 |---------|-------|-------:|
+| [`EIRAS_2503.04474_SCOPED_VERIFICATION_2026-06-10.md`](EIRAS_2503.04474_SCOPED_VERIFICATION_2026-06-10.md) | Scoped Verification — Eiras et al., arXiv:2503.04474 (RR-RUN10-002) | 88 |
 | [`PAPERS_PROMPT5B_GAP_PEER_PRESERVATION.md`](PAPERS_PROMPT5B_GAP_PEER_PRESERVATION.md) | Gap de these — Peer-Preservation Multi-Agent | 53 |
 | [`PEER_PRESERVATION_THESIS_FORMULATION.md`](PEER_PRESERVATION_THESIS_FORMULATION.md) | Peer-Preservation — Formulation Thesis-Ready | 95 |
 | [`PHASE1_REPORT.md`](PHASE1_REPORT.md) | Phase 1 Collection Report -- Prompt Injection Literature Discovery | 70 |

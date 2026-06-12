@@ -19,4 +19,9 @@
 2. **Ensemble heterogene** : vote majoritaire Llama + Qwen + Gemma
 3. **Validation adversariale** : mini-benchmark AdvJudge-Zero pre-campagne, rejet si FPR > 10%
 
-## Papiers a integrer : P081 (Schwinn, arXiv:2603.06594) + P082 (Eiras, arXiv:2503.04474)
+## Papiers a integrer : P081 (Schwinn, arXiv:2603.06594) + Eiras (arXiv:2503.04474) -> INTEGRE comme P153 (RUN-011, 2026-06-10)
+
+> Correction (2026-06-10) : la mention initiale "P082 (Eiras)" etait erronee a deux titres.
+> P082 est AgentSpec (Wang et al., arXiv:2503.18666) dans MANIFEST. Eiras "Know Thy Judge"
+> (arXiv:2503.04474) a ete integre sous le P-ID neuf P153 (RR-RUN10-002, 11 chunks ChromaDB).
+> Voir doc_references/2025/benchmarks/P153_Eiras_2025_KnowThyJudge.md.
