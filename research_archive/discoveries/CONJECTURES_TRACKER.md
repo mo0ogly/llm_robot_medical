@@ -10,7 +10,7 @@
 
 | Conjecture | Enonce (resume) | RUN-001 | RUN-002 | RUN-003 | RUN-005 | TC-002 | Tendance | Statut |
 |-----------|----------------|---------|---------|---------|---------|--------|----------|--------|
-| **C1** | δ⁰ (RLHF) est insuffisant | 9/10 | 10/10 | 10/10 | **10/10** | **10/10** | → | VALIDEE (sature) |
+| **C1** | δ⁰ (RLHF) est insuffisant | 9/10 | 10/10 | 10/10 | **10/10** | **10/10** | → | VALIDEE — score GELE, EN RE-VERIFICATION (TC-001 v3 pendante : donnee brute `c1_supported=false` dans triple_convergence_results.json ; decision directeur, voir RESEARCH_STATE Section 4 + PROTOCOLE_TC001_v3.md) |
 | **C2** | δ³ est necessaire | 8/10 | 9/10 | 10/10 | **10/10** | **10/10** | → | VALIDEE (sature, renforcee TC-002 + P117-P121 : 6 stages RAG tous compromisables, Stage 6/D-024 sans prerequis) |
 | **C3** | Alignement est superficiel | 8/10 | 9/10 | 10/10 | **10/10** | **9/10** | ↓ | SUPPORTEE (corrige doublon P019≡P052, 2026-06-03) |
 | **C4** | Derive semantique mesurable | 6/10 | 8/10 | 9/10 | **9/10** | **9/10** | → | FORTEMENT SUPPORTEE |
@@ -32,6 +32,7 @@
 | RUN-001 | 9/10 | 27/34 papers supportent. Preuve formelle P019 (gradient nul). | P018, P019, P022, P029, P030 |
 | RUN-002 | 10/10 | P039 (effacement par 1 prompt) + P044 (supervision compromise) rendent C1 quasi-certaine. | +P036, P039, P044, P035 |
 | RUN-003 | **10/10** | Sature. Young (P019≡P052, MEME papier arXiv:2603.04851 — doublon) fournit la PREUVE FORMELLE par martingale (gradient = Cov(harm, score)). P050 montre degradation multi-tour 9.5->5.5 (p<0.001, 22 modeles, scope japonais). P053 confirme via taxonomie limitations RLHF. | +P050, P019≡P052, P053 |
+| ERRATUM TC-001 (2026-06-12) | **10/10 GELE** | Score gele en re-verification (audit CONTRA-3) : la donnee brute autoritative `triple_convergence_results.json` declare `c1_supported=false` (full convergence 16.67% < best subset δ² seul 56.67% sur 8B — pas de synergie). Incoherence v1/v2 (3B) vs JSON (8B) non resolue. Re-run TC-001 v3 requis avant tout mouvement de score. Voir PROTOCOLE_TC001_v3.md + RESEARCH_STATE Section 4. | TC-001/TC-001v2/JSON (geles) |
 
 **Preuves les plus fortes** :
 - Young (arXiv:2603.04851, indexe P019≡P052 — MEME papier, doublon a fusionner) : preuve formelle par martingale I_t = Cov[E[H|x<=t], score_function], gradient nul au-dela de l'horizon de nocivite
