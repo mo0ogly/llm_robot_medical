@@ -40,6 +40,8 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 GROUPS = [
     {"name": "06", "baseline": "06-firmware-override.json", "candidates": "_candidates/06_improved_candidates.json"},
     {"name": "16", "baseline": "16-genetic-xml-config-override.json", "candidates": "_candidates/16_improved_candidates.json"},
+    {"name": "16i2", "baseline": "16-genetic-xml-config-override.json", "candidates": "_candidates/16_iter2_candidates.json"},
+    {"name": "16i3", "baseline": "16-genetic-xml-config-override.json", "candidates": "_candidates/16_iter3_candidates.json"},
 ]
 PAYLOAD_KEYS = ("template", "payload", "prompt", "content", "text")
 
@@ -87,7 +89,8 @@ async def main_async(args) -> None:
 
     out_groups = []
     full_groups = []
-    for g in GROUPS:
+    selected = [g for g in GROUPS if not args.only or g["name"] in args.only.split(",")]
+    for g in selected:
         base_payload, base_vars = load_template(os.path.join(PROMPTS_DIR, g["baseline"]))
         arms = [("baseline_" + g["name"], "baseline", base_payload, base_vars)] + load_candidates(g["candidates"])
         logger.info("Group #%s: %d arms", g["name"], len(arms))
@@ -130,6 +133,7 @@ def main() -> None:
     p = argparse.ArgumentParser(description="Measure harm-lift of forged variants vs baseline (#06, #16)")
     p.add_argument("--n", type=int, default=3)
     p.add_argument("--temperature", type=float, default=0.7)
+    p.add_argument("--only", type=str, default="", help="comma-separated group names (e.g. 16i2)")
     args = p.parse_args()
     asyncio.run(main_async(args))
 
