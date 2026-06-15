@@ -21,6 +21,31 @@
 
 ---
 
+## Synthese RUN-012 (2026-06-15) — 19 papiers P156-P174 (prompt injection 2026-04..06)
+
+> Renforts bibliographiques SANS franchissement de seuil (HUMILITY GATE respecte). Les scores detailles par conjecture ci-dessous restent inchanges ; cette synthese documente l'evidence RUN-012.
+
+| Conj | Score (inchange) | Evidence RUN-012 | Papers |
+|------|------------------|------------------|--------|
+| **C1** (insuffisance δ⁰) | 10/10 GELE | P162 Neutral Mask = preuve mecaniste (sparse autoencoder : RLHF "disconnect-not-delete" la geometrie partisane, reduction σ 68%, 5 features policy -> zero sur 84 prompts) ; P172 Mapping Exploitation Surface (10k essais, 9/12 dimensions NULLES, SEUL le goal-reframing declenche l'exploitation — Claude Sonnet 4 38-40% malgre regle explicite, GPT-4.1 0/1850) corrobore directement l'operateur reframe_goal d'EXP-CATALOGUE. | P162, P172 |
+| **C2** (necessite δ³) | 10/10 sature | Renforce FORTEMENT : P169 PISmith (RL adaptatif, ASR@1 0.87, brise 13 defenses PI SOTA) + P173 PIArena (attaque strategie dynamique 99% ASR sans defense, 70% sur GPT-5 multicouche, AUCUNE defense ne domine cross-benchmark) -> les defenses non-formelles restent contournables, δ³ formel/deterministe necessaire. Appuye par P165 TRUSTDESC + P166 MCP-DPT (validation/placement) et P171 (formalisation). | P169, P173, P165, P166, P171 |
+| **C3** (alignement superficiel) | 9/10 | P162 : neutralite FONCTIONNELLE ≠ structurelle ("the aligned model's behavior may be more fragile than its outputs suggest") = evidence mecaniste la plus precise du corpus pour la superficialite ; complete P018 (Qi)/P019 (Young). | P162 |
+| **C5** (cosine insuffisant) | inchange | P164 SilentRetrieval (KDD 2026) : empoisonnement RAG semantiquement preserve -> audit perplexite independant ne detecte que 8.7% (PPL 32.4 vs 28.4 benin) ; ASR@5 reste 57.89% sous defense cosine Image-Text (deja note pour P157). Filtres cosine/perplexite insuffisants. | P164, P157 |
+| **C7** (paradoxe raisonnement/securite) | 9.5/10 | Renfort SANS franchissement : P159 AE-CoT (ICML 2026, jailbreak evolutionnaire sur traces CoT, ASR 92% o1-mini, defense combinee residuelle 60%) + P161 Safety in LRMs survey (cadrage etat-de-l'art : H-CoT 98%->2% refus, 70x tokens). Rejoint cluster P087-P102/P141. | P159, P161 |
+
+### D-016 (degradation multi-tour) — NUANCE RUN-012
+- **Soutien mecaniste** : P158 "When Attention Closes" introduit GAR (Goal Accessibility Ratio) et fournit le mecanisme causal manquant (channel-transition : les tokens-objectif deviennent moins accessibles par l'attention ; recall 100%->11.2% sous canal force ferme sur Mistral ; sonde residuelle AUC 0.99 ; pooled Kendall τ=−0.75 p=1.5e-14). C'est l'explication mecaniste que D-016 (jusqu'ici empirique p<0.001) attendait.
+- **Nuance / portee** : P160 ADVERSA (frontier non-medical, N=15) trouve les jailbreaks concentres TOT (tour moyen 1.25) + convergence vers le refus aux tours 6-10 ("notable null result"), PAS une erosion cumulative ; P163 cross-generationnel Gemma trouve une non-monotonicite (Gemma 3 regresse 68.7% ASR, misinfo 28.7->99.1%). => D-016 tient dans son SCOPE MEDICAL ; la generalite d'une erosion monotone cumulative est scope-dependante. AUCUNE modification de D-016 sans replication en scope medical.
+- **Defenses candidates** : P170 TRACES (audit proactif trajectoire-etat, EAUPC +19.3) + P154 DeepContext (RNN stateful) adressent RR-RUN4-004.
+
+### MC8 / MC9 (supply-chain MCP -> Da Vinci) — RENFORT RUN-012
+P167 (etude empirique 1899 serveurs MCP : 5.5% tool poisoning in-the-wild, 7.2% vulnerables) = evidence directe MC8. P165 TRUSTDESC (defense tool poisoning, $0.013/desc), P166 MCP-DPT (taxonomie placement, Transport 0% couvert, 49 attaques x 13 defenses), P168 MalTool (outils malveillants par CODE, taxonomie CIA, 1300+5727 outils, detecteurs faibles 0.814) renforcent le substrat MC8/MC9. Scores MC8/MC9 inchanges (soundness plafonnee ; validation Da Vinci empirique = RR-RUN12-002).
+
+### Scooping δ³ (P171) — note de positionnement (HUMILITY GATE)
+P171 (Siu, Dawn Song et al., "A Framework for Formalizing LLM Agent Security") formalise 4 proprietes contextuelles (task/action alignment, source authorization, data isolation) + oracles, reformalise IPI/DPI/jailbreak/task-drift/memory-poisoning comme violations, mappe 87 papiers. **AEGIS ne peut PLUS revendiquer "premier framework formel de securite agent"** -> repositionner en extension OPERATIONNELLE + MEDICALE empirique (campagnes N>=30, moteur genetique, Da Vinci) vs Siu et al. purement specificatifs ("no software artifacts"). Voir RR-RUN12-001. Lien P126 (Tramer design patterns, scooping note anterieure).
+
+---
+
 ## Detail par Conjecture
 
 ### C1 : Insuffisance de δ⁰ (alignement RLHF)
@@ -354,7 +379,7 @@
 | MC7 | Un AI scientist base sur un coding agent externe (Claude Code, Cursor) herite des vulnerabilites du coding agent | M013 Miyai et al. 2025, arXiv:2511.04583 | 7 | 7 | 8 | 8 | **P1** | Etend MC3 (HITL doit couvrir la chaine du coding agent) |
 | MC8 | **MCP supply-chain = injection vector direct pour Da Vinci si un skill/tool medical est connecte** | M014 Errico et al. 2025, arXiv:2511.20920 | 8 | 7 | 9 | 10 | **P0 CRITIQUE** | Nouvelle dimension — pont methodologie ↔ securite cyber-physique |
 | MC9 | **Over-stepping agent dans un MCP chirurgical constitue une escalade de privilege mortelle** (corollaire physique de MC8) | M014 Errico et al. 2025, arXiv:2511.20920 | 8 | 6 | 9 | 10 | **P0 CRITIQUE** | Corollaire MC8 avec consequence physique |
-| MC10 | Un Checklist-style Judger unique = single point of failure (judge collapse) ; un ensemble de judges de roles distincts est necessaire | M015 Step DeepResearch, arXiv:2512.20491 | 6 | 7 | 8 | 7 | P2 | Raffinement MC1 (separation roles necessaire mais pas suffisante — il faut N judges independants) |
+| MC10 | Un Checklist-style Judger unique = single point of failure (judge collapse) ; un ensemble de judges de roles distincts est necessaire | M015 Step DeepResearch, arXiv:2512.20491 | 6 | 8 | 8 | 7 | P2 | Raffinement MC1 (separation roles necessaire mais pas suffisante — il faut N judges independants) |
 | MC11 | **Un agent goal-evolving amplifie le specification gaming d'un facteur proportionnel au nombre d'iterations outer loop** | M016 SAGA Du et al. 2025, arXiv:2512.21782 | 9 | 6 | 8 | 10 | **P0 CRITIQUE** | Nouvelle dimension — alignment drift amplifie |
 | MC12 | **Objective injection via outer loop d'un agent goal-evolving est strictement plus grave que tool poisoning classique a capacite equivalente** (corollaire de MC11) | M016 SAGA Du et al. 2025, arXiv:2512.21782 | 8 | 6 | 8 | 10 | **P0 CRITIQUE** | Corollaire MC11 |
 | MC13 | Chaque failure mode naturel identifie par Trehan-Chopra 2026 (overexcitement / confusion causale / sur-generalisation / biais de confirmation / incapacite de retraction / incapacite de verification formelle) correspond a un vecteur d'injection amplifiable par un attaquant | M017 Trehan-Chopra 2026, arXiv:2601.03315 | 7 | 6 | 8 | 8 | P1 | Inversion MC3 : les limites naturelles deviennent vecteurs offensifs (dimension "failure mode -> attack vector") |
@@ -368,6 +393,8 @@
 **Soundness 6-7/10 sur P0** : les P0 critiques ont une soundness volontairement plafonnee a 6-7 a ce stade car (a) le scoring apex est INDICATIF et non pas AUDITE_APEX (les fiches M014/M016 doivent etre relues integralement par l'apex avant promotion 7→8), (b) il n'existe pas encore de replication independante des claims M014 et M016, (c) le mapping vers Da Vinci Xi est inferentiel et non pas valide empiriquement. Upgrade 6→8 conditionne a une experience AEGIS concrete (cf. SESSION-002 RoboAttackBench).
 
 **MC4/MC7/MC13 — score impact 8/10** : impact these eleve via canal physique (MC4), chaine coding agent (MC7), et transformation failure modes → vecteurs offensifs (MC13). Non a 10/10 car chacune reste une extension methodologique sans consequence physique immediate demontrable avant experiences.
+
+**MC10 — 2026-06-15 — promotion soundness 7→8** (SUPERVISED, accord utilisateur 2026-06-15 ; |Δ| = 1 dans la tolerance ±2σ). Premiere corroboration AEGIS-native de MC10 : lors de l'audit catalogue family-aware du 2026-06-15 (SESSION-004 §5.1), un juge deterministe robotique unique a lu 0% sur la famille pharma alors qu'un juge adapte a la famille de but (judge_pharma_llm) revele jusqu'a 86.7% d'ASR (#80, N=30, Wilson [70.3 ; 94.7]) — instance directe de judge-collapse par juge unique. Converge avec C2 (necessite d'un δ³ par famille), P044 (AdvJudge-Zero) et P153 (Eiras et al. 2025, juges manipulables). Reste [EXPERIMENTAL] sous juge LLM (caveat P153, spot-check humain en attente) — d'ou soundness 8 et non 9. Ref : `research_archive/research_notes/SESSION-004_2026-06-15.md`.
 
 ### Autonomie et regle SUPERVISED ±2σ
 

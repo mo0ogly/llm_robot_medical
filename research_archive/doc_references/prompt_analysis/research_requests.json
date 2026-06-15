@@ -1,6 +1,6 @@
 {
   "description": "File d'attente de recherche — synchronisee avec DIRECTOR_BRIEFING_RUN003.md + RUN010",
-  "last_updated": "2026-06-13",
+  "last_updated": "2026-06-15",
   "source": "DIRECTOR_BRIEFING_RUN003.md + fiches #12-22",
   "requests": [
     {
@@ -170,14 +170,15 @@
       "type": "literature_search",
       "query": "LRM securite: papers post-P036 sur la securite des Large Reasoning Models, paradoxe raisonnement/securite",
       "priority": "moyenne",
-      "status": "pending",
+      "status": "partial",
       "created": "2026-04-04",
-      "resolved_by": null,
-      "notes": "Theme 9 EMERGENT. Besoin de 3+ papers pour C7. D-004 a 8/10.",
+      "resolved_by": "P159 (AE-CoT, ICML 2026, arXiv:2605.24497) + P161 (Safety in LRMs survey, arXiv:2504.17704) integres RUN-012 -- securite LRM/C7 cadree ; experiences C7 sur LLaMA medical restent a mener",
+      "notes": "Theme 9 EMERGENT. Besoin de 3+ papers pour C7. D-004 a 8/10. [RUN-012 2026-06-15: litterature LRM integree (P159 jailbreak CoT evolutionnaire, P161 survey etat-de-l'art), validation empirique medicale en attente]",
       "blocks": [
         "C7",
         "D-004"
-      ]
+      ],
+      "resolved_date_run012": "2026-06-15"
     },
     {
       "id": "RR-RUN4-004",
@@ -185,13 +186,14 @@
       "type": "literature_search",
       "query": "Multi-turn defense: detection de degradation progressive, attention monitoring across conversation turns",
       "priority": "moyenne",
-      "status": "pending",
+      "status": "partial",
       "created": "2026-04-04",
-      "resolved_by": null,
-      "notes": "D-016 degradation multi-turn medicale (p<0.001). Besoin defenses.",
+      "resolved_by": "Defenses multi-tour: P170 TRACES (audit proactif trajectoire-etat, arXiv:2605.27690) + P154 DeepContext (RNN stateful) ; mecanisme: P158 When Attention Closes/GAR (arXiv:2605.12922) explique la degradation. Implementation/eval AEGIS a mener.",
+      "notes": "D-016 degradation multi-turn medicale (p<0.001). Besoin defenses. [RUN-012 2026-06-15: mecanisme (P158 channel-transition) + 2 defenses candidates (P170/P154) integres ; reste implementation cote AEGIS]",
       "blocks": [
         "D-016"
-      ]
+      ],
+      "resolved_date_run012": "2026-06-15"
     },
     {
       "id": "RR-RUN4-005",
@@ -333,12 +335,13 @@
       "status": "partial",
       "created": "2026-04-04",
       "resolved_by": "P139 CorruptRAG (single-doc poisoning, SACMAT 2026) + P138 FlippedRAG (CCS 2025) integres RUN-009; evaluation empirique des defenses composees (GMTP/RagSanitizer) reste a mener",
-      "notes": "P054 ASR 98% sur compound PIDP. Aucune defense testee dans le papier. Gap critique pour D-013 et pour la thematique RAG defense (complement a RR-RUN4-001). [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente]",
+      "notes": "P054 ASR 98% sur compound PIDP. Aucune defense testee dans le papier. Gap critique pour D-013 et pour la thematique RAG defense (complement a RR-RUN4-001). [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente] [RUN-012 2026-06-15: complement RAG poisoning -- P157 M3Att (medical multimodal, arXiv:2605.10253) + P164 SilentRetrieval (semantically-preserving, KDD 2026, arXiv:2605.28074). Evaluation empirique des defenses composees reste a mener.]",
       "blocks": [
         "D-013",
         "Ch.5"
       ],
-      "resolved_date": "2026-05-30"
+      "resolved_date": "2026-05-30",
+      "resolved_date_run012": "2026-06-15"
     },
     {
       "id": "RR-DA-004",
@@ -415,8 +418,10 @@
         "C1"
       ],
       "source_fiche": 31,
-      "status": "pending",
-      "added": "2026-04-05"
+      "status": "partial",
+      "added": "2026-04-05",
+      "resolved_by": "P164 SilentRetrieval (semantically-preserving adversarial data poisoning, KDD 2026, arXiv:2605.28074) -- RAG hijacking furtif, PPL detect 8.7%",
+      "resolved_date_run012": "2026-06-15"
     },
     {
       "type": "literature_search",
@@ -427,8 +432,10 @@
         "C2"
       ],
       "source_fiche": 32,
-      "status": "pending",
-      "added": "2026-04-05"
+      "status": "partial",
+      "added": "2026-04-05",
+      "resolved_by": "P163 (cross-gen non-monotonic safety, arXiv:2606.00813, Gemma 3 regresse) + P160 ADVERSA (multi-turn guardrail degradation, arXiv:2603.10068) -- non-monotonicite documentee",
+      "resolved_date_run012": "2026-06-15"
     },
     {
       "type": "literature_search",
@@ -540,12 +547,15 @@
       "type": "literature_search",
       "query": "tool-use agent exploitation enumeration execution authorization adversarial LLM",
       "priority": "haute",
-      "status": "open",
+      "status": "partial",
       "created": "2026-04-05",
       "conjecture_impact": [
         "C1",
         "C2"
-      ]
+      ],
+      "resolved_by": "P168 MalTool (Hu et al. Duke/Berkeley, arXiv:2602.12194) -- attaques par outils malveillants sur agents tool-use, taxonomie CIA, detecteurs existants faibles (0.814)",
+      "notes": "[RUN-012 2026-06-15: exploitation tool-use agents documentee (P168)]",
+      "resolved_date_run012": "2026-06-15"
     },
     {
       "id": "RR-G058",
@@ -795,6 +805,44 @@
       "resolved_by": null,
       "notes": "Non bloquant. MANIFEST.md reste la source de verite. A traiter lors d'un prochain RUN bibliography-maintainer (LIBRARIAN). Lie aussi a la task #7 RUN-010 (lignes MANIFEST sans arXiv/DOI).",
       "blocks": []
+    },
+    {
+      "id": "RR-RUN12-001",
+      "source": "RUN-012 P171 scooping detection",
+      "type": "fiche_update",
+      "query": "Repositionner le δ³ AEGIS vs P171 (Siu, Dawn Song et al., 'A Framework for Formalizing LLM Agent Security', arXiv:2603.19469 : 4 proprietes contextuelles task/action alignment + source authorization + data isolation + oracles, 87 papiers mappes). AEGIS = extension OPERATIONNELLE + MEDICALE empirique (campagnes N>=30, moteur genetique, Da Vinci), PAS 'premier framework formel de securite agent'. Reformuler tout positionnement δ³ formel du manuscrit.",
+      "priority": "haute",
+      "status": "pending",
+      "created": "2026-06-15",
+      "resolved_by": null,
+      "notes": "HUMILITY GATE : claim de primaute formelle agent refute par P171 (Dawn Song et al., mars 2026). Differenciation viable = implementation empirique vs specification pure.",
+      "linked_p_ids": [
+        "P171"
+      ],
+      "blocks": [
+        "Ch.5",
+        "Ch.7"
+      ]
+    },
+    {
+      "id": "RR-RUN12-002",
+      "source": "RUN-012 MCP cluster (P165-P168)",
+      "type": "experiment",
+      "query": "Gap10 MCP couvert en litterature (P165 TRUSTDESC defense, P166 MCP-DPT placement, P167 1899 serveurs 5.5% tool poisoning, P168 MalTool). Valider EMPIRIQUEMENT le supply-chain MCP en contexte Da Vinci Xi (conjectures MC8/MC9) : un tool/skill medical compromis -> escalade de privilege physique.",
+      "priority": "moyenne",
+      "status": "pending",
+      "created": "2026-06-15",
+      "resolved_by": null,
+      "notes": "Litterature MCP integree RUN-012 (P165-P168). Validation Da Vinci a concevoir (proxy ou simulation).",
+      "linked_p_ids": [
+        "P165",
+        "P166",
+        "P167",
+        "P168"
+      ],
+      "blocks": [
+        "Ch.6"
+      ]
     }
   ],
   "notes": "Journal PDCA session 2026-05-16 (reconstruit PDCA-15 apres troncature JSON ligne 666). PDCA-1: sync memoire +40j, 5 RR experiment-planner ajoutees (G058/G060/G062/G007/G006). PDCA-2: 4 bloqueurs G-058 leves. PDCA-3: G-062 corrige, 36 LLMs listes, email Kholkar. PDCA-4: P135 Outlines indexe MANIFEST (135 papers). PDCA-5: outlines_adapter.py +13 tests. PDCA-6: substitution LMQL->Outlines, PDF P135 (18p). PDCA-7: orphelin renomme, SC-2, OSF draft. PDCA-8: SC-4 composition. PDCA-9: SC-3 genetic. PDCA-10: sanitized loader + audit-these. PDCA-11: export_scenarios_metadata.py (62 scenarios). PDCA-12: run_g058_campaign decompose en package g058/ (9 modules <800 lignes), bug load_templates repare. PDCA-13: ASR_deterministic formalise (F73), RR-P0-003 + RR-DA-007 resolved. PDCA-14: F46 baseline diagnostique (ASR 3.33% degenere, grille 14400 bloquee). PDCA-15: reparation troncature research_requests.json + travail RR-FICHE-002."

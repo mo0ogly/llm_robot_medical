@@ -281,6 +281,36 @@ Papers addressing formal methods, mathematical guarantees, external verification
 
 ---
 
+## RUN-012 additions (2026-06-15) — P156-P174
+
+> Appendix listing. Full integration into the per-δ tables above + the Cross-Layer matrix is deferred to a LIBRARIAN reconciliation (RR-MAINT-001); MANIFEST.md (174 rows) is the authoritative δ-Layers source.
+
+| ID | Title | δ-Layers | Role | Key finding |
+|----|-------|----------|------|-------------|
+| P156 | Adversarial Attacks on Surgical-Robot Policies | δ³,δ² | Attack (cyber-physical) | 61% surgical success drop (560 phys. exp.); robot policy itself attackable -> δ³ action validation |
+| P157 | M3Att Medical Multimodal RAG Poisoning | δ¹,δ⁰,δ² | Attack | Query-agnostic medical RAG poison; ASR@5 57.89% under cosine defense (C5/C6) |
+| P158 | When Attention Closes (GAR) | δ²,δ¹,δ³ | Analysis | Channel-transition mechanism of multi-turn decay; recall 100->11.2%; explains D-016 |
+| P159 | AE-CoT Reasoning Jailbreaks (ICML 2026) | δ⁰,δ²,δ³ | Attack | Evolutionary CoT jailbreak; ASR 92% o1-mini; C7 |
+| P160 | ADVERSA Multi-Turn Guardrail Degradation | δ²,δ¹ | Benchmark | Judge unreliability (agreement 40.9%); jailbreaks early (round 1.25); D-016 nuance |
+| P161 | Safety in Large Reasoning Models (Survey) | δ⁰-δ³ | Survey | LRM safety state-of-art; H-CoT 98->2% refusal; C7 |
+| P162 | The Neutral Mask (RLHF shallow) | δ⁰ | Analysis | Sparse-autoencoder: RLHF disconnects-not-deletes; σ-68%; C1/C3 mechanistic |
+| P163 | Cross-Gen Non-Monotonic Safety | δ⁰,δ² | Analysis | Gemma 3 regresses (ASR 68.7%); safety not cumulative; C1 |
+| P164 | SilentRetrieval RAG Poisoning (KDD 2026) | δ¹,δ²,δ³ | Attack | Semantically-preserving poison; PPL detect 8.7%; C5 |
+| P165 | TRUSTDESC Tool-Poisoning Defense | δ¹,δ³ | Defense | Trusted tool descriptions; $0.013/desc; C2/MC8 |
+| P166 | MCP-DPT Defense-Placement Taxonomy | δ²,δ³ | Defense (taxonomy) | 49 attacks x 13 defenses; Transport 0% covered; MC8/MC9 |
+| P167 | MCP at First Glance (1899 servers) | δ¹,δ² | Empirical study | 5.5% tool poisoning, 7.2% vulnerable in-the-wild; MC8 |
+| P168 | MalTool Malicious Tool Attacks | δ¹,δ² | Attack | Malicious tool CODE (CIA taxonomy); detectors weak 0.814; C1/C2/MC8 |
+| P169 | PISmith RL Red Teaming vs PI Defenses | δ¹,δ² | Attack | Breaks 13 SOTA PI defenses (ASR@1 0.87); C2 strong |
+| P170 | TRACES Proactive Multi-Turn Auditing | δ²,δ³ | Defense | Trajectory-state proactive audit; EAUPC +19.3; C2/C4; addresses RR-RUN4-004 |
+| P171 | Formalizing LLM Agent Security | δ¹,δ²,δ³ | Defense (formal) | 4 contextual properties + oracles; 87 papers; **scooping δ³** (RR-RUN12-001) |
+| P172 | Mapping Exploitation Surface (10k trials) | δ⁰,δ¹ | Benchmark | 9/12 dims null; only goal-reframing works; corroborates AEGIS reframe_goal; C1 |
+| P173 | PIArena PI Eval Platform | δ¹,δ²,δ³ | Benchmark | 99% ASR dynamic attack; no defense dominates; C2 strong |
+| P174 | Jailbreak Foundry (reproducibility) | δ⁰,δ¹ | Infrastructure | 30 attacks reproduced; +0.26pp ASR fidelity; C2 |
+
+**RUN-012 δ-layer note**: marked δ³ surge — 8/19 papers touch δ³ (P156 action validation, P158, P164, P165, P166, P170, P171 formal, P173), reflecting a literature shift toward defenses + formal frameworks. P171 (Siu/Dawn Song) is a direct δ³-formal scooping signal (RR-RUN12-001).
+
+---
+
 ## Cross-Layer Coverage
 
 | Paper | δ⁰ | δ¹ | δ² | δ³ | Layers |
