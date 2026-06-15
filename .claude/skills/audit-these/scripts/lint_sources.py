@@ -91,7 +91,15 @@ def lint_file(file_path: Path) -> list:
     lines = content.split("\n")
     issues = []
 
+    in_code_block = False
     for i, line in enumerate(lines):
+        # Toggle on fenced code blocks; their interior is a formula/data display
+        # introduced by a sourced prose header, not a prose factual claim.
+        if line.lstrip().startswith("```"):
+            in_code_block = not in_code_block
+            continue
+        if in_code_block:
+            continue
         # Skip headers, empty lines, metadata, tables, quotes
         if line.startswith("#") or line.startswith(">") or line.startswith("|") or not line.strip():
             continue

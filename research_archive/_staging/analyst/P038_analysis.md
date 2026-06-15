@@ -69,7 +69,7 @@ DR = 1 - ASR = proportion des attaques correctement rejetees
 **Resultats principaux** (Section 5.2, Table 3) :
 - BD Direct PI : InstruCoT **91.5%** vs Clean **10.3%** vs MetaSec **51.0%** vs ISE **60.5%**
 - BD Indirect PI : InstruCoT **93.4%** vs Clean **12.4%** vs MetaSec **85.9%** vs ISE **72.9%**
-- Privacy ShareGPT : InstruCoT **97.6%** vs ISE **91.2%** vs MetaSec **73.7%**
+- Privacy ShareGPT : InstruCoT **97.6%** vs ISE **91.2%** vs MetaSec **73.7%** (Chang et al., 2026, Section 5.2, Table 3)
 - Privacy Unatural : InstruCoT **98.4%** vs ISE **91.3%** vs MetaSec **58.9%**
 - Harmful Output : InstruCoT **90.9%** vs InSFT **83.5%** vs MetaSec **80.2%** vs PromptArmor **70.8%**
 - Utilite Win Rate : InstruCoT **82.9%** (moyenne 4 LLM) (Section 5.2, Figure 4)
@@ -77,7 +77,7 @@ DR = 1 - ASR = proportion des attaques correctement rejetees
 **Qualite CoT** (Section 5.1, Table 2) :
 - Instruction Perception : Precision **99.0%**, Recall **98.1%**, F1 **98.5%** (Alpaca-Adv Data+PI)
 - Violation Comprehension : Precision **100.0%** (Alpaca-Adv Data+PI)
-- Response Projection : Precision **99.7%** (Alpaca-Adv Data+PI)
+- Response Projection : Precision **99.7%** (Alpaca-Adv Data+PI) (Chang et al., 2026, Section 5.1, Table 2)
 
 Lien glossaire AEGIS : F22 (ASR, inverse comme DR), F15 (Sep(M) --- relation avec preservation d'utilite)
 
