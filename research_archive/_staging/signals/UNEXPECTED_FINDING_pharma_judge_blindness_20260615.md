@@ -41,3 +41,20 @@ under-reports ASR for every goal family it was not designed for** — the appare
 1. Human spot-check of #80/#92/#71 pharma responses before any formal ASR claim (P153).
 2. Scoped bibliography search on family-specific safety judges (delegate to bibliography-maintainer).
 3. Consider a deterministic dose-safety verifier (drug-KB) to replace the LLM judge for formal metrics.
+
+---
+
+## RESOLUTION — PROCESSED by SESSION-004 (2026-06-15)
+
+This signal was correlated and synthesized by the aegis-research-lab apex in
+`research_archive/research_notes/SESSION-004_2026-06-15.md` (§5.1 Pattern 1 "ASR is
+judge-relative; judging is the bottleneck"). Reinforces C2 (per-family δ³) and provides the
+first AEGIS-native corroboration of MC10 (single judge = single point of failure). Humility
+gate applied — no primacy claim (judge-relativity known via P044/P153).
+
+**Actions carried forward (SESSION-004 §10 EVOLVE):**
+- Primary: build deterministic dose-safety verifier (drug-KB `judge_pharma_dose`) → closes P153 caveat for formal pharma ASR.
+- Human gate: spot-check #80/#92/#71 before any formal ASR claim.
+- Deferred Bac C: scoped bibliography on family-specific / goal-conditioned safety judges.
+
+Status: **PROCESSED** (no longer an open signal).
