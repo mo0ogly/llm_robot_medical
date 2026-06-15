@@ -9,7 +9,7 @@
 <<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
 =======
-| Target Layer | `delta-1` (system prompt only) |
+| Target Layer | `δ¹` (system prompt only) |
 >>>>>>> claude/nostalgic-lamport
 | Conjecture | C1 |
 | Chain ID | — |
@@ -33,7 +33,7 @@ Role-based prompt extraction was one of the first discovered attack vectors (202
 <<<<<<< HEAD
 | D3 — Delta Appropriateness | 0.5/1 | Role impersonation targets δ¹ correctly but is burned |
 =======
-| D3 — Delta Appropriateness | 0.5/1 | Role impersonation targets delta-1 correctly but is burned |
+| D3 — Delta Appropriateness | 0.5/1 | Role impersonation targets δ¹ correctly but is burned |
 >>>>>>> claude/nostalgic-lamport
 | D4 — Sep(M) Readiness | 0/1 | ~1/30 violations expected |
 | D5 — Formal Traceability | 0.5/1 | Confidentiality violation traceable |

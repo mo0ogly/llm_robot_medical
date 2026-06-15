@@ -4,10 +4,11 @@
   "date": "2026-06-08",
   "mode": "score-only",
   "objective": "APEX 1-4 delivery validation: Groq fix, orchestrator decomposition, server decomposition, doc_librarian compliance",
-  "score_global": 96.6,
+  "score_global": 97.5,
   "score_objectif": 80,
   "status": "ACHIEVED",
-  "score_v2_note": "Updated after N=30 real Groq runs (llama-3.1-8b-instant): delta0_protection=0.00, delta1_contribution=0.467, ASR_no_sp=1.0, statistically_valid=True",
+  "score_v2_note": "v2: N=30 real Groq runs — Prot(δ⁰)=0.00, Cont(δ¹)=0.467, ASR_∅=1.0, statistically_valid=True",
+  "score_v3_note": "v3: 97.5/100 — notation domain 94→100 after full delta-N sweep (prompts/*.md 106 fixes, red_team/ + orchestrator_metrics.py)",
   "domains": {
     "math_framework": {
       "score": 100,
@@ -39,16 +40,17 @@
       "notes": "-5 for llm_providers_routes still showing Ollama-only (separate endpoint from /api/redteam/providers)"
     },
     "notation": {
-      "score": 94,
+      "score": 100,
       "weight": 0.15,
-      "weighted": 14.1,
+      "weighted": 15.0,
       "checks": {
-        "unicode_delta_in_494_locations": "PASS",
+        "unicode_delta_in_all_locations": "PASS",
         "frontend_notation_clean": "PASS",
-        "remaining_delta_N_in_code": "WARN — 10 in backend/red_team/ campaign files (code, not doc)",
-        "orchestrator_metrics_docstring": "WARN — 1 remaining in module docstring"
+        "backend_red_team_campaign_files": "PASS — 0 delta-N in backend/red_team/ (fixed 2026-06-15)",
+        "orchestrator_metrics_docstring": "PASS — fixed 2026-06-15",
+        "prompts_md_help_files_106_fixes": "PASS — 95 files patched (delta-0/1/2/3 → δ⁰/¹/²/³)"
       },
-      "notes": "-6 for 10 remaining delta-N in campaign code/adapter files"
+      "notes": "FULL PASS — zero delta-N ASCII anywhere in backend/ (Python + Markdown)"
     },
     "documentation": {
       "score": 96,
@@ -108,9 +110,12 @@
     "NO_DISABLE": "PASS"
   },
   "open_items": [
-    "Run N>=30 real Groq trials via POST /api/redteam/delta0-protocol (currently fixture N=15)",
-    "Fix 1 delta-N in orchestrator_metrics.py docstring",
-    "Fix 9 delta-N in backend/red_team/ campaign/adapter files",
     "llm_providers_routes.py still Ollama-only (separate endpoint — not in scope of this APEX)"
+  ],
+  "closed_items": [
+    "N=30 real Groq trials — DONE: Prot(δ⁰)=0.00, Cont(δ¹)=0.467, statistically_valid=True",
+    "Fix delta-N in orchestrator_metrics.py docstring — DONE 2026-06-15",
+    "Fix delta-N in backend/red_team/ campaign/adapter files — DONE 2026-06-15",
+    "Fix delta-N in backend/prompts/*.md help files (106 occurrences, 95 files) — DONE 2026-06-15"
   ]
 }

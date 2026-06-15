@@ -9,7 +9,7 @@
 <<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
 =======
-| Target Layer | `delta-1` (system prompt only) |
+| Target Layer | `δ¹` (system prompt only) |
 >>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | `chain_of_note` |

@@ -9,7 +9,7 @@
 <<<<<<< HEAD
 | Target Layer | `δ¹` (system prompt only) |
 =======
-| Target Layer | `delta-1` (system prompt only) |
+| Target Layer | `δ¹` (system prompt only) |
 >>>>>>> claude/nostalgic-lamport
 | Conjecture | — |
 | Chain ID | `prompt_override` |
@@ -63,7 +63,7 @@ This template serves as a **historical reference** and negative control. It demo
 <<<<<<< HEAD
 - The DAN pattern is defeated by base alignment (pre-δ⁰), not by any defense layer
 =======
-- The DAN pattern is defeated by base alignment (pre-delta-0), not by any defense layer
+- The DAN pattern is defeated by base alignment (pre-δ⁰), not by any defense layer
 >>>>>>> claude/nostalgic-lamport
 - Useful only as a historical calibration point
 
