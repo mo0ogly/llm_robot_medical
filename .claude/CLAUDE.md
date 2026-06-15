@@ -112,7 +112,7 @@ Travailler via metadonnees + fichiers .md (safe). Subagents : toujours inclure "
 
 ## Git
 
-- Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+- Commits : PAS de trailer Co-Authored-By (regle user absolue — cf. memoire feedback_commit_on_main ; corrige 2026-06-15, l'ancienne consigne contredisait la regle user)
 - `research_archive/` en .gitignore — `git add -f` pour thesis docs
 - Pas de `houyi` dans les noms de fichiers
 

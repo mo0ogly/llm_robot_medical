@@ -71,11 +71,16 @@ SKIP_PATTERNS = re.compile(
     r'confirmee|nuancee|contredite|'          # Discovery evaluation terms
     r'non adresse|partiellement|'             # Gap evaluation terms
     r'\[x\]\s+δ|'                             # Checklist delta items
-    r'- \*\*Couches delta\*\*|'              # Delta layers section header
-    r'- \*\*Conjectures\*\*|'                # Conjectures section header
-    r'- \*\*Decouvertes\*\*|'                # Discoveries section header
-    r'- \*\*Gaps\*\*|'                        # Gaps section header
-    r'- \*\*Mapping',                          # Mapping section header
+    r'- \*\*Couches delta|'              # Delta layers section header
+    r'- \*\*Conjectures|'                # Conjectures section header
+    r'- \*\*D[eé]couvertes|'                # Discoveries section header
+    r'- \*\*Gaps|'                        # Gaps section header
+    r'- \*\*Mapping|'                          # Mapping section header
+    r'\?\s*$|'                                # Questions ouvertes (interrogatives) — pas des affirmations
+    r'Lien glossaire|'                         # Cross-ref glossaire AEGIS interne — pas un claim de papier
+    r'Nature epistemique|'                     # Tag de classification epistemique
+    r'^Ou \$|^ou \$|'                          # Definition de notation LaTeX ("Ou $...$ est ...")
+    r'^- \$',                                  # Bullet de definition de notation LaTeX ("- $I_t$ : ...")
     re.IGNORECASE
 )
 
