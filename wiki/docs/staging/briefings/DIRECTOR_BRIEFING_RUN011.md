@@ -108,4 +108,15 @@ contre Section 3.
 
 Aucune claim de primaute AEGIS non verifiee dans RUN-011. Gate PASSE.
 
+---
+
+## ERRATUM post-hoc (audit-these 2026-06-13)
+
+- **C5 : 9/10, pas 8.5/10.** Le tableau Section 1 reprenait une valeur perimee : C5 etait deja passe
+  a 9/10 lors de RUN-009 (+0.5, CorruptRAG P139 — un seul document empoisonne suffit ;
+  CONJECTURES_TRACKER, tableau RUN-009). La valeur 8.5/10 datait d'avant cette revision.
+- **C1 : GELE depuis le 2026-06-12** (posterieur a ce briefing) — audit TC-001 : `c1_supported=false`
+  brut, re-verification TC-001 v3 pendante. Voir AUDIT_COMPLET_20260612.md. Le statut
+  "VALIDEE sature" de la Section 1 reflete l'etat au 2026-06-10 et ne doit plus etre cite tel quel.
+
 *RUN-011 — fin du briefing.*

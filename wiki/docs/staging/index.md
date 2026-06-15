@@ -7,8 +7,8 @@
 
 <div class="stat-grid">
   <div class="stat-card"><span class="stat-value">13</span><span class="stat-label">Agents publies</span></div>
-  <div class="stat-card"><span class="stat-value">272</span><span class="stat-label">Fichiers</span></div>
-  <div class="stat-card"><span class="stat-value">52 913</span><span class="stat-label">Lignes</span></div>
+  <div class="stat-card"><span class="stat-value">277</span><span class="stat-label">Fichiers</span></div>
+  <div class="stat-card"><span class="stat-value">53 510</span><span class="stat-label">Lignes</span></div>
   <div class="stat-card"><span class="stat-value">9</span><span class="stat-label">Phases pipeline</span></div>
 </div>
 
@@ -72,13 +72,13 @@
 
 - <span class="agent-badge agent-badge--briefings">BRIEFINGS</span> **Briefings directeur (livrable Phase 6)**
 
-    8 fichiers &middot; 1 282 lignes.
+    8 fichiers &middot; 1 293 lignes.
 
     [:material-arrow-right: Ouvrir](briefings/index.md)
 
 - <span class="agent-badge agent-badge--audit-these">AUDIT THESE</span> **Audits scientifiques (claims, versions)**
 
-    18 fichiers &middot; 1 688 lignes.
+    23 fichiers &middot; 2 274 lignes.
 
     [:material-arrow-right: Ouvrir](audit-these/index.md)
 

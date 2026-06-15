@@ -11,7 +11,7 @@
 | Projet doctoral / pitch | 2 | .docx | [→](#projet-doctoral-pitch) |
 | Notes academiques | 2 | .docx | [→](#notes-academiques) |
 | Cours cyber S1-ISI5 | 4 | .docx | [→](#cours-cyber-s1-isi5) |
-| PDFs bibliographiques | 174 | .pdf | [→ Liste complete](#pdfs-bibliographiques) |
+| PDFs bibliographiques | 172 | .pdf | [→ Liste complete](#pdfs-bibliographiques) |
 | Articles markdown | 55+ | .md | [→ Articles](../research/articles/index.md) |
 | Fiches d'attaque | 97+ | .md | [→ Fiches](../research/fiches-attaque/index.md) |
 | Analyses Keshav papers | 200+ | .md | [→ Analyst](../staging/analyst/index.md) |
@@ -81,7 +81,7 @@ Addendums de chapitres, drafts formels, analyses comparatives (vs Zhang 2025).
 
 ## PDFs bibliographiques
 
-**174 PDFs** des papers P001-P130 du corpus AEGIS + 17 papers methodologiques (M001-M017 sur les AI scientists) sont disponibles en telechargement direct.
+**172 PDFs** des papers P001-P130 du corpus AEGIS + 17 papers methodologiques (M001-M017 sur les AI scientists) sont disponibles en telechargement direct.
 
 Chaque PDF est accessible via `../assets/pdfs/{filename}.pdf`. Pour la liste complete avec titre + annee + categorie, consulter la [bibliographie](../research/bibliography/index.md) ou la [classification par couche δ](../research/bibliography/by-delta.md).
 
