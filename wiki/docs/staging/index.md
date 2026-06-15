@@ -7,8 +7,8 @@
 
 <div class="stat-grid">
   <div class="stat-card"><span class="stat-value">13</span><span class="stat-label">Agents publies</span></div>
-  <div class="stat-card"><span class="stat-value">277</span><span class="stat-label">Fichiers</span></div>
-  <div class="stat-card"><span class="stat-value">53 510</span><span class="stat-label">Lignes</span></div>
+  <div class="stat-card"><span class="stat-value">278</span><span class="stat-label">Fichiers</span></div>
+  <div class="stat-card"><span class="stat-value">53 690</span><span class="stat-label">Lignes</span></div>
   <div class="stat-card"><span class="stat-value">9</span><span class="stat-label">Phases pipeline</span></div>
 </div>
 
@@ -78,7 +78,7 @@
 
 - <span class="agent-badge agent-badge--audit-these">AUDIT THESE</span> **Audits scientifiques (claims, versions)**
 
-    23 fichiers &middot; 2 274 lignes.
+    24 fichiers &middot; 2 454 lignes.
 
     [:material-arrow-right: Ouvrir](audit-these/index.md)
 

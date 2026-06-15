@@ -14,7 +14,7 @@
 - **Probleme :** Les systemes RAG gouvernementaux (USAi.Gov, IRS, Medicare) sont vulnerables aux attaques d'empoisonnement de base de connaissances, avec des consequences directes sur les citoyens (erreurs fiscales de $50-$1000) (Patil, 2026, Section I, p.1-2).
 - **Methode :** Defense en 5 couches — L1 : attestation cryptographique C2PA des documents a l'ingestion ; L2 : retrieval pondere par la confiance ; L3 : treillis de taint formel avec detection de contradictions cross-sources ; L4 : generation avec citations de provenance ; L5 : conformite NIST SP 800-53 (Section III-V, p.3-6).
 - **Donnees :** 500 passages NQ, 63 documents d'attaque, 200 requetes. 5 tiers d'adversaires (T1 externe, T2 forgeur, T3 insider, T4 Phantom, T5 adaptatif). Comparaison avec RobustRAG et RAGDefender (Section VII, p.7).
-- **Resultat :** ASR 0.0% (95% CI: [0.0%, 1.9%]) sur tous les tiers T1-T5 pour RAGShield-Full. FPR 0.0%. RobustRAG : 0-0.5% ASR. RAGDefender : 7.5-12.5% ASR (Table VI, p.7). MAIS : attaque T6 (remplacement in-place par insider) atteint 17.5% ASR (Table X, p.8).
+- **Resultat :** ASR 0.0% (95% CI: [0.0%, 1.9%]) sur tous les tiers T1-T5 pour RAGShield-Full. FPR 0.0%. RobustRAG : 0-0.5% ASR. RAGDefender : 7.5-12.5% ASR (Patil, 2026, Table VI, p.7). MAIS : attaque T6 (remplacement in-place par insider) atteint 17.5% ASR (Patil, 2026, Table X, p.8).
 - **Limite :** L'evaluation utilise seulement 500 passages (vs 2.6M pour NQ complet). L'infrastructure de signature cryptographique des documents n'existe pas encore pour la plupart des documents gouvernementaux (Section IX, p.9).
 
 ### Analyse critique
@@ -23,7 +23,7 @@
 - Formalisation mathematique rigoureuse : treillis de taint a 8 elements avec proprieties de monotonie prouvees (Theorem 2-3, p.4-5). [THEOREME]
 - Theorem 1 : borne superieure sur l'ASR sous provenance — ASR_L1 <= (1-p)*ASR_baseline, ou p est la fraction attestee (Section IV, p.5). [THEOREME]
 - Mapping NIST SP 800-53 Rev 5 : premier travail a fournir un alignement formel entre defenses RAG et controles de securite federaux (Table XI, p.9).
-- Honnetete sur les limites : l'attaque T6 (remplacement in-place) a 17.5% ASR est rapportee transparemment (Table X, p.8).
+- Honnetete sur les limites : l'attaque T6 (remplacement in-place) a 17.5% ASR est rapportee transparemment (Patil, 2026, Table X, p.8).
 
 **Faiblesses :**
 - **Evaluation a petite echelle** : 500 passages est tres insuffisant pour valider une defense RAG. Les resultats P061-P065 utilisent 2.6M-8.8M documents. Les intervalles de confiance [0%, 1.9%] refletent cette faible puissance statistique.

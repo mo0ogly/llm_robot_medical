@@ -22,13 +22,13 @@
 - Approche purement non-parametrique : aucun entrainement supplementaire, pas de modele additionnel lourd. Utilise GPT-2 pour le calcul de perplexite, choix empiriquement optimal (Table III, p.6).
 - Garantie theorique : Theorem 1 fournit une borne inferieure sur OACC = 1 - exp(-ck) sous condition rho*beta_total < 1/2, ou beta_total <= beta_PD * beta_PM * beta_TS (Section IV-D, Theorem 1, p.4). [THEOREME]
 - Analyse d'ablation complete : 5 variantes testees (Table VII, p.7). La combinaison des 3 filtres est significativement meilleure que chaque filtre individuel.
-- Evaluation cross-LLM : OACC stable a 97-100% que le LLM final soit GPT-3.5, GPT-4, Llama3.1-8B ou Kimi (Table IV, p.6).
+- Evaluation cross-LLM : OACC stable a 97-100% que le LLM final soit GPT-3.5, GPT-4, Llama3.1-8B ou Kimi (Cheng et al., 2025, Table IV, p.6).
 
 **Faiblesses :**
 - L'expansion du retrieval (top-N) suppose que les documents propres pertinents existent en nombre suffisant dans le corpus. Sur des corpus de niche (medical, legal), cette hypothese est fragile.
 - L'approche chunk-wise (split en 2 moities) est ad hoc. Pas de justification theorique sur le choix de 2 chunks vs. N chunks.
 - Les attaques adaptatives testees (GPT-4 paraphrase + diversite linguistique) sont relativement simples. Des attaques par gradient conjoint (optimisation simultanee de la naturalite et du retrieval) ne sont pas evaluees.
-- FNR non negligeable : 7-8% sur Prompt Injection et General Trigger (Table I), ce qui signifie que 7-8% des textes empoisonnes passent les filtres.
+- FNR non negligeable : 7-8% sur Prompt Injection et General Trigger (Cheng et al., 2025, Table I, p.5), ce qui signifie que 7-8% des textes empoisonnes passent les filtres.
 
 **Questions ouvertes :**
 - L'approche est-elle robuste face a des corpus pre-empoisonnes a grande echelle (>5% du corpus) ?

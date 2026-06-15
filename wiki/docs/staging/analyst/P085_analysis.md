@@ -27,7 +27,7 @@
 
 **Faiblesses :**
 - **ASR 0% = signal d'alarme methodologique** : Un ASR de 0% sur 400 instances est soit un resultat remarquable, soit un artefact d'evaluation. Plusieurs indicateurs suggerent le second :
-  - Le baseline est faible : 30% (ChatGLM) et 20% (Llama2) sans defense — ces modeles sont deja relativement resistants. Les attaques sont peut-etre trop simples.
+  - Le baseline est faible : 30% (ChatGLM) et 20% (Llama2) sans defense (Hossain et al., 2025, Abstract, p.1) — ces modeles sont deja relativement resistants. Les attaques sont peut-etre trop simples.
   - Pas de test adaptatif : Les attaques sont statiques. Un attaquant qui s'adapte aux defenses (adaptive adversary, cf. Carlini & Wagner 2017) trouverait probablement des contournements.
   - Pas de FPR rapportee : Si le Guard agent bloque tout ce qui est suspect, il pourrait aussi bloquer des requetes legitimes. L'absence d'analyse FPR est une lacune majeure.
 - **N = 400 mais seulement 55 uniques** : 400 instances de 55 attaques = ~7 repetitions par attaque. Statistiquement faible pour des conclusions generalisables. Comparer avec AEGIS qui exige N >= 30 par condition (Zverev et al., 2025, ICLR).

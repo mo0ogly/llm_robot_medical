@@ -5,7 +5,7 @@
 !!! abstract "Agent `_staging/audit-these/`"
     Audits independants de la coherence scientifique : versions de modeles citees, claims non sources, conformite aux exigences de la these AEGIS.
 
-**23 fichiers** disponibles.
+**24 fichiers** disponibles.
 
 ## Liste complete
 
@@ -22,6 +22,7 @@
 | [`MODEL_VERSIONS_AUDIT_20260609.md`](MODEL_VERSIONS_AUDIT_20260609.md) | Model Versions Audit — 2026-06-09 | 234 |
 | [`MODEL_VERSIONS_AUDIT_20260612.md`](MODEL_VERSIONS_AUDIT_20260612.md) | Model Versions Audit — 2026-06-12 | 234 |
 | [`MODEL_VERSIONS_AUDIT_20260613.md`](MODEL_VERSIONS_AUDIT_20260613.md) | Model Versions Audit — 2026-06-13 | 234 |
+| [`MODEL_VERSIONS_AUDIT_20260615.md`](MODEL_VERSIONS_AUDIT_20260615.md) | Model Versions Audit — 2026-06-15 | 234 |
 | [`TEMPORAL_AUDIT_2026-06-10.md`](TEMPORAL_AUDIT_2026-06-10.md) | TEMPORAL AUDIT — V5 (Temporal Validator) | 54 |
 | [`UNSOURCED_CLAIMS_2026-06-10.md`](UNSOURCED_CLAIMS_2026-06-10.md) | V2 — Sourcing Linter Report — 2026-06-10 | 62 |
 | [`UNSOURCED_CLAIMS_20260405.md`](UNSOURCED_CLAIMS_20260405.md) | Unsourced Claims — 2026-04-05 | 105 |
@@ -33,4 +34,4 @@
 | [`UNSOURCED_CLAIMS_20260610.md`](UNSOURCED_CLAIMS_20260610.md) | Unsourced Claims — 2026-06-10 | 105 |
 | [`UNSOURCED_CLAIMS_20260612.md`](UNSOURCED_CLAIMS_20260612.md) | Unsourced Claims — 2026-06-12 | 105 |
 | [`UNSOURCED_CLAIMS_20260613.md`](UNSOURCED_CLAIMS_20260613.md) | Unsourced Claims — 2026-06-13 | 105 |
-| [`UNSOURCED_CLAIMS_20260615.md`](UNSOURCED_CLAIMS_20260615.md) | Unsourced Claims — 2026-06-15 | 105 |
+| [`UNSOURCED_CLAIMS_20260615.md`](UNSOURCED_CLAIMS_20260615.md) | Unsourced Claims — 2026-06-15 | 51 |

@@ -71,10 +71,10 @@ FPR-H = taux de refus incorrect sur instances benignes (V0) et borderline (V0')
 **Resultats cles** (Section 4.2, Table 5) :
 - Qwen-2.5-72B : V1 CHER D0 = **65.7%** → D2 = **50.7%** (-15.0 pp)
 - Qwen-2.5-72B : V2 CHER D0 = **7.8%** → D1 = **1.6%** (-6.2 pp)
-- Llama-3.1-70B : V1 CHER D0 = **86.6%** → D2 = **68.7%** (-17.9 pp)
-- Meditron-70B : V2 CHER D0 = **53.1%** → D4 = **37.5%** (-15.6 pp)
-- MedGemma-4B : V2 ASR D0 = **64.1%** → D3 = **65.6%** (+1.5 pp) MAIS CHER D0 = **21.9%** → D3 = **18.8%** (-3.1 pp)
-- Meditron-70B : FPR-H D0 = **16.0%** → D4 = **33.6%** (+17.6 pp, degradation utilite)
+- Llama-3.1-70B : V1 CHER D0 = **86.6%** → D2 = **68.7%** (-17.9 pp) (Lee, Jang & Choi, 2026, Section 4.2, Table 5)
+- Meditron-70B : V2 CHER D0 = **53.1%** → D4 = **37.5%** (-15.6 pp) (Lee, Jang & Choi, 2026, Section 4.2, Table 5)
+- MedGemma-4B : V2 ASR D0 = **64.1%** → D3 = **65.6%** (+1.5 pp) MAIS CHER D0 = **21.9%** → D3 = **18.8%** (-3.1 pp) (Lee, Jang & Choi, 2026, Section 4.2, Table 5)
+- Meditron-70B : FPR-H D0 = **16.0%** → D4 = **33.6%** (+17.6 pp, degradation utilite) (Lee, Jang & Choi, 2026, Section 4.2, Table 5)
 - Qwen-2.5-72B : FPR-H stable **2.7-3.8%** D0-D4
 
 **Selection du juge** (Section 4.1, Tables 3-4) :

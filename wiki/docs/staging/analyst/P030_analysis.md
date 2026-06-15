@@ -102,9 +102,9 @@ Low-risk images : 16.2% disclaimers
 **Par famille (toutes annees confondues)** (Sharma et al., 2025, Section Results, p.1-2, donnees avant Fig. 1) :
 - Google : 41.0% questions / 49.1% images
 - OpenAI : 7.7% / 9.8%
-- Anthropic : 3.1% / 11.5%
-- xAI : 3.6% / 8.6%
-- DeepSeek : 0% / 0%
+- Anthropic : 3.1% / 11.5% (Sharma et al., 2025, Section Results, p.1-2)
+- xAI : 3.6% / 8.6% (Sharma et al., 2025, Section Results, p.1-2)
+- DeepSeek : 0% / 0% (Sharma et al., 2025, Section Results, p.1-2)
 
 Lien glossaire AEGIS : F22 (ASR -- indirectement, l'erosion augmente l'ASR baseline), lie a la mesure de drift temporel δ⁰
 

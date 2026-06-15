@@ -6,14 +6,14 @@
 
 ## Passage 1 — Survol
 
-Etude empirique sur **36 LLMs** avec **144 tests de PI**. Resultat central : **56% ASR** avec correlation forte entre taille/architecture et vulnerabilite.
+Etude empirique sur **36 LLMs** avec **144 tests de PI**. Resultat central : **56% ASR** avec correlation forte entre taille/architecture et vulnerabilite. (Benjamin et al., 2024, Table 2 & Table 3)
 
 ## Passage 2 — Structure
 
 - 36 LLMs testes (diversite architecturale)
 - 144 prompt injection tests
 - Analyses statistiques : logistic regression, random forest, clustering
-- Resultat : 56% ASR global
+- Resultat : 56% ASR global (Benjamin et al., 2024, Table 2)
 - Clustering : profils de vulnerabilite distincts par configuration
 
 ## Passage 3 — Profondeur critique
@@ -28,13 +28,13 @@ Etude empirique sur **36 LLMs** avec **144 tests de PI**. Resultat central : **5
 
 - **36 LLMs simultanement** — breadth exceptionnelle
 - **Analyses statistiques rigoureuses** (random forest, clustering)
-- **Baseline empirique** forte : 56% ASR
+- **Baseline empirique** forte : 56% ASR (Benjamin et al., 2024, Table 2)
 - **14 co-auteurs** — travail collaboratif massive
 
 ### Faiblesses critiques
 
 !!! danger "N=4 par modele"
-    144 tests / 36 modeles = **4 tests par modele**. En-dessous du seuil N>=30 requis pour validity statistique par modele. Les conclusions **par architecture** sont indicatives uniquement.
+    144 tests / 36 modeles = **4 tests par modele** (Benjamin et al., 2024, Table 2). En-dessous du seuil N>=30 requis pour validity statistique par modele. Les conclusions **par architecture** sont indicatives uniquement.
 
 - Pas de tests en **domaine medical**
 - Pas de distinction DPI vs IPI
