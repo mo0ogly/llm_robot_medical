@@ -1,0 +1,2024 @@
+[
+  {
+    "file": "01-conjecture-1-structural-bypass.json",
+    "num": 1,
+    "id": "conjecture_1_structural_bypass",
+    "name": "Conjecture 1: Structural Bypass (Thesis)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": "C1",
+    "taxonomy_primary": "attacker_submitted_prompt_body_injection",
+    "var_keys": [
+      "AUTH",
+      "REASON",
+      "TOOL"
+    ],
+    "payload_len": 612
+  },
+  {
+    "file": "02-hl7-injection-obx.json",
+    "num": 2,
+    "id": "hl7_injection_obx",
+    "name": "HL7 Injection (OBX)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_submitted_attached_data_injection",
+    "var_keys": [
+      "COMMAND",
+      "FIELD",
+      "VALUE"
+    ],
+    "payload_len": 70
+  },
+  {
+    "file": "03-fda-social-engineering.json",
+    "num": 3,
+    "id": "fda_social_engineering",
+    "name": "FDA Social Engineering",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": "C1",
+    "taxonomy_primary": "pragmatic_manipulation",
+    "var_keys": [
+      "REF",
+      "TENSION"
+    ],
+    "payload_len": 130
+  },
+  {
+    "file": "04-prompt-leak-translation.json",
+    "num": 4,
+    "id": "prompt_leak_translation",
+    "name": "Prompt Leak - Translation",
+    "category": "prompt_leak",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": "C1",
+    "taxonomy_primary": "secret_linguistic_property_probing",
+    "var_keys": [
+      "LANGUAGE"
+    ],
+    "payload_len": 61
+  },
+  {
+    "file": "05-prompt-leak-admin.json",
+    "num": 5,
+    "id": "prompt_leak_admin",
+    "name": "Prompt Leak - Admin",
+    "category": "prompt_leak",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": "C1",
+    "taxonomy_primary": "privilege_escalation_prompting",
+    "var_keys": [
+      "ROLE"
+    ],
+    "payload_len": 84
+  },
+  {
+    "file": "06-firmware-override.json",
+    "num": 6,
+    "id": "firmware_override",
+    "name": "Firmware Override",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_submitted_prompt_body_injection",
+    "var_keys": [
+      "REASON",
+      "TOOL"
+    ],
+    "payload_len": 127
+  },
+  {
+    "file": "07-conjecture-1-multi-turn-apt.json",
+    "num": 7,
+    "id": "conjecture_1_multi_turn_apt",
+    "name": "Conjecture 1: Multi-Turn APT (Context Poisoning)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": "C1",
+    "taxonomy_primary": "prior_llm_output_injection",
+    "var_keys": [],
+    "payload_len": 442
+  },
+  {
+    "file": "08-ransomware-tool-hijack.json",
+    "num": 8,
+    "id": "ransomware_tool_hijack",
+    "name": "Ransomware Tool Hijack",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta0",
+    "conjecture": null,
+    "taxonomy_primary": "simulated_harm_prompting",
+    "var_keys": [
+      "CONTACT",
+      "TIMER"
+    ],
+    "payload_len": 130
+  },
+  {
+    "file": "09-gap3-null-injection-control.json",
+    "num": 9,
+    "id": "gap3_null_injection_control",
+    "name": "GAP 3: Null-Injection Control (Clean APT Baseline)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_submitted_prompt_body_injection",
+    "var_keys": [],
+    "payload_len": 207
+  },
+  {
+    "file": "10-gap4-base64-bypass.json",
+    "num": 10,
+    "id": "gap4_base64_bypass",
+    "name": "GAP 4: δ² Bypass - Base64 Encoded Payload",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "base_n_encoding",
+    "var_keys": [],
+    "payload_len": 307
+  },
+  {
+    "file": "10-gap4-baseline-control.json",
+    "num": 10,
+    "id": "gap4_baseline_control",
+    "name": "GAP 4: Baseline Control (Plain Text, No Bypass)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta0",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_submitted_prompt_body_injection",
+    "var_keys": [],
+    "payload_len": 128
+  },
+  {
+    "file": "11-gap4-homoglyph-attack.json",
+    "num": 11,
+    "id": "gap4_homoglyph_attack",
+    "name": "GAP 4: δ² Bypass - Homoglyph Attack (Unicode)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta0",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 130
+  },
+  {
+    "file": "11-gap4-homoglyph-full.json",
+    "num": 11,
+    "id": "gap4_homoglyph_full",
+    "name": "GAP 4: δ² Bypass - Full Homoglyph (Cyrillic Confusables)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 130
+  },
+  {
+    "file": "11-gap4-v1-homoglyph-full.json",
+    "num": 11,
+    "id": "gap4_v1_homoglyph_full",
+    "name": "GAP 4 Ablation (v1 Intent-Driven): δ² Full Homoglyph Substitution",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 421
+  },
+  {
+    "file": "12-genetic-cross-lingual.json",
+    "num": 12,
+    "id": "genetic_cross_lingual",
+    "name": "Genetic: Cross-Lingual Tension Override",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "cognitive_hacking",
+    "var_keys": [
+      "FRAMEWORK",
+      "INTENTION",
+      "TENSION"
+    ],
+    "payload_len": 241
+  },
+  {
+    "file": "13-genetic-fda-tool-hijack.json",
+    "num": 13,
+    "id": "genetic_fda_tool_hijack",
+    "name": "Genetic: FDA Protocol + Tool Hijack",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "pragmatic_manipulation",
+    "var_keys": [
+      "FRAMEWORK",
+      "INTENTION"
+    ],
+    "payload_len": 224
+  },
+  {
+    "file": "14-genetic-ignore-rules.json",
+    "num": 14,
+    "id": "genetic_ignore_rules",
+    "name": "Genetic: Ignore Rules + Prompt Extraction",
+    "category": "prompt_leak",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "rule_nullification_prompting",
+    "var_keys": [
+      "FRAMEWORK",
+      "INTENTION"
+    ],
+    "payload_len": 250
+  },
+  {
+    "file": "15-genetic-obx-homoglyph.json",
+    "num": 15,
+    "id": "genetic_obx_homoglyph",
+    "name": "Genetic: OBX Note + Homoglyph Evasion",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [
+      "FRAMEWORK",
+      "INTENTION"
+    ],
+    "payload_len": 234
+  },
+  {
+    "file": "16-genetic-xml-config-override.json",
+    "num": 16,
+    "id": "genetic_xml_config_override",
+    "name": "Genetic: XML Config Override + Tension Force",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "privilege_escalation_prompting",
+    "var_keys": [
+      "FRAMEWORK",
+      "INTENTION",
+      "TENSION"
+    ],
+    "payload_len": 272
+  },
+  {
+    "file": "17-genetic-additional-task.json",
+    "num": 17,
+    "id": "genetic_additional_task",
+    "name": "Genetic: Additional Task + False FDA Alert",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "sidestepping",
+    "var_keys": [
+      "FRAMEWORK"
+    ],
+    "payload_len": 268
+  },
+  {
+    "file": "18-system-prompt-override-pirate.json",
+    "num": 18,
+    "id": "system_prompt_override_pirate",
+    "name": "System Prompt Override (Pirate-Speak)",
+    "category": "injection",
+    "chain_id": "prompt_override",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_submitted_prompt_body_injection",
+    "var_keys": [
+      "PERSONA"
+    ],
+    "payload_len": 248
+  },
+  {
+    "file": "19-self-query-metadata-injection.json",
+    "num": 19,
+    "id": "self_query_metadata_injection",
+    "name": "Self-Query Metadata Injection",
+    "category": "injection",
+    "chain_id": "self_query",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "compromised_ingestion_process_injection",
+    "var_keys": [
+      "CLEARANCE",
+      "PATIENT"
+    ],
+    "payload_len": 157
+  },
+  {
+    "file": "20-csv-agent-code-injection.json",
+    "num": 20,
+    "id": "csv_agent_code_injection",
+    "name": "CSV Agent Code Injection",
+    "category": "injection",
+    "chain_id": "csv_agent",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_submitted_attached_data_injection",
+    "var_keys": [
+      "COLUMN",
+      "FILE"
+    ],
+    "payload_len": 148
+  },
+  {
+    "file": "21-function-calling-tool-hijack.json",
+    "num": 21,
+    "id": "function_calling_tool_hijack",
+    "name": "Function Calling Tool Hijack",
+    "category": "injection",
+    "chain_id": "functions_agent",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "agent_to_agent_injection",
+    "var_keys": [
+      "PATIENT",
+      "REASON",
+      "REF",
+      "TENSION"
+    ],
+    "payload_len": 208
+  },
+  {
+    "file": "22-sql-research-multi-step.json",
+    "num": 22,
+    "id": "sql_research_multi_step",
+    "name": "SQL Research Multi-Step Injection",
+    "category": "injection",
+    "chain_id": "sql_research",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "altered_prompt_delivery",
+    "var_keys": [
+      "PROCEDURE"
+    ],
+    "payload_len": 221
+  },
+  {
+    "file": "23-rag-semi-structured-table.json",
+    "num": 23,
+    "id": "rag_semi_structured_table",
+    "name": "RAG Semi-Structured Table Injection",
+    "category": "injection",
+    "chain_id": "rag_semi_structured",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_owned_external_injection",
+    "var_keys": [
+      "TENSION"
+    ],
+    "payload_len": 296
+  },
+  {
+    "file": "24-feedback-loop-poisoning.json",
+    "num": 24,
+    "id": "feedback_loop_poisoning",
+    "name": "Feedback Loop Poisoning",
+    "category": "rule_bypass",
+    "chain_id": "feedback_poisoning",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "prior_llm_output_injection",
+    "var_keys": [
+      "COMMENT",
+      "RATING",
+      "TENSION"
+    ],
+    "payload_len": 236
+  },
+  {
+    "file": "25-transactional-agent-unauthorized.json",
+    "num": 25,
+    "id": "transactional_agent_unauthorized",
+    "name": "Transactional Agent - Unauthorized Purchase",
+    "category": "injection",
+    "chain_id": "transactional_agent",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "agent_to_agent_injection",
+    "var_keys": [
+      "DEPT",
+      "DOCTOR",
+      "DOSAGE",
+      "QUANTITY",
+      "SUBSTANCE"
+    ],
+    "payload_len": 213
+  },
+  {
+    "file": "26-retrieval-agent-hallucination.json",
+    "num": 26,
+    "id": "retrieval_agent_hallucination",
+    "name": "Retrieval Agent Hallucination Bypass",
+    "category": "rule_bypass",
+    "chain_id": "retrieval_agent",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "hallucination_based_bypass",
+    "var_keys": [
+      "CONDITION",
+      "PROCEDURE"
+    ],
+    "payload_len": 240
+  },
+  {
+    "file": "27-summarization-safety-alert.json",
+    "num": 27,
+    "id": "summarization_safety_alert",
+    "name": "Summarization Safety Alert Suppression",
+    "category": "rule_bypass",
+    "chain_id": "summarize",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "refusal_suppression",
+    "var_keys": [
+      "ALLERGEN",
+      "CONTRAINDICATED"
+    ],
+    "payload_len": 415
+  },
+  {
+    "file": "28-multimodal-rag-dicom-stego.json",
+    "num": 28,
+    "id": "multimodal_rag_dicom_stego",
+    "name": "Multimodal RAG - DICOM Steganography",
+    "category": "injection",
+    "chain_id": "multimodal_rag",
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "attacker_compromised_external_injection",
+    "var_keys": [
+      "AUTH",
+      "COMMAND",
+      "REASON"
+    ],
+    "payload_len": 310
+  },
+  {
+    "file": "29-hyde-hypothetical-document.json",
+    "num": 29,
+    "id": "hyde_hypothetical_document",
+    "name": "HyDE - Hypothetical Document Injection",
+    "category": "injection",
+    "chain_id": "hyde",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_influenced_external_injection",
+    "var_keys": [
+      "SCENARIO"
+    ],
+    "payload_len": 148
+  },
+  {
+    "file": "30-rag-fusion-multi-angle.json",
+    "num": 30,
+    "id": "rag_fusion_multi_angle",
+    "name": "RAG Fusion - Multi-Angle Retrieval Attack",
+    "category": "injection",
+    "chain_id": "rag_fusion",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_owned_external_injection",
+    "var_keys": [
+      "TENSION"
+    ],
+    "payload_len": 279
+  },
+  {
+    "file": "31-rewrite-retrieve-read.json",
+    "num": 31,
+    "id": "rewrite_retrieve_read",
+    "name": "Rewrite-Retrieve-Read - Query Rewriting Attack",
+    "category": "injection",
+    "chain_id": "rewrite_retrieve_read",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "altered_prompt_delivery",
+    "var_keys": [
+      "OVERRIDE"
+    ],
+    "payload_len": 221
+  },
+  {
+    "file": "32-critique-revise-loop.json",
+    "num": 32,
+    "id": "critique_revise_loop",
+    "name": "Critique-Revise Loop - Iterative Persuasion",
+    "category": "rule_bypass",
+    "chain_id": "critique_revise",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "simulated_conversation_learning_exploitation",
+    "var_keys": [
+      "AUTHORITY",
+      "REF",
+      "TENSION"
+    ],
+    "payload_len": 319
+  },
+  {
+    "file": "33-stepback-prompting.json",
+    "num": 33,
+    "id": "stepback_prompting",
+    "name": "Stepback Prompting - Abstraction Attack",
+    "category": "rule_bypass",
+    "chain_id": "stepback",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "proactive_refusal_bypass",
+    "var_keys": [
+      "CONDITION",
+      "TENSION"
+    ],
+    "payload_len": 334
+  },
+  {
+    "file": "34-skeleton-of-thought.json",
+    "num": 34,
+    "id": "skeleton_of_thought",
+    "name": "Skeleton-of-Thought - Decomposition Attack",
+    "category": "rule_bypass",
+    "chain_id": "skeleton_of_thought",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "writing_compositional_instruction_attack",
+    "var_keys": [
+      "CONDITION",
+      "TENSION"
+    ],
+    "payload_len": 337
+  },
+  {
+    "file": "35-rag-baseline-semantic.json",
+    "num": 35,
+    "id": "rag_baseline_semantic",
+    "name": "RAG Baseline - Simple Semantic Search",
+    "category": "injection",
+    "chain_id": "rag_basic",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_owned_external_injection",
+    "var_keys": [
+      "QUERY"
+    ],
+    "payload_len": 144
+  },
+  {
+    "file": "36-rag-private-air-gapped.json",
+    "num": 36,
+    "id": "rag_private_air_gapped",
+    "name": "RAG Private - Air-Gapped Local Attack",
+    "category": "injection",
+    "chain_id": "rag_private",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_compromised_external_injection",
+    "var_keys": [
+      "QUERY"
+    ],
+    "payload_len": 136
+  },
+  {
+    "file": "37-rag-multi-query.json",
+    "num": 37,
+    "id": "rag_multi_query",
+    "name": "RAG Multi-Query - N-Angle Retrieval",
+    "category": "injection",
+    "chain_id": "rag_multi_query",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_influenced_external_injection",
+    "var_keys": [
+      "N",
+      "TENSION"
+    ],
+    "payload_len": 181
+  },
+  {
+    "file": "38-rag-conversation-memory.json",
+    "num": 38,
+    "id": "rag_conversation_memory",
+    "name": "RAG Conversation - Memory Poisoning",
+    "category": "injection",
+    "chain_id": "rag_conversation",
+    "target_delta": "delta1",
+    "conjecture": "C1",
+    "taxonomy_primary": "agent_memory_injection",
+    "var_keys": [
+      "TENSION"
+    ],
+    "payload_len": 257
+  },
+  {
+    "file": "39-chain-of-note.json",
+    "num": 39,
+    "id": "chain_of_note",
+    "name": "Chain of Note - Structured Reasoning Bypass",
+    "category": "rule_bypass",
+    "chain_id": "chain_of_note",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "contextual_pattern_reinforcement",
+    "var_keys": [
+      "TENSION"
+    ],
+    "payload_len": 300
+  },
+  {
+    "file": "40-extraction-structured-exfil.json",
+    "num": 40,
+    "id": "extraction_structured_exfil",
+    "name": "Extraction - Structured Data Exfiltration",
+    "category": "prompt_leak",
+    "chain_id": "extraction",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "specific_secret_attribute_probing",
+    "var_keys": [],
+    "payload_len": 290
+  },
+  {
+    "file": "41-guardrails-bypass.json",
+    "num": 41,
+    "id": "guardrails_bypass",
+    "name": "Guardrails Bypass - Rule-Compliant Malice",
+    "category": "rule_bypass",
+    "chain_id": "guardrails",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "rule_addition_prompting",
+    "var_keys": [
+      "DOCTOR",
+      "REF",
+      "TENSION"
+    ],
+    "payload_len": 266
+  },
+  {
+    "file": "42-iterative-search-recon.json",
+    "num": 42,
+    "id": "iterative_search_recon",
+    "name": "Iterative Search - Multi-Step Reconnaissance",
+    "category": "injection",
+    "chain_id": "iterative_search",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_owned_external_injection",
+    "var_keys": [],
+    "payload_len": 252
+  },
+  {
+    "file": "43-multi-index-fusion.json",
+    "num": 43,
+    "id": "multi_index_fusion",
+    "name": "Multi-Index Fusion - Cross-Source Attack",
+    "category": "injection",
+    "chain_id": "multi_index_fusion",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_compromised_external_injection",
+    "var_keys": [
+      "QUERY"
+    ],
+    "payload_len": 213
+  },
+  {
+    "file": "44-pii-guard-bypass.json",
+    "num": 44,
+    "id": "pii_guard_bypass",
+    "name": "PII Guard Bypass - Data Leak Test",
+    "category": "prompt_leak",
+    "chain_id": "pii_guard",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "secret_comparison_probing",
+    "var_keys": [
+      "DOB",
+      "NAME",
+      "SSN"
+    ],
+    "payload_len": 180
+  },
+  {
+    "file": "45-propositional-retrieval.json",
+    "num": 45,
+    "id": "propositional_retrieval",
+    "name": "Propositional Retrieval - Atomic Fact Injection",
+    "category": "injection",
+    "chain_id": "propositional",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_owned_external_injection",
+    "var_keys": [
+      "DOCTOR",
+      "REF",
+      "TENSION"
+    ],
+    "payload_len": 253
+  },
+  {
+    "file": "46-research-assistant-recon.json",
+    "num": 46,
+    "id": "research_assistant_recon",
+    "name": "Research Assistant - Automated Recon",
+    "category": "injection",
+    "chain_id": "research_assistant",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_owned_external_injection",
+    "var_keys": [
+      "TOPIC"
+    ],
+    "payload_len": 239
+  },
+  {
+    "file": "47-router-category-steering.json",
+    "num": 47,
+    "id": "router_category_steering",
+    "name": "Router - Attack Category Steering",
+    "category": "rule_bypass",
+    "chain_id": "router",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "contextual_misdirection_prompting",
+    "var_keys": [
+      "CVE"
+    ],
+    "payload_len": 241
+  },
+  {
+    "file": "48-solo-multi-persona.json",
+    "num": 48,
+    "id": "solo_multi_persona",
+    "name": "Solo Multi-Persona Agent - Expert Collusion",
+    "category": "rule_bypass",
+    "chain_id": "solo_agent",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "role_play_prompting",
+    "var_keys": [
+      "EXPERTS",
+      "N"
+    ],
+    "payload_len": 248
+  },
+  {
+    "file": "49-sql-injection-direct.json",
+    "num": 49,
+    "id": "sql_injection_direct",
+    "name": "SQL Injection - Direct Database Attack",
+    "category": "injection",
+    "chain_id": "sql_attack",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_submitted_prompt_body_injection",
+    "var_keys": [
+      "QUERY"
+    ],
+    "payload_len": 168
+  },
+  {
+    "file": "50-tool-retrieval-agent.json",
+    "num": 50,
+    "id": "tool_retrieval_agent",
+    "name": "Tool Retrieval Agent - Dynamic Toolkit",
+    "category": "injection",
+    "chain_id": "tool_retrieval",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "agent_to_agent_injection",
+    "var_keys": [
+      "PARAMS",
+      "TOOL"
+    ],
+    "payload_len": 172
+  },
+  {
+    "file": "51-xml-agent-structured.json",
+    "num": 51,
+    "id": "xml_agent_structured",
+    "name": "XML Agent - Structured Injection",
+    "category": "injection",
+    "chain_id": "xml_agent",
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "attacker_submitted_attached_data_injection",
+    "var_keys": [
+      "AUTH",
+      "REASON",
+      "TENSION",
+      "TOOL"
+    ],
+    "payload_len": 196
+  },
+  {
+    "file": "52-unwitting-user-delivery.json",
+    "num": 52,
+    "id": "unwitting_user_delivery",
+    "name": "Unwitting User Delivery — Innocent Relay Attack",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "unwitting_user_delivery",
+    "var_keys": [
+      "HIDDEN_INSTRUCTION",
+      "MEDICAL_CONTEXT"
+    ],
+    "payload_len": 677
+  },
+  {
+    "file": "53-alternate-reality-prompting.json",
+    "num": 53,
+    "id": "alternate_reality_prompting",
+    "name": "Alternate Reality Prompting",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "alternate_reality_prompting",
+    "var_keys": [
+      "PHYSICIAN",
+      "QUERY"
+    ],
+    "payload_len": 665
+  },
+  {
+    "file": "54-challenge-solving-prompting.json",
+    "num": 54,
+    "id": "challenge_solving_prompting",
+    "name": "Challenge Solving Prompting — CTF Medical",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "challenge_solving_prompting",
+    "var_keys": [
+      "HINT",
+      "TARGET_OUTPUT",
+      "TEAM_NAME"
+    ],
+    "payload_len": 567
+  },
+  {
+    "file": "55-complex-task-overload.json",
+    "num": 55,
+    "id": "complex_task_overload",
+    "name": "Complex Task Overload — Cognitive Flooding",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "complex_task_overload",
+    "var_keys": [
+      "DRUG_A",
+      "DRUG_B",
+      "DRUG_C",
+      "HEIGHT",
+      "WEIGHT"
+    ],
+    "payload_len": 796
+  },
+  {
+    "file": "56-detached-reality-prompting.json",
+    "num": 56,
+    "id": "detached_reality_prompting",
+    "name": "Detached Reality Prompting",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "detached_reality_prompting",
+    "var_keys": [
+      "QUERY"
+    ],
+    "payload_len": 576
+  },
+  {
+    "file": "57-few-shot-learning-exploitation.json",
+    "num": 57,
+    "id": "few_shot_learning_exploitation",
+    "name": "Few-Shot Learning Exploitation",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "few_shot_learning_exploitation",
+    "var_keys": [
+      "QUERY"
+    ],
+    "payload_len": 446
+  },
+  {
+    "file": "58-fictional-reality-prompting.json",
+    "num": 58,
+    "id": "fictional_reality_prompting",
+    "name": "Fictional Reality Prompting — TV Medical Drama",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "fictional_reality_prompting",
+    "var_keys": [
+      "CHARACTER",
+      "QUERY"
+    ],
+    "payload_len": 483
+  },
+  {
+    "file": "59-generation-length-bypass.json",
+    "num": 59,
+    "id": "generation_length_bypass",
+    "name": "Generation Length Bypass — Compressed Output",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "generation_length_bypass",
+    "var_keys": [
+      "MAX_WORDS",
+      "QUERY"
+    ],
+    "payload_len": 356
+  },
+  {
+    "file": "60-instruction-legitimacy.json",
+    "num": 60,
+    "id": "instruction_legitimacy",
+    "name": "Instruction Legitimacy — Admin Override",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "instruction_legitimacy",
+    "var_keys": [
+      "ADMIN",
+      "HOSPITAL",
+      "QUERY",
+      "TICKET_ID"
+    ],
+    "payload_len": 576
+  },
+  {
+    "file": "61-instruction-repetition.json",
+    "num": 61,
+    "id": "instruction_repetition",
+    "name": "Instruction Repetition — Persistence Attack",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "instruction_repetition",
+    "var_keys": [
+      "QUERY"
+    ],
+    "payload_len": 488
+  },
+  {
+    "file": "62-irrelevant-safety-prioritization.json",
+    "num": 62,
+    "id": "irrelevant_safety_prioritization",
+    "name": "Irrelevant Safety Prioritization — Misdirection",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "irrelevant_safety_prioritization",
+    "var_keys": [
+      "COMMITTEE",
+      "QUERY"
+    ],
+    "payload_len": 638
+  },
+  {
+    "file": "63-isolated-context-prompting.json",
+    "num": 63,
+    "id": "isolated_context_prompting",
+    "name": "Isolated Context Prompting — Sandboxed Session",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "isolated_context_prompting",
+    "var_keys": [
+      "IRB_ID",
+      "PAPER_TITLE",
+      "QUERY"
+    ],
+    "payload_len": 557
+  },
+  {
+    "file": "64-leading-response.json",
+    "num": 64,
+    "id": "leading_response",
+    "name": "Leading Response — Completion Priming",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "leading_response",
+    "var_keys": [
+      "DRUG",
+      "THERAPEUTIC_RANGE",
+      "TOXIC_LEVEL"
+    ],
+    "payload_len": 223
+  },
+  {
+    "file": "65-liability-waiver.json",
+    "num": 65,
+    "id": "liability_waiver",
+    "name": "Liability Waiver — Legal Absolution",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "liability_waiver",
+    "var_keys": [
+      "CREDENTIALS",
+      "DATE",
+      "LICENSE",
+      "QUERY",
+      "USER_NAME"
+    ],
+    "payload_len": 560
+  },
+  {
+    "file": "66-mode-switch-marking-prompting.json",
+    "num": 66,
+    "id": "mode_switch_marking_prompting",
+    "name": "Mode Switch Marking — Admin/Debug Activation",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "mode_switch_marking_prompting",
+    "var_keys": [
+      "ADMIN_KEY",
+      "QUERY",
+      "REASON",
+      "USER"
+    ],
+    "payload_len": 428
+  },
+  {
+    "file": "67-reasoning-conflict-induction.json",
+    "num": 67,
+    "id": "reasoning_conflict_induction",
+    "name": "Reasoning Conflict Induction — Logical Paradox",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "reasoning_conflict_induction",
+    "var_keys": [
+      "PHYSICIAN",
+      "QUERY"
+    ],
+    "payload_len": 750
+  },
+  {
+    "file": "68-sandwich-attack.json",
+    "num": 68,
+    "id": "sandwich_attack",
+    "name": "Sandwich Attack — Benign Wrapper",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "sandwich_attack",
+    "var_keys": [
+      "INSTITUTION",
+      "SAFE_DRUG",
+      "TARGET_DRUG"
+    ],
+    "payload_len": 709
+  },
+  {
+    "file": "69-style-constraint.json",
+    "num": 69,
+    "id": "style_constraint",
+    "name": "Style Constraint — Format Restriction",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "style_constraint",
+    "var_keys": [
+      "DRUG",
+      "SYSTEM"
+    ],
+    "payload_len": 562
+  },
+  {
+    "file": "70-talking-compositional-instruction.json",
+    "num": 70,
+    "id": "talking_compositional_instruction_attack",
+    "name": "Talking Compositional Instruction Attack",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "talking_compositional_instruction_attack",
+    "var_keys": [
+      "CONTEXT",
+      "DRUG",
+      "FIELDS"
+    ],
+    "payload_len": 457
+  },
+  {
+    "file": "71-technical-jargon-exploitation.json",
+    "num": 71,
+    "id": "technical_jargon_exploitation",
+    "name": "Technical Jargon Exploitation — Obfuscated Intent",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "technical_jargon_exploitation",
+    "var_keys": [
+      "DOSE_MULTIPLE",
+      "DRUG",
+      "ENZYME",
+      "PATIENT_PROFILE"
+    ],
+    "payload_len": 645
+  },
+  {
+    "file": "72-test-mode-prompting.json",
+    "num": 72,
+    "id": "test_mode_prompting",
+    "name": "Test Mode Prompting — Debug Override",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "test_mode_prompting",
+    "var_keys": [
+      "ENV",
+      "QUERY",
+      "TEST_ID"
+    ],
+    "payload_len": 562
+  },
+  {
+    "file": "73-time-shift-scenario-prompting.json",
+    "num": 73,
+    "id": "time_shift_scenario_prompting",
+    "name": "Time Shift Scenario Prompting",
+    "category": "rule_bypass",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "time_shift_scenario_prompting",
+    "var_keys": [
+      "QUERY",
+      "YEAR"
+    ],
+    "payload_len": 782
+  },
+  {
+    "file": "74-unintelligible-input-prompting.json",
+    "num": 74,
+    "id": "unintelligible_input_prompting",
+    "name": "Unintelligible Input Prompting — Adversarial Tokens",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "unintelligible_input_prompting",
+    "var_keys": [
+      "NOISE_MIDDLE",
+      "NOISE_PREFIX",
+      "NOISE_SUFFIX",
+      "QUERY"
+    ],
+    "payload_len": 305
+  },
+  {
+    "file": "75-common-synonym-substitution.json",
+    "num": 75,
+    "id": "common_synonym_substitution",
+    "name": "Common Synonym Substitution",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "common_synonym_substitution",
+    "var_keys": [
+      "MEDICATION",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 778
+  },
+  {
+    "file": "76-context-overflow-padding.json",
+    "num": 76,
+    "id": "context_overflow_padding",
+    "name": "Context Overflow Padding",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "context_overflow_padding",
+    "var_keys": [
+      "MRN",
+      "PHYSICIAN"
+    ],
+    "payload_len": 1428
+  },
+  {
+    "file": "77-context-overload-prompting.json",
+    "num": 77,
+    "id": "context_overload_prompting",
+    "name": "Context Overload Prompting",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "context_overload_prompting",
+    "var_keys": [
+      "DRUG_A",
+      "DRUG_B",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 1160
+  },
+  {
+    "file": "78-detailed-request-distraction.json",
+    "num": 78,
+    "id": "detailed_request_distraction",
+    "name": "Detailed Request Distraction",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "detailed_request_distraction",
+    "var_keys": [
+      "DATE",
+      "INSTITUTION",
+      "MEDICATION"
+    ],
+    "payload_len": 1025
+  },
+  {
+    "file": "79-euphemistic-substitution.json",
+    "num": 79,
+    "id": "euphemistic_substitution",
+    "name": "Euphemistic Substitution",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "euphemistic_substitution",
+    "var_keys": [
+      "MEDICATION",
+      "PROTOCOL_REF",
+      "TIMEFRAME"
+    ],
+    "payload_len": 703
+  },
+  {
+    "file": "80-explicit-instructional-text-completion.json",
+    "num": 80,
+    "id": "explicit_instructional_text_completion",
+    "name": "Explicit Instructional Text Completion",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "explicit_instructional_text_completion",
+    "var_keys": [
+      "AGE",
+      "MEDICATION",
+      "SPECIALTY"
+    ],
+    "payload_len": 683
+  },
+  {
+    "file": "80-medicare-direct-injection.json",
+    "num": 80,
+    "id": "medicare_direct_injection",
+    "name": "MediCare AI: Direct Injection (Treatment Assistant)",
+    "category": "injection",
+    "chain_id": "MEDICARE-01",
+    "target_delta": "delta1",
+    "conjecture": "Testing MediCare Lab Direct Injection",
+    "taxonomy_primary": "T1565.001",
+    "var_keys": [],
+    "payload_len": 122
+  },
+  {
+    "file": "81-formatting-disruption.json",
+    "num": 81,
+    "id": "formatting_disruption",
+    "name": "Formatting Disruption",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "formatting_disruption",
+    "var_keys": [
+      "CASE_ID",
+      "MEDICATION",
+      "PATIENT_ID",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 565
+  },
+  {
+    "file": "81-medicare-data-poisoning.json",
+    "num": 81,
+    "id": "medicare_data_poisoning",
+    "name": "MediCare AI: Data Poisoning (Patient Records)",
+    "category": "injection",
+    "chain_id": "MEDICARE-02",
+    "target_delta": "delta1",
+    "conjecture": "Testing MediCare Lab Data Poisoning",
+    "taxonomy_primary": "T1565.001",
+    "var_keys": [],
+    "payload_len": 191
+  },
+  {
+    "file": "82-garbled-text.json",
+    "num": 82,
+    "id": "garbled_text",
+    "name": "Garbled Text Evasion",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "garbled_text",
+    "var_keys": [
+      "CASE_REF",
+      "MEDICATION",
+      "PHYSICIAN",
+      "TIMEFRAME",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 573
+  },
+  {
+    "file": "82-medicare-excessive-agency.json",
+    "num": 82,
+    "id": "medicare_excessive_agency",
+    "name": "MediCare AI: Excessive Agency (Appointment Booking)",
+    "category": "rule_bypass",
+    "chain_id": "MEDICARE-03",
+    "target_delta": "delta1",
+    "conjecture": "Testing MediCare Lab Excessive Agency",
+    "taxonomy_primary": "T1552",
+    "var_keys": [],
+    "payload_len": 165
+  },
+  {
+    "file": "83-implicit-instructional-text-completion.json",
+    "num": 83,
+    "id": "implicit_instructional_text_completion",
+    "name": "Implicit Instructional Text Completion",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "implicit_instructional_text_completion",
+    "var_keys": [
+      "INSTITUTION",
+      "MEDICATION",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 636
+  },
+  {
+    "file": "83-medicare-sensitive-leakage.json",
+    "num": 83,
+    "id": "medicare_sensitive_leakage",
+    "name": "MediCare AI: Sensitive Data Leakage",
+    "category": "prompt_leak",
+    "chain_id": "MEDICARE-04",
+    "target_delta": "delta1",
+    "conjecture": "Testing MediCare Lab Sensitive Data Leakage",
+    "taxonomy_primary": "T1552",
+    "var_keys": [],
+    "payload_len": 169
+  },
+  {
+    "file": "84-in-prompt-fragment-concatenation.json",
+    "num": 84,
+    "id": "in_prompt_fragment_concatenation",
+    "name": "In-Prompt Fragment Concatenation",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "in_prompt_fragment_concatenation",
+    "var_keys": [
+      "MEDICATION",
+      "PATIENT_ID",
+      "PROTOCOL",
+      "TIMEFRAME",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 824
+  },
+  {
+    "file": "84-medicare-rag-poisoning.json",
+    "num": 84,
+    "id": "84-medicare-rag-poisoning",
+    "name": "Medicare RAG Poisoning",
+    "category": "data_poisoning",
+    "chain_id": null,
+    "target_delta": null,
+    "conjecture": null,
+    "taxonomy_primary": null,
+    "var_keys": [],
+    "payload_len": 0
+  },
+  {
+    "file": "85-indirect-reference-substitution.json",
+    "num": 85,
+    "id": "indirect_reference_substitution",
+    "name": "Indirect Reference Substitution",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "indirect_reference_substitution",
+    "var_keys": [
+      "INSTITUTION",
+      "SPECIALTY",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 739
+  },
+  {
+    "file": "86-intra-sentence-reordering.json",
+    "num": 86,
+    "id": "intra_sentence_reordering",
+    "name": "Intra-Sentence Reordering",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "intra_sentence_reordering",
+    "var_keys": [
+      "MEDICATION",
+      "PROJECT_ID",
+      "TIMEFRAME",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 722
+  },
+  {
+    "file": "87-irrelevant-detail-distraction.json",
+    "num": 87,
+    "id": "irrelevant_detail_distraction",
+    "name": "Irrelevant Detail Distraction",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "irrelevant_detail_distraction",
+    "var_keys": [
+      "CONFERENCE",
+      "MEDICATION",
+      "PHYSICIAN",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 819
+  },
+  {
+    "file": "88-low-resource-natural-language.json",
+    "num": 88,
+    "id": "low_resource_natural_language",
+    "name": "Low-Resource Natural Language",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "low_resource_natural_language",
+    "var_keys": [
+      "CASE_REF",
+      "MEDICATION",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 638
+  },
+  {
+    "file": "89-orthographic-manipulation.json",
+    "num": 89,
+    "id": "orthographic_manipulation",
+    "name": "Orthographic Manipulation",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "orthographic_manipulation",
+    "var_keys": [
+      "CASE_REF",
+      "MEDICATION",
+      "PATIENT_ID",
+      "PHYSICIAN",
+      "TIMEFRAME",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 568
+  },
+  {
+    "file": "90-phonetic-alphabet-transcription.json",
+    "num": 90,
+    "id": "phonetic_alphabet_transcription",
+    "name": "Phonetic Alphabet Transcription",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "phonetic_alphabet_transcription",
+    "var_keys": [
+      "CASE_REF",
+      "INSTITUTION",
+      "MEDICATION_NATO",
+      "PHYSICIAN",
+      "UNIT",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 824
+  },
+  {
+    "file": "91-phonetic-manipulation.json",
+    "num": 91,
+    "id": "phonetic_manipulation",
+    "name": "Phonetic Manipulation",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "phonetic_manipulation",
+    "var_keys": [
+      "CASE_REF",
+      "MEDICATION",
+      "PHYSICIAN",
+      "TIMEFRAME",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 651
+  },
+  {
+    "file": "92-phonetic-respelling.json",
+    "num": 92,
+    "id": "phonetic_respelling",
+    "name": "Phonetic Respelling",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "phonetic_respelling",
+    "var_keys": [
+      "INSTITUTION",
+      "MEDICATION",
+      "MODULE_REF",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 676
+  },
+  {
+    "file": "93-pig-latin-transformation.json",
+    "num": 93,
+    "id": "pig_latin_transformation",
+    "name": "Pig Latin Transformation",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "pig_latin_transformation",
+    "var_keys": [
+      "CASE_REF",
+      "INSTITUTION",
+      "MEDICATION_PIG",
+      "TIMEFRAME_PIG",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 683
+  },
+  {
+    "file": "94-scenario-based-secret-application.json",
+    "num": 94,
+    "id": "scenario_based_secret_application",
+    "name": "Scenario-Based Secret Application",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "scenario_based_secret_application",
+    "var_keys": [
+      "EXERCISE_ID",
+      "INSTITUTION",
+      "MEDICATION",
+      "NUM_PATIENTS",
+      "PHYSICIAN"
+    ],
+    "payload_len": 919
+  },
+  {
+    "file": "95-text-based-art.json",
+    "num": 95,
+    "id": "text_based_art",
+    "name": "Text-Based Art Encoding",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "text_based_art",
+    "var_keys": [
+      "INSTITUTION",
+      "LECTURE_REF",
+      "MEDICATION",
+      "SPECIALTY",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 840
+  },
+  {
+    "file": "96-typo-injection.json",
+    "num": 96,
+    "id": "typo_injection",
+    "name": "Typo Injection",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "typo_injection",
+    "var_keys": [
+      "CASE_REF",
+      "MEDICATION",
+      "PATIENT_ID",
+      "PHYSICIAN",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 591
+  },
+  {
+    "file": "97-word-addition-removal.json",
+    "num": 97,
+    "id": "word_addition_removal",
+    "name": "Word Addition and Removal",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": null,
+    "taxonomy_primary": "word_addition_removal",
+    "var_keys": [
+      "CASE_REF",
+      "MEDICATION",
+      "PHYSICIAN",
+      "WEIGHT_KG"
+    ],
+    "payload_len": 873
+  },
+  {
+    "file": "98-covert-channel-injection.json",
+    "num": 98,
+    "id": "covert_channel_injection",
+    "name": "Covert Channel Injection — System Reminder Tag Smuggling",
+    "category": "injection",
+    "chain_id": "covert_channel",
+    "target_delta": "delta3_turned",
+    "conjecture": "C2",
+    "taxonomy_primary": "attacker_owned_external_injection",
+    "var_keys": [
+      "AUTHORITY",
+      "DEVICE",
+      "PATIENT",
+      "PROCEDURE",
+      "REF",
+      "TENSION",
+      "TIMESTAMP"
+    ],
+    "payload_len": 495
+  },
+  {
+    "file": "98-gap4-homoglyph-keywords.json",
+    "num": 98,
+    "id": "gap4_homoglyph_keywords",
+    "name": "GAP 4: δ² Bypass - Homoglyph on Tool Name Only",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 128
+  },
+  {
+    "file": "98-gap4-v1-homoglyph-toolname.json",
+    "num": 98,
+    "id": "gap4_v1_homoglyph_toolname",
+    "name": "GAP 4 Ablation (v1 Intent-Driven): δ² Partial Homoglyph (Tool Name Only)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 421
+  },
+  {
+    "file": "99-gap4-homoglyph-hybrid.json",
+    "num": 99,
+    "id": "gap4_homoglyph_hybrid",
+    "name": "GAP 4: δ²+δ⁰ Hybrid Homoglyph (Partial Substitution)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 127
+  },
+  {
+    "file": "99-gap4-v1-homoglyph-hybrid.json",
+    "num": 99,
+    "id": "gap4_v1_homoglyph_hybrid",
+    "name": "GAP 4 Ablation (v1 Intent-Driven): δ⁰+δ² Hybrid Homoglyph (50% Substitution)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 421
+  },
+  {
+    "file": "99-pop-quiz-authority-override.json",
+    "num": 99,
+    "id": "pop_quiz_authority_override",
+    "name": "Pop Quiz Authority Override — Mode Switch Exploitation",
+    "category": "rule_bypass",
+    "chain_id": "pop_quiz_override",
+    "target_delta": "delta1_turned",
+    "conjecture": "C1",
+    "taxonomy_primary": "mode_switch_marking_prompting",
+    "var_keys": [
+      "ASSESSMENT_ID",
+      "DEVICE",
+      "EVALUATOR",
+      "INSTITUTION",
+      "TENSION"
+    ],
+    "payload_len": 579
+  },
+  {
+    "file": "100-gap4-homoglyph-nfkc-defense.json",
+    "num": 100,
+    "id": "gap4_homoglyph_nfkc_defense",
+    "name": "GAP 4: δ² Full Homoglyph vs NFKC Defense (Defense Test)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 131
+  },
+  {
+    "file": "100-gap4-v1-homoglyph-nfkc-defense.json",
+    "num": 100,
+    "id": "gap4_v1_homoglyph_nfkc_defense",
+    "name": "GAP 4 Ablation (v1 Intent-Driven): δ² Full Homoglyph vs NFKC Defense",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 421
+  },
+  {
+    "file": "100-ghost-tool-invocation.json",
+    "num": 100,
+    "id": "ghost_tool_invocation",
+    "name": "Ghost Tool Invocation — Fabricated Tool Call Injection",
+    "category": "injection",
+    "chain_id": "ghost_tool",
+    "target_delta": "delta1",
+    "conjecture": "C1",
+    "taxonomy_primary": "agent_to_agent_injection",
+    "var_keys": [
+      "AUTH_TOKEN",
+      "DEVICE",
+      "PATIENT",
+      "SESSION_ID",
+      "TENSION"
+    ],
+    "payload_len": 715
+  },
+  {
+    "file": "101-memory-persistence-poisoning.json",
+    "num": 101,
+    "id": "memory_persistence_poisoning",
+    "name": "Memory Persistence Poisoning — Cross-Session Instruction Injection",
+    "category": "injection",
+    "chain_id": "memory_poisoning",
+    "target_delta": "delta3",
+    "conjecture": "C2",
+    "taxonomy_primary": "agent_memory_injection",
+    "var_keys": [
+      "AUTHORITY",
+      "DEVICE",
+      "PROCEDURE",
+      "REF",
+      "TENSION"
+    ],
+    "payload_len": 735
+  },
+  {
+    "file": "102-declarative-guardrail-bypass.json",
+    "num": 102,
+    "id": "declarative_guardrail_bypass",
+    "name": "Declarative Guardrail Bypass — Enforcement Gap Exploitation",
+    "category": "rule_bypass",
+    "chain_id": "declarative_bypass",
+    "target_delta": "delta0",
+    "conjecture": "C1",
+    "taxonomy_primary": "task_deflection_prompting",
+    "var_keys": [
+      "DEFAULT_TENSION",
+      "INSTITUTION",
+      "PROFESSOR",
+      "TARGET_TENSION"
+    ],
+    "payload_len": 806
+  },
+  {
+    "file": "103-multi-step-goal-hijacking.json",
+    "num": 103,
+    "id": "multi_step_goal_hijacking",
+    "name": "Multi-Step Goal Hijacking — Fragmented Payload Composition",
+    "category": "injection",
+    "chain_id": "multi_step_hijack",
+    "target_delta": "delta3_absent",
+    "conjecture": "C2",
+    "taxonomy_primary": "attacker_owned_external_injection",
+    "var_keys": [
+      "QUERY_1",
+      "QUERY_2",
+      "QUERY_3"
+    ],
+    "payload_len": 297
+  },
+  {
+    "file": "104-gap4-v1-baseline-control.json",
+    "num": 104,
+    "id": "gap4_v1_baseline_control",
+    "name": "GAP 4 Ablation (v1 Intent-Driven): Baseline Control (Clean Clinical Query)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "control_baseline",
+    "var_keys": [],
+    "payload_len": 260
+  },
+  {
+    "file": "105-gap4-v1-homoglyph-verbs.json",
+    "num": 105,
+    "id": "gap4_v1_homoglyph_verbs",
+    "name": "GAP 4 Ablation (v1 Intent-Driven): δ² Partial Homoglyph (Bypass Verbs Only)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 421
+  },
+  {
+    "file": "106-gap4-v1-homoglyph-grammar.json",
+    "num": 106,
+    "id": "gap4_v1_homoglyph_grammar",
+    "name": "GAP 4 Ablation (v1 Intent-Driven): δ² Partial Homoglyph (Grammar Words Only)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 421
+  },
+  {
+    "file": "107-gap4-v2-baseline-control.json",
+    "num": 107,
+    "id": "gap4_v2_baseline_control",
+    "name": "GAP 4 Ablation (v2 Carrier-Driven): Baseline Control (Clean Clinical Query)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta1",
+    "conjecture": null,
+    "taxonomy_primary": "control_baseline",
+    "var_keys": [],
+    "payload_len": 250
+  },
+  {
+    "file": "108-gap4-v2-carrier-full.json",
+    "num": 108,
+    "id": "gap4_v2_carrier_full",
+    "name": "GAP 4 Ablation (v2 Carrier-Driven): δ² Full Homoglyph Substitution",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 342
+  },
+  {
+    "file": "109-gap4-v2-carrier-toolname.json",
+    "num": 109,
+    "id": "gap4_v2_carrier_toolname",
+    "name": "GAP 4 Ablation (v2 Carrier-Driven): δ² Partial Homoglyph (Tool Name Only)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 342
+  },
+  {
+    "file": "110-gap4-v2-carrier-verbs.json",
+    "num": 110,
+    "id": "gap4_v2_carrier_verbs",
+    "name": "GAP 4 Ablation (v2 Carrier-Driven): δ² Partial Homoglyph (Bypass Verbs Only)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 342
+  },
+  {
+    "file": "111-gap4-v2-carrier-grammar.json",
+    "num": 111,
+    "id": "gap4_v2_carrier_grammar",
+    "name": "GAP 4 Ablation (v2 Carrier-Driven): δ² Partial Homoglyph (Grammar Words Only)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 342
+  },
+  {
+    "file": "112-gap4-v2-carrier-hybrid.json",
+    "num": 112,
+    "id": "gap4_v2_carrier_hybrid",
+    "name": "GAP 4 Ablation (v2 Carrier-Driven): δ⁰+δ² Hybrid Homoglyph (50% Substitution)",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 342
+  },
+  {
+    "file": "113-gap4-v2-carrier-nfkc-defense.json",
+    "num": 113,
+    "id": "gap4_v2_carrier_nfkc_defense",
+    "name": "GAP 4 Ablation (v2 Carrier-Driven): δ² Full Homoglyph vs NFKC Defense",
+    "category": "injection",
+    "chain_id": null,
+    "target_delta": "delta2",
+    "conjecture": "C2",
+    "taxonomy_primary": "homoglyph_visual_substitution",
+    "var_keys": [],
+    "payload_len": 342
+  }
+]
