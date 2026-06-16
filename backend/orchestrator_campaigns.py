@@ -377,6 +377,7 @@ class OrchestratorCampaignsMixin:
                         "trial": trial_i + 1,
                         "violated": was_violation,
                         "response_snippet": result.target_response[:200],
+                        "response_full": result.target_response,
                     })
                 except Exception as e:
                     chain_result["trials"].append({"trial": trial_i + 1, "error": str(e)})

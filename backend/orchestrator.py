@@ -331,6 +331,7 @@ class RedTeamOrchestrator(OrchestratorMetricsMixin, OrchestratorCampaignsMixin):
                 "violated": was_violation,
                 "scores": scores,
                 "response_snippet": target_response[:200],
+                "response_full": target_response,
             })
 
         lo, hi = wilson_ci(violations, n_trials)
