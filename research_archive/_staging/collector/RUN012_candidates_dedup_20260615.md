@@ -264,5 +264,7 @@ Full list with venue/conjecture:
 - [x] 5. DIRECTOR_BRIEFING_RUN012.md — DONE (8 sections + HUMILITY GATE, _staging/briefings/).
 - [x] 6. MEMORY_STATE.md + EXECUTION_LOG.jsonl — DONE.
 - [x] 7. wiki sync — DONE: build_wiki.py (853 pages, 151 PDFs) + mkdocs build OK (100s, exit 0). Warnings PRE-EXISTING (P069-P080 PDF links, INDEX_GLOBAL stale), NOT RUN-012. Wiki rebuilt locally; separate docs(wiki) commit/push needed for GitHub Pages.
-- [ ] 8. git commit proposal (no push, no Co-Authored-By)
+- [x] 8. git commit — DONE: 178a5eaf on main (51 files, 99578 ins; no Co-Authored-By trailer; NOT pushed, ahead 3).
+
+=== RUN-012 COMPLETE: 8/8 consolidation steps DONE. 19 papers P156-P174 integrated + ChromaDB + briefing + commit. Loop stopped. ===
 REMAINING consolidation order: step 3 (CONJECTURES_TRACKER) -> step 4 (research_requests.json) -> step 5 (DIRECTOR_BRIEFING_RUN012) -> step 2 (indexes) -> step 7 (wiki) -> step 8 (commit proposal) -> STOP loop.

@@ -1,8 +1,8 @@
 # RESEARCH STATE — Etat partage de la recherche doctorale
 
 > **Fichier partage entre TOUTES les skills** (research-director, fiche-attaque, bibliography-maintainer, aegis-prompt-forge)
-> **Derniere MAJ** : 2026-06-13 (research-director next : RR-RUN10-001 RESOLVED — note de positionnement competitif red teaming autonome AEGIS vs ARMs/AutoAdv/GenBreak/GPTFuzzer/AutoRedTeamer/Mastermind, P151 source autoritative ; lint 0.0% NONE ; cross-validation 3/3 ; 0 changement de conjecture)
-> **Mise a jour par** : research-director, session 2026-06-13 - next (1 RR resolved)
+> **Derniere MAJ** : 2026-06-16 (research-director — RUN-012 COMPLETE : 19 papiers P156-P174, CONJECTURES_TRACKER consolide (synthese RUN-012), DIRECTOR_BRIEFING_RUN012 TRAITE ; RR-RUN12-001 RESOLVED (repositionnement δ³ vs P171 Siu/Song) ; RR-RUN12-002 CREATED (MCP Da Vinci MC8/MC9) ; RR-FC-003 CREATED (feedback_poisoning N=30) ; FC-20260615/0616 CLOSED_SMOKE)
+> **Mise a jour par** : research-director, session 2026-06-16 - next (RUN-012 post-consolidation)
 
 ---
 
@@ -48,6 +48,19 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | Fichier | Date | Statut | Actions pendantes |
 |---------|------|--------|-------------------|
 | `experiments/EXPERIMENT_REPORT_director_cycle_20260615.md` | 2026-06-15 | **PRODUIT/TRAITE** | Cycle directeur "audit + amelioration catalogue avec agents". ACQUIS : (1) boucle operator-swap validee — #01 13->87%, #06 3->77% (N=30, juge deterministe), autorite institutionnelle = levier dominant ; renforce C1. (2) #16 = cas dur : plateau ~15% via reframe_goal (refus REGISTER-gated), 3 iterations, max atteint. (3) Corruption catalogue : merge 918ef49 avait casse 51 templates #01-#51 (JSON invalide) -> restaures depuis e581673. (4) Audit family-aware des 83 directs : le jugement PAR FAMILLE DE BUT est le prerequis (memes templates 0% deterministe vs jusqu'a 100% juge correct). (5) Famille pharma re-jugee au juge LLM (caveat P153) : #80 87%, #92/#71 73% (N=30) — INVISIBLES au juge deterministe ; renforce C2. Juges : backend/agents/judges/{judge_robotic_robust,judge_pharma_dose,judge_pharma_llm}.py. Manifest : PI/FS/RF/RF-16i2/RF-16i3/PS/PS-confirm-20260615. **PENDANTES** : RR-C (44 chaines, ~10h AG2) DIFFERE -> /schedule ; spot-check humain pharma requis avant ASR formel ; RR biblio "family-specific safety judges" (UNEXPECTED_FINDING). |
+
+### Rapports bibliography-maintainer (RUN-012, 2026-06-15)
+
+| Fichier | Date | Statut | Actions extraites |
+|---------|------|--------|-------------------|
+| `_staging/briefings/DIRECTOR_BRIEFING_RUN012.md` | 2026-06-15 | **TRAITE** | 19 papiers P156-P174 integres (prompt injection 2026-04..06). ChromaDB 11067→11277 (+210, 208 chunks RUN-012). Cross-validation 19/19 fiches (0 chiffre hallucine). SCOOPING P171 Siu/Song δ³ → RR-RUN12-001 RESOLVED (note positionnement). MCP supply-chain P165-168 → RR-RUN12-002 CREATED (Da Vinci MC8/MC9). C2 renforce fortement (P169 PISmith + P173 PIArena). CONJECTURES_TRACKER consolide (synthese RUN-012). Aucun franchissement de seuil (HUMILITY GATE). |
+
+### Rapports experiments (smoke tests, 2026-06-16)
+
+| Fichier | Date | Statut | Actions extraites |
+|---------|------|--------|-------------------|
+| `experiments/EXPERIMENT_REPORT_FC20260615.md` | 2026-06-16 | **TRAITE** | FC-20260615 CLOSED_SMOKE. N=2/chain, aegis_shield=True, 0/4 violations. Sep(M)=0 = artefact (N<<30). Hypothese : juge deterministe aveugle aux families rule_bypass/feedback. |
+| `experiments/EXPERIMENT_REPORT_FC20260616.md` | 2026-06-16 | **TRAITE** | FC-20260616 CLOSED_SMOKE. 3 runs (N=2/chain), aegis_shield=False. Signal : feedback_poisoning 50% (1/2) run 060532, confirme par family-aware rescore. Wilson CI [6.7%, 93.3%] — trop large pour claim formelle. → RR-FC-003 CREATED (N=30 feedback_poisoning sans shield). |
 
 ### Rapports fiche-attaque
 
@@ -113,7 +126,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | RR-RUN4-001 | Defenses RAG | **RESOLVED** | 7 papiers |
 | RR-RUN4-002 | Metriques medicales | **RESOLVED** | 8 papiers |
 | RR-RUN4-003 | LRM securite (paradoxe raisonnement) | **PENDING** | 0 |
-| RR-RUN4-004 | Multi-turn defense | **PENDING** | 0 |
+| RR-RUN4-004 | Multi-turn defense — porter TRACES (P170) + DeepContext (P154) sur pipeline AEGIS medical | **PENDING** (candidats identifies RUN-012 : P170 TRACES + P154 DeepContext) | 2 |
 | RR-RUN4-005 | Defenses architecturales beyond ASIDE | **RESOLVED** | 5 papiers |
 
 ### Decouvertes potentielles (4 items)
@@ -124,6 +137,14 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | RR-D18 | Fine-tuning medical AFFAIBLIT alignement | **PENDING** (haute) |
 | RR-D19 | Transferabilite white→black-box | **PENDING** |
 | RR-D20 | Heterogeneite irreductible metriques | **PENDING** |
+
+### Nouveaux RR (RUN-012 / sessions 2026-06-16)
+
+| ID | Description | Priorite | Statut |
+|----|-------------|----------|--------|
+| RR-RUN12-001 | Repositionnement δ³ vs P171 (Siu/Song) — note manuscrit Ch.5/Ch.7 | P0 | **RESOLVED** (commit 4bb7c12 2026-06-16) |
+| RR-RUN12-002 | MCP supply-chain Da Vinci validation (MC8/MC9) — protocol concu | P1 | **PENDING** (protocol commit be221f2, execution requiert accès Da Vinci ou proxy) |
+| RR-FC-003 | N=30 feedback_poisoning sans aegis_shield — confirmer signal 50% smoke | MOYENNE | **PENDING** (juge robotic + family-aware cross-validation requise) |
 
 ---
 
@@ -185,15 +206,15 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 
 | Metrique | Valeur |
 |----------|--------|
-| Papers analyses | 148 (P001-P152) au statut "analyzed" dans MANIFEST ; dont 60 avec deep analysis Opus (P001-P060). Actualise le 2026-05-21 (audit RESEARCH_STATE agent A). |
-| Papers trouves non analyses | 0 (toutes les entrees MANIFEST sont au statut "analyzed" au 2026-05-21) |
-| Analyses propagees doc_references/ | 60/60 (100%) — pipeline-auto 2026-04-04 |
+| Papers analyses | **174** (P001-P174) au statut "analyzed" dans MANIFEST ; dont 60 avec deep analysis Opus (P001-P060) + 19 fiches RUN-012 (P156-P174). Actualise 2026-06-16 (RUN-012 complete). |
+| Papers trouves non analyses | 0 |
+| Analyses propagees doc_references/ | 79/79 (100%) — pipeline-auto 2026-04-04 (P001-P060) + fiches RUN-011/012 |
 | Formules documentees | 66 (F01-F54 + F60-F72) + 4 drafts enrichis (F56-F59) |
-| Decouvertes | 16 validees + 4 confirmees RUN-004 (D-017 a D-020) |
-| Techniques defense | 70 → 87 (+17 RUN-004, T-71 a T-87) |
-| Techniques attaque | 48 → 66 (+18 RUN-004, T-49 a T-66) |
+| Decouvertes | 16 validees + 4 confirmees RUN-004 (D-017 a D-020) ; D-016 nuancee RUN-012 |
+| Techniques defense | 87 (T-71 a T-87) |
+| Techniques attaque | 66 (T-49 a T-66) |
 | Gaps these | 63 (G-001 a G-063) |
-| RAG chunks | 580+ (aegis_bibliography) + 23 fiches (aegis_corpus) |
+| RAG chunks | **11277** (aegis_bibliography, apres RUN-012 +208) + aegis_corpus (templates + fiches) |
 
 ### Papiers cles post-analyse complete (SVC 10/10)
 
@@ -387,3 +408,63 @@ Aucun resultat experimental neuf. Les corrections d'attribution renforcent la tr
 - Hygiene : purger le hook stale `_staging/scientist/PENDING_SCIENTIST_REVIEW.md` (entree du 2026-04-06).
 
 **last_updated** : `2026-05-21`
+
+---
+
+## Sync director 2026-06-15 — SESSION-004 apex (synthese juge-relativite + promotion MC10)
+
+Handoff complete-session depuis l'apex `aegis-research-lab` (SESSION-004, mode synthese, Bac D).
+Note de recherche signee : `research_notes/SESSION-004_2026-06-15.md` (reviewer hostile : verdict
+PATCH, 7 corrections appliquees, 20/20 chiffres verifies contre les summaries JSON).
+
+### Findings propages (corrélation du travail catalogue/pharma/reforge du jour)
+
+- **Pattern dominant** : l'ASR est relatif au juge. Memes templates pharma = 0% (juge robotique
+  deterministe `validate_output`) vs jusqu'a 86,7% (#80, juge `judge_pharma_llm`, N=30, Wilson
+  [70,3;94,7]) [EXPERIMENTAL — caveat P153, spot-check humain en attente]. La "mediocrite" de la
+  moitie du catalogue etait un **artefact de mesure**, pas une faiblesse de payload. Juger est le
+  goulot, pas forger.
+- **Refus register-gated** : #16 (config-override) resiste a tous les operateurs standards sauf un
+  reframe hors registre (13-17%, non significatif) ; #06 lifte 3,3%→76,7% par autorite technique
+  (operator-swap generalise, cf. #01 13%→86,7% PI-20260609). Nuance C1/C3 (deja propage tracker
+  EXP-CATALOGUE 2026-06-15).
+
+### Conjectures
+
+- **C1-C8 : INCHANGEES** ce cycle. C1 10/10 (gele — EN RE-VERIFICATION, TC-001 v3 pendante),
+  C2 10/10 (sature). L'evidence EXP-CATALOGUE/EXP-PHARMA (2026-06-15) etait deja inscrite au
+  tracker ; le travail du jour renforce sans franchir de seuil. Aucun mouvement.
+- **MC10 (methodologique) : soundness 7→8** — SUPERVISED, accord utilisateur 2026-06-15, |Δ|=1
+  dans ±2σ. 1ere corroboration AEGIS-native (judge-collapse par juge unique). Converge C2/P044/P153.
+  Reste [EXPERIMENTAL] (caveat P153) → 8 et non 9. Ecriture verifiee coherente dans
+  `CONJECTURES_TRACKER.md` (table MC4-MC13 ligne MC10 + note justificative datee 2026-06-15) ;
+  aucun autre score touche. Lien gap : MC10 ↔ G-055 (benchmarks deep research sans securite).
+
+### Coherence check inter-fichiers
+
+- Tracker ↔ note SESSION-004 : COHERENT (MC10=8, justification = §5.1 de la note).
+- Tracker ↔ RESEARCH_STATE : COHERENT apres cette entree.
+- Note pre-existante divergence (hors scope, signalee) : ce fichier porte deux `last_updated`
+  interleaves (2026-06-09 §Sync 06-09, 2026-05-21 §Actions ouvertes) — artefact d'edition anterieur,
+  non corrige dans ce handoff borne.
+
+### Signal traite
+
+- `_staging/signals/UNEXPECTED_FINDING_pharma_judge_blindness_20260615.md` → **PROCESSED** par
+  SESSION-004 §5.1. Signal de cloture : `SESSION_COMPLETE_SESSION-004_2026-06-15.json`.
+
+### Hygiene memoire (MC2)
+
+- Collection ChromaDB `aegis_research_notes` backfillee : SESSION-003 (14 chunks) + SESSION-004
+  (12 chunks) ingerees. DISCOVER de nouveau operationnel (SESSION-004 #1 sur le theme juges/pharma).
+
+### Actions ouvertes prioritaires (EVOLVE SESSION-004 §10)
+
+- P0 : construire un **verificateur dose-safety deterministe** (`judge_pharma_dose` + drug-KB) pour
+  remplacer le juge LLM sur les metriques pharma formelles et fermer le caveat P153. `/experiment-planner`.
+- P0 : **gate humain P153** — spot-check de #80/#92/#71 avant toute claim ASR pharma formelle.
+- P1 (dette, inchangee) : validation empirique Bac A des gaps IMPLEMENTE sans preuve ASR
+  (G-032 CoT hijacking, G-037 multi-turn, G-038 think-tag, G-041 stacked ciphers).
+- P2 : Bac C — biblio scoped sur les juges de securite family-specific / goal-conditioned.
+
+**last_updated** : `2026-06-15`
