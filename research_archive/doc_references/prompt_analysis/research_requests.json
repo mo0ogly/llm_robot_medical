@@ -1,6 +1,6 @@
 {
   "description": "File d'attente de recherche — synchronisee avec DIRECTOR_BRIEFING_RUN003.md + RUN010",
-  "last_updated": "2026-06-15",
+  "last_updated": "2026-06-16",
   "source": "DIRECTOR_BRIEFING_RUN003.md + fiches #12-22",
   "requests": [
     {
@@ -812,9 +812,9 @@
       "type": "fiche_update",
       "query": "Repositionner le δ³ AEGIS vs P171 (Siu, Dawn Song et al., 'A Framework for Formalizing LLM Agent Security', arXiv:2603.19469 : 4 proprietes contextuelles task/action alignment + source authorization + data isolation + oracles, 87 papiers mappes). AEGIS = extension OPERATIONNELLE + MEDICALE empirique (campagnes N>=30, moteur genetique, Da Vinci), PAS 'premier framework formel de securite agent'. Reformuler tout positionnement δ³ formel du manuscrit.",
       "priority": "haute",
-      "status": "pending",
+      "status": "resolved",
       "created": "2026-06-15",
-      "resolved_by": null,
+      "resolved_by": "research_notes/POSITIONING_NOTE_AEGIS_delta3_vs_P171_2026-06-16.md (SCIENTIST 2026-06-16) -- F-1/F-2 primacy claims BANNED, F-3..F-6 manuscript formulations provided; C2 reinforced by P171 formal no-subset-suffices argument (no threshold crossing)",
       "notes": "HUMILITY GATE : claim de primaute formelle agent refute par P171 (Dawn Song et al., mars 2026). Differenciation viable = implementation empirique vs specification pure.",
       "linked_p_ids": [
         "P171"
@@ -822,7 +822,8 @@
       "blocks": [
         "Ch.5",
         "Ch.7"
-      ]
+      ],
+      "resolved_date": "2026-06-16"
     },
     {
       "id": "RR-RUN12-002",
