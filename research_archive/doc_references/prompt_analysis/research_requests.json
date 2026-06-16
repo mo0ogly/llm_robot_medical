@@ -186,14 +186,15 @@
       "type": "literature_search",
       "query": "Multi-turn defense: detection de degradation progressive, attention monitoring across conversation turns",
       "priority": "moyenne",
-      "status": "partial",
+      "status": "implemented_partial",
       "created": "2026-04-04",
       "resolved_by": "Defenses multi-tour: P170 TRACES (audit proactif trajectoire-etat, arXiv:2605.27690) + P154 DeepContext (RNN stateful) ; mecanisme: P158 When Attention Closes/GAR (arXiv:2605.12922) explique la degradation. Implementation/eval AEGIS a mener.",
-      "notes": "D-016 degradation multi-turn medicale (p<0.001). Besoin defenses. [RUN-012 2026-06-15: mecanisme (P158 channel-transition) + 2 defenses candidates (P170/P154) integres ; reste implementation cote AEGIS]",
+      "notes": "D-016 degradation multi-turn medicale (p<0.001). Besoin defenses. [RUN-012 2026-06-15: mecanisme (P158 channel-transition) + 2 defenses candidates (P170/P154) integres ; reste implementation cote AEGIS] [RUN-012 follow-up 2026-06-16: black-box deterministic monitor IMPLEMENTED -- backend/red_team/multiturn_drift_monitor.py + 6/6 tests PASS; design research_notes/DESIGN_RR-RUN4-004_multiturn_drift_monitor.md. White-box port (TRACES/DeepContext/GAR) infeasible on Groq API -> black-box re-design (ADVERSA-style per-round compliance, F73-aligned). Pipeline wiring + calibration = next step.]",
       "blocks": [
         "D-016"
       ],
-      "resolved_date_run012": "2026-06-15"
+      "resolved_date_run012": "2026-06-15",
+      "resolved_date_run12_followup": "2026-06-16"
     },
     {
       "id": "RR-RUN4-005",
