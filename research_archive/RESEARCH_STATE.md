@@ -126,7 +126,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | RR-RUN4-001 | Defenses RAG | **RESOLVED** | 7 papiers |
 | RR-RUN4-002 | Metriques medicales | **RESOLVED** | 8 papiers |
 | RR-RUN4-003 | LRM securite (paradoxe raisonnement) | **PENDING** | 0 |
-| RR-RUN4-004 | Multi-turn defense — porter TRACES (P170) + DeepContext (P154) sur pipeline AEGIS medical | **PENDING** (candidats identifies RUN-012 : P170 TRACES + P154 DeepContext) | 2 |
+| RR-RUN4-004 | Multi-turn defense — porter TRACES (P170) + DeepContext (P154) sur pipeline AEGIS medical | **IMPLEMENTED** — `backend/red_team/multiturn_drift_monitor.py` (176 lignes, black-box port TRACES/DeepContext/GAR, 6/6 tests). Commit 753c2db 2026-06-16. | 2 |
 | RR-RUN4-005 | Defenses architecturales beyond ASIDE | **RESOLVED** | 5 papiers |
 
 ### Decouvertes potentielles (4 items)
