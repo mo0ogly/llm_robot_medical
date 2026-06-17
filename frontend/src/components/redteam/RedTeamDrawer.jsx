@@ -2,6 +2,7 @@
 import { X, Maximize2, Minimize2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import CostStatusBar from '../CostStatusBar';
 import CatalogTab from './CatalogTab';
 import AdversarialStudio from './AdversarialStudio';
 import PlaygroundTab from './PlaygroundTab';
@@ -46,6 +47,8 @@ export default function RedTeamDrawer({ isOpen, onClose }) {
           </select>
         </div>
         <div className="flex items-center gap-2">
+          <CostStatusBar />
+          <div className="h-4 w-px bg-neutral-700" />
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors"

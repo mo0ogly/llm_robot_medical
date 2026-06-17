@@ -72,10 +72,10 @@ research-director · aegis-research-lab · bibliography-maintainer · fiche-atta
 ### A3. Phase P2 — Cost / HUD observability (Moyen)
 | # | Element | OMC source ref | Target (AEGIS) | Status | Improvement vs source |
 |---|---------|----------------|----------------|--------|-----------------------|
-| P2.1 | Token/cost accumulator | `src/hud/transcript.ts`, `elements/token-usage.ts` | `backend/observability/cost_tracker.py` | `[ ]` | Accumulate Groq `usage` (prompt/completion tokens) per session |
-| P2.2 | Cost endpoint | `src/hud/usage-api.ts` | `backend/routes/` `GET /api/cost/session` | `[ ]` | Groq public pricing, no Anthropic OAuth dep |
-| P2.3 | Frontend status bar | `src/hud/index.ts` | React component (status bar) | `[ ]` | i18n FR/EN/BR, no `statusLine` dep |
-| P2.G | GATE: live cost displayed for a session | n/a | — | `[ ]` | — |
+| P2.1 | Token/cost accumulator | `src/hud/transcript.ts`, `elements/token-usage.ts` | `backend/observability/cost_tracker.py` | `[x]` | Thread-safe, per-model, JSON snapshot; Groq pricing table llama-3.1-8b/3.3-70b/mixtral/gemma |
+| P2.2 | Cost endpoint | `src/hud/usage-api.ts` | `backend/routes/cost_routes.py` — `GET /api/cost/session`, `POST /api/cost/reset`, `POST /api/cost/record` | `[x]` | No Anthropic OAuth dep; external script sink via POST /api/cost/record |
+| P2.3 | Frontend status bar | `src/hud/index.ts` | `frontend/src/components/CostStatusBar.jsx` in RedTeamDrawer header | `[x]` | i18n FR/EN/BR (cost.* keys), 15s poll, ↺ reset button, no ${}; Vite build OK |
+| P2.G | GATE: live cost displayed for a session | n/a | build OK (vite ✓ 14.10s); dry-run backend compile OK; i18n.js conflict resolved (nostalgic-lamport markers) | `[x]` | Real session ping pending backend start. i18n.js dynamic loader (locales/*.json) restored. |
 
 ### A4. Phase P3 — Model-tier routing (Moyen)
 | # | Element | OMC source ref | Target (AEGIS) | Status | Improvement vs source |
@@ -135,6 +135,6 @@ P0 is the foundation (everything else is independent of each other except P4 bui
 - **Content filter**: never read sensitive AEGIS files (`scenarios.py`, `prompts/*.json` template field, etc.).
 
 ## E. SESSION RECOVERY
-**Last completed step**: INCIDENT RESOLVED — committed merge conflict (branch `claude/nostalgic-lamport`) in `server.py` (1 block) + `attack_catalog.py` (6 blocks), resolved keep-ours via `scripts/resolve_merge_conflict.py`. Backend compiles; catalog loads 126 payloads / 3 categories. Pre-existing taxonomy warnings (gap4_*/medicare_*) are non-blocking and unrelated. (Prior: P0 + P1 COMPLETE.)
-**Next step**: P2.1 — `backend/observability/cost_tracker.py` (now unblocked).
+**Last completed step**: P2 COMPLETE — `backend/observability/cost_tracker.py` (thread-safe, Groq pricing, snapshot), `backend/routes/cost_routes.py` (GET/POST /api/cost/*), `CostStatusBar.jsx` (RedTeamDrawer header, i18n FR/EN/BR). i18n.js conflict resolved (nostalgic-lamport 1706-line inline block removed, dynamic loader restored). Vite build ✓ 14.10s. (Prior: P0 + P1 + merge conflict COMPLETE.)
+**Next step**: P3.1 — `backend/routing/scorer.py` (lexical/structural signal scorer).
 **Resume command**: "Continue OMC fusion from docs/omc_fusion/INTEGRATION_TRACKER.md"

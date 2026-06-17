@@ -1082,5 +1082,12 @@
   "redteam.promptforge.output": "Résultat",
   "redteam.promptforge.test_single": "Tester",
   "redteam.promptforge.testing": "Test en cours...",
-  "redteam.promptforge.compare_all": "Comparer Tous"
+  "redteam.promptforge.compare_all": "Comparer Tous",
+  "cost.title": "Coût Groq",
+  "cost.tokens": "tokens",
+  "cost.prompt": "prompt",
+  "cost.completion": "completion",
+  "cost.reset": "Reset",
+  "cost.loading": "Chargement...",
+  "cost.session": "Session"
 }

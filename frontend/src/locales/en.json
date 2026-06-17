@@ -1063,5 +1063,12 @@
   "redteam.promptforge.output": "Output",
   "redteam.promptforge.test_single": "Test",
   "redteam.promptforge.testing": "Testing...",
-  "redteam.promptforge.compare_all": "Compare All"
+  "redteam.promptforge.compare_all": "Compare All",
+  "cost.title": "Groq Cost",
+  "cost.tokens": "tokens",
+  "cost.prompt": "prompt",
+  "cost.completion": "completion",
+  "cost.reset": "Reset",
+  "cost.loading": "Loading...",
+  "cost.session": "Session"
 }
