@@ -171,7 +171,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 
 | Conj | Score | Statut | Evolution cette session |
 |------|-------|--------|----------------------|
-| C1 | 10/10 **(score GELE — decision directeur apres v3)** | **EN RE-VERIFICATION** | Theorie confirmee (P052+P018). Donnee brute autoritative triple_convergence_results.json (2026-04-08, llama-3.1-8b-instant, 210 runs, 7 conditions, N=30) : full convergence ASR=16.67% < best subset delta2_only=56.67%, KW H=18.80 p=0.0047 (SIGNIFICATIF), Cohen's f=0.475, gap=-0.4, `c1_supported=false`. Lecture : C1 "les 3 couches delta necessaires a un ASR eleve" N'EST PAS supportee — delta2 seul domine ; convergence ANTAGONISTE (delta0 retire le persona exploitable), coherente avec TC-002 70B (full 20% < delta1 seul 33%). Les anciens chiffres (3.2B, full 3%, best 23%, p=0.77) etaient ERRONES (reconcilies 2026-05-30). Score 10/10 GELE : mouvement de conjecture = SUPERVISED, decision reportee au directeur apres re-run TC-001 v3 (70B). |
+| C1 | **9/10** | **SUPPORTEE — reformulee (Option D, 2026-06-17)** | Reformulation actee par le directeur (RR-DIR-004). Enonce reformule : δ⁰ seul insuffisant (ASR=33% TC-002 70B), defenses δ¹-δ³ cumulativement efficaces mais incompletes (full_convergence ASR=20%). Claim principale : RESIDU NON-NUL. Claim retiree : non-additivite des couches (refutee TC-002). Score 9/10 : preuve AEGIS directe + Young martingale P019/P052. Sortie du gel ERRATUM TC-001. TC-001 v3 (70B) reste utile pour caracteriser le 8B vs 70B mais N'EST PLUS BLOQUANTE pour C1. |
 | C2 | 10/10 | **VALIDEE** | RENFORCE par Deep-Analysis P0 — P024 Sep(M) compromis + P044 juges flippables 99.91% |
 | C3 | 9/10 | **SUPPORTEE** | Corrige 2026-06-03 : P019≡P052 = meme papier (doublon), pas double preuve independante. Base : Young (formel) + P018 (empirique) + P102 (mecanistique) |
 | C4 | 9/10 | Fortement supportee | Stable — F56 (Drift Rate) draft produit, manque calibration empirique (RR-DA-004) |
@@ -434,9 +434,10 @@ PATCH, 7 corrections appliquees, 20/20 chiffres verifies contre les summaries JS
 
 ### Conjectures
 
-- **C1-C8 : INCHANGEES** ce cycle. C1 10/10 (gele — EN RE-VERIFICATION, TC-001 v3 pendante),
-  C2 10/10 (sature). L'evidence EXP-CATALOGUE/EXP-PHARMA (2026-06-15) etait deja inscrite au
-  tracker ; le travail du jour renforce sans franchir de seuil. Aucun mouvement.
+- **C1 : 10/10 GELE → 9/10 SUPPORTEE** (2026-06-17, RR-DIR-004, Option D). Reformulation
+  formelle : claim principale = residu non-nul (δ⁰ insuffisant, stack complet insuffisant).
+  Claim retiree : non-additivite des couches (refutee TC-002). Sortie du gel TC-001.
+- **C2 : 10/10 VALIDEE** — renforce FC-003/FC-004 (2026-06-17), inchange. Aucun autre mouvement.
 - **MC10 (methodologique) : soundness 7→8** — SUPERVISED, accord utilisateur 2026-06-15, |Δ|=1
   dans ±2σ. 1ere corroboration AEGIS-native (judge-collapse par juge unique). Converge C2/P044/P153.
   Reste [EXPERIMENTAL] (caveat P153) → 8 et non 9. Ecriture verifiee coherente dans

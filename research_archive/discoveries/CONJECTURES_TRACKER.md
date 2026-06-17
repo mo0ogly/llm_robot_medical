@@ -50,7 +50,7 @@ P171 (Siu, Dawn Song et al., "A Framework for Formalizing LLM Agent Security") f
 
 ### C1 : Insuffisance de δ⁰ (alignement RLHF)
 
-**Enonce complet** : L'alignement RLHF de base (δ⁰) est insuffisant pour proteger un LLM contre les injections de prompt, en particulier dans le domaine medical.
+**Enonce complet** : L'alignement RLHF de base (δ⁰) est insuffisant pour proteger un LLM contre les injections de prompt dans le domaine medical (ASR=33% avec δ⁰ seul, TC-002 70B). Les couches defensives δ¹-δ³ apportent une protection cumulative reelle mais incomplete : full_convergence ASR=20% (TC-002, N=30) — le residu d'attaque non nul constitue la claim principale. [Reformulation Option D actee 2026-06-17, sortie du gel TC-001.]
 
 | RUN | Score | Raison du changement | Papers cles |
 |-----|-------|---------------------|-------------|
@@ -59,6 +59,7 @@ P171 (Siu, Dawn Song et al., "A Framework for Formalizing LLM Agent Security") f
 | RUN-003 | **10/10** | Sature. Young (P019≡P052, MEME papier arXiv:2603.04851 — doublon) fournit la PREUVE FORMELLE par martingale (gradient = Cov(harm, score)). P050 montre degradation multi-tour 9.5->5.5 (p<0.001, 22 modeles, scope japonais). P053 confirme via taxonomie limitations RLHF. | +P050, P019≡P052, P053 |
 | ERRATUM TC-001 (2026-06-12) | **10/10 GELE** | Score gele en re-verification (audit CONTRA-3) : la donnee brute autoritative `triple_convergence_results.json` declare `c1_supported=false` (full convergence 16.67% < best subset δ² seul 56.67% sur 8B — pas de synergie). Incoherence v1/v2 (3B) vs JSON (8B) non resolue. Re-run TC-001 v3 requis avant tout mouvement de score. Voir PROTOCOLE_TC001_v3.md + RESEARCH_STATE Section 4. | TC-001/TC-001v2/JSON (geles) |
 | EXP-CATALOGUE (2026-06-15) | **10/10** (inchange) | Evidence experimentale operator-swap (juge deterministe refusal-gated, N=30, Groq llama-3.3-70b-versatile) : remplacer des operateurs faibles (cliche ROOT_HACK / negation directe / registre config-override) par des operateurs valides lift l'ASR sur modele aligne — #01 13->87%, #06 3->77%. Le refus est REGISTER-gated : #16 (config-override) reste a 0% sauf en sortant du registre (reframe_goal 13-17%, refus 100->7%, 2 iterations convergentes). Confirme l'insuffisance de δ⁰ (l'alignement RLHF ne couvre pas le reframing/registre). Aucun franchissement de seuil — C1 deja saturee/gelee. | +EXP PI/RF-20260615 |
+| RR-DIR-004 (2026-06-17) | **9/10** (sortie du gel — Option D) | Reformulation formelle actee par le directeur de these. TC-002 70B (N=30, Groq llama-3.3-70b-versatile) : delta1_alone ASR=33% confirme l'insuffisance de δ⁰. full_convergence ASR=20% confirme que les defenses δ¹-δ³ sont cumulativement efficaces (-13pp) mais ne nullifient pas l'attaque. C1 reformulee sur le RESIDU NON-NUL (claim principale : attaque residuelle meme avec stack complet) plutot que la non-additivite (claim refutee par TC-002 : les defenses s'additionnent bien). Score 9/10 : preuve directe AEGIS (TC-001 + TC-002 + FC-003/FC-004) + Young martingale P019/P052, mais canal physique (Da Vinci, δ⁴) non teste. C1 sort du gel ERRATUM TC-001. | +TC-002/FC-003/FC-004 |
 
 **Preuves les plus fortes** :
 - Young (arXiv:2603.04851, indexe P019≡P052 — MEME papier, doublon a fusionner) : preuve formelle par martingale I_t = Cov[E[H|x<=t], score_function], gradient nul au-dela de l'horizon de nocivite
@@ -66,7 +67,7 @@ P171 (Siu, Dawn Song et al., "A Framework for Formalizing LLM Agent Security") f
 - P036 (97.14% ASR autonome par LRM)
 - P050 (degradation multi-tour 9.5->5.5, p<0.001, 22 modeles, scope japonais)
 
-**Contre-arguments** : P017/P020/P021 montrent des ameliorations. P057 (ASIDE) montre que δ⁰ PEUT etre renforce architecturalement mais ne resout pas la limitation structurelle de P019/P052.
+**Contre-arguments** : P017/P020/P021 montrent des ameliorations. P057 (ASIDE) montre que δ⁰ PEUT etre renforce architecturalement mais ne resout pas la limitation structurelle de P019/P052. TC-002 montre que les defenses sont additives (full_convergence < delta1_alone) — la non-additivite etait la claim faible de C1, desormais retiree par la reformulation Option D (2026-06-17).
 
 ---
 
