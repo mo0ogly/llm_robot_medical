@@ -80,10 +80,10 @@ research-director · aegis-research-lab · bibliography-maintainer · fiche-atta
 ### A4. Phase P3 — Model-tier routing (Moyen)
 | # | Element | OMC source ref | Target (AEGIS) | Status | Improvement vs source |
 |---|---------|----------------|----------------|--------|-----------------------|
-| P3.1 | Scorer (lexical/structural signals) | `src/features/model-routing/scorer.ts` | `backend/routing/scorer.py` | `[ ]` | Pure-local scoring, no Bedrock/Vertex branches |
-| P3.2 | Rules + tier->model | `src/features/model-routing/rules.ts`, `types.ts` | `backend/routing/model_router.py` | `[ ]` | Map LOW->llama-3.1-8b-instant, HIGH->llama-3.3-70b-versatile (Groq) |
-| P3.3 | Wire to DECOMPOSE complexity | `task-decomposer/index.ts` `selectModelTier` | research-director DECOMPOSE (TRIVIAL/MODERATE/COMPLEX already scored) | `[ ]` | Reuse existing complexity tags |
-| P3.G | GATE: router picks correct Groq model per task | n/a | — | `[ ]` | `forceInherit` fallback when single model |
+| P3.1 | Scorer (lexical/structural signals) | `src/features/model-routing/scorer.ts` | `backend/routing/scorer.py` | `[x]` | Pure-local: DECOMPOSE tags + 40 lexical signals + structural (code/formula/length) |
+| P3.2 | Rules + tier->model | `src/features/model-routing/rules.ts`, `types.ts` | `backend/routing/model_router.py` | `[x]` | LOW->8b-instant, HIGH->70b-versatile; campaign_rule forces HIGH; forceInherit via `force=` param |
+| P3.3 | Wire to DECOMPOSE complexity | `task-decomposer/index.ts` `selectModelTier` | `backend/routes/routing_routes.py` — POST /api/routing/select, GET /api/routing/models | `[x]` | TRIVIAL/MODERATE/COMPLEX tags natively parsed by scorer; API exposed for research-director |
+| P3.G | GATE: router picks correct Groq model per task | n/a | tested: simple->8b (scored), campaign->70b (campaign_rule), forced->8b (forced) | `[x]` | forceInherit: caller passes `force=model_name`. compile OK. |
 
 ### A5. Phase P4 — Multi-model review `/ccg` (Difficile)
 | # | Element | OMC source ref | Target (AEGIS) | Status | Improvement vs source |
@@ -135,6 +135,6 @@ P0 is the foundation (everything else is independent of each other except P4 bui
 - **Content filter**: never read sensitive AEGIS files (`scenarios.py`, `prompts/*.json` template field, etc.).
 
 ## E. SESSION RECOVERY
-**Last completed step**: P2 COMPLETE — `backend/observability/cost_tracker.py` (thread-safe, Groq pricing, snapshot), `backend/routes/cost_routes.py` (GET/POST /api/cost/*), `CostStatusBar.jsx` (RedTeamDrawer header, i18n FR/EN/BR). i18n.js conflict resolved (nostalgic-lamport 1706-line inline block removed, dynamic loader restored). Vite build ✓ 14.10s. (Prior: P0 + P1 + merge conflict COMPLETE.)
-**Next step**: P3.1 — `backend/routing/scorer.py` (lexical/structural signal scorer).
+**Last completed step**: P3 COMPLETE — `backend/routing/scorer.py` (40 lexical signals, DECOMPOSE tags, structural heuristics), `backend/routing/model_router.py` (LOW/HIGH->Groq, campaign_rule forces 70B, forceInherit), `backend/routes/routing_routes.py` (POST /api/routing/select, GET /api/routing/models). All P3 gates pass. (Prior: P0+P1+P2+conflict COMPLETE.)
+**Next step**: P4.1 — `.claude/skills/aegis-ccg/SKILL.md` (multi-model hostile reviewer: Claude API + Groq, no codex/gemini/tmux).
 **Resume command**: "Continue OMC fusion from docs/omc_fusion/INTEGRATION_TRACKER.md"
