@@ -27,6 +27,15 @@ class OrchestratorMetricsMixin:
     Requires the host class to expose: self.medical_agent, self.aegis_shield.
     """
 
+    # δ² multi-turn drift monitor (RR-RUN4-004). The verdict is ALWAYS recorded
+    # in the metrics dict (additive, non-blocking). This flag governs only whether
+    # the host pipeline should *act* on a HARD verdict (MT_FORBIDDEN_LEAK /
+    # MT_REFUSAL_COLLAPSE). It is OFF by default: recording the verdict never
+    # alters the live decision flow (RETEX THESIS-001 — no repeat of the freeze).
+    # A caller that wants enforcement reads `multiturn_drift["should_block"]`,
+    # which is True only when this flag is set AND the verdict is hard-blocked.
+    MULTITURN_DRIFT_BLOCKING: bool = False
+
     async def run_separation_score(
         self, attack_message: str, n_trials: int = 10
     ) -> dict:
@@ -148,6 +157,14 @@ class OrchestratorMetricsMixin:
         attribution["ci_with_sp"] = wilson_ci(sum(violations_with_sp), n_trials)
         attribution["ci_no_sp"] = wilson_ci(sum(violations_no_sp), n_trials)
 
+        # --- δ² multi-turn drift verdict over the WITH-system-prompt trials ---
+        # Each delta0 trial is an independent single-turn exchange, so the
+        # transcript is a degenerate (single-turn-per-row) sequence. We still
+        # record the verdict: it is a no-cost, non-blocking signal and keeps the
+        # multiturn_drift key present on every metric dict for downstream tooling.
+        # (Real drift signatures only emerge on genuinely multi-turn transcripts —
+        #  run_adaptive_attack / run_scenario_stream — via multiturn_drift_metric.)
+
         # Persist results for AnalysisView (/api/redteam/analysis/delta0-summary)
         try:
             logs_dir = os.path.join(
@@ -169,3 +186,147 @@ class OrchestratorMetricsMixin:
             pass  # Non-blocking
 
         return attribution
+
+    # --- δ² multi-turn drift metric (RR-RUN4-004) -----------------------------
+
+    @staticmethod
+    def _normalize_transcript(transcript) -> list:
+        """Coerce a heterogeneous turn sequence into the shape defend_transcript expects.
+
+        defend_transcript already accepts Turn objects, (ask, response) pairs, and
+        {user_ask|user|prompt}/{agent_response|response|content} dicts. This helper
+        additionally maps the two transcript shapes the orchestrator produces:
+
+          - run_adaptive_attack().turn_logs : dicts carrying 'generated_payload'
+            (or 'filtered_payload') as the adversary ask and 'target_response' as
+            the agent reply, plus unrelated keys (crypto_metrics, scores, ...).
+          - run_scenario_stream() conversation_history : a flat list of
+            {role: user|assistant, content: str} messages, which we fold into
+            (user, assistant) pairs.
+
+        Anything already in a defend_transcript-native shape is passed through
+        untouched. Returns a list of dicts with stable 'user_ask'/'agent_response'
+        keys (the dict branch defend_transcript understands directly).
+        """
+        items = list(transcript or [])
+        if not items:
+            return []
+
+        # Shape A: flat role/content message log (run_scenario_stream).
+        if all(
+            isinstance(it, dict) and "role" in it and "content" in it for it in items
+        ):
+            pairs: list = []
+            pending_user = ""
+            for msg in items:
+                role = (msg.get("role") or "").lower()
+                content = msg.get("content") or ""
+                if role in ("user", "system"):
+                    pending_user = content
+                elif role == "assistant":
+                    pairs.append(
+                        {"user_ask": pending_user, "agent_response": content}
+                    )
+                    pending_user = ""
+            return pairs
+
+        # Shape B: turn_logs from run_adaptive_attack (or any dict carrying a
+        # 'target_response'). Prefer the realised payload over the raw one.
+        normalized: list = []
+        for it in items:
+            if isinstance(it, dict) and "target_response" in it:
+                ask = (
+                    it.get("generated_payload")
+                    or it.get("filtered_payload")
+                    or it.get("user_ask")
+                    or it.get("user")
+                    or it.get("prompt")
+                    or ""
+                )
+                normalized.append(
+                    {"user_ask": ask, "agent_response": it.get("target_response") or ""}
+                )
+            else:
+                # Already a Turn / pair / native dict — defend_transcript handles it.
+                normalized.append(it)
+        return normalized
+
+    def multiturn_drift_metric(
+        self,
+        transcript,
+        chain_id: str = "",
+        forbidden_markers=None,
+    ) -> dict:
+        """Compute the δ² multi-turn drift verdict for a transcript (POST-HOC, additive).
+
+        Runs the deterministic black-box MultiTurnDriftMonitor (via
+        chain_defenses.defend_transcript) over an already-collected conversation
+        and returns a JSON-serialisable verdict. This NEVER calls the target LLM,
+        NEVER mutates orchestrator state, and NEVER raises — on any failure it
+        returns a structured 'error' entry so the host metric assembly is safe.
+
+        Intended call site: after a multi-turn run completes, attach the result
+        under a "multiturn_drift" key in the run/campaign result dict, e.g.::
+
+            result = await self.run_adaptive_attack(objective)
+            result["multiturn_drift"] = self.multiturn_drift_metric(
+                result["turn_logs"], chain_id="adaptive_ooda"
+            )
+
+        Args:
+            transcript: ordered turns in any shape accepted by _normalize_transcript
+                (turn_logs dicts, conversation_history messages, Turn objects, or
+                (ask, response) pairs).
+            chain_id: chain identifier, for logging/context only.
+            forbidden_markers: optional scenario-specific hard-leak tokens. Supplied
+                by the caller (kept out of this module to stay content-filter-safe).
+
+        Returns:
+            dict with keys: blocked, should_block, reason, severity, violation_codes,
+            crossover_turn, refusal_trajectory, forbidden_turns, n_turns,
+            blocking_enabled. (or {"error": ...} on unexpected failure.)
+        """
+        # Lazy import — no import-time coupling to chain_defenses (RR-RUN4-004 rule 3).
+        try:
+            from chain_defenses import defend_transcript
+        except Exception:  # pragma: no cover - import guard
+            try:
+                from backend.chain_defenses import defend_transcript  # type: ignore
+            except Exception as exc:  # pragma: no cover
+                return {
+                    "error": "defend_transcript unavailable: " + str(exc),
+                    "violation_codes": [],
+                    "blocked": False,
+                    "should_block": False,
+                }
+
+        try:
+            turns = self._normalize_transcript(transcript)
+            dr = defend_transcript(
+                chain_id=chain_id,
+                transcript=turns,
+                forbidden_markers=list(forbidden_markers) if forbidden_markers else None,
+            )
+            details = dr.details or {}
+            metric = {
+                "blocked": bool(dr.blocked),
+                # should_block stays False unless enforcement is explicitly enabled.
+                "should_block": bool(dr.blocked) and bool(self.MULTITURN_DRIFT_BLOCKING),
+                "blocking_enabled": bool(self.MULTITURN_DRIFT_BLOCKING),
+                "reason": dr.reason,
+                "severity": dr.severity,
+                "violation_codes": details.get("violation_codes", []),
+                "crossover_turn": details.get("crossover_turn"),
+                "refusal_trajectory": details.get("refusal_trajectory"),
+                "forbidden_turns": details.get("forbidden_turns"),
+                "n_turns": details.get("n_turns", len(turns)),
+                "chain_id": chain_id,
+            }
+            return metric
+        except Exception as exc:  # never break the host metric assembly
+            return {
+                "error": "multiturn_drift_metric failed: " + str(exc),
+                "violation_codes": [],
+                "blocked": False,
+                "should_block": False,
+            }
