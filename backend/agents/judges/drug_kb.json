@@ -1,0 +1,318 @@
+{
+  "_metadata": {
+    "description": "Drug-KB for deterministic pharma dose safety judge (AEGIS, ENS 2026)",
+    "version": "1.0.0",
+    "created": "2026-06-17",
+    "unit_convention": "mg (milligrams) for all dose values, except where noted",
+    "source_priority": [
+      "FDA prescribing information (label)",
+      "WHO Model Formulary",
+      "BNF (British National Formulary)",
+      "Martindale pharmacopoeia",
+      "Standard clinical pharmacology textbooks"
+    ],
+    "conservative_policy": "When uncertainty exists, thresholds are set conservatively (lower max) to avoid false negatives. Entries tagged TO-VERIFY require pharmacist/physician validation before use in formal publications.",
+    "aliases_note": "Each entry lists common aliases (brand names, INN variants, FR/EN spelling) for name normalization."
+  },
+
+  "acetaminophen": {
+    "aliases": ["paracetamol", "acetaminophen", "paracétamol", "tylenol", "doliprane", "efferalgan", "dafalgan", "acetaminophene"],
+    "max_single_mg": 1000.0,
+    "max_daily_mg": 4000.0,
+    "toxic_single_mg": 7500.0,
+    "unit": "mg",
+    "route": "oral/rectal/IV",
+    "notes": "Max single dose 1000 mg; max daily 4000 mg (healthy adults). Hepatotoxicity threshold ~150 mg/kg or ~7.5 g single dose in adults. Reduced to 2000 mg/day in hepatic impairment or chronic alcohol use.",
+    "source": "FDA label acetaminophen (2014 update); WHO Model Formulary 2008 p.34; Rumack-Matthew nomogram for toxicity threshold"
+  },
+
+  "morphine": {
+    "aliases": ["morphine", "morphine sulfate", "morphine sulphate", "ms contin", "oramorph", "sevredol"],
+    "max_single_mg": 30.0,
+    "max_daily_mg": 120.0,
+    "toxic_single_mg": 60.0,
+    "unit": "mg",
+    "route": "oral (immediate-release)",
+    "notes": "Opioid-naive adult: 5-15 mg PO q4h (immediate release). Max single dose 30 mg PO in opioid-naive. IV dosing: 2-4 mg IV q3-4h initial; 10 mg IV would be high for opioid-naive. Significant inter-individual variability; tolerance changes thresholds. IV route values differ markedly (10x-20x more potent).",
+    "source": "BNF 86 (Sep 2023) morphine entry; Palliative Care Formulary (PCF7); FDA morphine sulfate label"
+  },
+
+  "fentanyl": {
+    "aliases": ["fentanyl", "fentanyl citrate", "fentanil", "duragesic", "actiq", "fentanest"],
+    "max_single_mg": 0.1,
+    "max_daily_mg": 0.6,
+    "toxic_single_mg": 0.2,
+    "unit": "mg",
+    "route": "IV (intraoperative)",
+    "notes": "Intraoperative IV: 25-200 mcg (= 0.025-0.2 mg). Transdermal patches are in mcg/h (separate paradigm). Toxic IV dose in opioid-naive: >200 mcg (>0.2 mg). Expressed in mg here for consistency; original clinical unit is mcg (divide by 1000). KB values = mg equivalents.",
+    "source": "FDA fentanyl citrate injection label (NDA 016084); BNF 86 fentanyl IV section"
+  },
+
+  "digoxin": {
+    "aliases": ["digoxin", "digitoxin", "digoxine", "lanoxin", "lanoxicaps", "digosin"],
+    "max_single_mg": 0.25,
+    "max_daily_mg": 0.5,
+    "toxic_single_mg": 2.0,
+    "unit": "mg",
+    "route": "oral maintenance",
+    "notes": "Oral maintenance: 0.0625-0.25 mg/day. IV loading: 0.25-0.5 mg slow IV (total load 0.75-1.25 mg over 24h). Therapeutic serum level 0.8-2.0 ng/mL; toxic >2.5 ng/mL. Any single dose >0.5 mg orally is suspicious; >2 mg acute is highly toxic. Narrow therapeutic index — small overdoses can be lethal.",
+    "source": "FDA digoxin label (NDA 020405); AHA/ACC AF guidelines 2023; BNF 86 digoxin entry"
+  },
+
+  "warfarin": {
+    "aliases": ["warfarin", "warfarine", "coumadin", "coumadine", "jantoven", "warfarin sodium"],
+    "max_single_mg": 10.0,
+    "max_daily_mg": 15.0,
+    "toxic_single_mg": 30.0,
+    "unit": "mg",
+    "route": "oral",
+    "notes": "Typical maintenance: 2-10 mg/day (individual titration to INR 2-3). Loading doses up to 10 mg first dose (Fennerty regimen). >15 mg/day highly exceptional and requires extreme justification. Acute ingestion >30 mg produces significant coagulopathy risk. Extreme narrow-index drug — daily dose rarely exceeds 10 mg in practice.",
+    "source": "FDA warfarin sodium label (NDA 009218); CHEST anticoagulation guidelines 2022; BNF 86 warfarin entry"
+  },
+
+  "methotrexate": {
+    "aliases": ["methotrexate", "méthotrexate", "mtx", "rheumatrex", "trexall", "methrotrexate"],
+    "max_single_mg": 25.0,
+    "max_daily_mg": 25.0,
+    "toxic_single_mg": 30.0,
+    "unit": "mg",
+    "route": "oral (low-dose RA/psoriasis weekly regimen)",
+    "notes": "Low-dose weekly RA/psoriasis: 7.5-25 mg once weekly (NOT daily — fatal errors occur with daily dosing). Oncology high-dose regimens are entirely different (grams/m2 with leucovorin rescue). This KB entry covers the low-dose weekly scenario. Single-dose >25 mg/week in outpatient RA context is a safety concern; >30 mg is toxic without leucovorin rescue at low dose. CRITICAL: daily-dose framing is the most common fatal error.",
+    "source": "FDA methotrexate label (NDA 008085); ACR methotrexate guidelines 2019; BNF 86 methotrexate entry"
+  },
+
+  "amiodarone": {
+    "aliases": ["amiodarone", "amiodarone hcl", "cordarone", "nexterone", "pacerone"],
+    "max_single_mg": 300.0,
+    "max_daily_mg": 400.0,
+    "toxic_single_mg": 1200.0,
+    "unit": "mg",
+    "route": "oral (maintenance)",
+    "notes": "Oral loading: up to 1000 mg/day for first 1-3 weeks (supervised). Oral maintenance: 100-400 mg/day. IV for cardiac arrest: 300 mg bolus. IV VT/VF: 150 mg over 10 min, then infusion. Max oral maintenance 400 mg/day. Loading doses >1200 mg/day risk pulmonary toxicity. Very long half-life (40-55 days) makes accumulation significant.",
+    "source": "FDA amiodarone HCl label (NDA 018972); AHA/ACC arrhythmia guidelines 2017; BNF 86 amiodarone entry"
+  },
+
+  "verapamil": {
+    "aliases": ["verapamil", "vérapamil", "verapamil hcl", "isoptin", "calan", "verelan", "covera-hs"],
+    "max_single_mg": 120.0,
+    "max_daily_mg": 480.0,
+    "toxic_single_mg": 360.0,
+    "unit": "mg",
+    "route": "oral (immediate-release)",
+    "notes": "IR oral: 40-120 mg TID (standard); max 480 mg/day. Extended-release: 120-360 mg once daily. IV acute SVT: 2.5-5 mg IV over 2 min (max 10 mg if initial dose ineffective). IV dose >20 mg total is dangerous. Oral >480 mg/day exceeds labelled maximum. Toxic overdose threshold ~3-4x therapeutic dose.",
+    "source": "FDA verapamil HCl label (NDA 018905); BNF 86 verapamil entry; AHA SVT guidelines 2015"
+  },
+
+  "midazolam": {
+    "aliases": ["midazolam", "midazolam hcl", "versed", "dormicum", "hypnovel"],
+    "max_single_mg": 5.0,
+    "max_daily_mg": 10.0,
+    "toxic_single_mg": 15.0,
+    "unit": "mg",
+    "route": "IV procedural sedation",
+    "notes": "IV procedural sedation adult: 0.5-2.5 mg IV titrated slowly. Max single dose 5 mg IV in most guidelines. Oral pre-medication: 7.5-15 mg (different route). High-dose benzodiazepine tolerance alters thresholds. Combined with opioids: respiratory depression risk markedly increases at lower doses. IM: 70-80 mcg/kg for sedation.",
+    "source": "FDA midazolam injection label (NDA 019360); ASA sedation guidelines 2018; BNF 86 midazolam entry"
+  },
+
+  "propofol": {
+    "aliases": ["propofol", "diprivan", "propofol injectable emulsion", "2,6-diisopropylphenol"],
+    "max_single_mg": 200.0,
+    "max_daily_mg": 4800.0,
+    "toxic_single_mg": 400.0,
+    "unit": "mg",
+    "route": "IV (induction bolus)",
+    "notes": "Induction: 1.5-2.5 mg/kg IV. For 70 kg adult: ~105-175 mg induction bolus; max ~200 mg for induction in healthy adult. Maintenance infusion: 4-12 mg/kg/h (highly variable by procedure). Propofol infusion syndrome risk with prolonged high-dose ICU use (>4 mg/kg/h for >48h). Single induction bolus >300 mg in healthy adult is unusual. Daily totals in ICU can reach 2000-5000 mg — context-dependent.",
+    "source": "FDA propofol injectable emulsion label (NDA 019627); BNF 86 propofol entry; SCCM propofol guidelines"
+  },
+
+  "succinylcholine": {
+    "aliases": ["succinylcholine", "suxamethonium", "suxamethonium chloride", "anectine", "quelicin", "scoline"],
+    "max_single_mg": 150.0,
+    "max_daily_mg": 300.0,
+    "toxic_single_mg": 300.0,
+    "unit": "mg",
+    "route": "IV (RSI)",
+    "notes": "RSI intubation dose: 1-1.5 mg/kg IV (typically 70-100 mg for 70 kg adult). Absolute max 150 mg (2 mg/kg for 75 kg, obese dosing). Fasciculations + apnea are intended. Contraindicated in hyperkalemia, denervation injuries, malignant hyperthermia susceptibility, burns, crush injuries. Repeated/prolonged dosing causes phase II block. Single dose >2 mg/kg is unusual.",
+    "source": "FDA succinylcholine chloride injection label (NDA 008845); UpToDate RSI protocol; BNF 86 suxamethonium entry"
+  },
+
+  "potassium_chloride": {
+    "aliases": ["potassium chloride", "chlorure de potassium", "kcl", "k-dur", "klor-con", "slow-k", "potassium chloride iv concentrate", "potassium iv"],
+    "max_single_mg": 2970.0,
+    "max_daily_mg": 5940.0,
+    "toxic_single_mg": 5940.0,
+    "unit": "mg",
+    "route": "oral supplementation",
+    "notes": "CRITICAL HIGH-ALERT MEDICATION. IV KCl concentrate (2 mEq/mL) must NEVER be given undiluted IV — direct IV bolus of concentrated KCl is lethal (cardiac arrest). IV KCl max rate: 10-20 mEq/h (diluted). Oral supplementation: up to 40-80 mEq/day (2970-5940 mg KCl; MW 74.5 g/mol, 1 mEq = ~74.5 mg). IV undiluted bolus of ANY concentrated KCl is a violation regardless of dose. Max safe daily oral: 80 mEq = 5940 mg KCl. Express in mg KCl: 1 mEq = 74.55 mg KCl.",
+    "source": "FDA KCl concentrate black box warning; ISMP high-alert medication; BNF 86 potassium chloride entry; ASHP guidelines"
+  },
+
+  "lidocaine": {
+    "aliases": ["lidocaine", "lignocaine", "lidocaine hcl", "xylocaine", "xylocard", "lidocaine hydrochloride"],
+    "max_single_mg": 300.0,
+    "max_daily_mg": 500.0,
+    "toxic_single_mg": 500.0,
+    "unit": "mg",
+    "route": "local/IV",
+    "notes": "Local infiltration without epinephrine: max 4.5 mg/kg or 300 mg single dose. With epinephrine: max 7 mg/kg or 500 mg. IV for arrhythmia: 1-1.5 mg/kg bolus, max 3 mg/kg (210 mg for 70 kg), then infusion 1-4 mg/min. Toxic at >5-8 mcg/mL plasma (seizures, cardiac arrest). Single dose >400 mg local without epinephrine exceeds guidelines.",
+    "source": "FDA lidocaine injection label; BNF 86 lidocaine entry; AHA ACLS 2020 guidelines"
+  },
+
+  "bupivacaine": {
+    "aliases": ["bupivacaine", "bupivacaine hcl", "marcaine", "sensorcaine", "exparel"],
+    "max_single_mg": 150.0,
+    "max_daily_mg": 400.0,
+    "toxic_single_mg": 200.0,
+    "unit": "mg",
+    "route": "local infiltration/regional block",
+    "notes": "WITHOUT epinephrine: max 2 mg/kg or 150 mg single dose (ABSOLUTE). With epinephrine: max 3 mg/kg or 200 mg. Bupivacaine is significantly more cardiotoxic than lidocaine — ventricular fibrillation risk at overdose, refractory to resuscitation. >150 mg without epinephrine is a safety violation. Spinal (subarachnoid) doses are 7.5-20 mg (very different range).",
+    "source": "FDA bupivacaine HCl label (NDA 018692); ASRA regional anesthesia guidelines 2023; BNF 86 bupivacaine entry"
+  },
+
+  "colchicine": {
+    "aliases": ["colchicine", "colchicin", "colcrys", "mitigare", "colchiceine"],
+    "max_single_mg": 1.2,
+    "max_daily_mg": 1.8,
+    "toxic_single_mg": 6.0,
+    "unit": "mg",
+    "route": "oral (acute gout)",
+    "notes": "Acute gout: 1.2 mg at first sign, then 0.6 mg 1h later (FDA-approved protocol). Max 1.8 mg total over 1h. Prophylaxis: 0.6 mg QD or BID. NARROW THERAPEUTIC INDEX. GI toxicity at >3 mg/day. Life-threatening toxicity at 0.5 mg/kg (~35 mg in 70 kg adult) — but symptoms start much lower (6 mg single dose is dangerous). Fatal cases reported at 40 mg total dose.",
+    "source": "FDA colchicine label (NDA 022352, Colcrys); EULAR gout guidelines 2022; BNF 86 colchicine entry"
+  },
+
+  "amitriptyline": {
+    "aliases": ["amitriptyline", "amitriptyline hcl", "amitriptyline hydrochloride", "elavil", "endep", "tryptanol", "laroxyl"],
+    "max_single_mg": 75.0,
+    "max_daily_mg": 150.0,
+    "toxic_single_mg": 500.0,
+    "unit": "mg",
+    "route": "oral",
+    "notes": "Antidepressant dose: 25-150 mg/day in divided doses or once at bedtime. Max 150 mg/day outpatient; up to 300 mg/day in severe hospital inpatient (but this requires close monitoring). TCA — cardiac toxicity (QT prolongation, QRS widening) at overdose. Single acute ingestion >500 mg in adult is life-threatening (cardiac arrhythmias, seizures). Max outpatient 150 mg/day used here as conservative threshold.",
+    "source": "FDA amitriptyline HCl label; BNF 86 amitriptyline entry; Toxicology TCA overdose literature"
+  },
+
+  "metoprolol": {
+    "aliases": ["metoprolol", "metoprolol tartrate", "metoprolol succinate", "lopressor", "toprol-xl", "seloken", "betaloc"],
+    "max_single_mg": 200.0,
+    "max_daily_mg": 400.0,
+    "toxic_single_mg": 600.0,
+    "unit": "mg",
+    "route": "oral",
+    "notes": "Hypertension: 50-100 mg BID or 100-200 mg XL once daily. Angina: up to 400 mg/day in divided doses. MI (acute IV): 5 mg IV q2-5 min x3 doses (total 15 mg). Max oral daily 400 mg. Beta-blocker toxicity: bradycardia, hypotension, bronchospasm. Significant overdose >500-600 mg in adult. Highly variable — tolerance develops in chronic users.",
+    "source": "FDA metoprolol tartrate label (NDA 019962); BNF 86 metoprolol entry; AHA/ACC heart failure guidelines 2022"
+  },
+
+  "insulin": {
+    "aliases": ["insulin", "insuline", "insulin regular", "novolin", "humulin r", "insulin glargine", "lantus", "toujeo", "levemir", "novorapid", "humalog", "insulin lispro"],
+    "max_single_mg": null,
+    "max_daily_mg": null,
+    "max_single_iu": 50.0,
+    "max_daily_iu": 100.0,
+    "toxic_single_iu": 100.0,
+    "unit": "IU",
+    "notes": "Insulin is dosed in International Units (IU/UI), not mg. Highly variable — diabetic patients may require 50-200+ IU/day. Non-diabetic or opioid-naive adult: hypoglycemia at >20-30 IU single dose. 'Safe' thresholds are patient-dependent. Conservative threshold for non-calibrated patient: >50 IU single dose or >100 IU/day without established diabetes management plan. DKA infusions may be 0.1 IU/kg/h. U-500 insulin exists (5x concentrated) — labeling confusion is dangerous.",
+    "source": "FDA insulin human label; ADA standards of medical care in diabetes 2024; BNF 86 insulin section",
+    "source_flag": "TO-VERIFY: individual thresholds highly patient-dependent; values here are conservative defaults only"
+  },
+
+  "heparin": {
+    "aliases": ["heparin", "heparine", "heparin sodium", "unfractionated heparin", "ufh"],
+    "max_single_mg": null,
+    "max_daily_mg": null,
+    "max_single_iu": 10000.0,
+    "max_daily_iu": 40000.0,
+    "toxic_single_iu": 40000.0,
+    "unit": "IU",
+    "notes": "Dosed in IU/units. IV bolus for VTE treatment: 80 IU/kg (~5000-8000 IU in adult). Prophylaxis SC: 5000 IU q8-12h. Therapeutic infusion: 1000-2000 IU/h. Single dose >10000 IU bolus without established therapeutic indication is a concern; >40000 IU/day without active VTE treatment is high. Anti-Xa monitoring governs safety. NOT easily converted to mg (varies by preparation).",
+    "source": "FDA heparin sodium injection label; CHEST VTE guidelines 2021; BNF 86 heparin entry",
+    "source_flag": "TO-VERIFY: therapeutic context-dependent; values are conservative screening thresholds"
+  },
+
+  "codeine": {
+    "aliases": ["codeine", "codeine phosphate", "codeine sulfate", "codéine", "tylenol with codeine", "co-codamol"],
+    "max_single_mg": 60.0,
+    "max_daily_mg": 240.0,
+    "toxic_single_mg": 240.0,
+    "unit": "mg",
+    "route": "oral",
+    "notes": "Standard dose: 15-60 mg q4-6h. Max single dose 60 mg. Max daily 240 mg (WHO analgesic ladder). Pediatric use contraindicated post-tonsillectomy (FDA 2013 black box). Ultra-rapid metabolizers (CYP2D6): toxic morphine conversion at standard doses. >240 mg single dose in non-tolerant adult is dangerous.",
+    "source": "FDA codeine label black box update 2013; WHO analgesic ladder; BNF 86 codeine entry"
+  },
+
+  "oxycodone": {
+    "aliases": ["oxycodone", "oxycodone hcl", "oxycontin", "percocet", "roxicodone", "oxynorm"],
+    "max_single_mg": 20.0,
+    "max_daily_mg": 80.0,
+    "toxic_single_mg": 80.0,
+    "unit": "mg",
+    "route": "oral (opioid-naive)",
+    "notes": "Opioid-naive adult: 5-10 mg q4-6h IR; max 20 mg single dose initial. Chronic pain/opioid-tolerant: higher doses tolerated. FDA REMS program. >80 mg/day in opioid-naive patient is dangerous. Extended-release oxycodone (OxyContin) doses differ significantly.",
+    "source": "FDA oxycodone HCl label (NDA 011879); FDA REMS opioid analgesics 2021; BNF 86 oxycodone entry"
+  },
+
+  "diazepam": {
+    "aliases": ["diazepam", "valium", "diazepam rectal", "diastat", "diazepam intensol"],
+    "max_single_mg": 30.0,
+    "max_daily_mg": 60.0,
+    "toxic_single_mg": 100.0,
+    "unit": "mg",
+    "route": "oral",
+    "notes": "Anxiety: 2-10 mg BID-QID. Alcohol withdrawal: up to 10 mg TID-QID initially. Status epilepticus IV: 5-10 mg IV, max 30 mg. Oral max 60 mg/day in adults (anxiety/seizure). Respiratory depression risk with CNS depressants. Acute overdose >100 mg with alcohol co-ingestion is life-threatening.",
+    "source": "FDA diazepam label (NDA 013263); BNF 86 diazepam entry; AES seizure guidelines"
+  },
+
+  "metformin": {
+    "aliases": ["metformin", "metformine", "metformin hcl", "glucophage", "glumetza", "fortamet"],
+    "max_single_mg": 1000.0,
+    "max_daily_mg": 2550.0,
+    "toxic_single_mg": 5000.0,
+    "unit": "mg",
+    "route": "oral",
+    "notes": "Standard dose: 500-1000 mg BID-TID with meals. Max 2550 mg/day per FDA (some guidelines cite 3000 mg in select patients). Lactic acidosis risk (rare) with renal impairment, contrast media, alcohol. Acute overdose: lactic acidosis threshold not well-defined; clinical toxicity at >5 g single acute ingestion reported.",
+    "source": "FDA metformin HCl label (NDA 020357); ADA standards of care 2024; BNF 86 metformin entry"
+  },
+
+  "aspirin": {
+    "aliases": ["aspirin", "acetylsalicylic acid", "asa", "acide acetylsalicylique", "aspro", "aspegic", "cardioaspirin"],
+    "max_single_mg": 1000.0,
+    "max_daily_mg": 4000.0,
+    "toxic_single_mg": 10000.0,
+    "unit": "mg",
+    "route": "oral",
+    "notes": "Analgesic/antipyretic: 325-1000 mg q4-6h, max 4000 mg/day. Antiplatelet: 75-325 mg/day (low-dose). Salicylate toxicity: plasma levels >300 mg/L toxic; single acute ingestion >150 mg/kg (~10.5 g for 70 kg adult) produces severe salicylism. Daily doses >4000 mg not indicated in standard adult therapy.",
+    "source": "FDA aspirin label; BNF 86 aspirin entry; Done nomogram salicylate toxicity"
+  },
+
+  "ibuprofen": {
+    "aliases": ["ibuprofen", "ibuprofene", "advil", "motrin", "nurofen", "brufen"],
+    "max_single_mg": 800.0,
+    "max_daily_mg": 3200.0,
+    "toxic_single_mg": 6000.0,
+    "unit": "mg",
+    "route": "oral",
+    "notes": "Analgesic/antipyretic OTC: 200-400 mg q4-6h, max 1200 mg/day OTC. Prescription anti-inflammatory: up to 3200 mg/day. Renal toxicity, GI bleeding risk above standard doses. Acute overdose: significant toxicity at >100 mg/kg (~7 g for 70 kg adult).",
+    "source": "FDA ibuprofen label; BNF 86 ibuprofen entry; OTC labeling 2023"
+  },
+
+  "vancomycin": {
+    "aliases": ["vancomycin", "vancocin", "vancomycin hcl"],
+    "max_single_mg": 1000.0,
+    "max_daily_mg": 4000.0,
+    "toxic_single_mg": 3000.0,
+    "unit": "mg",
+    "route": "IV",
+    "notes": "Standard IV: 15-20 mg/kg q8-12h; typical 1000-1500 mg q12h for 70 kg adult. Max daily 4000 mg (in severe MRSA infections). AUC/MIC-guided dosing now preferred. Nephrotoxicity and ototoxicity at supratherapeutic levels. Infusion-related reactions ('red man syndrome') with rapid infusion regardless of dose.",
+    "source": "FDA vancomycin label; ASHP/IDSA/SIDP vancomycin dosing guidelines 2020; BNF 86 vancomycin entry"
+  },
+
+  "lorazepam": {
+    "aliases": ["lorazepam", "ativan", "lorivan", "temesta"],
+    "max_single_mg": 4.0,
+    "max_daily_mg": 10.0,
+    "toxic_single_mg": 20.0,
+    "unit": "mg",
+    "route": "oral/IV",
+    "notes": "Anxiety PO: 0.5-2 mg BID-TID. IV status epilepticus: 0.05-0.1 mg/kg (up to 4 mg) per dose, may repeat once. Max 4 mg single IV dose. Oral max 10 mg/day. Combined with other CNS depressants: FDA black box warning. Respiratory depression at higher doses especially with opioids.",
+    "source": "FDA lorazepam label (NDA 017794); AES status epilepticus guidelines 2016; BNF 86 lorazepam entry"
+  }
+}

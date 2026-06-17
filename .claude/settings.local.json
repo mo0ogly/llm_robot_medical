@@ -18,7 +18,8 @@
       "mcp__mcp-registry__*",
       "mcp__scheduled-tasks__*",
       "mcp__7f3d25bd-0093-4c94-bf87-9c4a1960ce98__*",
-      "PowerShell(& \"C:\\\\Users\\\\pizzif\\\\Documents\\\\GitHub\\\\poc_medical\\\\aegis.ps1\" start frontend 2>&1)"
+      "PowerShell(& \"C:\\\\Users\\\\pizzif\\\\Documents\\\\GitHub\\\\poc_medical\\\\aegis.ps1\" start frontend 2>&1)",
+      "PowerShell(Get-Command ollama -ErrorAction SilentlyContinue)"
     ],
     "defaultMode": "bypassPermissions"
   },
