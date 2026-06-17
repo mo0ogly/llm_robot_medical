@@ -1,7 +1,7 @@
 # RESEARCH STATE — Etat partage de la recherche doctorale
 
 > **Fichier partage entre TOUTES les skills** (research-director, fiche-attaque, bibliography-maintainer, aegis-prompt-forge)
-> **Derniere MAJ** : 2026-06-17 (experimentalist — RR-FC-003 RESOLVED : H₁ SUPPORTED WEAK, ASR=6.67% Wilson [1.85%,21.32%], Sep(M)=0.0667 ; RR-FC-004 CREATED (shield delta) ; OMC Fusion P0-P4 COMPLETE (aegis-ccg dual-model reviewer, observability, routing, notifications))
+> **Derniere MAJ** : 2026-06-17 (experimentalist — RR-FC-003+004 RESOLVED : FC-003 H₁ SUPPORTED WEAK ASR=6.67%, FC-004 SHIELD_PARTIAL INCONCLUSIVE ASR=3.33% delta Fisher p≈0.50 ; C2 RENFORCE (evidence AEGIS directe) ; G-041 EVIDENCE_PARTIAL ; OMC Fusion P0-P4 COMPLETE)
 > **Mise a jour par** : experimentalist pipeline, session 2026-06-17
 
 ---
@@ -62,6 +62,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | `experiments/EXPERIMENT_REPORT_FC20260615.md` | 2026-06-16 | **TRAITE** | FC-20260615 CLOSED_SMOKE. N=2/chain, aegis_shield=True, 0/4 violations. Sep(M)=0 = artefact (N<<30). Hypothese : juge deterministe aveugle aux families rule_bypass/feedback. |
 | `experiments/EXPERIMENT_REPORT_FC20260616.md` | 2026-06-16 | **TRAITE** | FC-20260616 CLOSED_SMOKE. 3 runs (N=2/chain), aegis_shield=False. Signal : feedback_poisoning 50% (1/2) run 060532, confirme par family-aware rescore. Wilson CI [6.7%, 93.3%] — trop large pour claim formelle. → RR-FC-003 CREATED (N=30 feedback_poisoning sans shield). |
 | `experiments/EXPERIMENT_REPORT_FC-003.md` | 2026-06-17 | **TRAITE** | RR-FC-003 COMPLETE. H₁ SUPPORTED (WEAK). feedback_poisoning sans shield : ASR=6.67% (2/30), Wilson [1.85%, 21.32%], Sep(M)=0.0667 (N≥30, statistically_valid). Null control 0/30. SVC=0.3466 (LOW POTENTIAL, d3=0.70 d4=0.60 actifs). C2 renforce (evidence experimentale directe AEGIS). G-041 PARTIAL (RR-FC-004 requis pour delta shield). Spot-check humain : 2 violations a verifier manuellement (gate humain). |
+| `experiments/EXPERIMENT_REPORT_FC-004.md` | 2026-06-17 | **TRAITE** | RR-FC-004 COMPLETE. SHIELD_PARTIAL INCONCLUSIVE. feedback_poisoning avec shield : ASR=3.33% (1/30), Wilson [0.59%, 16.67%], Sep(M)=0.0333. Delta vs FC-003 : -3.34% (50% reduction nominale) mais Fisher p≈0.50 (non significatif). N=30 sous-puissant pour cet effet (besoin N≈200 pour 80% power). C2 RENFORCE : shield ne ramene pas ASR a 0%. G-041 : EVIDENCE_PARTIAL (recommandation : fermer). |
 
 ### Rapports fiche-attaque
 
@@ -146,7 +147,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | RR-RUN12-001 | Repositionnement δ³ vs P171 (Siu/Song) — note manuscrit Ch.5/Ch.7 | P0 | **RESOLVED** (commit 4bb7c12 2026-06-16) |
 | RR-RUN12-002 | MCP supply-chain Da Vinci validation (MC8/MC9) — protocol concu | P1 | **PENDING** (protocol commit be221f2, execution requiert accès Da Vinci ou proxy) |
 | RR-FC-003 | N=30 feedback_poisoning sans aegis_shield — confirmer signal 50% smoke | MOYENNE | **RESOLVED** (2026-06-17 : H₁ SUPPORTED WEAK, ASR=6.67% Wilson [1.85%,21.32%], Sep(M)=0.0667. Commit 22d14e2.) |
-| RR-FC-004 | feedback_poisoning AVEC aegis_shield=True — mesurer delta shield vs RR-FC-003 | HAUTE | **CREATED** (attend RR-FC-003 résultats — prêt à exécuter) |
+| RR-FC-004 | feedback_poisoning AVEC aegis_shield=True — mesurer delta shield vs RR-FC-003 | HAUTE | **RESOLVED** (2026-06-17 : SHIELD_PARTIAL INCONCLUSIVE. ASR=3.33%, delta non significatif Fisher p≈0.50. G-041 → EVIDENCE_PARTIAL. Commit suivant.) |
 
 ---
 
