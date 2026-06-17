@@ -7,8 +7,8 @@
 
 <div class="stat-grid">
   <div class="stat-card"><span class="stat-value">13</span><span class="stat-label">Agents publies</span></div>
-  <div class="stat-card"><span class="stat-value">278</span><span class="stat-label">Fichiers</span></div>
-  <div class="stat-card"><span class="stat-value">53 690</span><span class="stat-label">Lignes</span></div>
+  <div class="stat-card"><span class="stat-value">280</span><span class="stat-label">Fichiers</span></div>
+  <div class="stat-card"><span class="stat-value">54 089</span><span class="stat-label">Lignes</span></div>
   <div class="stat-card"><span class="stat-value">9</span><span class="stat-label">Phases pipeline</span></div>
 </div>
 
@@ -66,13 +66,13 @@
 
 - <span class="agent-badge agent-badge--collector">COLLECTOR</span> **Preseed et verifications anti-doublon**
 
-    8 fichiers &middot; 584 lignes.
+    9 fichiers &middot; 854 lignes.
 
     [:material-arrow-right: Ouvrir](collector/index.md)
 
 - <span class="agent-badge agent-badge--briefings">BRIEFINGS</span> **Briefings directeur (livrable Phase 6)**
 
-    8 fichiers &middot; 1 293 lignes.
+    9 fichiers &middot; 1 419 lignes.
 
     [:material-arrow-right: Ouvrir](briefings/index.md)
 
@@ -90,7 +90,7 @@
 
 - <span class="agent-badge agent-badge--memory">MEMORY</span> **Etat persistant inter-session**
 
-    1 fichiers &middot; 287 lignes.
+    1 fichiers &middot; 290 lignes.
 
     [:material-arrow-right: Ouvrir](memory/index.md)
 

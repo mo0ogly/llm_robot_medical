@@ -5,7 +5,7 @@
 !!! abstract "Agent `_staging/collector/`"
     Preseed JSON avec metadonnees avant integration corpus, verifications check_corpus_dedup (arXiv ID + cosine > 0.9).
 
-**8 fichiers** disponibles.
+**9 fichiers** disponibles.
 
 ## Liste complete
 
@@ -19,3 +19,4 @@
 | [`REPORT_PROMPT3_C6.md`](REPORT_PROMPT3_C6.md) | REPORT — Preseed Prompt 3 : C6 Medical Fine-Tuning | 66 |
 | [`REPORT_PROMPT4_RAG.md`](REPORT_PROMPT4_RAG.md) | COLLECTOR REPORT — Prompt 4 (RAG Defense) | 68 |
 | [`REPORT_PROMPT5_PEER_PRESERVATION.md`](REPORT_PROMPT5_PEER_PRESERVATION.md) | COLLECTOR REPORT — Preseed Prompt 5 : Peer-Preservation & Multi-Agent Safety | 67 |
+| [`RUN012_candidates_dedup_20260615.md`](RUN012_candidates_dedup_20260615.md) | RUN-012 — COLLECTOR Candidates + STEP 0 Dedup | 270 |

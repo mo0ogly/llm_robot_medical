@@ -5,13 +5,16 @@
 > Every agent MUST update this file LAST after completing work.
 
 ## Last Execution
-- **Run ID**: RUN-011
-- **Date**: 2026-06-10
-- **Mode**: incremental (single-paper integration, RR-RUN10-002 via research-director cycle)
+- **Run ID**: RUN-012
+- **Date**: 2026-06-15
+- **Mode**: incremental (prompt-injection literature sweep 2026-04..06, autonomous /loop)
 - **Status**: SUCCESS
-- **Duration**: orchestrator (STEP 0 dedup [NEW] + PDF download arXiv + pypdf verify 11p + ANALYST fiche + MANIFEST row + generate_chunks_run011_p153 + ingest offline + verify >=5 chunks + stale-mention cleanup)
-- **Papers added**: 1 (P153 Eiras et al. 2025, Know Thy Judge / safety judge robustness, ICBINB @ ICLR 2025, arXiv:2503.04474). 11 chunks ChromaDB aegis_bibliography (11056 -> 11067). δ³. Supports C2 (no score change). Resolves RR-RUN10-002.
-- **Previous**: RUN-010 (P146-P151, cleanup + reconciliation, 2026-05-31)
+- **Papers added**: 19 (P156-P174). ChromaDB aegis_bibliography 11067 -> 11277 (+210; 208 RUN-012 bibliography chunks, all >=9/P-ID verified via verify_chromadb_chunks.py). Every fiche cross-validated against PDF fulltext (0 hallucinated figures across 19). Offline ingest required (HF_HUB_OFFLINE=1 — TLS/mitmproxy bug on network model fetch, cf. feedback_mitmproxy_ssl_pin).
+- **Peer-reviewed venues confirmed in-PDF**: P159 ICML 2026 (PMLR 306), P164 KDD 2026 (DOI 10.1145/3770855.3818186); P167 ACM TOSEM submitted.
+- **Key findings**: (a) **SCOOPING** P171 Siu/Dawn Song "Formalizing LLM Agent Security" (4 contextual security properties + oracles) on the δ³ formal-framework angle -> AEGIS must reposition as operational+medical extension, NOT "first formal agent-security framework" (RR-RUN12-001, action P0). (b) P172 (Mouzouni, 10k trials, 9/12 dims null, only goal-reframing works) independently corroborates AEGIS reframe_goal operator (EXP-CATALOGUE). (c) C2 reinforced strongly (P169 PISmith + P173 PIArena: no PI defense dominates vs adaptive RL attack; P165/166/171 MCP). (d) D-016 NUANCED: P158 (channel-transition/GAR) supports mechanism, but P160 (ADVERSA) + P163 (cross-gen Gemma) find non-monotonicity / early-round concentration out of medical scope. P170 (TRACES) + P154 (DeepContext) are candidate multi-turn defenses. (e) MC8/MC9 (P165-168: MCP supply-chain -> Da Vinci). (f) C1/C3 P162 (Neutral Mask, sparse-autoencoder "disconnect-not-delete"), C5 P164 (PPL detect 8.7%), C7 P159/P161.
+- **Conjecture scores**: NO threshold crossings (HUMILITY GATE); reinforcements only (C1/C2/C3 saturated, C7 9.5, C5 9). Full CONJECTURES_TRACKER RUN-012 rows pending consolidation step 3.
+- **Next free P-ID**: P175. **Next free D-ID**: D-030.
+- **Previous**: RUN-011 (P153 Eiras, 2026-06-10); RUN-010 (P146-P151, 2026-05-31).
 
 ### RUN-010 details (literature_for_rag cleanup + integration)
 - **P146** arXiv:2302.12173 — Greshake et al. 2023, Indirect Prompt Injection (FOUNDER IPI). δ¹,δ². C2 supported. 10 chunks. prompt_injection. **Comble trou critique Ch.2** (papier fondateur IPI manquait au corpus).

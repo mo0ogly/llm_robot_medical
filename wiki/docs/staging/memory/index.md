@@ -11,4 +11,4 @@
 
 | Fichier | Titre | Lignes |
 |---------|-------|-------:|
-| [`MEMORY_STATE.md`](MEMORY_STATE.md) | MEMORY_STATE — Bibliography System Persistent Memory | 287 |
+| [`MEMORY_STATE.md`](MEMORY_STATE.md) | MEMORY_STATE — Bibliography System Persistent Memory | 290 |

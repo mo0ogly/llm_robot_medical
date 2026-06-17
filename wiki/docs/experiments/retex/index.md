@@ -17,6 +17,7 @@ Briefings synthetiques produits apres chaque RUN par `/bibliography-maintainer` 
 - [DIRECTOR_BRIEFING_RUN009](briefings/DIRECTOR_BRIEFING_RUN009.md)
 - [DIRECTOR_BRIEFING_RUN010](briefings/DIRECTOR_BRIEFING_RUN010.md)
 - [DIRECTOR_BRIEFING_RUN011](briefings/DIRECTOR_BRIEFING_RUN011.md)
+- [DIRECTOR_BRIEFING_RUN012](briefings/DIRECTOR_BRIEFING_RUN012.md)
 - [DIRECTOR_BRIEFING_VERIFICATION_DELTA3_20260411](briefings/DIRECTOR_BRIEFING_VERIFICATION_DELTA3_20260411.md)
 
 ## Memory State
@@ -52,6 +53,7 @@ Briefings synthetiques produits apres chaque RUN par `/bibliography-maintainer` 
 
 ## Scoring reports `/research-director`
 
+- [AUDIT_SESSION-004_scoring-report_20260615_COMPLETE](scoring-reports/AUDIT_SESSION-004_scoring-report_20260615_COMPLETE.md)
 - [AUDIT_SESSION-20260613-NEXT_scoring-report_2026-06-13_COMPLETE](scoring-reports/AUDIT_SESSION-20260613-NEXT_scoring-report_2026-06-13_COMPLETE.md)
 - [AUDIT_SESSION-CATALOGUE_scoring-report_20260615_COMPLETE](scoring-reports/AUDIT_SESSION-CATALOGUE_scoring-report_20260615_COMPLETE.md)
 - [AUDIT_SESSION_2026-05-20_G058VAL_scoring-report_COMPLETE](scoring-reports/AUDIT_SESSION_2026-05-20_G058VAL_scoring-report_COMPLETE.md)
