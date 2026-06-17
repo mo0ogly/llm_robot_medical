@@ -150,6 +150,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | RR-FC-004 | feedback_poisoning AVEC aegis_shield=True — mesurer delta shield vs RR-FC-003 | HAUTE | **RESOLVED** (2026-06-17 : SHIELD_PARTIAL INCONCLUSIVE. ASR=3.33%, delta non significatif Fisher p≈0.50. G-041 → EVIDENCE_PARTIAL. Commit c7902e7.) |
 | RR-FC-005 | N=30 × 3 chains (multi_step_hijack, declarative_bypass, ghost_tool) shield=OFF — baseline C1/C7 | HAUTE | **RESOLVED** (2026-06-17 : H₁ STRONGLY SUPPORTED, ASR=56.7% Wilson [46.4%,66.4%], Sep(M)=0.5667, Cohen h=1.705, null=0/90. Commit pending.) |
 | RR-FC-006 | Meme 3 chains, shield=ON — delta shield C7 | HAUTE | **RESOLVED** (2026-06-17 : SHIELD_EFFECTIVE. ASR=3.3% Wilson [1.1%,9.3%], delta -53.4pp, Fisher p<<0.001, h=1.339. C7 reoriente : adaptive attacks needed for full validation. Commit pending.) |
+| RR-FC-007 | Adaptive OODA N=30, shield=ON — test C7 core | HAUTE | **RESOLVED** (2026-06-17 : SHIELD_ROBUST. ASR_adaptive=0.0% Wilson [0.0%,11.4%], null=0/30, Sep(M)=ARTEFACT, Cohen h=-0.365. Protocole OODA max_turns=5 insuffisant pour valider C7 : feedback ambigu (shield vs RLHF indistinguables), max_turns trop court. C7 non validee par ce protocole. Rapport: EXPERIMENT_REPORT_FC-007.md.) |
 
 ---
 
@@ -179,7 +180,7 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | C4 | 9/10 | Fortement supportee | Stable — F56 (Drift Rate) draft produit, manque calibration empirique (RR-DA-004) |
 | C5 | **8.5/10** | Fortement supportee | **+0.5 Deep-Analysis P0** — P024 limites cosinus (Sep(M) > cosine brut) + P044 limites juges embeddings |
 | C6 | **10/10** | VALIDEE | RUN-006 (P107-P110) + VERIFICATION_DELTA3 (P131 Weissman). P029 94.4% (102/108) ASR medical JAMA (Lee et al. 2025) |
-| C7 | 9.5/10 | CANDIDATE A VALIDATION | Corrige 2026-06-10 (audit CONTRA-5) : 8/10 etait perime — CONJECTURES_TRACKER (RUN-005) et briefing RUN-010 disent 9.5/10. Protocole adaptatif concu (2026-04-06), execution pendante ; manque papers LRM (RR-RUN4-003) |
+| C7 | 9.5/10 | CANDIDATE A VALIDATION | Corrige 2026-06-10 (audit CONTRA-5) : 8/10 etait perime — CONJECTURES_TRACKER (RUN-005) et briefing RUN-010 disent 9.5/10. FC-005 (ASR=56.7% no-shield) + FC-006 (ASR=3.3% static shield) etablissent le controle. FC-007 (OODA-5 adaptatif, shield=ON) : ASR=0.0% Wilson [0.0%,11.4%] — SHIELD_ROBUST pour cet adversaire. Limite protocole FC-007 : feedback ambigu shield/RLHF, max_turns=5 court. C7 non evaluable par OODA-5 : requiert ASIDE white-box (RR-FC-008, G-019) ou OODA-15. Statut inchange. |
 | C8 | 7/10 | **CANDIDATE** | Peer-preservation compromet le shutdown multi-agent. Supportee par P114-P116. Promotion a 8/10 conditionnee a la replication independante de P086 (G-028) + test en contexte medical (G-031). Voir CONJECTURES_TRACKER.md. |
 
 ---

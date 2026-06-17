@@ -27,6 +27,8 @@ const EXEMPT_PATTERNS = [
   /(^|\/)chroma_db\//,
   /(^|\/)\.git\//,
   /(^|\/)logs\//,
+  // Campaign manifest: growing historical dataset (not code), exempt per programming.md rule
+  /(^|\/)research_archive\/experiments\/campaign_manifest\.json$/,
 
   // Thesis manuscript (explicit exception per programming.md)
   /(^|\/)research_archive\/manuscript\//,
