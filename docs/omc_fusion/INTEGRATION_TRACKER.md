@@ -63,11 +63,11 @@ research-director · aegis-research-lab · bibliography-maintainer · fiche-atta
 ### A2. Phase P1 — Notifications (Facile)
 | # | Element | OMC source ref | Target (AEGIS) | Status | Improvement vs source |
 |---|---------|----------------|----------------|--------|-----------------------|
-| P1.1 | Dispatcher (Telegram/Discord/webhook) | `src/notifications/dispatcher.ts` | `backend/notifications/dispatcher.py` (httpx, async) | `[ ]` | Python/httpx, `asyncio.gather`, timeout 15s |
-| P1.2 | Config loader | `src/notifications/config.ts` | `backend/notifications/config.py` (reads `backend/.env`) | `[ ]` | Uses `env_loader.py` (project convention) |
-| P1.3 | Event types | `src/notifications/types.ts` | map to `_staging/signals/` events | `[ ]` | AEGIS events: CAMPAIGN_COMPLETE, ESCALADE_HUMAINE, CONJECTURE_VALIDATED |
-| P1.4 | Trigger wiring | `src/hooks/session-end/` | signal-watcher in backend / skill COMPLETE phase | `[ ]` | No Claude Code hook dep; native AEGIS signal hook |
-| P1.G | GATE: real ping sent on a test signal | n/a | — | `[ ]` | secrets in `.env`, never committed |
+| P1.1 | Dispatcher (Telegram/Discord/webhook) | `src/notifications/dispatcher.ts` | `backend/notifications/dispatcher.py` | `[x]` | httpx async, `asyncio.gather`, timeout, secret redaction, severity filter |
+| P1.2 | Config loader | `src/notifications/config.ts` | `backend/notifications/config.py` | `[x]` | Reads `NOTIFY_*` from `.env` via `env_loader`; dry-run when unconfigured |
+| P1.3 | Event types + signal mapping | `src/notifications/types.ts` | `backend/notifications/events.py` | `[x]` | AEGIS events + longest-prefix signal->event; unknown -> GENERIC (never dropped) |
+| P1.4 | Trigger wiring | `src/hooks/session-end/` | `backend/notifications/signal_watcher.py` (CLI) | `[x]` | Decoupled watcher (no emitter edits); auto-wire into director COMPLETE deferred (S5 needs user OK) |
+| P1.G | GATE: compile + dry-run + redact + severity + watcher idempotence | n/a | tested OK | `[x]` | PASS (dry-run). Real ping pending a token. httpx pinned; module README added |
 
 ### A3. Phase P2 — Cost / HUD observability (Moyen)
 | # | Element | OMC source ref | Target (AEGIS) | Status | Improvement vs source |
@@ -135,6 +135,6 @@ P0 is the foundation (everything else is independent of each other except P4 bui
 - **Content filter**: never read sensitive AEGIS files (`scenarios.py`, `prompts/*.json` template field, etc.).
 
 ## E. SESSION RECOVERY
-**Last completed step**: P0 COMPLETE — plugin builds & validates (9 skills, 9 shims, 2 manifests, declarative, no Node). Frontmatter anomaly fixed (`command:`->`name:` in 3 skills). `.claude/skills/` sources intact.
-**Next step**: P1.1 — `backend/notifications/dispatcher.py` (multi-channel, httpx, config from `.env`).
+**Last completed step**: INCIDENT RESOLVED — committed merge conflict (branch `claude/nostalgic-lamport`) in `server.py` (1 block) + `attack_catalog.py` (6 blocks), resolved keep-ours via `scripts/resolve_merge_conflict.py`. Backend compiles; catalog loads 126 payloads / 3 categories. Pre-existing taxonomy warnings (gap4_*/medicare_*) are non-blocking and unrelated. (Prior: P0 + P1 COMPLETE.)
+**Next step**: P2.1 — `backend/observability/cost_tracker.py` (now unblocked).
 **Resume command**: "Continue OMC fusion from docs/omc_fusion/INTEGRATION_TRACKER.md"

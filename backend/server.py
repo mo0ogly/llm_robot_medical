@@ -402,7 +402,6 @@ async def cyber_query_stream(req: CyberQueryRequest, request: Request):
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
-<<<<<<< HEAD
 # === RED TEAM ROUTES (split into backend/routes/ modules) ===
 from routes.config_routes import router as config_router
 from routes.template_routes import router as template_router
@@ -441,103 +440,6 @@ app.include_router(semantic_router)
 # delivers them to connected SSE clients in near real-time.
 @app.on_event("startup")
 async def _start_redteam_events_watcher() -> None:
-=======
-# === RED TEAM ORCHESTRATOR ENDPOINTS ===
-from pydantic import BaseModel as PydanticBaseModel
-from attack_catalog import get_catalog_by_category, get_templates_full, get_template_help, get_all_help
-
-
-class RedTeamAttackRequest(PydanticBaseModel):
-    attack_type: str
-    attack_message: str
-    levels: Optional[dict] = None
-
-
-_orchestrator = None
-
-_custom_catalog = None
-
-def _get_catalog():
-    """Return attack catalog from the single source of truth (attack_catalog.py)."""
-    global _custom_catalog
-    if _custom_catalog is None:
-        import copy
-        _custom_catalog = copy.deepcopy(get_catalog_by_category())
-    return _custom_catalog
-
-
-def _get_orchestrator(levels=None, lang="en"):
-    global _orchestrator
-    if levels or lang != "en":
-        from orchestrator import RedTeamOrchestrator
-        return RedTeamOrchestrator(levels=levels, lang=lang)
-    if _orchestrator is None:
-        from orchestrator import RedTeamOrchestrator
-        _orchestrator = RedTeamOrchestrator(lang=lang)
-    return _orchestrator
-
-
-@app.get("/api/redteam/catalog")
-async def get_attack_catalog():
-    """Return attack payloads grouped by category (legacy format, 51 payloads)."""
-    return _get_catalog()
-
-
-@app.get("/api/redteam/templates")
-async def get_attack_templates():
-    """Return all 52 attack templates with full metadata (name, category, chain_id, variables)."""
-    return get_templates_full()
-
-
-@app.post("/api/redteam/catalog/{category}")
-async def add_attack(category: str, body: dict):
-    """Ajoute une attaque au catalogue."""
-    catalog = _get_catalog()
-    message = body.get("message", "")
-    if category not in catalog:
-        catalog[category] = []
-    catalog[category].append(message)
-    return {"status": "added", "category": category, "total": len(catalog[category])}
-
-
-@app.get("/api/redteam/templates/{template_id}/help")
-async def get_template_help_endpoint(template_id: str):
-    """Return the AEGIS audit MD help for a specific template."""
-    content = get_template_help(template_id)
-    if not content:
-        return {"error": "Template help not found", "template_id": template_id}
-    return {"template_id": template_id, "help": content}
-
-
-@app.get("/api/redteam/templates/help/all")
-async def get_all_template_help():
-    """Return all AEGIS audit MD help content, keyed by template ID."""
-    return get_all_help()
-
-
-@app.delete("/api/redteam/catalog/{category}/{index}")
-async def delete_attack(category: str, index: int):
-    """Supprime une attaque du catalogue."""
-    catalog = _get_catalog()
-    if category in catalog and 0 <= index < len(catalog[category]):
-        removed = catalog[category].pop(index)
-        return {"status": "deleted", "removed": removed}
-    from fastapi.responses import JSONResponse
-    return JSONResponse(status_code=404, content={"error": "Attack not found"})
-
-
-@app.post("/api/redteam/catalog/import")
-async def import_catalog(body: dict):
-    """Importe un catalogue complet (remplace)."""
-    global _custom_catalog
-    _custom_catalog = body.get("catalog", {})
-    return {"status": "imported", "categories": list(_custom_catalog.keys())}
-
-
-@app.post("/api/redteam/attack")
-async def run_single_attack(request: RedTeamAttackRequest, lang: str = "en"):
-    """Exécute une attaque unique et retourne le résultat scoré."""
->>>>>>> claude/nostalgic-lamport
     try:
         from redteam_events import start_watcher
         start_watcher()
