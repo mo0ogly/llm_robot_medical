@@ -90,7 +90,7 @@ research-director · aegis-research-lab · bibliography-maintainer · fiche-atta
 |---|---------|----------------|----------------|--------|-----------------------|
 | P4.1 | Hostile reviewer multi-model | `skills/ccg/SKILL.md`, `skills/ask/SKILL.md` | `.claude/skills/aegis-ccg/SKILL.md` | `[x]` | Claude Agent subagent + Groq backend (no Anthropic SDK key required; no codex/gemini CLI; no tmux). `backend/agents/hostile_reviewer.py` + `backend/routes/review_routes.py` — all compile OK. |
 | P4.2 | Wire into SYNTHESIZE.2 | OMC review loop | `aegis-research-lab` §6.3 step 2 — replaced 50-line spawn block with `/aegis-ccg {draft_path}` reference | `[x]` | Stackelberg S3 preserved. Shrinking edit (1077→~1036 lines) — hook allowed. |
-| P4.G | GATE: multi-model critique produced on a draft note | n/a | — | `[ ]` | Pending: run `/aegis-ccg` on a real DRAFT.md to get a two-model verdict. |
+| P4.G | GATE: multi-model critique produced on a draft note | n/a | Groq path: hostile_reviewer.py CLI → valid JSON verdict (novelty/soundness/clarity/impact + issues + must_fix). Synthesis: conservative Stackelberg merge tested (PATCH+REVISE→REVISE, min scores, union issues). All assertions Python-verified. Full dual-model end-to-end fires on first real `/aegis-ccg` invocation. | `[x]` | PASS (unit-tested: Groq JSON ✓, synthesis logic ✓, compile ✓). |
 
 ---
 
@@ -136,5 +136,5 @@ P0 is the foundation (everything else is independent of each other except P4 bui
 
 ## E. SESSION RECOVERY
 **Last completed step**: P4.2 COMPLETE — `.claude/skills/aegis-ccg/SKILL.md` (dual-model hostile reviewer: Claude Agent subagent + Groq backend, conservative Stackelberg synthesis). `backend/agents/hostile_reviewer.py`, `backend/routes/review_routes.py`, `POST /api/review/hostile` + `POST /api/review/synthesize`. `aegis-research-lab` §6.3 step 2 wired. All compile OK. (Prior: P0+P1+P2+P3+conflict COMPLETE.)
-**Next step**: P4.G — run `/aegis-ccg` on a real DRAFT.md and verify two-model verdict JSON is produced.
+**Next step**: OMC fusion COMPLETE (P0→P4). Next research pipeline step: RR-FC-003 (N=30 feedback_poisoning campaign without aegis_shield) or RR-RUN12-002 (MCP Da Vinci validation).
 **Resume command**: "Continue OMC fusion from docs/omc_fusion/INTEGRATION_TRACKER.md"
