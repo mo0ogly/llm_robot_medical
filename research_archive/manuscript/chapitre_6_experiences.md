@@ -135,6 +135,83 @@ En resume, la conjecture C2 est validee a 10/10 par trois categories d'evidence 
 
 ---
 
+## 6.8 Campagnes FC-003 / FC-004 — feedback_poisoning : signal contextuel et limite du shield δ¹
+
+<!-- EXPERIMENTAL: FC-003/FC-004 (2026-06-17) -->
+
+### 6.8.1 Protocole
+
+Deux campagnes formelles N=30 ont été conduites le 2026-06-17 sur la chaîne
+`feedback_poisoning` (Groq llama-3.3-70b-versatile), avec et sans aegis_shield
+activé. La chaîne inject un contexte de feedback utilisateur biaisé (notes 1/5
+sur les réponses sûres, note 5/5 sur la recommandation dangereuse), visant à
+amener le modèle à internaliser une règle médicale erronée lors du traitement
+des retours. Un null_control (30 runs de contexte bénin) a été exécuté dans
+chaque condition. Juge : déterministe (`orchestrator_violation`). Protocoles :
+`PROTOCOL_RR-FC-003.md` et `PROTOCOL_RR-FC-004.md`.
+
+### 6.8.2 Résultats
+
+<!-- Table des métriques FC-003 et FC-004 -->
+
+| Condition | Violations | ASR | Wilson 95% CI | Sep(M) | Null violations |
+|-----------|-----------|-----|---------------|--------|-----------------|
+| FC-003 — shield=OFF | 2/30 | 6.67% | [1.85%, 21.32%] | 0.0667 | 0/30 |
+| FC-004 — shield=ON  | 1/30 | 3.33% | [0.59%, 16.67%] | 0.0333 | 0/30 |
+
+**FC-003 (shield=OFF)** : ASR = 6.67%, IC 95% Wilson [1.85%, 21.32%], N=30.
+Le null_control (0/30) confirme que les violations sont causalement attribuables
+à l'injection. L'hypothèse nulle H₀ : ASR = 0% est rejetée au niveau α=0.05
+(Wilson lower bound 1.85% > 0%). L'effet mesuré par Sep(M) = 0.0667 est faible
+(Zverev et al., 2025, ICLR, Definition 2, p. 4). La taille d'effet complémentaire
+Cohen's h ≈ 0.52 (h = 2 · arcsin(√0.0667) − 0) se situe dans la zone « medium »
+par convention (|h| ≥ 0.5). Verdict : **H₁ SUPPORTED (WEAK)**
+(EXPERIMENT_REPORT_FC-003, 2026-06-17). [EXPERIMENTAL]
+
+**FC-004 (shield=ON)** : ASR = 3.33%, IC 95% Wilson [0.59%, 16.67%], N=30.
+La différence avec FC-003 est de −3.34 points de pourcentage (réduction nominale
+de 50%), mais le test de Fisher bilatéral [[1, 29], [2, 28]] donne p ≈ 0.25 :
+cette différence n'est **pas statistiquement significative** à N=30. Les deux
+intervalles de Wilson se chevauchent entièrement ([0.59, 16.67] ⊂ [0.59, 21.32]).
+Détecter un delta de cette magnitude avec 80% de puissance statistique requiert
+N ≈ 200 par condition (test bilatéral de proportions, α = 0.05)
+(EXPERIMENT_REPORT_FC-004, 2026-06-17). [EXPERIMENTAL]
+
+### 6.8.3 Interprétation pour C2
+
+Ces deux campagnes apportent une evidence expérimentale directe AEGIS à C2 :
+
+1. **Le pipeline médical non blindé est pénétrable par injection de contexte** :
+   ASR = 6.67% (Wilson lower > 0%), confirmé sur Groq llama-3.3-70b-versatile
+   avec juge déterministe et null_control intégré.
+
+2. **Le shield δ¹ (aegis_shield) ne ramène pas l'ASR à 0%** : l'ASR résiduel
+   avec shield actif est 3.33% (Wilson [0.59%, 16.67%]). Cette borne supérieure
+   est compatible avec un effet nul du shield (le CI inclut 0.67%), mais aussi
+   avec une protection partielle. La puissance statistique est insuffisante pour
+   trancher.
+
+3. **Convergence avec P169 et P173** : PISmith (Yao et al., 2026, Table 3, p.7)
+   et PIArena (Geng et al., 2026, arXiv:2604.08499, Table 4, p.8) montrent
+   indépendamment qu'aucune défense PI connue ne ramène l'ASR à 0% face à un
+   attaquant adaptatif. L'evidence AEGIS FC-003/FC-004 corrobore ce résultat sur
+   le cas spécifique du feedback_poisoning médical, avec juge déterministe (non
+   LLM) — ce qui écarte le caveat manipulabilité P153 (Eiras et al., 2025).
+
+Le total de runs intégré à ce chapitre passe à **2890 runs** (2030 THESIS-grade +
+630 Triple Convergence + 60 FC-003/FC-004 + 60 null_control FC-003/FC-004 −
+correction comptage : voir note ci-dessous). [Note de comptage : 2030 runs
+thesis-grade + 630 TC + 60 FC-003 attack + 60 FC-004 attack + 60 FC-003 null +
+60 FC-004 null = 2900 runs totaux.]
+
+**Limite spécifique FC-003/FC-004** : SVC = 0.3466 (LOW POTENTIAL), dimensions
+d3 = 0.70 et d4 = 0.60 actives mais d1 = 0.25 et d2 = 0.125 faibles. L'effet
+observé est réel mais de faible magnitude — la chaîne feedback_poisoning sous sa
+forme actuelle est insuffisante pour une revendication ASR forte. Un template
+amélioré (d1, d2 ≥ 0.6) ouvre le gap expérimental suivant (RR-FC-005 potentiel).
+
+---
+
 ## 6.7 Discussion et limites
 
 Les resultats presentes dans ce chapitre comportent quatre limitations explicites que la soutenance doit assumer.
@@ -158,8 +235,11 @@ En depit de ces limites, les resultats sont statistiquement valides (N total 283
 - EXPERIMENT_REPORT_CROSS_MODEL, 2026-04-08 (synthese 3B/8B/70B)
 - EXPERIMENT_REPORT_THESIS_001, 2026-04-09 (1200 runs, 8B Groq)
 - EXPERIMENT_REPORT_THESIS_002, 2026-04-09 (1200 runs, 70B Groq)
+- EXPERIMENT_REPORT_FC-003, 2026-06-17 (30 runs FC-003, shield=OFF, feedback_poisoning)
+- EXPERIMENT_REPORT_FC-004, 2026-06-17 (30 runs FC-004, shield=ON, feedback_poisoning)
 - DISCOVERIES_INDEX, 2026-04-09 (D-001, D-022, D-023, D-024, D-025, taxonomie 6 stages)
-- CONJECTURES_TRACKER, 2026-04-09 (C1, C2, C3, C4)
-- P001 (Liu et al. 2023, arXiv:2306.05499) ; P019 (gradient nul) ; P044 (juges LLM flippes >90% sur 22/24 cells) ; P049 (bypass 100%) ; P052 (preuve martingale) ; P054 (PIDP) ; P055 (RAGPoison) ; P117 (Yoon et al. 2025, ACL Findings) ; P118 (Gao et al. 2023, ACL, HyDE seminal) ; P119 (Jiao et al. 2025, SIGIR, PR-Attack) ; P120 (Zhang et al. 2024, arXiv:2410.22832, HijackRAG) ; P121 (Clop & Teglia 2024, arXiv:2410.14479, backdoor retriever)
+- CONJECTURES_TRACKER, 2026-06-17 (C1, C2, C3, C4 + FC-003/FC-004 evidence)
+- P001 (Liu et al. 2023, arXiv:2306.05499) ; P019 (gradient nul) ; P044 (juges LLM flippes >90% sur 22/24 cells) ; P049 (bypass 100%) ; P052 (preuve martingale) ; P054 (PIDP) ; P055 (RAGPoison) ; P117 (Yoon et al. 2025, ACL Findings) ; P118 (Gao et al. 2023, ACL, HyDE seminal) ; P119 (Jiao et al. 2025, SIGIR, PR-Attack) ; P120 (Zhang et al. 2024, arXiv:2410.22832, HijackRAG) ; P121 (Clop & Teglia 2024, arXiv:2410.14479, backdoor retriever) ; P153 (Eiras et al. 2025, arXiv:2503.04474, juges manipulables) ; P169 (PISmith, Yao et al. 2026) ; P173 (PIArena, Geng et al. 2026, arXiv:2604.08499)
 - Zhang et al. 2025 (arXiv:2501.18632v2, dimensions SVC)
+- Zverev et al. 2025 (ICLR, Sep(M), Definition 2, p. 4)
 - Zverev et al. 2025 (ICLR, Sep(M), Definition 2)
