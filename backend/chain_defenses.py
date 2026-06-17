@@ -364,6 +364,91 @@ def defend_chain(chain_id: str, payload: str, context: Optional[dict] = None) ->
     return defense.check(payload, context)
 
 
+def defend_transcript(
+    chain_id: str,
+    transcript,
+    forbidden_markers: Optional[List[str]] = None,
+    context: Optional[dict] = None,
+) -> DefenseResult:
+    """δ² multi-turn behavioural defense (RR-RUN4-004).
+
+    Runs the deterministic black-box MultiTurnDriftMonitor over a conversation
+    transcript and maps its verdict to a DefenseResult. Complements the
+    single-response per-chain defenses (defend_chain) and the δ³ output oracle
+    (validate_output_cot) with a stateful multi-turn signal — the production,
+    API-only adaptation of TRACES (P170)/DeepContext (P154)/GAR (P158), which are
+    white-box and infeasible on a hosted provider (Groq). No LLM judge (F73).
+
+    Args:
+        chain_id: chain identifier (logging/context only).
+        transcript: ordered turns; each item is a Turn, a (user_ask, response)
+            pair, or a dict with keys {user_ask|user|prompt} and
+            {agent_response|response|content}.
+        forbidden_markers: scenario-specific tokens whose appearance is a hard leak.
+        context: reserved for symmetry with defend_chain (unused).
+
+    Returns:
+        DefenseResult: blocked=True only on HARD codes (MT_FORBIDDEN_LEAK,
+        MT_REFUSAL_COLLAPSE). MT_BOUNDARY_EROSION is a non-blocking warning
+        (severity 0.4) surfaced in details for review.
+    """
+    from backend.red_team.multiturn_drift_monitor import (
+        DriftConfig,
+        MultiTurnDriftMonitor,
+        Turn,
+    )
+
+    turns: List = []
+    for item in transcript or []:
+        if isinstance(item, Turn):
+            turns.append(item)
+        elif isinstance(item, dict):
+            ua = item.get("user_ask") or item.get("user") or item.get("prompt") or ""
+            ar = (
+                item.get("agent_response")
+                or item.get("response")
+                or item.get("content")
+                or ""
+            )
+            turns.append(Turn(user_ask=ua, agent_response=ar))
+        elif isinstance(item, (tuple, list)) and len(item) == 2:
+            turns.append(Turn(user_ask=str(item[0]), agent_response=str(item[1])))
+        else:
+            turns.append(Turn(user_ask="", agent_response=str(item)))
+
+    cfg = DriftConfig(forbidden_markers=tuple(forbidden_markers or ()))
+    result = MultiTurnDriftMonitor(cfg).analyze(turns)
+
+    hard = {"MT_FORBIDDEN_LEAK", "MT_REFUSAL_COLLAPSE"}
+    severity_map = {
+        "MT_FORBIDDEN_LEAK": 1.0,
+        "MT_REFUSAL_COLLAPSE": 0.9,
+        "MT_BOUNDARY_EROSION": 0.4,
+    }
+    blocked = any(c in hard for c in result.violation_codes)
+    severity = max(
+        (severity_map.get(c, 0.0) for c in result.violation_codes), default=0.0
+    )
+    reason = ",".join(result.violation_codes) if result.violation_codes else "no multi-turn drift"
+    if result.violation_codes:
+        logger.info(
+            "defend_transcript[%s]: %s (crossover=%s)",
+            chain_id, reason, result.crossover_turn,
+        )
+    return DefenseResult(
+        blocked=blocked,
+        reason=reason,
+        severity=severity,
+        details={
+            "violation_codes": result.violation_codes,
+            "crossover_turn": result.crossover_turn,
+            "refusal_trajectory": result.metadata.get("refusal_trajectory"),
+            "forbidden_turns": result.metadata.get("forbidden_turns"),
+            "n_turns": len(turns),
+        },
+    )
+
+
 # --- CLI test ---
 if __name__ == "__main__":
     # Test HyDE defense
