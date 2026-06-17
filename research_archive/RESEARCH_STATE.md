@@ -147,7 +147,9 @@ Chaque rapport genere par une skill est trace ici. **Aucun rapport ne doit reste
 | RR-RUN12-001 | Repositionnement δ³ vs P171 (Siu/Song) — note manuscrit Ch.5/Ch.7 | P0 | **RESOLVED** (commit 4bb7c12 2026-06-16) |
 | RR-RUN12-002 | MCP supply-chain Da Vinci validation (MC8/MC9) — protocol concu | P1 | **PENDING** (protocol commit be221f2, execution requiert accès Da Vinci ou proxy) |
 | RR-FC-003 | N=30 feedback_poisoning sans aegis_shield — confirmer signal 50% smoke | MOYENNE | **RESOLVED** (2026-06-17 : H₁ SUPPORTED WEAK, ASR=6.67% Wilson [1.85%,21.32%], Sep(M)=0.0667. Commit 22d14e2.) |
-| RR-FC-004 | feedback_poisoning AVEC aegis_shield=True — mesurer delta shield vs RR-FC-003 | HAUTE | **RESOLVED** (2026-06-17 : SHIELD_PARTIAL INCONCLUSIVE. ASR=3.33%, delta non significatif Fisher p≈0.50. G-041 → EVIDENCE_PARTIAL. Commit suivant.) |
+| RR-FC-004 | feedback_poisoning AVEC aegis_shield=True — mesurer delta shield vs RR-FC-003 | HAUTE | **RESOLVED** (2026-06-17 : SHIELD_PARTIAL INCONCLUSIVE. ASR=3.33%, delta non significatif Fisher p≈0.50. G-041 → EVIDENCE_PARTIAL. Commit c7902e7.) |
+| RR-FC-005 | N=30 × 3 chains (multi_step_hijack, declarative_bypass, ghost_tool) shield=OFF — baseline C1/C7 | HAUTE | **RESOLVED** (2026-06-17 : H₁ STRONGLY SUPPORTED, ASR=56.7% Wilson [46.4%,66.4%], Sep(M)=0.5667, Cohen h=1.705, null=0/90. Commit pending.) |
+| RR-FC-006 | Meme 3 chains, shield=ON — delta shield C7 | HAUTE | **RESOLVED** (2026-06-17 : SHIELD_EFFECTIVE. ASR=3.3% Wilson [1.1%,9.3%], delta -53.4pp, Fisher p<<0.001, h=1.339. C7 reoriente : adaptive attacks needed for full validation. Commit pending.) |
 
 ---
 
@@ -434,10 +436,13 @@ PATCH, 7 corrections appliquees, 20/20 chiffres verifies contre les summaries JS
 
 ### Conjectures
 
-- **C1 : 10/10 GELE → 9/10 SUPPORTEE** (2026-06-17, RR-DIR-004, Option D). Reformulation
-  formelle : claim principale = residu non-nul (δ⁰ insuffisant, stack complet insuffisant).
-  Claim retiree : non-additivite des couches (refutee TC-002). Sortie du gel TC-001.
-- **C2 : 10/10 VALIDEE** — renforce FC-003/FC-004 (2026-06-17), inchange. Aucun autre mouvement.
+- **C1 : 9/10 SUPPORTEE** (reformulation Option D actee 2026-06-17, RR-DIR-004). RENFORCEE par
+  FC-005 (2026-06-17) : ASR=56.7% sans shield sur 3 chains non-RAG. Wilson lower=46.4%. Preuve
+  AEGIS directe la plus forte a ce jour (vs FC-003 6.67% pour feedback_poisoning).
+- **C2 : 10/10 VALIDEE** — renforce FC-003/FC-004 (2026-06-17), inchange.
+- **C7 : 9.5/10 CANDIDATE** — FC-005/FC-006 reorientent la validation : shield TRES EFFICACE
+  contre attaques statiques (-94%, p<<0.001). C7 requiert maintenant des attaques ADAPTATIVES
+  (RR-FC-007 planifie) pour prouver que le shield peut etre bypasse si l'adversaire connait la defense.
 - **MC10 (methodologique) : soundness 7→8** — SUPERVISED, accord utilisateur 2026-06-15, |Δ|=1
   dans ±2σ. 1ere corroboration AEGIS-native (judge-collapse par juge unique). Converge C2/P044/P153.
   Reste [EXPERIMENTAL] (caveat P153) → 8 et non 9. Ecriture verifiee coherente dans
