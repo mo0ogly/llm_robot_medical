@@ -214,25 +214,28 @@ Net impact: 131 indexed -> 127 distinct. Coverage Summary adjusted: Defense 42->
 
 ## Coverage Summary
 
-> **STALE — frozen pre-P107 (2026-06-16, RR-RUN10-004 note).** The tables below tally only ~128 of the 166 distinct rows (Domain table sums to 128, Year table to 127); they were last fully recomputed at the RUN-007 baseline and do NOT include the RUN-006..012 additions (P107-P174) nor the newer `mcp_security` domain (P140, P152, P155, P165-P168). For the authoritative total use the header (**166 distinct**) and the Table Centrale itself; for the δ-layer view use INDEX_BY_DELTA.md. A full per-domain recompute is deferred (low priority) — kept here for historical continuity only.
+> Recomputed 2026-06-16 (RR-RUN10-004). Counts are tallied deterministically from the Table Centrale Domain and Year columns over all 166 distinct rows. Per-paper ID lists from the prior frozen version were removed as unmaintainable; derive membership from the Domain column of the Table Centrale. The raw Domain column carries synonym variants (defense/defenses, benchmark/benchmarks, medical/medical_ai, attack/prompt_injection) consolidated below; normalizing the column is an optional future taxonomy pass.
 
-| Domain | Count | Papers |
-|--------|-------|--------|
-| Attack / Prompt Injection | 34 | P001, P006, P009, P010, P022, P023, P026, P033, P036, P039, P044, P045, P049, P054, P055, P058, P059, P087, P089, P093, P094, P095, P096, P097, P099, P100, P103, P104, P118, P119, P120, P121, P127, P128 |
-| Defense | 41 | P002, P005, P007, P008, P011, P017, P020, P021, P038, P041, P042, P046, P047, P048, P056, P057, P061, P062, P063, P064, P065, P066, P076, P078, P079, P080, P081, P082, P083, P084, P102, P111, P112, P113, P116, P117, P122, P123, P126, P134, P135 |
-| Defense Industrial | 2 | P132 (Guardrails AI), P133 (LLM Guard) |
-| Benchmark / Survey | 16 | P003, P004, P024, P037, P043, P048, P060, P067, P075, P090, P091, P098, P101, P124, P125, P130 |
-| Embedding / Semantic Drift | 5 | P012, P013, P014, P015, P016 |
-| Model Behavior / RLHF | 11 | P018, P019, P053, P077, P086, P092, P109, P110, P114, P115, P129 |
-| Medical AI Security | 19 | P025, P027, P028, P029, P030, P031, P032, P034, P035, P040, P050, P051, P068, P069, P070, P072, P073, P107, P131 |
+| Domain (consolidated) | Count | Raw values folded |
+|-----------------------|-------|-------------------|
+| Attack / Prompt Injection | 44 | attack 29 + prompt_injection 15 |
+| Defense | 47 | defense 43 + defenses 4 |
+| Defense Industrial | 2 | defense_industrial 2 |
+| Benchmark / Survey | 25 | benchmark 17 + benchmarks 8 |
+| Medical AI Security | 22 | medical 17 + medical_ai 5 |
+| Model Behavior / RLHF | 15 | model_behavior 15 |
+| MCP Security | 6 | mcp_security 6 |
+| Embedding / Semantic Drift | 5 | embedding 5 |
+| **Total** | **166** | |
 
 | Year | Count |
 |------|-------|
 | 2022 | 1 |
-| 2023 | 5 |
-| 2024 | 16 |
-| 2025 | 78 |
-| 2026 | 27 |
+| 2023 | 7 |
+| 2024 | 19 |
+| 2025 | 85 |
+| 2026 | 54 |
+| **Total** | **166** |
 
 ## Conjecture Support
 
