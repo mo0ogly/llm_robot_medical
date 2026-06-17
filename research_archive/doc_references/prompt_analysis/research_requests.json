@@ -745,12 +745,16 @@
       "type": "maintenance",
       "query": "Audit des lignes MANIFEST.md sans arXiv ID ni DOI : completer les identifiants manquants (risque dedup futur — check_corpus_dedup.py s'appuie sur le pattern arXiv). Scan periodique disque vs MANIFEST pour detecter toute desync residuelle.",
       "priority": "moyenne",
-      "status": "pending",
+      "status": "partial",
       "created": "2026-06-09",
-      "resolved_by": null,
-      "notes": "Suite de la reconciliation RUN-010 (142 rows, 0 desync au 2026-05-31).",
+      "resolved_by": "LIBRARIAN maintenance 2026-06-16 (MAINTENANCE_REPORT_2026-06-16.md). MANIFEST count reconciled: header now 166 rows = 166 distinct (was mislabelled '174 rows'); 8 unused IDs documented (P052/P071/P085/P108 merged, P074 stub->P028, P088/P105/P106 numbering gaps). Disk-vs-MANIFEST scan: 0 MANIFEST rows lack a fiche; 4 stub fiches on disk absent from table (P052/P071/P085/P108) = the documented merges (left in place, not deleted); P074 PDF stub likewise. 9 intentionally identifier-less rows re-validated, no change. PARTIAL because P040 identifier still unresolved: WebSearch 2026-06-16 found no verifiable DOI/arXiv for the forthcoming Springer LNCS 16038 chapter (Zahra & Chin) — no identifier fabricated.",
+      "notes": "Suite de la reconciliation RUN-010 (142 rows, 0 desync au 2026-05-31). | 2026-06-16 RESOLVED-PARTIAL: identifier audit + disk reconciliation done; P040 remains residual debt (Springer LNCS not yet indexed). 166 distinct rows, 0 desync beyond the documented merge stubs.",
       "blocks": [
         "anti-doublon"
+      ],
+      "resolved_date": "2026-06-16",
+      "residual_debt": [
+        "P040 DOI/arXiv (Springer LNCS 16038 forthcoming) — retry when published"
       ]
     },
     {
@@ -803,11 +807,12 @@
       "type": "fiche_update",
       "query": "Regenerer ARTICLES_INDEX.md (doc_references/) : artefact fige RUN-004 (annonce 60 papiers / 75 PDFs, date 2026-04-04) alors que MANIFEST.md = 153 papers. Tache LIBRARIAN : regenerer l'index depuis MANIFEST (source de verite) ou le marquer deprecated si redondant avec MANIFEST/INDEX_BY_DELTA.",
       "priority": "basse",
-      "status": "pending",
+      "status": "resolved",
       "created": "2026-06-10",
-      "resolved_by": null,
-      "notes": "Non bloquant. MANIFEST.md reste la source de verite. A traiter lors d'un prochain RUN bibliography-maintainer (LIBRARIAN). Lie aussi a la task #7 RUN-010 (lignes MANIFEST sans arXiv/DOI).",
-      "blocks": []
+      "resolved_by": "LIBRARIAN 2026-06-16: ARTICLES_INDEX.md marked DEPRECATED (banner -> MANIFEST.md as single source of truth, dated 2026-06-16), historical content preserved. Index judged redundant with MANIFEST.md (its columns are a subset) and its unique PDF/RAG-status view was itself frozen at P059 (lists ~59 of 166 rows); the live PDF inventory is the literature_for_rag/ directory (134 PDFs). Least-destructive option chosen: deprecate, not delete or blind-regenerate.",
+      "notes": "Non bloquant. MANIFEST.md reste la source de verite. A traiter lors d'un prochain RUN bibliography-maintainer (LIBRARIAN). Lie aussi a la task #7 RUN-010 (lignes MANIFEST sans arXiv/DOI). | 2026-06-16 RESOLVED: deprecation banner added; MANIFEST.md (166 distinct) is the source of truth. Stale '60 papiers / 75 PDFs / 2026-04-04' header retained verbatim under the banner for provenance.",
+      "blocks": [],
+      "resolved_date": "2026-06-16"
     },
     {
       "id": "RR-RUN12-001",

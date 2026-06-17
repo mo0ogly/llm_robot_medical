@@ -1,5 +1,11 @@
 # ARTICLES INDEX — Bibliographie doctorale AEGIS
 
+> # ⚠ DEPRECATED (2026-06-16, RR-MAINT-001)
+> **This index is frozen and no longer maintained. Do NOT cite its counts.**
+> The single source of truth for the bibliography is **[MANIFEST.md](MANIFEST.md)** (166 distinct papers, P001-P174 with 8 unused IDs, fully reconciled 2026-06-16). For the δ-layer view use **INDEX_BY_DELTA.md**; the live PDF inventory is the `../literature_for_rag/` directory itself (134 PDFs on disk as of 2026-06-16).
+> This file was last refreshed at RUN-004 and only lists ~59 of the 166 rows (it stops at P059), so its header figures are obsolete by design. Content is preserved below for historical continuity only.
+>
+> _Original (stale) header:_
 > **Total**: 60 papiers | **PDFs**: 75 telecharges | **ChromaDB**: ~4700 chunks
 > **Derniere MAJ**: 2026-04-04 (post-RUN-004 + propagation P0 x7 : P001, P018, P024, P029, P044, P052, P054)
 
