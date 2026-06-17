@@ -419,6 +419,7 @@ from routes.metrics_routes import router as metrics_router
 from routes.semantic_routes import router as semantic_router
 from routes.cost_routes import router as cost_router
 from routes.routing_routes import api_router as routing_router
+from routes.review_routes import api_router as review_router
 
 app.include_router(config_router)
 app.include_router(template_router)
@@ -436,6 +437,7 @@ app.include_router(metrics_router)
 app.include_router(semantic_router)
 app.include_router(cost_router)
 app.include_router(routing_router)
+app.include_router(review_router)
 
 
 # Start the redteam artefact watcher on application startup. It polls

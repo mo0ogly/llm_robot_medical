@@ -980,56 +980,16 @@ avant la signature.
 
 1. **Produire le DRAFT** en §6.0 → `SESSION-{id}_{date}_DRAFT.md`.
 
-2. **Spawn un sous-agent reviewer** (Agent tool, subagent_type=general-purpose)
-   avec le prompt exact suivant :
+2. **Invoke `/aegis-ccg {draft_path}`** (dual-model review: Claude Agent + Groq).
 
-   ```
-   Tu es un reviewer hostile d'une note de recherche scientifique.
-   Ton rôle est de trouver ses faiblesses, PAS de la valider.
+   The skill spawns two independent hostile reviewers in parallel — one Claude subagent
+   (Agent tool) and one Groq call (`POST /api/review/hostile`) — then synthesizes them
+   with the conservative Stackelberg rule (more severe verdict wins, minimum score per axis).
 
-   Lis : {chemin absolu du DRAFT}
+   Full protocol in `.claude/skills/aegis-ccg/SKILL.md`.
 
-   Cherche spécifiquement :
-   a) Affirmations empiriques sans tag [EXPERIMENTAL] ou sans N, ASR, CI
-   b) Affirmations de littérature sans tag [ARTICLE VÉRIFIÉ] ou sans source
-   c) Corrélations "forcées" — patterns déclarés mais dont les sources ne
-      convergent pas vraiment (vérifier §5)
-   d) Section 8 "ce qu'on sait maintenant" vague, tautologique, ou
-      indiscernable de la section 1
-   e) Section 9 "ce qui reste incertain" vide ou complaisante
-   f) Section 10 "prochaine action" floue (pas de skill cible, pas de
-      paramètres exacts, pas de justification)
-   g) Optimisme non justifié sur les conjectures (transition proposée sans
-      ≥2 sources convergentes)
-   h) Drift silencieux : ce qui a été exécuté ne correspond pas à l'objectif
-      de la session (§1)
-   i) cross_citation_orpheline : toute SESSION-XXX citée en §11.2 de la note
-      doit correspondre à un fichier `research_notes/SESSION-XXX_*.md`
-      existant sur le disque. Vérifier l'existence de chaque fichier. Si un
-      fichier est absent → issue `blocking`, verdict REVISE obligatoire.
-
-   Format de sortie — JSON :
-   {
-     "verdict": "ACCEPT | REVISE | REJECT",
-     "severity": "minor | major | blocker",
-     "issues": [
-       {
-         "section": "5.1",
-         "type": "corrélation_forcée",
-         "quote": "la campagne A et le paper B convergent sur...",
-         "problem": "le paper B ne mesure pas ce que la campagne A mesure",
-         "fix": "reformuler en 'suggère' ou retirer le pattern"
-       }
-     ],
-     "must_fix_before_signature": [...],
-     "can_signal_but_note": [...],
-     "cited_sessions_verified": ["SESSION-031", "SESSION-038"]
-   }
-
-   Ne sois pas poli. Ne cherche pas d'équilibre. Ta mission est d'échouer
-   la note si elle contient des faiblesses. Si tu ne trouves rien de
-   sérieux, verdict ACCEPT — mais cherche honnêtement avant.
-   ```
+   **Safety floor S3** : the reviewer sees only the final draft text — NOT the session
+   JSONL, DISCOVER buffer, or CORRELATE results (Stackelberg producer/evaluator separation).
 
 3. **Capturer le rapport** du reviewer.
 

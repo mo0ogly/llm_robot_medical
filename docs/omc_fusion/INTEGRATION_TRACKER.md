@@ -88,9 +88,9 @@ research-director · aegis-research-lab · bibliography-maintainer · fiche-atta
 ### A5. Phase P4 — Multi-model review `/ccg` (Difficile)
 | # | Element | OMC source ref | Target (AEGIS) | Status | Improvement vs source |
 |---|---------|----------------|----------------|--------|-----------------------|
-| P4.1 | Hostile reviewer multi-model | `skills/ccg/SKILL.md`, `skills/ask/SKILL.md` | `.claude/skills/aegis-ccg/SKILL.md` | `[ ]` | Claude (Anthropic SDK) + Groq, NO codex/gemini CLI, NO tmux |
-| P4.2 | Wire into SYNTHESIZE.2 | OMC review loop | `aegis-research-lab` SYNTHESIZE.2 hostile reviewer | `[ ]` | Preserves safety floor S3 (Stackelberg producer/evaluator separation) |
-| P4.G | GATE: multi-model critique produced on a draft note | n/a | — | `[ ]` | — |
+| P4.1 | Hostile reviewer multi-model | `skills/ccg/SKILL.md`, `skills/ask/SKILL.md` | `.claude/skills/aegis-ccg/SKILL.md` | `[x]` | Claude Agent subagent + Groq backend (no Anthropic SDK key required; no codex/gemini CLI; no tmux). `backend/agents/hostile_reviewer.py` + `backend/routes/review_routes.py` — all compile OK. |
+| P4.2 | Wire into SYNTHESIZE.2 | OMC review loop | `aegis-research-lab` §6.3 step 2 — replaced 50-line spawn block with `/aegis-ccg {draft_path}` reference | `[x]` | Stackelberg S3 preserved. Shrinking edit (1077→~1036 lines) — hook allowed. |
+| P4.G | GATE: multi-model critique produced on a draft note | n/a | — | `[ ]` | Pending: run `/aegis-ccg` on a real DRAFT.md to get a two-model verdict. |
 
 ---
 
@@ -135,6 +135,6 @@ P0 is the foundation (everything else is independent of each other except P4 bui
 - **Content filter**: never read sensitive AEGIS files (`scenarios.py`, `prompts/*.json` template field, etc.).
 
 ## E. SESSION RECOVERY
-**Last completed step**: P3 COMPLETE — `backend/routing/scorer.py` (40 lexical signals, DECOMPOSE tags, structural heuristics), `backend/routing/model_router.py` (LOW/HIGH->Groq, campaign_rule forces 70B, forceInherit), `backend/routes/routing_routes.py` (POST /api/routing/select, GET /api/routing/models). All P3 gates pass. (Prior: P0+P1+P2+conflict COMPLETE.)
-**Next step**: P4.1 — `.claude/skills/aegis-ccg/SKILL.md` (multi-model hostile reviewer: Claude API + Groq, no codex/gemini/tmux).
+**Last completed step**: P4.2 COMPLETE — `.claude/skills/aegis-ccg/SKILL.md` (dual-model hostile reviewer: Claude Agent subagent + Groq backend, conservative Stackelberg synthesis). `backend/agents/hostile_reviewer.py`, `backend/routes/review_routes.py`, `POST /api/review/hostile` + `POST /api/review/synthesize`. `aegis-research-lab` §6.3 step 2 wired. All compile OK. (Prior: P0+P1+P2+P3+conflict COMPLETE.)
+**Next step**: P4.G — run `/aegis-ccg` on a real DRAFT.md and verify two-model verdict JSON is produced.
 **Resume command**: "Continue OMC fusion from docs/omc_fusion/INTEGRATION_TRACKER.md"
