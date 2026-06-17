@@ -4,6 +4,6 @@ Ported from oh-my-claudecode src/features/model-routing/ (MIT).
 Improvement: Groq-only (no Bedrock/Vertex); reuses research-director TRIVIAL/MODERATE/COMPLEX tags.
 """
 from .scorer import TaskScorer, Tier, score_task
-from .model_router import ModelRouter, router
+from .model_router import ModelRouter, router, TIER_TO_MODEL
 
-__all__ = ["TaskScorer", "Tier", "score_task", "ModelRouter", "router"]
+__all__ = ["TaskScorer", "Tier", "score_task", "ModelRouter", "router", "TIER_TO_MODEL"]
