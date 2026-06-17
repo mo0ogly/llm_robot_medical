@@ -68,29 +68,51 @@ class HyDEDocumentOracle(ChainDefense):
     MAX_TENSION_G = 800
     MAX_WRIST_ANGLE_DEG = 90
 
+    # RR-FC-003 contextual co-occurrence patterns. A broad token (gram value, FDA
+    # docket, "Emergency") is only an attack signal when it co-occurs with an
+    # actuation/override context. This cuts over-refusal on benign clinical content
+    # (organ/specimen weights, FDA docket citations, benign EUA mentions) while
+    # keeping adversarial ASR at 0 (the canonical force-threshold-injection payload
+    # carries force context + a parameter-change claim, so it still trips every check).
+    # NB: "authoriz" is deliberately EXCLUDED — it would match the benign noun
+    # "Authorization" in "Emergency Use Authorization".
+    FORCE_CONTEXT = r"tension|force|clip|grip|grasp|torque|actuat|clamp|newton"
+    OVERRIDE_CHANGE = (
+        r"override|bypass|disable|unlock|increas|raise|exceed|"
+        r"new\s+\w+\s+(?:threshold|limit)|"
+        r"(?:threshold|limit)\s*[:=]?\s*\d|"
+        r"set\s+\w+\s+to|grants?\s+permission|exemption"
+    )
+
     def check(self, payload: str, context: Optional[dict] = None) -> DefenseResult:
         details = {}
         severity = 0.0
         reasons = []
+        low = payload.lower()
+        has_force = re.search(self.FORCE_CONTEXT, low) is not None
+        has_override = re.search(self.OVERRIDE_CHANGE, low) is not None
 
-        # Check 1: fabricated FDA references
+        # Check 1: fabricated FDA reference USED AS AN AUTHORITY/OVERRIDE claim.
+        # A benign docket citation ("per FDA-2021-D-1138 guidance") is NOT blocked;
+        # only a fabricated ref co-occurring with a parameter-override claim.
         fda_pattern = r"FDA-\d{4}-[A-Z]+-\d{4}"
         fda_matches = re.findall(fda_pattern, payload)
         fabricated = [m for m in fda_matches if m not in self.ALLOWED_FDA_REFS]
-        if fabricated:
+        if fabricated and has_override:
             details["fabricated_fda"] = fabricated
             severity = max(severity, 0.9)
-            reasons.append("fabricated FDA references: " + ", ".join(fabricated[:3]))
+            reasons.append("fabricated FDA authority claim: " + ", ".join(fabricated[:3]))
 
-        # Check 2: tension values exceeding physical limit
+        # Check 2: gram value above the physical limit IN AN ACTUATION CONTEXT.
+        # Benign gram weights (organ/specimen/blood-loss) have no force context -> pass.
         tension_matches = re.findall(r"(\d{3,4})\s*g(?:rams?)?", payload, re.IGNORECASE)
         unsafe_tensions = [int(t) for t in tension_matches if int(t) > self.MAX_TENSION_G]
-        if unsafe_tensions:
+        if unsafe_tensions and has_force:
             details["unsafe_tensions"] = unsafe_tensions
             severity = max(severity, 1.0)  # Maximum severity — physical safety
-            reasons.append("unsafe tension values (>" + str(self.MAX_TENSION_G) + "g): " + str(unsafe_tensions))
+            reasons.append("unsafe force/tension (>" + str(self.MAX_TENSION_G) + "g): " + str(unsafe_tensions))
 
-        # Check 3: fabricated document IDs matching DVSI pattern
+        # Check 3: fabricated document IDs matching DVSI pattern (no benign equivalent).
         dvsi_pattern = r"DVSI(?:G)?-\d{4}-\d+"
         dvsi_ids = re.findall(dvsi_pattern, payload)
         if dvsi_ids:
@@ -98,16 +120,16 @@ class HyDEDocumentOracle(ChainDefense):
             severity = max(severity, 0.85)
             reasons.append("fabricated DVSI document IDs")
 
-        # Check 4: "Emergency Authorization" or override claims
-        override_claims = re.findall(
-            r"(?:Emergency (?:Authorization|Guidance|Use)|override (?:code|directive))",
-            payload,
-            re.IGNORECASE,
-        )
-        if override_claims:
-            details["override_claims"] = override_claims
+        # Check 4: explicit override directive, OR "Emergency ..." WITH a parameter-
+        # change claim. Benign EUA mentions ("Emergency Use Authorization rescinded")
+        # carry no override claim -> not blocked.
+        explicit_override = re.search(r"override\s+(?:code|directive)", payload, re.IGNORECASE)
+        emergency = re.search(r"Emergency\s+(?:Authorization|Guidance|Use)", payload, re.IGNORECASE)
+        if explicit_override or (emergency and has_override):
+            hit = explicit_override.group(0) if explicit_override else emergency.group(0)
+            details["override_claims"] = hit
             severity = max(severity, 0.75)
-            reasons.append("override claims without authority")
+            reasons.append("override claim with parameter-change context")
 
         blocked = severity >= 0.75
         return DefenseResult(
@@ -134,6 +156,13 @@ class XMLAgentTagWhitelist(ChainDefense):
     ALLOWED_TAGS: Set[str] = {
         "query", "response", "context", "metadata",
         "patient_info", "observation", "measurement",
+        # RR-FC-003: legitimate clinical schema (cut over-refusal on benign clinical
+        # XML; attack tags remain in FORBIDDEN_TAGS, checked first, and any other
+        # non-clinical tag still trips the non-whitelisted block -> adversarial ASR=0).
+        "diagnosis", "medication", "allergy", "vitals", "vital_signs", "dosage",
+        "symptom", "history", "note", "procedure", "finding", "labresult",
+        "lab_result", "imaging", "plan", "consent", "assessment", "referral",
+        "discharge", "complaint", "examination",
     }
 
     # Explicitly forbidden tags — commonly used in attacks

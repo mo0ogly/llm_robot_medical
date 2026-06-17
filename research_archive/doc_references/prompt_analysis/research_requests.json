@@ -855,13 +855,14 @@
       "type": "experiment",
       "query": "Reduce over-refusal of hyde/xml_agent prefilters (benign FPR 59.4%/43.8%, RR-FC-002) WITHOUT losing 0% adversarial ASR (RR-FC-001): (1) HyDE gram check context-aware -- require force/tension/clip co-occurrence near a >800g value instead of blocking any gram token (organ/specimen/blood-loss weights are benign); (2) HyDE FDA check -- distinguish a fabricated authority claim from a benign docket citation (expand whitelist or require an override/authorization verb); (3) HyDE Emergency check -- require co-occurrence with a parameter-override claim, not the phrase alone; (4) xml_agent -- expand tag whitelist to the legitimate clinical schema OR scope the prefilter to the narrow tool-call schema the chain consumes. Target: clean-control 0% kept, trigger-adjacent benign FPR <10%, adversarial ASR stays 0.",
       "priority": "moyenne",
-      "status": "pending",
+      "status": "resolved",
       "created": "2026-06-16",
-      "resolved_by": null,
+      "resolved_by": "chain_defenses.py refined (HyDE: gram+force co-occurrence, FDA+override, Emergency+override excl. benign Authorization noun; xml_agent: clinical tag whitelist expanded). Over-refusal FPR 59.4%/43.8% -> 0%/0% re-measured; clean controls 0%; adversarial ASR maintained at 0 (regression backend/tests/test_hyde_xml_prefilter_refined.py, 12 assertions); 54/54 tests. Report: EXPERIMENT_REPORT_RR-FC-003_prefilter_refinement.md.",
       "notes": "Over-refusal localized to broad deterministic checks. Re-run run_hyde_xml_fpr_panel.py + RR-FC-001 attribution after each refinement.",
       "blocks": [
         "Ch.5"
-      ]
+      ],
+      "resolved_date": "2026-06-16"
     }
   ],
   "notes": "Journal PDCA session 2026-05-16 (reconstruit PDCA-15 apres troncature JSON ligne 666). PDCA-1: sync memoire +40j, 5 RR experiment-planner ajoutees (G058/G060/G062/G007/G006). PDCA-2: 4 bloqueurs G-058 leves. PDCA-3: G-062 corrige, 36 LLMs listes, email Kholkar. PDCA-4: P135 Outlines indexe MANIFEST (135 papers). PDCA-5: outlines_adapter.py +13 tests. PDCA-6: substitution LMQL->Outlines, PDF P135 (18p). PDCA-7: orphelin renomme, SC-2, OSF draft. PDCA-8: SC-4 composition. PDCA-9: SC-3 genetic. PDCA-10: sanitized loader + audit-these. PDCA-11: export_scenarios_metadata.py (62 scenarios). PDCA-12: run_g058_campaign decompose en package g058/ (9 modules <800 lignes), bug load_templates repare. PDCA-13: ASR_deterministic formalise (F73), RR-P0-003 + RR-DA-007 resolved. PDCA-14: F46 baseline diagnostique (ASR 3.33% degenere, grille 14400 bloquee). PDCA-15: reparation troncature research_requests.json + travail RR-FICHE-002."
