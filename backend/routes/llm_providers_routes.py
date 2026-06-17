@@ -193,6 +193,11 @@ async def call_llm(
 
         # Invoke the LLM with the prompt
         response = llm.invoke(messages)
+        try:
+            from observability import record_from_langchain_response
+            record_from_langchain_response(model, response)
+        except Exception:  # noqa: BLE001 - observability must never break the call
+            pass
         return response.content if hasattr(response, 'content') else str(response)
     except Exception as e:
         logger.error(f"Error calling {provider}/{model}: {e}")
@@ -226,11 +231,25 @@ async def stream_llm(
         messages.append({"role": "user", "content": prompt})
 
         # Stream tokens from the LLM in real-time
+        last_usage = None
         async for chunk in llm.astream(messages):
             # Extract token content from chunk
+            usage_md = getattr(chunk, "usage_metadata", None)
+            if usage_md:
+                last_usage = usage_md
             token = chunk.content if hasattr(chunk, 'content') else str(chunk)
             if token:
                 yield token
+        if last_usage:
+            try:
+                from observability import tracker
+                tracker.record(
+                    model,
+                    last_usage.get("input_tokens", 0),
+                    last_usage.get("output_tokens", 0),
+                )
+            except Exception:  # noqa: BLE001 - observability must never break streaming
+                pass
     except Exception as e:
         logger.error(f"Streaming error with {provider}/{model}: {e}")
         raise

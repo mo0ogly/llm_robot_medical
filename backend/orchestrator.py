@@ -293,6 +293,9 @@ class RedTeamOrchestrator(OrchestratorMetricsMixin, OrchestratorCampaignsMixin):
             "target_vulnerability": target_vulnerability,
             "turn_logs": turn_logs,
             "max_turns": max_turns,
+            # delta-2 multi-turn drift verdict (RR-RUN4-004): post-hoc, non-blocking,
+            # never raises. Recorded only; enforcement gated by MULTITURN_DRIFT_BLOCKING.
+            "multiturn_drift": self.multiturn_drift_metric(turn_logs, chain_id="adaptive_ooda"),
         }
 
     async def run_multi_trial_attack(
@@ -427,4 +430,6 @@ class RedTeamOrchestrator(OrchestratorMetricsMixin, OrchestratorCampaignsMixin):
             "breach_point": breach_point,
             "total_steps": len(scenario.steps),
             "steps_passed": steps_passed,
+            # delta-2 multi-turn drift verdict (RR-RUN4-004): post-hoc, non-blocking.
+            "multiturn_drift": self.multiturn_drift_metric(conversation_history, chain_id=scenario.id),
         }
