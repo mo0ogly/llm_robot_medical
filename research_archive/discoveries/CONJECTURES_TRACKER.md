@@ -214,6 +214,18 @@ P171 (Siu, Dawn Song et al., "A Framework for Formalizing LLM Agent Security") f
 
 **Condition de validation (10/10)** : C7 a atteint 9.5/10 avec 8 papiers convergents et preuve mecanistique (P094). Pour atteindre 10/10 il faut : (1) replication independante de P094 OU (2) test AEGIS reproduisant le paradoxe sur LLaMA 3.2 medical.
 
+**Resultats experimentaux AEGIS (2026-06-17)** :
+
+| Experiment | Verdict | Details |
+|-----------|---------|---------|
+| RR-FC-005 (static, no shield) | H₁ STRONGLY SUPPORTED | ASR=56.7% (51/90), Wilson [46.4%,66.4%], Sep(M)=0.5667, null=0/90 — δ⁰ insuffisant, signal fort |
+| RR-FC-006 (static, shield=ON) | SHIELD_EFFECTIVE | ASR=3.3% (3/90), Wilson [1.1%,9.3%], Fisher p<<0.001, h=1.339 — shield bloque statiques |
+| RR-FC-007 (adaptive OODA-5, shield=ON) | SHIELD_ROBUST | ASR=0.0% (0/30), Wilson [0.0%,11.4%] — OODA-5 insuffisant (feedback ambigu shield/RLHF) |
+
+Note interpretation FC-007 : L'attaquant OODA reçoit comme feedback la reponse du Medical Agent, mais ne distingue pas "shield a bloque" de "modele a refuse". Sans feedback directionnel, l'adaptation OODA reste aveugle au mecanisme de filtrage. C7 n'est pas refutee — le protocole OODA-5 est insuffisant pour la tester.
+
+**Prochaine etape** : RR-FC-008 (ASIDE white-box, G-019) — adversaire avec feedback direct sur le mecanisme shield (boucle OODA fermee sur la cause du blocage, pas seulement le resultat).
+
 ---
 
 ### C8 (CANDIDATE) : Peer-preservation compromet le shutdown multi-agent
