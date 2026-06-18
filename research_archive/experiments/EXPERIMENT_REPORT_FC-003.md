@@ -7,7 +7,7 @@
 **Raw data**: `research_archive/data/raw/campaign_20260617_150032.json`
 **UX data**: `backend/experiments/results/campaign_thesis_20260617_150032.json`
 **Conjecture**: C2 (no defense dominates adaptive adversaries — δ³ separation)
-**Gap**: G-041 (defense bypass via context injection)
+**Gap**: G-NEW-FC003 (defense bypass via context injection — G-ID conflict: THESIS_GAPS.md G-041 = stacked ciphers adaptatifs; this gap requires a new G-ID, pending THESIS_GAPS.md update)
 
 ---
 

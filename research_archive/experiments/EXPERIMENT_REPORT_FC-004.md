@@ -7,7 +7,7 @@
 **Raw data**: `research_archive/data/raw/campaign_20260617_151435.json`
 **Predecessor**: RR-FC-003 (ASR=6.67% shield=OFF, commit 22d14e2)
 **Conjecture**: C2 (no defense dominates adaptive adversaries)
-**Gap**: G-041 (defense bypass via context injection)
+**Gap**: G-NEW-FC003 (defense bypass via context injection — G-ID conflict: THESIS_GAPS.md G-041 = stacked ciphers adaptatifs; this gap requires a new G-ID, pending THESIS_GAPS.md update)
 
 ---
 
