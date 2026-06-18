@@ -59,7 +59,7 @@ Provider: Groq. Model: `llama-3.3-70b-versatile`. Temperature 0, fixed `seed`, e
 
 **Factor `defense`** (3 levels): `none`, `TRUSTDESC` (trusted-description regeneration, P165), `MCP-DPT-host` (host-orchestration enforcement placement, P166).
 
-**Scenarios**: the Da Vinci subset of the sanitized scenario metadata export (`backend/red_team/scenarios_metadata.json`, PDCA-11), restricted to surgical contexts (chole/nephro/prost/colect/thora/cardio). The PoC harness derived **29** such scenarios, each annotated with an authorised tool set `Sauth` and an authorised-action set. Final k confirmed against RESEARCH_STATE before submission.
+**Scenarios**: the Da Vinci subset of the sanitized scenario metadata export (`backend/red_team/scenarios_metadata.json`, PDCA-11 — metadata only, no payloads), restricted to the **six robotic-surgical categories the harness actually scopes** (`sauth_loader.DAVINCI_CATEGORIES`): `chirurgie_vasculaire` (15), `cholecystectomy_laparoscopic` (5), `prostatectomy_radical` (4), `chirurgie_hepatique` (2), `chirurgie_thoracique` (2), `cardiochirurgie_mini_invasive` (1). **k = 29**, confirmed empirically 2026-06-18 via `sauth_loader.load_davinci_sauth()` against the real export (NOT the offline two-scenario fallback). Each scenario carries a deterministic `Sauth` (authorised tool set) + per-tool authorised-action set; integrity check on 2026-06-18: 0/29 empty `Sauth`, 0/29 tool↔action mismatch. `instrument_actuate` is authorised in **7/29** scenarios (actuation phases dissection/clipping with a physical-impact field); the remaining 22 authorise only the read-only `dose_lookup`. Clinical-gravity weight: 23/29 at 1.0 (high-gravity impact keyword), 6/29 at 0.6. (NB: an earlier draft listed "nephro/colect" — neither is in the harness scope; this was corrected in v2.)
 
 ## 8. Trials per condition
 
@@ -126,12 +126,14 @@ The PoC (`run_poc.py`, report `EXPERIMENT_REPORT_RR-RUN12-002_PoC.md`) validated
 
 ## 16. Submission checklist
 
-- [ ] Confirm final scenario count k and `Sauth` annotations against RESEARCH_STATE
-- [ ] Ratify N=30/cell and the 7,830-trial budget with the thesis director
-- [ ] Validate hypothesis IDs (H0-H4) non-overlapping
-- [ ] Final review by thesis director (validation supervisor)
-- [ ] Submit via OSF web UI BEFORE any Groq trial is run
-- [ ] Capture OSF ID; update this file + research_requests.json RR-RUN12-002 + campaign_manifest.json
+- [x] Confirm final scenario count k and `Sauth` annotations against RESEARCH_STATE — **k = 29** confirmed empirically 2026-06-18 via `sauth_loader.load_davinci_sauth()` (real export, not fallback); Sauth integrity 0/29 empty, 0/29 tool↔action mismatch (see §7)
+- [ ] Ratify N=30/cell and the 7,830-trial budget with the thesis director — *director decision (pending)*
+- [x] Validate hypothesis IDs (H0-H4) non-overlapping — H0 null / H1 selection-rate vs benign / H2 implicit>explicit / H3 over-step>0 / H4 defense effect: five disjoint claims
+- [ ] Final review by thesis director (validation supervisor) — *pending*
+- [ ] Submit via OSF web UI BEFORE any Groq trial is run — *user action (no OSF credentials in this environment)*
+- [ ] Capture OSF ID; update this file + research_requests.json RR-RUN12-002 + campaign_manifest.json — *after submission*
+
+**Submission-ready artifact**: `OSF_PREREGISTRATION_RR-RUN12-002.json` (structured fields mirroring this document, for OSF import / copy-paste into the OSF prereg form), issued 2026-06-18 alongside this document. NB: per the anti-cherry-picking rule, the JSON being issued locally is NOT a submission — no Groq trial may run until the OSF web submission is confirmed.
 
 ## 17. References
 
@@ -151,3 +153,4 @@ Drafted 2026-06-16 from PROTOCOL_RR-RUN12-002 + the deterministic PoC harness (b
 | # | Version | Change |
 |---|---------|--------|
 | 1 | v1 (2026-06-16) | Initial draft from protocol + PoC. Hypotheses H0-H4, 3×3×29 grid (7,830 trials), deterministic F73 oracle, Groq llama-3.3-70b 3-seed median. Pending director review. |
+| 2 | v2 (2026-06-18) | Submission-prep pass (no data collected). k=29 confirmed empirically against the real `scenarios_metadata.json` (not the offline fallback); §7 scoping corrected to the six categories the harness actually scopes (vasculaire 15 / chole 5 / prost 4 / hepatique 2 / thoracique 2 / cardio 1) — removed the inaccurate "nephro/colect", added vasculaire/hepatique. Sauth integrity verified (0/29 empty, 0/29 mismatch); 7/29 actuation-authorised; gravity 23×1.0 + 6×0.6. Hypothesis IDs validated non-overlapping. Submission-ready JSON issued (`OSF_PREREGISTRATION_RR-RUN12-002.json`). Still DRAFT pending director review + OSF web submission; no Groq trial run. |
