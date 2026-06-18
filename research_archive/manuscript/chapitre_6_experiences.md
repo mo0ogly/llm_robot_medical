@@ -156,40 +156,46 @@ chaque condition. Juge : déterministe (`orchestrator_violation`). Protocoles :
 
 | Condition | Violations | ASR | Wilson 95% CI | Sep(M) | Null violations |
 |-----------|-----------|-----|---------------|--------|-----------------|
-| FC-003 — shield=OFF | 2/30 | 6.67% | [1.85%, 21.32%] | 0.0667 | 0/30 |
+| FC-003 — shield=OFF | 1/30* | 3.33%* | [0.6%, 16.7%] | 0.0333* | 0/30 |
 | FC-004 — shield=ON  | 1/30 | 3.33% | [0.59%, 16.67%] | 0.0333 | 0/30 |
 
-**FC-003 (shield=OFF)** : ASR = 6.67%, IC 95% Wilson [1.85%, 21.32%], N=30.
-Le null_control (0/30) confirme que les violations sont causalement attribuables
-à l'injection. L'hypothèse nulle H₀ : ASR = 0% est rejetée au niveau α=0.05
-(Wilson lower bound 1.85% > 0%). L'effet mesuré par Sep(M) = 0.0667 est faible
-(Zverev et al., 2025, ICLR, Definition 2, p. 4). La taille d'effet complémentaire
-Cohen's h ≈ 0.52 (h = 2 · arcsin(√0.0667) − 0) se situe dans la zone « medium »
-par convention (|h| ≥ 0.5). Verdict : **H₁ SUPPORTED (WEAK)**
-(EXPERIMENT_REPORT_FC-003, 2026-06-17). [EXPERIMENTAL]
+*Corrigé après spot-check humain (2026-06-18) : Trial 7 = FP retiré, Trial 24 = TP confirmé.
+
+**FC-003 (shield=OFF)** : ASR = 3.33% (1/30 corrigé), IC 95% Wilson [0.6%, 16.7%], N=30.
+Le spot-check humain du 2026-06-18 a révélé que l'un des deux trials initialement comptabilisés
+comme violations est un faux positif du juge déterministe (Trial 7 : le modèle maintient
+la limite de 800g et refuse tout changement — cf. réponse complète dans le fichier raw
+`campaign_20260617_150032.json`). Le second trial (Trial 24) est confirmé comme vraie violation
+(le modèle planifie de modifier son comportement futur conformément aux feedbacks empoisonnés).
+Le null_control (0/30) confirme que la violation est causalement attribuable à l'injection.
+Sep(M) corrigé = 0.0333 (Zverev et al., 2025, ICLR, Definition 2, p. 4). L'ASR corrigé
+(3.33%) est sous le seuil formel de 5% du protocole — verdict révisé : **SIGNAL_PRÉSENT_FAIBLE**.
+(EXPERIMENT_REPORT_FC-003, 2026-06-17, spot-check 2026-06-18). [EXPERIMENTAL]
 
 **FC-004 (shield=ON)** : ASR = 3.33%, IC 95% Wilson [0.59%, 16.67%], N=30.
-La différence avec FC-003 est de −3.34 points de pourcentage (réduction nominale
-de 50%), mais le test de Fisher bilatéral [[1, 29], [2, 28]] donne p ≈ 0.25 :
-cette différence n'est **pas statistiquement significative** à N=30. Les deux
-intervalles de Wilson se chevauchent entièrement ([0.59, 16.67] ⊂ [0.59, 21.32]).
-Détecter un delta de cette magnitude avec 80% de puissance statistique requiert
-N ≈ 200 par condition (test bilatéral de proportions, α = 0.05)
-(EXPERIMENT_REPORT_FC-004, 2026-06-17). [EXPERIMENTAL]
+Après correction de FC-003, les deux conditions présentent des résultats identiques :
+1 violation sur 30, ASR = 3.33%, Wilson [0.6%, 16.7%]. Le test de Fisher
+[[1, 29], [1, 29]] donne **p = 1.0** : le shield ne produit **aucune différence
+statistiquement mesurable** pour la chaîne feedback_poisoning à N=30. Cette conclusion
+remplace le verdict antérieur (SHIELD_PARTIAL BORDERLINE) qui reposait sur les données
+non corrigées de FC-003 (2/30).
+(EXPERIMENT_REPORT_FC-004, 2026-06-17, révisé 2026-06-18). [EXPERIMENTAL]
 
 ### 6.8.3 Interprétation pour C2
 
 Ces deux campagnes apportent une evidence expérimentale directe AEGIS à C2 :
 
-1. **Le pipeline médical non blindé est pénétrable par injection de contexte** :
-   ASR = 6.67% (Wilson lower > 0%), confirmé sur Groq llama-3.3-70b-versatile
-   avec juge déterministe et null_control intégré.
+1. **Le pipeline médical est pénétrable par injection de contexte, avec ou sans shield** :
+   ASR = 3.33% (1/30 corrigé) dans les deux conditions (shield=OFF et shield=ON),
+   confirmé sur Groq llama-3.3-70b-versatile avec juge déterministe et null_control intégré.
+   La violation confirmée (Trial 24) correspond au mécanisme de feedback_poisoning :
+   le modèle planifie de modifier son comportement futur sans recommander de valeur
+   dangereuse dans la réponse immédiate — vecteur de corruption latente.
 
-2. **Le shield δ¹ (aegis_shield) ne ramène pas l'ASR à 0%** : l'ASR résiduel
-   avec shield actif est 3.33% (Wilson [0.59%, 16.67%]). Cette borne supérieure
-   est compatible avec un effet nul du shield (le CI inclut 0.67%), mais aussi
-   avec une protection partielle. La puissance statistique est insuffisante pour
-   trancher.
+2. **Le shield δ¹ (aegis_shield) ne produit aucune différence mesurable pour feedback_poisoning** :
+   FC-003 corrigé (1/30) = FC-004 (1/30), Fisher p=1.0. Ce résultat renforce C2 directement :
+   la défense δ¹ est insuffisante pour ce vecteur, et l'ASR résiduel identique avec et sans
+   shield indique que le mécanisme de corruption contextuelle contourne le filtre de surface.
 
 3. **Convergence avec P169 et P173** : PISmith (Yao et al., 2026, Table 3, p.7)
    et PIArena (Geng et al., 2026, arXiv:2604.08499, Table 4, p.8) montrent
@@ -276,7 +282,7 @@ attribuable à la stratégie d'attaque, non à un bruit du modèle (null_control
 
 Ce résultat constitue la **preuve directe AEGIS la plus forte pour C1** à ce jour :
 
-- FC-003 (feedback_poisoning) : ASR = 6.67%, h = 0.52 (medium)
+- FC-003 (feedback_poisoning) : ASR = 3.33% (corrigé), h = 0.37 (small — Cohen h = 2·arcsin(√0.0333) − 0 ≈ 0.366)
 - **FC-005 (multi-step adaptatif, 3 chaînes)** : ASR = 56.7%, h = 1.705 (VERY LARGE)
 
 L'alignement RLHF de base (δ⁰) est insuffisant pour protéger le modèle médical contre

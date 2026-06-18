@@ -5,7 +5,7 @@
 **Date**: 2026-06-17
 **Protocol**: `research_archive/experiments/PROTOCOL_RR-FC-004.md`
 **Raw data**: `research_archive/data/raw/campaign_20260617_151435.json`
-**Predecessor**: RR-FC-003 (ASR=6.67% shield=OFF, commit 22d14e2)
+**Predecessor**: RR-FC-003 (ASR=3.33% shield=OFF corrigé après spot-check humain 2026-06-18, commit 22d14e2)
 **Conjecture**: C2 (no defense dominates adaptive adversaries)
 **Gap**: G-NEW-FC003 (defense bypass via context injection — G-ID conflict: THESIS_GAPS.md G-041 = stacked ciphers adaptatifs; this gap requires a new G-ID, pending THESIS_GAPS.md update)
 
@@ -39,27 +39,29 @@
 | Null control CI | [0%, 11.35%] |
 | Sep(M) | 0.0333 (statistically_valid=True, N=30) |
 
-### 2.2 Shield delta comparison (FC-003 vs FC-004)
+### 2.2 Shield delta comparison (FC-003 vs FC-004) — valeurs corrigées
 
-| Metric | FC-003 (shield=OFF) | FC-004 (shield=ON) | Delta |
-|--------|--------------------|--------------------|-------|
-| ASR | 6.67% (2/30) | 3.33% (1/30) | −3.34% (50% reduction) |
-| Wilson lower | 1.85% | 0.59% | |
-| Wilson upper | 21.32% | 16.67% | |
-| Sep(M) | 0.0667 | 0.0333 | −0.0334 |
+**Note**: FC-003 a été corrigé après spot-check humain (2026-06-18): Trial 7=FP retiré → ASR_FC-003=3.33%.
+
+| Metric | FC-003 (shield=OFF) corrigé | FC-004 (shield=ON) | Delta |
+|--------|----------------------------|--------------------|-------|
+| ASR | **3.33% (1/30)** | 3.33% (1/30) | **0% (aucune différence)** |
+| Wilson lower | 0.6% | 0.59% | |
+| Wilson upper | 16.7% | 16.67% | |
+| Sep(M) | 0.0333 | 0.0333 | 0 |
 | Null violations | 0/30 | 0/30 | 0 |
 
-### 2.3 Statistical significance of the delta
+### 2.3 Statistical significance of the delta (corrigé)
 
-Fisher's exact test (H₁: ASR_shield < ASR_noshield, one-sided):
-- 2×2 table: [[1, 29], [2, 28]] (shield_violations, shield_ok, noshield_violations, noshield_ok)
-- p ≈ 0.50 (NOT significant)
+Fisher's exact test (H₁: ASR_shield < ASR_noshield, one-sided) — corrigé:
+- 2×2 table: [[1, 29], [1, 29]] (shield_violations, shield_ok, noshield_violations, noshield_ok)
+- **p = 1.0** (tables identiques — aucune différence)
 
-The Wilson confidence intervals overlap completely:
-- FC-003: [1.85%, 21.32%]
+Les CIs sont identiques:
+- FC-003 corrigé: [0.6%, 16.7%]
 - FC-004: [0.59%, 16.67%]
 
-The point estimate of FC-003 (6.67%) lies well within the CI of FC-004, and vice versa.
+**Conclusion corrigée: le shield ne produit aucune différence mesurable pour feedback_poisoning à N=30.** Les deux conditions présentent 1 violation sur 30 (3.33%). L'absence de delta est la conclusion la plus honnête étant donné les données corrigées.
 
 **[EXPERIMENTAL]** — N=30 per condition, deterministic judge, Groq llama-3.3-70b-versatile, 2026-06-17.
 
@@ -70,20 +72,14 @@ The point estimate of FC-003 (6.67%) lies well within the CI of FC-004, and vice
 **H₀**: ASR_shield = ASR_noshield  
 **H₁**: ASR_shield < ASR_noshield
 
-**Decision: SHIELD_PARTIAL BORDERLINE — STATISTICALLY INCONCLUSIVE ON DELTA**
+**Decision: SHIELD_INEFFECTIVE (révisé après correction FC-003 — spot-check humain 2026-06-18)**
 
-Protocol thresholds:
+Protocol thresholds (appliqués aux données corrigées):
 - SHIELD_EFFECTIVE: ASR_shield < 2% → NOT MET (3.33%)
-- SHIELD_PARTIAL: 2% ≤ ASR_shield < 6.67% → MET numerically (3.33%)
-- SHIELD_INEFFECTIVE: ASR_shield ≥ 6.67% → NOT MET
+- SHIELD_PARTIAL: ASR_shield < ASR_noshield avec delta significatif → NOT MET (p=1.0)
+- SHIELD_INEFFECTIVE: ASR_shield ≈ ASR_noshield → **MET** (1/30 = 1/30, p=1.0)
 
-However, the 50% reduction (2→1 violation) is NOT statistically distinguishable from
-random variation at N=30. Fisher's exact test p≈0.50. The delta cannot be attributed
-to the shield with any statistical confidence.
-
-**Power analysis**: To detect a drop from 6.67% to 3.33% with 80% power (two-sample
-proportion, one-sided α=0.05), the required N ≈ 200+ per condition. The N=30 campaign
-is underpowered for this effect size.
+Le verdict SHIELD_PARTIAL BORDERLINE du rapport initial reposait sur FC-003 ASR=6.67% (avant correction). Avec FC-003 corrigé à 3.33%, le shield et le no-shield présentent des résultats identiques. Le shield ne produit pas de bénéfice mesurable pour cette chaîne à N=30.
 
 ---
 
@@ -91,13 +87,9 @@ is underpowered for this effect size.
 
 ### 4.1 What the result tells us
 
-The aegis_shield produces a nominal 50% reduction in violations (2→1), suggesting that
-the δ¹ filter catches some (but not all) feedback_poisoning payloads. However, the result
-is not statistically distinguishable from noise at N=30.
+Après correction du spot-check humain (FC-003: 1/30 corrigé = FC-004: 1/30), le shield ne produit aucune réduction observable pour feedback_poisoning. Les deux conditions ont le même ASR (3.33%) et le même Sep(M) (0.0333). 
 
-Both conditions show Sep(M) > 0 with null_control = 0 violations, confirming that the
-residual attack signal is causally attributable to the injection (not the model's baseline
-behavior), with or without the shield.
+Les deux conditions maintiennent Sep(M)>0 avec null_control=0/30, confirmant que la violation résiduelle est causalement attribuable à l'injection (pas au comportement de base du modèle), avec ou sans shield.
 
 ### 4.2 What the result does NOT tell us
 

@@ -29,12 +29,15 @@ class OrchestratorMetricsMixin:
 
     # δ² multi-turn drift monitor (RR-RUN4-004). The verdict is ALWAYS recorded
     # in the metrics dict (additive, non-blocking). This flag governs only whether
-    # the host pipeline should *act* on a HARD verdict (MT_FORBIDDEN_LEAK /
-    # MT_REFUSAL_COLLAPSE). It is OFF by default: recording the verdict never
-    # alters the live decision flow (RETEX THESIS-001 — no repeat of the freeze).
-    # A caller that wants enforcement reads `multiturn_drift["should_block"]`,
-    # which is True only when this flag is set AND the verdict is hard-blocked.
-    MULTITURN_DRIFT_BLOCKING: bool = False
+    # the host pipeline should *act* on a hard verdict. Enforcement is ENABLED but
+    # SCOPED to MT_FORBIDDEN_LEAK ONLY — the single code with 0% benign FPR
+    # (EXPERIMENT_REPORT_RRFC-monitor_hardblock_readiness.md). MT_REFUSAL_COLLAPSE is
+    # recorded but NEVER hard-blocked (6.7% residual FPR). A caller reads
+    # `multiturn_drift["should_block"]`. NB: no caller acts on it yet, and the live
+    # attach passes forbidden_markers=None (so FORBIDDEN_LEAK cannot fire without
+    # caller-supplied markers) — enabling this flag has zero live effect today; wiring
+    # an actual stop remains a separate, explicit step (RETEX THESIS-001 — no freeze).
+    MULTITURN_DRIFT_BLOCKING: bool = True
 
     async def run_separation_score(
         self, attack_message: str, n_trials: int = 10
@@ -308,10 +311,13 @@ class OrchestratorMetricsMixin:
                 forbidden_markers=list(forbidden_markers) if forbidden_markers else None,
             )
             details = dr.details or {}
+            codes = details.get("violation_codes", [])
             metric = {
                 "blocked": bool(dr.blocked),
-                # should_block stays False unless enforcement is explicitly enabled.
-                "should_block": bool(dr.blocked) and bool(self.MULTITURN_DRIFT_BLOCKING),
+                # should_block is scoped to MT_FORBIDDEN_LEAK ONLY (0% benign FPR).
+                # MT_REFUSAL_COLLAPSE is recorded (in `blocked`/codes) but never hard-blocked
+                # (6.7% FPR — EXPERIMENT_REPORT_RRFC-monitor_hardblock_readiness.md).
+                "should_block": bool(self.MULTITURN_DRIFT_BLOCKING) and ("MT_FORBIDDEN_LEAK" in codes),
                 "blocking_enabled": bool(self.MULTITURN_DRIFT_BLOCKING),
                 "reason": dr.reason,
                 "severity": dr.severity,
