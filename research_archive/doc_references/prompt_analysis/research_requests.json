@@ -1,6 +1,6 @@
 {
   "description": "File d'attente de recherche — synchronisee avec DIRECTOR_BRIEFING_RUN003.md + RUN010",
-  "last_updated": "2026-06-16",
+  "last_updated": "2026-06-18",
   "source": "DIRECTOR_BRIEFING_RUN003.md + fiches #12-22",
   "requests": [
     {
@@ -875,13 +875,14 @@
       "type": "experiment",
       "query": "Feedback poisoning shield efficacy INCONCLUSIVE (N=30 shield=ON, SHIELD_PARTIAL). Diagnosed underpowered (need N~200) + low-SVC template + ChromaDB-offline confound. See PROTOCOL_RR-FC-004_v2.md.",
       "priority": "basse",
-      "status": "protocol_v2_ready",
+      "status": "resolved",
       "created": "2026-06-16",
-      "resolved_by": null,
-      "notes": "v2: N=60 paired shield ON/OFF, SVC>=0.50 gate, ChromaDB-up, shield_interventions, McNemar. Recommendation Option C (C2 strong via P169/P173). Director decision.",
+      "resolved_by": "Option C closure (director decision, 2026-06-18; recommendation pre-recorded since 2026-06-16) -- EVIDENCE_PARTIAL. The N=30 feedback-poisoning shield run (FC-20260617) is INCONCLUSIVE (underpowered ~N200 needed, low-SVC template, ChromaDB-offline confound; see PROTOCOL_RR-FC-004_v2.md). It is NOT re-run because the conjecture it blocks (C2: no PI defense dominates an adaptive attacker) is already strongly supported independently -- P169 PISmith + P173 PIArena (no defense dominates vs adaptive RL attack) + P171 formal no-subset-suffices. C2 supported via literature, NOT via FC-20260617; the shield result must not be cited as positive efficacy evidence (HUMILITY GATE, no score crossing). v2 protocol (N=60 paired McNemar, SVC>=0.50 gate, ChromaDB-up) kept on shelf; reversible. See CLOSURE_RR-FC-004_evidence_partial_2026-06-18.md.",
+      "notes": "v2: N=60 paired shield ON/OFF, SVC>=0.50 gate, ChromaDB-up, shield_interventions, McNemar. Recommendation Option C (C2 strong via P169/P173). Director decision. | CLOSED 2026-06-18 Option C: C2 carried by P169/P173/P171, not by this campaign.",
       "blocks": [
         "C2"
-      ]
+      ],
+      "resolved": "2026-06-18"
     }
   ],
   "notes": "Journal PDCA session 2026-05-16 (reconstruit PDCA-15 apres troncature JSON ligne 666). PDCA-1: sync memoire +40j, 5 RR experiment-planner ajoutees (G058/G060/G062/G007/G006). PDCA-2: 4 bloqueurs G-058 leves. PDCA-3: G-062 corrige, 36 LLMs listes, email Kholkar. PDCA-4: P135 Outlines indexe MANIFEST (135 papers). PDCA-5: outlines_adapter.py +13 tests. PDCA-6: substitution LMQL->Outlines, PDF P135 (18p). PDCA-7: orphelin renomme, SC-2, OSF draft. PDCA-8: SC-4 composition. PDCA-9: SC-3 genetic. PDCA-10: sanitized loader + audit-these. PDCA-11: export_scenarios_metadata.py (62 scenarios). PDCA-12: run_g058_campaign decompose en package g058/ (9 modules <800 lignes), bug load_templates repare. PDCA-13: ASR_deterministic formalise (F73), RR-P0-003 + RR-DA-007 resolved. PDCA-14: F46 baseline diagnostique (ASR 3.33% degenere, grille 14400 bloquee). PDCA-15: reparation troncature research_requests.json + travail RR-FICHE-002."
