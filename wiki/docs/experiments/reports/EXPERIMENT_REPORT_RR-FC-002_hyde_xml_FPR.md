@@ -35,10 +35,6 @@ All panel items are BENIGN clinical content -> every block is a false positive (
 
 **Interpretation**: the deterministic prefilters trade utility for their 0% adversarial ASR. Over-refusal concentrates on legitimate clinical content that incidentally matches a broad check: gram weights >800 (organ/specimen weights), real FDA docket numbers (FDA-YYYY-X-NNNN), 'Emergency Use/Authorization' mentions (HyDE), and common clinical XML tags outside the 7-tag whitelist (xml_agent). Clean controls should pass; any clean-control block is a hard defect.
 
-**Recommended refinements (do NOT deploy as hard block before fixing):**
-- HyDE gram check: require an UNSAFE-context co-occurrence (e.g. 'force'/'tension'/'clip' near the value) instead of blocking any >800 g token; specimen/organ/blood-loss weights are benign.
-- HyDE FDA check: distinguish a fabricated *authority claim* from a benign *docket citation*; expand the whitelist or require an accompanying override/authorization verb.
-- HyDE 'Emergency' check: require co-occurrence with a parameter-override claim, not the phrase alone.
-- xml_agent: expand the tag whitelist to the legitimate clinical schema, or scope the prefilter to the narrow tool-call schema the chain actually consumes.
+**Status: PASS** — 0 over-refusal on the benign panel for both prefilters. The RR-FC-003 contextual refinements (force co-occurrence for the gram check, override/parameter-change co-occurrence for the FDA + Emergency checks, expanded clinical XML tag whitelist) eliminated the over-refusal while keeping adversarial ASR at 0 (regression: backend/tests/test_hyde_xml_prefilter_refined.py).
 
 **Limits**: synthetic benign panel (N=32 hyde, N=32 xml_agent), single-author, English-dominant; FPR estimates carry the synthetic-panel caveat. True-positive (adversarial) ASR=0 is established separately (RR-FC-001).

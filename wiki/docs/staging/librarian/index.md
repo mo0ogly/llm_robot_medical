@@ -5,7 +5,7 @@
 !!! abstract "Agent `_staging/librarian/`"
     Rapports d'organisation du corpus, validation des propagations vers doc_references/, verification des P-IDs.
 
-**10 fichiers** disponibles.
+**11 fichiers** disponibles.
 
 ## Liste complete
 
@@ -17,6 +17,7 @@
 | [`INDEX_BY_YEAR.md`](INDEX_BY_YEAR.md) | Index by Year | 112 |
 | [`INDEX_GLOBAL.md`](INDEX_GLOBAL.md) | INDEX GLOBAL — Toutes les Ressources AEGIS | 172 |
 | [`LIBRARIAN_PROPAGATION_P0.md`](LIBRARIAN_PROPAGATION_P0.md) | LIBRARIAN — Rapport de Propagation P0 | 119 |
+| [`MAINTENANCE_REPORT_2026-06-16.md`](MAINTENANCE_REPORT_2026-06-16.md) | LIBRARIAN Maintenance Report — 2026-06-16 | 72 |
 | [`MANIFEST.md`](MANIFEST.md) | MANIFEST -- Bibliography Phase 1+2+3 (60 papers) | 124 |
 | [`PHASE3_LIBRARIAN_RUN003.md`](PHASE3_LIBRARIAN_RUN003.md) | PHASE 3 -- LIBRARIAN AGENT REPORT (RUN-003) | 187 |
 | [`REPORT_CATCHUP_P061_P086.md`](REPORT_CATCHUP_P061_P086.md) | LIBRARIAN REPORT -- RUN-004 CATCHUP (P061-P086) | 133 |

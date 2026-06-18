@@ -7,8 +7,8 @@
 
 <div class="stat-grid">
   <div class="stat-card"><span class="stat-value">13</span><span class="stat-label">Agents publies</span></div>
-  <div class="stat-card"><span class="stat-value">280</span><span class="stat-label">Fichiers</span></div>
-  <div class="stat-card"><span class="stat-value">54 089</span><span class="stat-label">Lignes</span></div>
+  <div class="stat-card"><span class="stat-value">281</span><span class="stat-label">Fichiers</span></div>
+  <div class="stat-card"><span class="stat-value">54 161</span><span class="stat-label">Lignes</span></div>
   <div class="stat-card"><span class="stat-value">9</span><span class="stat-label">Phases pipeline</span></div>
 </div>
 
@@ -54,7 +54,7 @@
 
 - <span class="agent-badge agent-badge--librarian">LIBRARIAN</span> **Rapports de propagation & validation**
 
-    10 fichiers &middot; 1 561 lignes.
+    11 fichiers &middot; 1 633 lignes.
 
     [:material-arrow-right: Ouvrir](librarian/index.md)
 
