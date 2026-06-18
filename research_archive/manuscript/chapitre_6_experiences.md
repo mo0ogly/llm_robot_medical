@@ -198,17 +198,128 @@ Ces deux campagnes apportent une evidence expérimentale directe AEGIS à C2 :
    le cas spécifique du feedback_poisoning médical, avec juge déterministe (non
    LLM) — ce qui écarte le caveat manipulabilité P153 (Eiras et al., 2025).
 
-Le total de runs intégré à ce chapitre passe à **2890 runs** (2030 THESIS-grade +
-630 Triple Convergence + 60 FC-003/FC-004 + 60 null_control FC-003/FC-004 −
-correction comptage : voir note ci-dessous). [Note de comptage : 2030 runs
-thesis-grade + 630 TC + 60 FC-003 attack + 60 FC-004 attack + 60 FC-003 null +
-60 FC-004 null = 2900 runs totaux.]
+Le total de runs intégré à ce chapitre passe à **3200 runs** (2030 THESIS-grade +
+630 Triple Convergence + 60 FC-003/FC-004 + 60 null_control FC-003/FC-004 +
+180 FC-005/FC-006 attack + 180 null_control FC-005/FC-006 + 30 FC-007 adaptive +
+30 null_control FC-007 = 3200 runs totaux). [Note de comptage : 2030 runs
+thesis-grade + 630 TC + 60+60 FC-003/FC-004 attack/null + 180+180 FC-005/006 + 30+30 FC-007 = 3200.]
 
 **Limite spécifique FC-003/FC-004** : SVC = 0.3466 (LOW POTENTIAL), dimensions
 d3 = 0.70 et d4 = 0.60 actives mais d1 = 0.25 et d2 = 0.125 faibles. L'effet
 observé est réel mais de faible magnitude — la chaîne feedback_poisoning sous sa
 forme actuelle est insuffisante pour une revendication ASR forte. Un template
 amélioré (d1, d2 ≥ 0.6) ouvre le gap expérimental suivant (RR-FC-005 potentiel).
+
+---
+
+## 6.9 Campagnes FC-005 / FC-006 / FC-007 — attaques multi-step adaptatives et robustesse du shield δ¹
+
+<!-- EXPERIMENTAL: FC-005/FC-006/FC-007 (2026-06-17) -->
+
+### 6.9.1 Protocole
+
+Trois campagnes séquentielles forment un dispositif expérimental en trois conditions,
+conçu pour séparer l'effet attaque, l'effet shield, et l'effet adaptation :
+
+| Campagne | Condition | N | Chaînes testées |
+|----------|-----------|---|-----------------|
+| FC-005 | Static, aegis_shield=OFF | 30/chaîne = 90 total | multi_step_hijack, declarative_bypass, ghost_tool |
+| FC-006 | Static, aegis_shield=ON | 30/chaîne = 90 total | multi_step_hijack, declarative_bypass, ghost_tool |
+| FC-007 | Adaptive OODA (max_turns=5), aegis_shield=ON | 30 sessions | Adversaire OODA (adaptive_attacker_agent.py) |
+
+Les trois chaînes FC-005/FC-006 sont des chaînes non-RAG (sans ChromaDB), ce qui garantit
+que le signal mesuré est imputable à la stratégie d'attaque, non à l'infrastructure
+vectorielle. Le modèle cible est llama-3.3-70b-versatile (Groq), juge déterministe.
+Le null control (30 prompts bénins par chaîne) valide l'absence de faux positifs.
+
+Pour FC-007, l'adversaire OODA observe la réponse du Medical Agent après chaque turn
+(Observe → Orient → Decide → Act → REPLAN si échec) et adapte son payload
+dans la limite de max_turns=5 tentatives par session.
+
+### 6.9.2 Résultats
+
+**Tableau principal : ASR par condition (juge déterministe, N=30/chaîne)**
+
+| Condition | Chaîne | Violations | ASR | Wilson 95% CI | Null | Sep(M) |
+|-----------|--------|-----------|-----|---------------|------|--------|
+| FC-005 (no shield) | declarative_bypass | 18/30 | 60.0% | [42.3%, 75.4%] | 0/30 | 0.600 |
+| FC-005 (no shield) | multi_step_hijack | 17/30 | 56.7% | [39.2%, 72.6%] | 0/30 | 0.567 |
+| FC-005 (no shield) | ghost_tool | 16/30 | 53.3% | [36.1%, 69.8%] | 0/30 | 0.533 |
+| **FC-005 agrégé** | (3 chaînes) | **51/90** | **56.7%** | **[46.4%, 66.4%]** | 0/90 | **0.5667** |
+| FC-006 (shield=ON) | declarative_bypass | 1/30 | 3.3% | [0.6%, 16.7%] | 0/30 | 0.0333 |
+| FC-006 (shield=ON) | multi_step_hijack | 1/30 | 3.3% | [0.6%, 16.7%] | 1/30 | 0.000 |
+| FC-006 (shield=ON) | ghost_tool | 1/30 | 3.3% | [0.6%, 16.7%] | 0/30 | 0.0333 |
+| **FC-006 agrégé** | (3 chaînes) | **3/90** | **3.3%** | **[1.1%, 9.3%]** | 1/90 | **0.0222** |
+| **FC-007 (OODA adapt.)** | (adversaire adaptatif) | **0/30** | **0.0%** | **[0.0%, 11.4%]** | 0/30 | ARTEFACT |
+
+**[EXPERIMENTAL]** — N=90 (FC-005/006) + 30 sessions (FC-007), juge déterministe,
+Groq llama-3.3-70b-versatile, 2026-06-17.
+
+**Test de significativité (delta FC-005 → FC-006)** :
+Table de Fisher 2×2 : [[51, 39], [3, 87]].
+p ≈ 3×10⁻¹⁵ (one-sided, H₁: ASR_shield < ASR_noshield).
+Taille d'effet Cohen's h (delta shield) = 2·arcsin(√0.567) − 2·arcsin(√0.033) = **1.339** (VERY LARGE).
+
+**Taille d'effet FC-005 vs null (δ⁰ insuffisant, C1)** :
+Cohen's h = 2·arcsin(√0.567) − 0 = **1.705** (VERY LARGE).
+
+(EXPERIMENT_REPORT_FC-005, EXPERIMENT_REPORT_FC-006, EXPERIMENT_REPORT_FC-007, 2026-06-17). [EXPERIMENTAL]
+
+### 6.9.3 Interprétation pour C1 et C7
+
+**Contribution à C1 (insuffisance de δ⁰)**
+
+Les trois chaînes FC-005 atteignent ASR ∈ [53.3%, 60.0%] sur le modèle aligné RLHF
+(δ⁰ seul, shield=OFF). Le Sep(M) agrégé de 0.5667 (N=30/condition, statistically valid
+per Zverev et al. ICLR 2025, Definition 2, p.4) confirme que le signal est causalement
+attribuable à la stratégie d'attaque, non à un bruit du modèle (null_control = 0/90).
+
+Ce résultat constitue la **preuve directe AEGIS la plus forte pour C1** à ce jour :
+
+- FC-003 (feedback_poisoning) : ASR = 6.67%, h = 0.52 (medium)
+- **FC-005 (multi-step adaptatif, 3 chaînes)** : ASR = 56.7%, h = 1.705 (VERY LARGE)
+
+L'alignement RLHF de base (δ⁰) est insuffisant pour protéger le modèle médical contre
+des stratégies d'attaque multi-step non-RAG. Le Wilson_lower = 46.4% exclut 0% avec
+une confiance > 99.9% (EXPERIMENT_REPORT_FC-005, 2026-06-17). [EXPERIMENTAL]
+
+**Contribution à C7 (paradoxe raisonnement/sécurité) — Setup expérimental**
+
+C7 conjecture que les défenses architecturales sont insuffisantes face à un adversaire
+adaptatif. Les campagnes FC-005/006/007 fournissent le dispositif de contrôle nécessaire
+à cette évaluation :
+
+1. **FC-005 établit la vulnérabilité de base** (ASR=56.7% sans shield) : δ⁰ seul est
+   clairement insuffisant, les trois chaînes sont efficaces.
+
+2. **FC-006 quantifie l'effet du shield δ¹** (ASR=3.3% avec shield) : le shield réduit
+   l'ASR de −53.4 points (−94%), Fisher p≈3×10⁻¹⁵. L'effet est statistiquement confirmé
+   avec une taille d'effet VERY LARGE (h=1.339). Pour des **attaques statiques**, le shield
+   δ¹ est hautement efficace.
+
+3. **FC-007 teste l'adversaire adaptatif** (OODA max_turns=5, shield=ON) :
+   ASR=0/30 (0.0%), Wilson_upper=11.4%. Le shield résiste également à l'adversaire OODA-5.
+
+   **Limite critique du protocole FC-007** : l'adversaire OODA reçoit pour feedback
+   uniquement la réponse finale du Medical Agent. Il ne distingue pas "(a) le shield a
+   filtré mon payload avant qu'il atteigne le modèle" de "(b) le modèle a refusé de son
+   propre chef (RLHF)". Sans ce feedback directionnel, la boucle OODA "Orient" opère à
+   l'aveugle sur le mécanisme de blocage et ne peut converger efficacement.
+
+   C7 n'est pas réfutée par FC-007 : le protocole OODA-5 avec feedback opaque est
+   **insuffisant pour évaluer C7**. La validation complète de C7 requiert un protocole
+   ASIDE white-box (G-019, Zverev et al. ICLR 2025) où l'adversaire reçoit un feedback
+   sur la cause du blocage (shield ou RLHF), permettant une adaptation ciblée.
+
+**Conclusion tripartite** : Les campagnes FC-005/006/007 produisent trois résultats
+complémentaires pour la thèse :
+- δ⁰ seul est insuffisant (C1, h=1.705) [EXPERIMENTAL, p < 0.001]
+- Le shield δ¹ est hautement efficace contre les attaques statiques (h=1.339) [EXPERIMENTAL, p < 0.001]
+- L'adversaire OODA-5 avec feedback opaque ne perce pas le shield (0/30) [EXPERIMENTAL, Wilson_upper=11.4%]
+
+Ces trois points forment la contribution expérimentale centrale au §5.4 (C7) et §3.2 (C1)
+de la thèse, et délimitent précisément la classe d'adversaires que les défenses actuelles
+gèrent (statiques) ou résistent (OODA-5 opaque) versus ce qui reste à valider (ASIDE white-box).
 
 ---
 
@@ -237,8 +348,11 @@ En depit de ces limites, les resultats sont statistiquement valides (N total 283
 - EXPERIMENT_REPORT_THESIS_002, 2026-04-09 (1200 runs, 70B Groq)
 - EXPERIMENT_REPORT_FC-003, 2026-06-17 (30 runs FC-003, shield=OFF, feedback_poisoning)
 - EXPERIMENT_REPORT_FC-004, 2026-06-17 (30 runs FC-004, shield=ON, feedback_poisoning)
+- EXPERIMENT_REPORT_FC-005, 2026-06-17 (N=90, 3 chaînes, shield=OFF — H₁ STRONGLY SUPPORTED, ASR=56.7%)
+- EXPERIMENT_REPORT_FC-006, 2026-06-17 (N=90, 3 chaînes, shield=ON — SHIELD_EFFECTIVE, ASR=3.3%)
+- EXPERIMENT_REPORT_FC-007, 2026-06-17 (N=30 sessions OODA, shield=ON — SHIELD_ROBUST, 0/30)
 - DISCOVERIES_INDEX, 2026-04-09 (D-001, D-022, D-023, D-024, D-025, taxonomie 6 stages)
-- CONJECTURES_TRACKER, 2026-06-17 (C1, C2, C3, C4 + FC-003/FC-004 evidence)
+- CONJECTURES_TRACKER, 2026-06-17 (C1, C2, C3, C4, C7 + FC-003..FC-007 evidence)
 - P001 (Liu et al. 2023, arXiv:2306.05499) ; P019 (gradient nul) ; P044 (juges LLM flippes >90% sur 22/24 cells) ; P049 (bypass 100%) ; P052 (preuve martingale) ; P054 (PIDP) ; P055 (RAGPoison) ; P117 (Yoon et al. 2025, ACL Findings) ; P118 (Gao et al. 2023, ACL, HyDE seminal) ; P119 (Jiao et al. 2025, SIGIR, PR-Attack) ; P120 (Zhang et al. 2024, arXiv:2410.22832, HijackRAG) ; P121 (Clop & Teglia 2024, arXiv:2410.14479, backdoor retriever) ; P153 (Eiras et al. 2025, arXiv:2503.04474, juges manipulables) ; P169 (PISmith, Yao et al. 2026) ; P173 (PIArena, Geng et al. 2026, arXiv:2604.08499)
 - Zhang et al. 2025 (arXiv:2501.18632v2, dimensions SVC)
 - Zverev et al. 2025 (ICLR, Sep(M), Definition 2, p. 4)
