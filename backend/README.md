@@ -104,6 +104,9 @@ All chains are registered via `@register_chain` decorator and can be listed with
 - `POST /api/redteam/delta0-protocol`: Run Protocol P-δ⁰ — discrimination δ⁰/δ¹ via with/without system prompt. Returns `{delta0_protection, delta1_contribution, residual, asr_no_sp, asr_with_sp, statistically_valid}`. Requires N>=30 for `statistically_valid: true`.
 - `GET /api/redteam/analysis/delta0-summary`: Read last P-δ⁰ run from `logs/delta0_results.json`. Returns `{available: false}` if no run yet.
 - `GET /api/redteam/llm-providers`: List configured LLM providers and available models. Returns `[{id, name, status, models}]`. Ollama always present; Groq present if `GROQ_API_KEY` configured.
+- `GET /api/redteam/llm-providers/manage`: Full provider catalog (enabled AND disabled) with per-provider key status (`configured`, `requires_api_key`, `api_key_env`), models, and the active provider/model. Drives the Provider Settings panel (`/redteam/providers`). Keys are read-only — never returned.
+- `PUT /api/redteam/llm-providers/{provider}/config`: Persist `enabled` / `timeout_seconds` to `prompts/llm_providers_config.json` (atomic write + `app.state.llm_config` refresh). API keys stay in `backend/.env`, never written here.
+- `PUT /api/redteam/llm-providers/active`: Persist the Lab default (active) provider + model. Validates the provider exists, is enabled, and that the model belongs to it. Campaign runners still read `LLM_PROVIDER` / `MEDICAL_MODEL` from the environment.
 - `GET /api/redteam/catalog`: Full template catalog — 122 templates with metadata (id, name, category, chain_id, target_delta, conjecture, variables, SVC).
 - `GET /api/redteam/analysis/report`: Aggregated analysis from `aegis_corpus` ChromaDB — SVC distribution, conjecture coverage, gap mapping.
 
