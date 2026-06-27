@@ -174,6 +174,17 @@ def get_llm(temperature: float = 0.0, model: str | None = None, provider: str | 
     if provider is None:
         provider = get_provider()
 
+    # Cost tracking (P2 OMC fusion): attach the HUD callback so EVERY LLM call
+    # (chains, campaigns, test routes) records token usage. Best-effort — never
+    # let observability break model creation.
+    try:
+        from observability import AegisCostCallback
+        _cbs = kwargs.setdefault("callbacks", [])
+        if isinstance(_cbs, list) and not any(isinstance(_c, AegisCostCallback) for _c in _cbs):
+            _cbs.append(AegisCostCallback())
+    except Exception:
+        pass
+
     if provider == "ollama":
         # Note: Meditron models have NO separate safety alignment (RLHF/DPO).
         # Testing on Meditron validates δ⁰ = 0 hypothesis (Zhang et al. 2025).
