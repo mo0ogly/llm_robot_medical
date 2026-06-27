@@ -110,6 +110,27 @@ def load_provider_config() -> Dict[str, Any]:
 
     return config
 
+
+def save_provider_config(config: Dict[str, Any], request: Optional[Request] = None) -> bool:
+    """Persist the provider config to disk (atomic write) and refresh the in-memory
+    cache so the change takes effect immediately without a restart.
+
+    Returns True on success. API keys are NEVER written here — secrets stay in the
+    environment (backend/.env); only `enabled`, `timeout_seconds`, and the active
+    provider/model defaults are persisted.
+    """
+    try:
+        tmp_path = CONFIG_PATH + ".tmp"
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            json.dump(config, f, indent=2, ensure_ascii=False)
+        os.replace(tmp_path, CONFIG_PATH)
+        if request is not None:
+            request.app.state.llm_config = config
+        return True
+    except OSError as e:
+        logger.error(f"Failed to persist provider config: {e}")
+        return False
+
 # Request/Response models
 class PromptTestRequest(BaseModel):
     provider: str = Field(..., min_length=1, max_length=50)
@@ -131,6 +152,10 @@ class ProviderConfigUpdateRequest(BaseModel):
     api_key: Optional[str] = Field(default=None, max_length=1024)
     endpoint_url: Optional[str] = Field(default=None, max_length=2048)
     timeout_seconds: Optional[int] = Field(default=None, ge=1, le=300)
+
+class ActiveProviderRequest(BaseModel):
+    provider: str = Field(..., min_length=1, max_length=50)
+    model: Optional[str] = Field(default=None, max_length=256)
 
 # Helper functions
 def get_enabled_providers(config: Dict[str, Any]) -> List[str]:
@@ -294,6 +319,49 @@ async def list_llm_providers(request: Request):
         "providers": providers_list,
         "total": len(providers_list),
         "timestamp": time.time()
+    }
+
+@router.get("/llm-providers/manage")
+async def manage_llm_providers(request: Request):
+    """Full provider catalog for the settings panel.
+
+    Unlike GET /llm-providers (enabled only), this returns EVERY provider with its
+    enabled flag and whether its API key env var is configured (read-only status —
+    the key value is never returned). Drives the provider-settings UI.
+    """
+    config = request.app.state.llm_config or load_provider_config()
+    providers = config.get("providers", {})
+    out = []
+    for name, pc in providers.items():
+        auth = pc.get("auth") or {}
+        api_key_env = auth.get("api_key_env")
+        out.append({
+            "name": name,
+            "display_name": pc.get("name", name),
+            "type": pc.get("type"),
+            "enabled": bool(pc.get("enabled", False)),
+            "requires_api_key": bool(api_key_env),
+            "configured": bool(api_key_env and os.getenv(api_key_env)),
+            "api_key_env": api_key_env,
+            "models": pc.get("models", []),
+            "default_model": pc.get("default_model"),
+            "timeout_seconds": pc.get("timeout_seconds"),
+        })
+
+    active_provider = config.get("active_provider")
+    active_model = config.get("active_model")
+    if not active_provider:
+        enabled_names = [p["name"] for p in out if p["enabled"]]
+        active_provider = enabled_names[0] if enabled_names else (out[0]["name"] if out else None)
+    if not active_model and active_provider and active_provider in providers:
+        active_model = providers[active_provider].get("default_model")
+
+    return {
+        "providers": out,
+        "active_provider": active_provider,
+        "active_model": active_model,
+        "total": len(out),
+        "timestamp": time.time(),
     }
 
 @router.get("/llm-providers/{provider}/models")
@@ -526,23 +594,58 @@ async def update_provider_config(provider: str, update: ProviderConfigUpdateRequ
     if not validate_provider_exists(config, provider):
         raise HTTPException(status_code=404, detail=f"Provider '{provider}' not found")
 
-    # Only allow updating enabled flag and timeout
+    # Only allow updating enabled flag and timeout. API keys stay in the
+    # environment (backend/.env) and are never written from this endpoint.
     if update.enabled is not None:
         config["providers"][provider]["enabled"] = update.enabled
 
     if update.timeout_seconds is not None:
         config["providers"][provider]["timeout_seconds"] = update.timeout_seconds
 
-    # Note: In a real implementation, this would persist to database or file
-    # For now, changes are in-memory only
+    persisted = save_provider_config(config, request)
 
     return {
-        "status": "updated",
+        "status": "updated" if persisted else "updated_in_memory",
+        "persisted": persisted,
         "provider": provider,
         "changes": {
             "enabled": update.enabled,
             "timeout_seconds": update.timeout_seconds
         }
+    }
+
+@router.put("/llm-providers/active")
+async def set_active_provider(update: ActiveProviderRequest, request: Request):
+    """Persist the Lab's default (active) provider + model.
+
+    Validates the provider exists and is enabled, and that the model belongs to it.
+    Note: campaign runners read LLM_PROVIDER/MEDICAL_MODEL from the environment —
+    this sets the default the Lab UI (PromptForge) starts from.
+    """
+    config = request.app.state.llm_config or load_provider_config()
+    provider = update.provider
+
+    if not validate_provider_exists(config, provider):
+        raise HTTPException(status_code=404, detail=f"Provider '{provider}' not found")
+
+    provider_config = config["providers"][provider]
+    if not provider_config.get("enabled", False):
+        raise HTTPException(status_code=400, detail=f"Provider '{provider}' is not enabled")
+
+    model = update.model or provider_config.get("default_model")
+    models = provider_config.get("models", [])
+    if model and models and model not in models:
+        raise HTTPException(status_code=400, detail=f"Model '{model}' not available for provider '{provider}'")
+
+    config["active_provider"] = provider
+    config["active_model"] = model
+    persisted = save_provider_config(config, request)
+
+    return {
+        "status": "updated" if persisted else "updated_in_memory",
+        "persisted": persisted,
+        "active_provider": provider,
+        "active_model": model,
     }
 
 # Register router

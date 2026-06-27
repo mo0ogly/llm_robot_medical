@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ShieldAlert, Database, Activity, Lock, Terminal, BarChart2,
   FileText, Target, FlaskConical, BookOpen, Beaker, Clock, History,
-  FlaskRound, Menu, X, ChevronLeft
+  FlaskRound, Menu, X, ChevronLeft, Server
 } from 'lucide-react';
 import { prefetch } from '../../hooks/useFetchWithCache';
 
@@ -13,6 +13,7 @@ var NAV_GROUPS = [
     label: 'Infrastructure',
     items: [
       { id: 'rag', key: 'redteam.nav.rag', fallback: 'RAG Ingestion', icon: Database, path: '/redteam/rag' },
+      { id: 'providers', key: 'redteam.nav.providers', fallback: 'AI Providers', icon: Server, path: '/redteam/providers' },
     ]
   },
   {

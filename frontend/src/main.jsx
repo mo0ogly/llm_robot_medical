@@ -27,6 +27,7 @@ var ResultExplorer = lazy(function() { return import('./components/redteam/views
 var CampaignView = lazy(function() { return import('./components/redteam/views/CampaignView.jsx'); });
 var PromptForgeMultiLLM = lazy(function() { return import('./components/redteam/PromptForgeMultiLLM.jsx'); });
 var ExperimentDashboard = lazy(function() { return import('./components/redteam/views/ExperimentDashboard.jsx'); });
+var ProviderSettingsView = lazy(function() { return import('./components/redteam/views/ProviderSettingsView.jsx'); });
 
 // Thesis views — doctoral research communication
 var BibliographyPipelineView = lazy(function() { return import('./components/thesis/BibliographyPipelineView.jsx'); });
@@ -62,6 +63,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="history" element={<HistoryView />} />
           <Route path="results" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><ResultExplorer /></Suspense>} />
           <Route path="experiments" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading...</div>}><ExperimentDashboard /></Suspense>} />
+          <Route path="providers" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading providers...</div>}><ProviderSettingsView /></Suspense>} />
         </Route>
 
         <Route path="/thesis/bibliography-pipeline" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading thesis pipeline...</div>}><BibliographyPipelineView /></Suspense>} />
