@@ -830,6 +830,12 @@ case "$CMD" in
         COMMIT_MSG="${2:-chore: update AEGIS lab}"
         invoke_push "$COMMIT_MSG"
         ;;
+    push-gitlab)
+        # Clean, provenance-scrubbed single-commit snapshot -> internal GitLab.
+        # Default is dry-run (build + verify, NO push). Pass 'push' to actually push.
+        GL_MODE="--dry-run"; [[ "${2:-}" == "push" ]] && GL_MODE="--push"
+        "$SCRIPT_DIR/scripts/gitlab_export.sh" "$GL_MODE" "${3:-}"
+        ;;
     *)
         printf "\n  ${YELLOW}Commands:${NC}\n"
         printf "    ${BOLD}start${NC} | ${BOLD}stop${NC} | ${BOLD}restart${NC} | ${BOLD}health${NC} | ${BOLD}build${NC} | ${BOLD}test${NC}\n"

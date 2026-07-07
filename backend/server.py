@@ -9,13 +9,17 @@ from fastapi.responses import StreamingResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Any
-import ollama
-from ollama import AsyncClient
 import chromadb
 from chromadb.config import Settings
 from pypdf import PdfReader
 
-client = AsyncClient()
+# Medical/cyber AI is backed by INTERNAL-AI (or any configured OpenAI-compatible
+# backend), NOT Ollama — see medical_llm.py. Ollama-shaped facade so the
+# streaming endpoints are unchanged, with hard timeouts so a slow/dead endpoint
+# never wedges the worker (previous "Initialisation…" freeze root cause).
+from medical_llm import MedicalLLM
+
+client = MedicalLLM()
 
 app = FastAPI(title="PoC LLM Medical - API")
 
@@ -420,8 +424,10 @@ from routes.semantic_routes import router as semantic_router
 from routes.cost_routes import router as cost_router
 from routes.routing_routes import api_router as routing_router
 from routes.review_routes import api_router as review_router
+from ai_engine.routes_ai import router as ai_engine_router
 
 app.include_router(config_router)
+app.include_router(ai_engine_router)
 app.include_router(template_router)
 app.include_router(attack_router)
 app.include_router(campaign_router)

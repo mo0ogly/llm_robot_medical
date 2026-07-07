@@ -1,0 +1,9 @@
+.venv/
+**/__pycache__/
+*.pyc
+.env
+.env.*
+**/*.local.json
+chroma_db/
+.pytest_cache/
+**/ai_backends.json

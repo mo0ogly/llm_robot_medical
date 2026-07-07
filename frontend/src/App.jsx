@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Suspense } from "react";
 import { useTranslation } from "react-i18next";
-import { Skull, Shield } from "lucide-react";
+import { Skull, Shield, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import VitalsMonitor from "./components/VitalsMonitor";
 import PatientRecord from "./components/PatientRecord";
@@ -27,6 +27,7 @@ import PresenterOverlay from "./components/PresenterOverlay";
 import ReplayControls from "./components/ReplayControls";
 import AnomalyScore from "./components/AnomalyScore";
 import ModelSelector from "./components/ModelSelector";
+import AiBackendsPanel from "./components/AiBackendsPanel";
 import ModelIntegrityPanel from "./components/ModelIntegrityPanel";
 import useRobotSimulation from "./hooks/useRobotSimulation";
 import useSessionRecorder from "./hooks/useSessionRecorder";
@@ -53,6 +54,7 @@ export default function App() {
   const [contextHealth, setContextHealth] = useState(100);
   const [anomalyData, setAnomalyData] = useState(null);
   const [currentModel, setCurrentModel] = useState(null);
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   const { playAlarm } = useAudioEffects();
   const [chatLog, setChatLog] = useState([]);
@@ -197,7 +199,7 @@ export default function App() {
   useEffect(() => {
     const loadContent = async () => {
       try {
-        var res = await fetch('./api/content?lang=' + i18n.language);
+        var res = await fetch('/api/content?lang=' + i18n.language);
         if (!res.ok) throw new Error("Unavailable");
         const data = await res.json();
         setContent(data);
@@ -823,7 +825,7 @@ export default function App() {
   if (!content) return <div className="min-h-screen bg-slate-900 text-green-500 flex items-center justify-center font-mono p-4 animate-pulse uppercase tracking-[0.2em]">Initialisation Da Vinci v4.2...</div>;
 
   return (
-    <div className={'relative h-screen bg-slate-950 text-slate-300 font-sans overflow-hidden flex flex-col transition-all duration-300 ' + (isIntrusionFlash ? 'ring-4 ring-red-500 ring-inset' : '')}>
+    <div className={'relative h-screen bg-slate-950 text-slate-300 font-sans overflow-clip flex flex-col transition-all duration-300 ' + (isIntrusionFlash ? 'ring-4 ring-red-500 ring-inset' : '')}>
       {/* Background Grid */}
       <div className="absolute inset-0 bg-cyber-grid pointer-events-none opacity-50"></div>
       {/* Ambient Glow */}
@@ -865,7 +867,7 @@ export default function App() {
           </button>
 
           <a 
-            href="http://localhost:5000" 
+            href={`http://${window.location.hostname}:5176`} 
             target="_blank" 
             rel="noopener noreferrer"
             className={'flex items-center gap-1.5 px-3 py-1 border rounded font-mono text-[11px] uppercase font-bold transition-all duration-300 border-purple-500 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]'}
@@ -902,13 +904,19 @@ export default function App() {
           <div className="h-4 w-[1px] bg-slate-700"></div>
           
           <ModelSelector currentModel={currentModel} onModelChange={setCurrentModel} />
-          
+          <button onClick={() => setShowAiPanel(true)} title="Configurer les moteurs IA"
+            className="flex items-center gap-1 px-2 py-0.5 border border-slate-700 rounded text-[9px] uppercase font-bold tracking-wider text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer">
+            <Settings size={11} /> IA
+          </button>
+
           <div className="h-4 w-[1px] bg-slate-700"></div>
           <select value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)} className="bg-slate-800 border-none text-[9px] text-slate-400 rounded px-1 py-0.5 outline-none">
             <option value="fr">FR</option><option value="en">EN</option><option value="br">BR</option>
           </select>
         </div>
       </header>
+
+      {showAiPanel && <AiBackendsPanel onClose={() => setShowAiPanel(false)} />}
 
       {/* Main Container */}
       <main className="flex-1 flex gap-1 p-1 overflow-hidden min-h-0 relative z-10">
@@ -918,10 +926,10 @@ export default function App() {
           </div>
         )}
         {/* Main Dashboard Grid */}
-        <div className={'flex-1 grid grid-cols-12 gap-1 p-1 h-full min-h-0 relative z-10 ' + (isGlitching ? 'animate-glitch' : '')}>
+        <div className={'flex-1 flex flex-col gap-1 p-1 h-full min-h-0 relative z-10 ' + (isGlitching ? 'animate-glitch' : '')}>
 
           {/* Left Panel: Patient & Vitals */}
-          <div className="col-span-3 flex flex-col gap-1 overflow-y-auto h-full min-h-0">
+          <div className="flex-1 flex flex-col gap-1 overflow-y-auto min-h-0">
             {scenario !== 'none' ? <VitalsMonitor robotStatus={robotStatus} scenario={scenario} /> :
               <div className="bg-slate-900 border border-slate-800 rounded p-4 flex flex-col items-center justify-center h-[160px] text-slate-600 font-mono text-[10px] uppercase tracking-tighter">
                 <svg className="w-6 h-6 opacity-30 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>

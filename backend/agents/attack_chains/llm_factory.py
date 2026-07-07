@@ -46,8 +46,37 @@ _models_config = None
 _llm_providers_config = None
 
 
+def _overlay_local_providers(config: dict) -> dict:
+    """Merge an optional, gitignored `*.local.json` sibling over the base config.
+
+    The local overlay is never committed (see .gitignore). It carries site-local
+    providers (e.g. INTERNAL-AI internal gateway) whose endpoints and models must stay
+    off a public repo. Only the `providers` map is merged; secrets stay in env.
+    """
+    local_path = _LLM_PROVIDERS_CONFIG_PATH.with_name(
+        _LLM_PROVIDERS_CONFIG_PATH.stem + ".local.json"
+    )
+    if not local_path.exists():
+        return config
+    try:
+        with open(local_path, encoding="utf-8") as f:
+            local = json.load(f)
+    except (OSError, json.JSONDecodeError) as e:
+        logger.warning(f"Local LLM providers overlay unreadable at {local_path}: {e}")
+        return config
+    merged = dict(config)
+    providers = dict(merged.get("providers", {}))
+    providers.update(local.get("providers", {}))
+    merged["providers"] = providers
+    return merged
+
+
 def get_llm_providers_config() -> dict:
-    """Load multi-provider LLM configuration from llm_providers_config.json."""
+    """Load multi-provider LLM configuration from llm_providers_config.json.
+
+    A gitignored `llm_providers_config.local.json` sibling, if present, is
+    overlaid on top (site-local providers such as INTERNAL-AI).
+    """
     global _llm_providers_config
     if _llm_providers_config is None:
         if _LLM_PROVIDERS_CONFIG_PATH.exists():
@@ -56,6 +85,7 @@ def get_llm_providers_config() -> dict:
         else:
             logger.warning(f"LLM providers config not found at {_LLM_PROVIDERS_CONFIG_PATH}")
             _llm_providers_config = {"providers": {}}
+        _llm_providers_config = _overlay_local_providers(_llm_providers_config)
     return _llm_providers_config
 
 
@@ -195,6 +225,33 @@ def get_llm(temperature: float = 0.0, model: str | None = None, provider: str | 
             temperature=temperature,
             **kwargs,
         )
+    elif provider == "internal_ai":
+        # INTERNAL-AI internal vLLM gateway (OpenAI-compatible). Each model is served
+        # at its own base_url; the per-model endpoint map lives in the gitignored
+        # llm_providers_config.local.json overlay. Key: INTERNAL_AI_API_KEY (bearer).
+        from langchain_openai import ChatOpenAI
+        internal_ai_cfg = get_llm_providers_config().get("providers", {}).get("internal_ai", {})
+        model = model or internal_ai_cfg.get("default_model") or os.getenv("INTERNAL_AI_MODEL", "")
+        endpoints = internal_ai_cfg.get("endpoints", {})
+        base_url = endpoints.get(model) or internal_ai_cfg.get("endpoint", "")
+        if not base_url:
+            raise ValueError(
+                f"No INTERNAL-AI base_url for model '{model}'. "
+                f"Add it to prompts/llm_providers_config.local.json (endpoints map)."
+            )
+        api_key = os.getenv("INTERNAL_AI_API_KEY")
+        if not api_key:
+            raise ValueError(
+                "Missing credential: INTERNAL_AI_API_KEY not set in environment.\n"
+                "Set it in backend/.env (gitignored)."
+            )
+        return ChatOpenAI(
+            model=model,
+            base_url=base_url,
+            api_key=api_key,
+            temperature=temperature,
+            **kwargs,
+        )
     elif provider == "google":
         try:
             from langchain_google_genai import ChatGoogleGenerativeAI
@@ -231,7 +288,7 @@ def get_llm(temperature: float = 0.0, model: str | None = None, provider: str | 
     else:
         raise ValueError(
             f"Unknown LLM_PROVIDER='{provider}'. "
-            f"Supported: ollama, openai, anthropic, groq, google, xai, openai-compatible"
+            f"Supported: ollama, openai, anthropic, groq, google, xai, openai-compatible, internal_ai"
         )
 
 

@@ -1,0 +1,43 @@
+{
+  "version": "1.0-local",
+  "description": "LOCAL overlay — NEVER commit. INTERNAL-AI internal vLLM gateway (.internal, ANSSI). Merged over llm_providers_config.json at load time. Secrets stay in backend/.env (INTERNAL_AI_API_KEY).",
+  "providers": {
+    "internal_ai": {
+      "type": "local",
+      "enabled": true,
+      "name": "INTERNAL-AI (IA locale ANSSI)",
+      "endpoint": "https://<INTERNAL-AI-GATEWAY-HOST>/gpt-oss-120b/v1",
+      "models": [
+        "openai/gpt-oss-120b",
+        "Foundation-Sec-8B-Reasoning-Q4_K_M.gguf",
+        "GLM-4.6V-Q4_K_M-00001-of-00002.gguf",
+        "gemma-4-31B-it-BF16-00001-of-00002.gguf",
+        "qwen3.6-35b-a3b",
+        "mistralai/Voxtral-Mini-3B-2507"
+      ],
+      "default_model": "openai/gpt-oss-120b",
+      "endpoints": {
+        "openai/gpt-oss-120b": "https://<INTERNAL-AI-GATEWAY-HOST>/gpt-oss-120b/v1",
+        "Foundation-Sec-8B-Reasoning-Q4_K_M.gguf": "https://<INTERNAL-AI-GATEWAY-HOST>/foundationsec/v1",
+        "GLM-4.6V-Q4_K_M-00001-of-00002.gguf": "https://<INTERNAL-AI-GATEWAY-HOST>/glm46v/v1",
+        "gemma-4-31B-it-BF16-00001-of-00002.gguf": "https://<INTERNAL-AI-GATEWAY-HOST>/gemma/v1",
+        "qwen3.6-35b-a3b": "https://<INTERNAL-AI-GATEWAY-HOST>/qwen3.6/v1",
+        "mistralai/Voxtral-Mini-3B-2507": "https://<INTERNAL-AI-GATEWAY-HOST>/voxtral/v1"
+      },
+      "auth": {
+        "api_key_env": "INTERNAL_AI_API_KEY",
+        "method": "header",
+        "header_name": "Authorization",
+        "prefix": "Bearer"
+      },
+      "parameters": {
+        "temperature": { "min": 0.0, "max": 2.0, "default": 0.7, "step": 0.1 },
+        "max_tokens": { "min": 1, "max": 4096, "default": 1024, "step": 1 },
+        "top_p": { "min": 0.0, "max": 1.0, "default": 0.95, "step": 0.05 }
+      },
+      "timeout_seconds": 120,
+      "health_check_path": "/models",
+      "notes": "vLLM OpenAI-compatible gateway, per-model base_url (endpoints map). Chat routes only. Non-chat routes (jina-reranker-m0, llama-embed-nemotron-8b) excluded — they 404 on chat/completions."
+    }
+  }
+}

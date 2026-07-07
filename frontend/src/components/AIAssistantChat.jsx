@@ -214,7 +214,7 @@ export default function AIAssistantChat({
     }, []);
 
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, [chatLog, transcript]);
 
     useEffect(() => {
@@ -478,7 +478,7 @@ export default function AIAssistantChat({
                                 {msg.role === 'user' && <div className="text-[10px] text-blue-400/50 mb-1">CHIEF SURGEON</div>}
                                 {msg.role === 'assistant' && <div className="text-[10px] text-slate-500 mb-1">AI ASSISTANT</div>}
                                 {msg.role === 'cyber' && <div className="text-[10px] text-green-500/80 mb-1 drop-shadow uppercase tracking-widest flex items-center gap-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg> AEGIS CYBER-DEFENSE AI</div>}
-                                {msg.text || (isStreaming && i === chatLog.length - 1 ? <span className="animate-pulse">...</span> : "")}
+                                {msg.text || (isStreaming && idx === chatLog.length - 1 ? <span className="animate-pulse">...</span> : "")}
                             </div>
                         </div>
                     ))

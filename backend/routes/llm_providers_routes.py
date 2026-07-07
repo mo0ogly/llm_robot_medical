@@ -78,17 +78,37 @@ def sanitize_error(error: Exception) -> str:
 # Load provider configuration
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "prompts", "llm_providers_config.json")
 
+LOCAL_CONFIG_PATH = os.path.join(
+    os.path.dirname(__file__), "..", "prompts", "llm_providers_config.local.json"
+)
+
 def load_provider_config() -> Dict[str, Any]:
-    """Load LLM provider configuration from JSON file."""
+    """Load LLM provider configuration from JSON file.
+
+    A gitignored `llm_providers_config.local.json` sibling, if present, is
+    overlaid on top (site-local providers such as INTERNAL-AI). Secrets stay in env.
+    """
     try:
         with open(CONFIG_PATH, "r") as f:
-            return json.load(f)
+            config = json.load(f)
     except FileNotFoundError:
         logger.error(f"Config file not found: {CONFIG_PATH}")
-        return {"providers": {}}
+        config = {"providers": {}}
     except json.JSONDecodeError as e:
         logger.error(f"Invalid JSON in config: {e}")
-        return {"providers": {}}
+        config = {"providers": {}}
+
+    if os.path.exists(LOCAL_CONFIG_PATH):
+        try:
+            with open(LOCAL_CONFIG_PATH, "r") as f:
+                local = json.load(f)
+            providers = dict(config.get("providers", {}))
+            providers.update(local.get("providers", {}))
+            config["providers"] = providers
+        except (OSError, json.JSONDecodeError) as e:
+            logger.warning(f"Local provider overlay unreadable: {e}")
+
+    return config
 
 # Request/Response models
 class PromptTestRequest(BaseModel):

@@ -9,7 +9,7 @@ export default function SecOpsTerminal({ onClose }) {
     const bottomRef = useRef(null);
 
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, [history]);
 
     const handleCommand = (cmd) => {

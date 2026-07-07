@@ -6,6 +6,34 @@
             <li class="traffic-section">
                 <a href="#" id="toggle-traffic-observer"><i class="fas fa-network-wired"></i> Traffic Observer</a>
             </li>
+            <li class="ai-engine-section">
+                <span style="color:#a78bfa;font-size:12px;"><i class="fas fa-microchip"></i> IA</span>
+                <select id="internal-ai-model-select" title="Moteur IA INTERNAL-AI actif"
+                        style="background:#1e293b;color:#cbd5e1;border:1px solid #334155;border-radius:4px;padding:2px 6px;font-size:12px;max-width:220px;">
+                </select>
+            </li>
+            <script>
+            (function () {
+                var sel = document.getElementById('internal-ai-model-select');
+                if (!sel) return;
+                fetch('/api/ai/internal-ai/models').then(function (r) { return r.json(); }).then(function (d) {
+                    if (!d.enabled) { sel.parentElement.style.display = 'none'; return; }
+                    sel.innerHTML = '';
+                    (d.models || []).forEach(function (m) {
+                        var o = document.createElement('option');
+                        o.value = m; o.textContent = m;
+                        if (m === d.selected) o.selected = true;
+                        sel.appendChild(o);
+                    });
+                }).catch(function () { sel.parentElement.style.display = 'none'; });
+                sel.addEventListener('change', function () {
+                    fetch('/api/ai/internal-ai/select', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ model: sel.value }),
+                    });
+                });
+            })();
+            </script>
             {% if 'username' in session %}
                 <li class="user-section auth-section">
                     <a href="{{ url_for('my_orders') }}" {% if request.path == url_for('my_orders') %}class="active"{% endif %}><i class="fas fa-receipt"></i> My Orders</a>

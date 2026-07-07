@@ -2109,5 +2109,31 @@ def api_traffic():
     return jsonify(entries)
 
 
+@application.app.route('/api/ai/internal-ai/models', methods=['GET'])
+def internal_ai_models():
+    """INTERNAL-AI AI-engine: the chat models (for the navbar dropdown) + the selected
+    one. Same engine as the simulator, lab-side."""
+    from application import internal_ai_engine
+    if not internal_ai_engine.enabled():
+        return jsonify({"enabled": False, "models": [], "selected": None})
+    return jsonify({
+        "enabled": True,
+        "models": internal_ai_engine.models(),
+        "selected": internal_ai_engine.selected_model(),
+    })
+
+
+@application.app.route('/api/ai/internal-ai/select', methods=['POST'])
+def internal_ai_select():
+    """Switch the active INTERNAL-AI model used by every lab LLM call."""
+    from application import internal_ai_engine
+    data = request.get_json(silent=True) or {}
+    try:
+        selected = internal_ai_engine.select_model(str(data.get('model') or ''))
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    return jsonify({"selected": selected})
+
+
 if __name__ == '__main__':
     application.app.run(debug=True)

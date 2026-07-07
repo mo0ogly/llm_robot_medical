@@ -65,7 +65,7 @@ const HistoryTab = memo(function HistoryTab() {
     if (savedStudio) { try { setStudioHistory(JSON.parse(savedStudio)); } catch (e) {} }
 
     // Load experiments from Forge unified archive (F46, Sep(M), ASIDE)
-    fetch('http://127.0.0.1:8042/api/redteam/experiments/list')
+    fetch('/api/redteam/experiments/list')
       .then(r => r.json())
       .then(data => {
         if (data.experiments && Array.isArray(data.experiments)) {

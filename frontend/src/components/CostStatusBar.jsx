@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { CONFIG } from "../config";
 
 const POLL_INTERVAL_MS = 15000;
 
@@ -16,7 +15,7 @@ export default function CostStatusBar() {
   const [error, setError] = useState(false);
 
   const fetchCost = useCallback(() => {
-    fetch(CONFIG.API_BASE + "/api/cost/session")
+    fetch("/api/cost/session")
       .then(r => r.json())
       .then(data => { setSession(data.session); setError(false); })
       .catch(() => setError(true));
@@ -29,7 +28,7 @@ export default function CostStatusBar() {
   }, [fetchCost]);
 
   const handleReset = () => {
-    fetch(CONFIG.API_BASE + "/api/cost/reset", { method: "POST" })
+    fetch("/api/cost/reset", { method: "POST" })
       .then(() => fetchCost());
   };
 

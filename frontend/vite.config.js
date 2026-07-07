@@ -4,10 +4,17 @@ import tailwindcss from '@tailwindcss/vite'
 import fs from 'fs'
 import path from 'path'
 
-const version = fs.readFileSync(path.resolve(__dirname, '../VERSION'), 'utf-8').trim();
+// ../VERSION lives at the repo root, outside the frontend Docker build context.
+let version = '3.0.0';
+try {
+  version = fs.readFileSync(path.resolve(__dirname, '../VERSION'), 'utf-8').trim();
+} catch {
+  /* keep fallback in Docker build context */
+}
 
 export default defineConfig({
-  base: '/llm_robot_medical/',
+  // Default subpath for GitHub Pages; VITE_BASE=/ for a network/Docker deploy at root.
+  base: process.env.VITE_BASE || '/llm_robot_medical/',
   plugins: [react(), tailwindcss()],
   define: {
     __APP_VERSION__: JSON.stringify(version),

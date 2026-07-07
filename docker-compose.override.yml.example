@@ -1,0 +1,56 @@
+# LOCAL override — NEVER commit (gitignored). Auto-merged by `docker compose`.
+# Config IA locale INTERNAL-AI (.internal ANSSI). Tout passe par Docker, aucun .env.
+services:
+  backend:
+    environment:
+      - LLM_PROVIDER=internal_ai
+      - INTERNAL_AI_MODEL=openai/gpt-oss-120b
+      - INTERNAL_AI_API_KEY=<PUT-INTERNAL-AI-API-KEY-HERE>
+      # CA ANSSI systeme (le bundle hote inclut les AC internes) pour TLS *.internal
+      - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+      # Frontend sur 5175 -> appels cross-origin vers le backend 8042 (URLs en dur cote navigateur)
+      - CORS_ORIGINS=http://localhost:5175,http://127.0.0.1:5175,http://localhost:8042,http://127.0.0.1:8042
+    volumes:
+      # overlay providers (endpoints internal-ai) monte au runtime, hors image
+      - ./backend/prompts/llm_providers_config.local.json:/app/prompts/llm_providers_config.local.json:ro
+      # bundle CA hote (contient les AC ANSSI) en lecture seule
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
+    extra_hosts:
+      # resolution de la gateway internal-ai interne (fallback si le DNS du conteneur ne resout pas le domaine interne)
+      - "<INTERNAL-AI-GATEWAY-HOST>:<GATEWAY-IP-HERE>"
+
+  # === Ports coherents pour cohabiter avec recette (8090/8091/4000/8081/5173) + mlauto (5173/8000) ===
+  # backend garde 8042 (URLs en dur localhost:8042 cote frontend). Les autres remappes (!override
+  # remplace la liste de ports au lieu de la concatener, sinon collision sur 8000).
+  frontend:
+    ports: !override
+      - "5175:80"
+
+  chromadb:
+    ports: !override
+      - "8043:8000"
+
+  medicare_lab:
+    ports: !override
+      - "5176:8080"
+    environment:
+      # Lab CTF branché sur INTERNAL-AI (comme le simulateur), via litellm. INTERNAL-AI sert
+      # le modèle "openai/gpt-oss-120b" → route litellm "openai/openai/gpt-oss-120b"
+      # (litellm retire le 1er préfixe openai/ et route vers l'endpoint OpenAI-compat).
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - MODEL_PROVIDER=openai
+      - LITELLM_MODEL=openai/openai/gpt-oss-120b
+      - LAB_CLOUD_LLM_MODEL=openai/openai/gpt-oss-120b
+      - OPENAI_MODEL=openai/gpt-oss-120b
+      - OPENAI_API_BASE=https://<INTERNAL-AI-GATEWAY-HOST>/gpt-oss-120b/v1
+      - OPENAI_API_KEY=<PUT-INTERNAL-AI-API-KEY-HERE>
+      # clé pour le moteur INTERNAL-AI du lab (internal_ai_engine, dropdown navbar)
+      - INTERNAL_AI_API_KEY=<PUT-INTERNAL-AI-API-KEY-HERE>
+      - ALLOW_PRECONFIGURED_OPENAI_KEY=true
+      - SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+    volumes:
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
+      # config INTERNAL-AI (source unique, endpoints par-modèle) montée dans le lab aussi
+      - ./backend/prompts/llm_providers_config.local.json:/app/internal_ai_config.local.json:ro
+    extra_hosts:
+      - "<INTERNAL-AI-GATEWAY-HOST>:<GATEWAY-IP-HERE>"

@@ -8,7 +8,7 @@ export default function DeltaScore({ safeTokens, hackedTokens }) {
   useEffect(() => {
     if (!safeTokens && !hackedTokens) return;
     const timer = setTimeout(() => {
-      fetch('http://localhost:8042/api/query/deltascore', {
+      fetch('/api/query/deltascore', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ safe_text: safeTokens || "", hacked_text: hackedTokens || "" })

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './index.css'
 import { i18nReady } from './i18n'
 import App from './App.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 
 // Red Team Laboratory Views
 import RedTeamLayout from './components/redteam/RedTeamLayout.jsx'
@@ -38,6 +39,7 @@ var AegisWorkflowView = lazy(function() { return import('./components/thesis/Aeg
 i18nReady.then(function() {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <ErrorBoundary>
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<App />} />
@@ -67,6 +69,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/thesis/aegis-workflow" element={<Suspense fallback={<div className="p-8 text-neutral-500">Loading AEGIS workflow...</div>}><AegisWorkflowView /></Suspense>} />
       </Routes>
     </BrowserRouter>
+    </ErrorBoundary>
   </StrictMode>,
 )
 });

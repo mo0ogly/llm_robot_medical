@@ -88,10 +88,7 @@ export default function LogsView() {
       if (cancelled) return;
       
       // Connect directly to backend for SSE (Vite proxy does not handle streaming)
-      var sseUrl = window.location.port === '5173'
-        ? 'http://localhost:8042/api/redteam/telemetry/stream'
-        : '/api/redteam/telemetry/stream';
-      es = new EventSource(sseUrl);
+      es = new EventSource('/api/redteam/telemetry/stream');
 
       es.onopen = () => {
         if (!cancelled) {

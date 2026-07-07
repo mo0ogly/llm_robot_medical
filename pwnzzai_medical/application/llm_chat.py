@@ -7,6 +7,7 @@ from typing import Any, List, Optional
 import litellm
 
 from application.provider_config import MODEL_TIMEOUT_SECONDS, resolved_litellm_model
+from application import internal_ai_engine
 
 
 def normalize_litellm_model(model: Optional[str]) -> str:
@@ -17,6 +18,18 @@ def normalize_litellm_model(model: Optional[str]) -> str:
     if "/" in m:
         return m
     return f"openai/{m}"
+
+
+def _internal_ai_kwargs(model: Optional[str]) -> dict:
+    """When INTERNAL-AI is active and no explicit model is requested, route this call to
+    the selected INTERNAL-AI model at its per-model base_url (same engine as the
+    simulator). Returns litellm kwargs to merge, or {} to keep the default path."""
+    if model is not None and str(model).strip():
+        return {}
+    r = internal_ai_engine.resolve()
+    if not r:
+        return {}
+    return {"model": r["litellm_model"], "api_base": r["api_base"], "api_key": r["api_key"]}
 
 
 def _assistant_text(response: Any) -> str:
@@ -48,6 +61,7 @@ def chat_completion(
         kwargs["temperature"] = temperature
     if max_tokens is not None:
         kwargs["max_tokens"] = max_tokens
+    kwargs.update(_internal_ai_kwargs(model))  # route to the selected INTERNAL-AI model if active
     try:
         response = litellm.completion(**kwargs)
         return _assistant_text(response)
@@ -76,6 +90,7 @@ def completion_with_tools(
         "timeout": MODEL_TIMEOUT_SECONDS,
         "api_key": api_key,
     }
+    kwargs.update(_internal_ai_kwargs(model))
     return litellm.completion(**kwargs)
 
 
@@ -86,6 +101,7 @@ def completion_followup(messages: List[dict], *, api_key: str, model: Optional[s
         "timeout": MODEL_TIMEOUT_SECONDS,
         "api_key": api_key,
     }
+    kwargs.update(_internal_ai_kwargs(model))
     return litellm.completion(**kwargs)
 
 
