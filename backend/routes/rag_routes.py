@@ -117,6 +117,23 @@ class SemanticSearchRequest(BaseModel):
     max_distance: float = Field(default=2.0, ge=0.0, le=2.0)
 
 
+class HybridSearchRequest(BaseModel):
+    """Request body for the hybrid RAG search endpoint.
+
+    Hybrid = dense over-fetch + exact-identifier boost (RRF) + optional
+    cross-encoder rerank, via backend.rag_retrieval. Same security envelope as
+    SemanticSearchRequest (query clamped, collection whitelisted, limit clamped).
+    """
+    query: str = Field(..., min_length=1, max_length=500)
+    collection: str = Field(default="aegis_corpus", max_length=64)
+    multi: bool = Field(
+        default=False,
+        description="Query aegis_corpus + aegis_bibliography together when true",
+    )
+    limit: int = Field(default=10, ge=1, le=50)
+    doc_type: str | None = Field(default=None, max_length=64)
+
+
 # --- Document CRUD ---
 
 
@@ -469,6 +486,115 @@ async def semantic_search(req: SemanticSearchRequest, request: Request):
             "collection": req.collection,
             "total_hits": len(hits),
             "hits": hits,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- Hybrid search (exact-id boost + rerank, via rag_retrieval) ---
+
+_HYBRID_ALLOWED_COLLECTIONS = {"aegis_corpus", "aegis_bibliography", "medical_rag"}
+
+
+def _hit_from_item(item: dict, collection_source: str) -> dict:
+    """Map a rag_retrieval.hybrid_search item into the rich hit shape."""
+    meta = item.get("metadata") or {}
+    source = (
+        meta.get("source") or meta.get("filename") or meta.get("paper_id")
+        or meta.get("file") or "unknown"
+    )
+    dist = item.get("distance")
+    return {
+        "id": item.get("id"),
+        "source": source,
+        "title": meta.get("title") or meta.get("name"),
+        "paper_id": meta.get("paper_id") or meta.get("p_id"),
+        "year": meta.get("year") or meta.get("date"),
+        "delta_layer": meta.get("delta_layer") or meta.get("target_delta"),
+        "distance": dist,
+        "similarity": (1.0 - dist) if dist is not None else None,
+        "content": item.get("document") or "",
+        "content_length": item.get("document_len"),
+        "match": item.get("match", "dense"),
+        "rrf_score": item.get("rrf_score"),
+        "rerank_score": item.get("rerank_score"),
+        "collection_source": collection_source,
+    }
+
+
+@router.post("/api/rag/hybrid-search")
+async def hybrid_search_endpoint(req: HybridSearchRequest, request: Request):
+    """Hybrid RAG search: dense + exact-identifier boost + optional rerank.
+
+    Backed by backend.rag_retrieval.hybrid_search. Unlike /api/rag/semantic-search
+    (raw dense, single collection, wiki widget), this endpoint fuses an exact-id
+    ($contains) pass so queries naming a P-ID / arXiv / F/G/D id surface the right
+    chunk, reranks the fused pool when the cross-encoder is available, and can span
+    aegis_corpus + aegis_bibliography at once (multi=true).
+
+    Rate limited (shared 20 req/min/IP limiter). Query/limit/collection validated.
+    """
+    client_ip = (
+        request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+        or (request.client.host if request.client else "unknown")
+    )
+    allowed, _ = _semantic_search_limiter.check(client_ip)
+    if not allowed:
+        raise HTTPException(
+            status_code=429,
+            detail="Rate limit exceeded: 20 requests per minute per IP. Please slow down.",
+            headers={"Retry-After": "60"},
+        )
+    _semantic_search_limiter.cleanup()
+
+    if req.multi:
+        collections = ["aegis_corpus", "aegis_bibliography"]
+    else:
+        if req.collection not in _HYBRID_ALLOWED_COLLECTIONS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid collection. Allowed: {sorted(_HYBRID_ALLOWED_COLLECTIONS)}",
+            )
+        collections = [req.collection]
+
+    try:
+        import rag_retrieval
+
+        chroma = get_chroma_client()
+        limit = max(1, min(req.limit, 50))
+        merged = []
+        errors = []
+        for coll_name in collections:
+            try:
+                collection = chroma.get_collection(coll_name)
+            except Exception as exc:
+                errors.append({"collection": coll_name, "error": str(exc)})
+                continue
+            items = rag_retrieval.hybrid_search(
+                collection, [req.query], n_results=limit,
+                doc_type_filter=req.doc_type, snippet_chars=20000,
+            )
+            for it in items:
+                merged.append(_hit_from_item(it, coll_name))
+
+        def _order(h):
+            if h.get("rerank_score") is not None:
+                return (0, -h["rerank_score"])
+            return (1, -(h.get("rrf_score") or 0.0))
+
+        merged.sort(key=_order)
+
+        return {
+            "query": req.query,
+            "collections": collections,
+            "total_hits": len(merged),
+            "reranker": rag_retrieval.reranker_status(),
+            "errors": errors or None,
+            "hits": merged[:limit],
         }
     except HTTPException:
         raise

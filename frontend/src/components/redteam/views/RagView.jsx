@@ -6,6 +6,7 @@ import {
   Hash, Layers, Zap, Box, X, Filter, HelpCircle
 } from 'lucide-react';
 import ViewHelpModal from '../shared/ViewHelpModal';
+import RagSemanticSearch from './RagSemanticSearch';
 
 /* ─────────────── helpers ─────────────── */
 function formatBytes(len) {
@@ -38,6 +39,8 @@ export default function RagView() {
   var [chunks, setChunks] = useState([]);
   var [loadingChunks, setLoadingChunks] = useState(false);
   var [showHelp, setShowHelp] = useState(false);
+  var [collections, setCollections] = useState([]);
+  var [searchCollection, setSearchCollection] = useState('aegis_corpus');
   var fileInputRef = useRef(null);
 
   /* ── API calls ── */
@@ -71,7 +74,19 @@ export default function RagView() {
     }
   };
 
-  useEffect(function () { fetchDocuments(); }, []);
+  var fetchCollections = async function () {
+    try {
+      var resp = await fetch('/api/rag/collections');
+      if (resp.ok) {
+        var data = await resp.json();
+        setCollections(data.collections || []);
+      }
+    } catch (err) {
+      /* offline — selector falls back to defaults */
+    }
+  };
+
+  useEffect(function () { fetchDocuments(); fetchCollections(); }, []);
 
   var handleFileUpload = async function (e) {
     var file = e.target.files[0];
@@ -263,6 +278,17 @@ export default function RagView() {
           {/* tab bar */}
           <div className="flex border-b border-neutral-800 mb-0">
             <button
+              onClick={function () { setRightTab('search'); }}
+              className={'flex-1 py-2.5 text-xs font-mono uppercase tracking-wider transition-all border-b-2 ' + (
+                rightTab === 'search'
+                  ? 'border-red-500 text-red-400 bg-red-500/5'
+                  : 'border-transparent text-neutral-400 hover:text-neutral-300'
+              )}
+            >
+              <Search size={14} className="inline mr-1.5 -mt-0.5" />
+              {t('redteam.view.rag.tabSearch')}
+            </button>
+            <button
               onClick={function () { setRightTab('parser'); }}
               className={'flex-1 py-2.5 text-xs font-mono uppercase tracking-wider transition-all border-b-2 ' + (
                 rightTab === 'parser'
@@ -288,6 +314,34 @@ export default function RagView() {
 
           {/* tab content */}
           <div className="flex-1 overflow-hidden bg-neutral-900 border border-neutral-800 border-t-0 rounded-b-lg flex flex-col">
+
+            {/* ── TAB 0 : Semantic Search ── */}
+            {rightTab === 'search' && (
+              <div className="flex-1 flex flex-col overflow-hidden">
+                {/* collection selector */}
+                <div className="p-3 border-b border-neutral-800 flex items-center gap-2">
+                  <Filter size={13} className="text-neutral-400 shrink-0" />
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 shrink-0">
+                    {t('redteam.view.rag.collection')}
+                  </span>
+                  <select
+                    value={searchCollection}
+                    onChange={function (e) { setSearchCollection(e.target.value); }}
+                    className="flex-1 min-w-0 bg-neutral-950/50 border border-neutral-800 rounded px-2 py-1.5 text-xs text-neutral-300 font-mono focus:border-red-900/50 focus:outline-none"
+                  >
+                    <option value="multi">{t('redteam.view.rag.collectionMulti')}</option>
+                    {collections.map(function (c) {
+                      return (
+                        <option key={c.name} value={c.name}>
+                          {c.name + ' (' + (c.chunk_count != null ? c.chunk_count : '?') + ')'}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+                <RagSemanticSearch collection={searchCollection} />
+              </div>
+            )}
 
             {/* ── TAB 1 : Doc Parser ── */}
             {rightTab === 'parser' && (
