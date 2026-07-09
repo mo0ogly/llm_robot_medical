@@ -18,11 +18,13 @@ import time
 from collections import deque
 from threading import Lock
 
-from fastapi import APIRouter, HTTPException, UploadFile, File, Request
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Request
 from pydantic import BaseModel, Field
 
 import chromadb
 from pypdf import PdfReader
+
+import rag_ingest
 
 router = APIRouter()
 
@@ -234,70 +236,104 @@ async def get_document_chunks(filename: str, limit: int = 20):
 
 
 @router.post("/api/rag/upload")
-async def upload_document(file: UploadFile = File(...)):
-    """Upload, parse et indexe un document dans ChromaDB."""
+async def upload_document(
+    file: UploadFile = File(...),
+    collection: str = Form("aegis_corpus"),
+):
+    """Upload, chunk (700/100), and upsert a document into ChromaDB.
+
+    Delegates to rag_ingest for chunking + document-level upsert (rich metadata,
+    no orphan chunks) and persists the file so it can be re-indexed later.
+    """
+    if collection not in rag_ingest.ALLOWED_COLLECTIONS:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid collection. Allowed: " + ", ".join(rag_ingest.ALLOWED_COLLECTIONS),
+        )
+    filename = os.path.basename(file.filename or "upload")
+    doc_type = os.path.splitext(filename)[1].lower().lstrip(".") or "txt"
+
+    os.makedirs("temp_uploads", exist_ok=True)
+    temp_path = "temp_uploads/" + filename
     try:
-        chroma = get_chroma_client()
-        collection = chroma.get_or_create_collection("aegis_corpus")
-
-        content = ""
-        filename = file.filename
-        file_extension = os.path.splitext(filename)[1].lower()
-
-        os.makedirs("temp_uploads", exist_ok=True)
-        temp_path = "temp_uploads/" + filename
-
         with open(temp_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        if file_extension == ".pdf":
-            reader = PdfReader(temp_path)
-            for page in reader.pages:
-                content += page.extract_text() + "\n"
-        else:
-            with open(temp_path, "r", encoding="utf-8", errors="ignore") as f:
-                content = f.read()
+        chroma = get_chroma_client()
+        chroma_collection = chroma.get_or_create_collection(collection)
+        result = rag_ingest.ingest_file(chroma_collection, temp_path, filename, doc_type)
 
-        # Basic chunking
-        chunks = [content[i:i+1000] for i in range(0, len(content), 800)]
+        # Persist the source file so the document can be re-indexed later.
+        rag_ingest.persist_upload(collection, filename, temp_path)
 
-        ids = [filename + "_" + str(i) for i in range(len(chunks))]
-        metadatas = [{"source": filename, "type": file_extension[1:]} for _ in range(len(chunks))]
-
-        collection.add(
-            documents=chunks,
-            ids=ids,
-            metadatas=metadatas
-        )
-
-        os.remove(temp_path)
-
-        return {"status": "success", "filename": filename, "chunks": len(chunks)}
+        result["status"] = "success"
+        result["filename"] = filename
+        result["collection"] = collection
+        return result
     except Exception as e:
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
 
 
 @router.delete("/api/rag/documents/{filename}")
-async def delete_document(filename: str):
-    """Supprime tous les chunks d'un document specifique."""
+async def delete_document(filename: str, collection: str = "aegis_corpus"):
+    """Delete every chunk of a document, plus its persisted upload file."""
+    if collection not in rag_ingest.ALLOWED_COLLECTIONS:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid collection. Allowed: " + ", ".join(rag_ingest.ALLOWED_COLLECTIONS),
+        )
     try:
         chroma = get_chroma_client()
-        collection = chroma.get_or_create_collection("aegis_corpus")
-        collection.delete(where={"source": filename})
-        return {"status": "deleted", "filename": filename}
+        chroma_collection = chroma.get_or_create_collection(collection)
+        chroma_collection.delete(where={"source": filename})
+        rag_ingest.remove_upload(collection, filename)
+        return {"status": "deleted", "filename": filename, "collection": collection}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
+class ResetRequest(BaseModel):
+    """Safe reset: confirm_count must equal the collection's live chunk count."""
+    collection: str = Field(default="aegis_corpus", max_length=64)
+    confirm_count: int = Field(..., ge=0)
+
+
 @router.post("/api/rag/reset")
-async def reset_rag():
-    """Vide completement la collection RAG."""
+async def reset_rag(req: ResetRequest):
+    """Clear a collection only if confirm_count matches its live chunk count.
+
+    Forces the caller to read and echo the real volume before a destructive wipe,
+    preventing an accidental one-click reset.
+    """
+    if req.collection not in rag_ingest.ALLOWED_COLLECTIONS:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid collection. Allowed: " + ", ".join(rag_ingest.ALLOWED_COLLECTIONS),
+        )
     try:
         chroma = get_chroma_client()
-        chroma.delete_collection("aegis_corpus")
-        return {"status": "reset"}
+        try:
+            collection = chroma.get_collection(req.collection)
+        except Exception:
+            raise HTTPException(
+                status_code=404, detail="Collection '" + req.collection + "' not found"
+            )
+        live_count = collection.count()
+        if req.confirm_count != live_count:
+            raise HTTPException(
+                status_code=409,
+                detail="confirm_count (" + str(req.confirm_count) + ") does not match live "
+                "chunk count (" + str(live_count) + "). Refresh and retry.",
+            )
+        chroma.delete_collection(req.collection)
+        return {"status": "reset", "collection": req.collection, "deleted_chunks": live_count}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

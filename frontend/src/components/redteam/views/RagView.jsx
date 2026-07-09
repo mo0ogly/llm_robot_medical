@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import ViewHelpModal from '../shared/ViewHelpModal';
 import RagSemanticSearch from './RagSemanticSearch';
+import RagMaintenance from './RagMaintenance';
 
 /* ─────────────── helpers ─────────────── */
 function formatBytes(len) {
@@ -41,6 +42,7 @@ export default function RagView() {
   var [showHelp, setShowHelp] = useState(false);
   var [collections, setCollections] = useState([]);
   var [searchCollection, setSearchCollection] = useState('aegis_corpus');
+  var [uploadCollection, setUploadCollection] = useState('aegis_corpus');
   var fileInputRef = useRef(null);
 
   /* ── API calls ── */
@@ -97,6 +99,7 @@ export default function RagView() {
 
     var formData = new FormData();
     formData.append('file', file);
+    formData.append('collection', uploadCollection);
 
     try {
       var resp = await fetch('/api/rag/upload', { method: 'POST', body: formData });
@@ -310,6 +313,17 @@ export default function RagView() {
               <Layers size={14} className="inline mr-1.5 -mt-0.5" />
               {t('redteam.view.rag.tabIndexed')}
             </button>
+            <button
+              onClick={function () { setRightTab('maintenance'); }}
+              className={'flex-1 py-2.5 text-xs font-mono uppercase tracking-wider transition-all border-b-2 ' + (
+                rightTab === 'maintenance'
+                  ? 'border-red-500 text-red-400 bg-red-500/5'
+                  : 'border-transparent text-neutral-400 hover:text-neutral-300'
+              )}
+            >
+              <Filter size={14} className="inline mr-1.5 -mt-0.5" />
+              {t('redteam.view.rag.tabMaintenance')}
+            </button>
           </div>
 
           {/* tab content */}
@@ -353,6 +367,24 @@ export default function RagView() {
                   className="hidden"
                   accept=".pdf,.txt,.md"
                 />
+
+                {/* target collection selector */}
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 shrink-0">
+                    {t('redteam.view.rag.uploadTo')}
+                  </span>
+                  <select
+                    value={uploadCollection}
+                    onChange={function (e) { setUploadCollection(e.target.value); }}
+                    className="flex-1 min-w-0 bg-neutral-950/50 border border-neutral-800 rounded px-2 py-1.5 text-xs text-neutral-300 font-mono focus:border-red-900/50 focus:outline-none"
+                  >
+                    <option value="aegis_corpus">aegis_corpus</option>
+                    {collections.map(function (c) {
+                      if (c.name === 'aegis_corpus') return null;
+                      return <option key={c.name} value={c.name}>{c.name}</option>;
+                    })}
+                  </select>
+                </div>
 
                 {/* drop zone */}
                 <div
@@ -497,6 +529,11 @@ export default function RagView() {
                   )}
                 </div>
               </div>
+            )}
+
+            {/* ── TAB 3 : Maintenance ── */}
+            {rightTab === 'maintenance' && (
+              <RagMaintenance collections={collections} onChanged={fetchDocuments} />
             )}
           </div>
         </div>

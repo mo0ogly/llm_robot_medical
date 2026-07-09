@@ -412,6 +412,7 @@ from routes.template_routes import router as template_router
 from routes.attack_routes import router as attack_router
 from routes.campaign_routes import router as campaign_router
 from routes.rag_routes import router as rag_router
+from routes.rag_maintenance_routes import router as rag_maintenance_router
 from routes.telemetry_routes import router as telemetry_router
 from routes.results_routes import router as results_router
 from routes.llm_providers_routes import router as llm_providers_router
@@ -432,6 +433,7 @@ app.include_router(template_router)
 app.include_router(attack_router)
 app.include_router(campaign_router)
 app.include_router(rag_router)
+app.include_router(rag_maintenance_router)
 app.include_router(telemetry_router)
 app.include_router(results_router)
 app.include_router(llm_providers_router)
