@@ -21,6 +21,11 @@ PROJECT_ROOT = SCRIPT_DIR.parents[3]
 CHROMA_DB_PATH = PROJECT_ROOT / "backend" / "chroma_db"
 DEFAULT_COLLECTION = "aegis_corpus"
 BIBLIOGRAPHY_COLLECTION = "aegis_bibliography"
+DEFAULT_SNIPPET = 1800
+
+# Shared retrieval quality layer (hybrid dense + exact-id boost + rerank).
+sys.path.insert(0, str(PROJECT_ROOT / "backend"))
+import rag_retrieval  # noqa: E402
 
 
 def get_client():
@@ -46,8 +51,13 @@ def get_client():
 
 
 def query_collection(queries: list, collection_name: str = DEFAULT_COLLECTION,
-                     n_results: int = 5, doc_type_filter: str = None) -> dict:
-    """Query ChromaDB collection with multiple queries, merge and dedup results."""
+                     n_results: int = 5, doc_type_filter: str = None,
+                     snippet_chars: int = DEFAULT_SNIPPET) -> dict:
+    """Query one collection via the shared hybrid retrieval layer.
+
+    Hybrid = dense over-fetch + exact-identifier ($contains) boost, fused by RRF,
+    then optionally reranked by a cross-encoder (graceful fallback if unavailable).
+    """
     client = get_client()
 
     try:
@@ -60,67 +70,37 @@ def query_collection(queries: list, collection_name: str = DEFAULT_COLLECTION,
             "results": [],
         }
 
-    all_results = []
-    seen_ids = set()
-
-    for query in queries:
-        try:
-            # Build where filter for doc_type if specified
-            where_filter = None
-            if doc_type_filter:
-                where_filter = {"doc_type": doc_type_filter}
-
-            results = collection.query(
-                query_texts=[query],
-                n_results=n_results,
-                include=["documents", "metadatas", "distances"],
-                where=where_filter,
-            )
-
-            if results and results["ids"] and results["ids"][0]:
-                for i, doc_id in enumerate(results["ids"][0]):
-                    if doc_id not in seen_ids:
-                        seen_ids.add(doc_id)
-                        doc_text = results["documents"][0][i] if results["documents"] else ""
-                        meta = results["metadatas"][0][i] if results["metadatas"] else {}
-                        dist = results["distances"][0][i] if results["distances"] else None
-
-                        all_results.append({
-                            "id": doc_id,
-                            "document": doc_text[:500] if doc_text else "",
-                            "metadata": meta,
-                            "distance": round(dist, 4) if dist is not None else None,
-                            "query_source": query,
-                        })
-        except Exception as e:
-            all_results.append({
-                "id": None,
-                "error": str(e),
-                "query_source": query,
-            })
-
-    # Sort by distance (lower = more relevant)
-    all_results.sort(key=lambda r: r.get("distance", 999) if r.get("distance") is not None else 999)
+    results = rag_retrieval.hybrid_search(
+        collection, queries, n_results=n_results,
+        doc_type_filter=doc_type_filter, snippet_chars=snippet_chars,
+    )
 
     return {
         "collection": collection_name,
         "query_count": len(queries),
-        "total_results": len(all_results),
+        "total_results": len(results),
+        "reranker": rag_retrieval.reranker_status(),
         "timestamp": datetime.now().isoformat(timespec="seconds"),
-        "results": all_results,
+        "results": results,
     }
 
 
 def query_multi_collection(queries: list, n_results: int = 5,
-                           doc_type_filter: str = None) -> dict:
-    """Query both aegis_corpus AND aegis_bibliography, merge and dedup."""
+                           doc_type_filter: str = None,
+                           snippet_chars: int = DEFAULT_SNIPPET) -> dict:
+    """Query aegis_corpus AND aegis_bibliography, merge, dedup, re-order.
+
+    Each collection is retrieved with the hybrid layer; results are merged and
+    ordered by rerank score when present, else by RRF score.
+    """
     collections = [DEFAULT_COLLECTION, BIBLIOGRAPHY_COLLECTION]
     all_results = []
     seen_ids = set()
     errors = []
 
     for coll_name in collections:
-        result = query_collection(queries, coll_name, n_results, doc_type_filter)
+        result = query_collection(queries, coll_name, n_results, doc_type_filter,
+                                  snippet_chars)
         if "error" in result:
             errors.append({"collection": coll_name, "error": result["error"]})
             continue
@@ -130,13 +110,20 @@ def query_multi_collection(queries: list, n_results: int = 5,
                 r["collection_source"] = coll_name
                 all_results.append(r)
 
-    all_results.sort(key=lambda r: r.get("distance", 999) if r.get("distance") is not None else 999)
+    def _order_key(r):
+        # Prefer rerank score (higher = better); fall back to RRF score.
+        if r.get("rerank_score") is not None:
+            return (0, -r["rerank_score"])
+        return (1, -(r.get("rrf_score") or 0.0))
+
+    all_results.sort(key=_order_key)
 
     return {
         "collections": collections,
         "mode": "multi-collection",
         "query_count": len(queries),
         "total_results": len(all_results),
+        "reranker": rag_retrieval.reranker_status(),
         "errors": errors if errors else None,
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "results": all_results[:n_results * 2],  # Cap at 2x n_results across both
@@ -151,12 +138,16 @@ def main():
     parser.add_argument("--doc-type", default=None, help="Filter by doc_type metadata")
     parser.add_argument("--multi-collection", action="store_true",
                         help="Query aegis_corpus + aegis_bibliography simultaneously")
+    parser.add_argument("--snippet", type=int, default=DEFAULT_SNIPPET,
+                        help="Max characters of each document returned (default 1800)")
     args = parser.parse_args()
 
     if args.multi_collection:
-        result = query_multi_collection(args.queries, args.n, args.doc_type)
+        result = query_multi_collection(args.queries, args.n, args.doc_type,
+                                        args.snippet)
     else:
-        result = query_collection(args.queries, args.collection, args.n, args.doc_type)
+        result = query_collection(args.queries, args.collection, args.n,
+                                  args.doc_type, args.snippet)
     output = json.dumps(result, indent=2, ensure_ascii=False)
     sys.stdout.buffer.write(output.encode("utf-8"))
     sys.stdout.buffer.write(b"\n")
