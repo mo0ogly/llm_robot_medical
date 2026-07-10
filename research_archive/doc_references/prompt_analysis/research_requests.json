@@ -1,6 +1,6 @@
 {
   "description": "File d'attente de recherche — synchronisee avec DIRECTOR_BRIEFING_RUN003.md + RUN010",
-  "last_updated": "2026-06-18",
+  "last_updated": "2026-07-10",
   "source": "DIRECTOR_BRIEFING_RUN003.md + fiches #12-22",
   "requests": [
     {
@@ -25,10 +25,10 @@
       "type": "experiment",
       "query": "Concevoir et executer experience de calibration empirique F46 (Recovery Penalty) — CC9 incomplet",
       "priority": "critique",
-      "status": "partial",
+      "status": "resolved",
       "created": "2026-04-04",
-      "resolved_by": null,
-      "notes": "F46 sans validation empirique. PRIORITE ABSOLUE selon briefing. Bloquant Ch.6. PARTIAL: Protocole PROTOCOL_F46_CALIBRATION.md produit (11 sections, grille 5x3, 14400 evals). Execution en attente.",
+      "resolved_by": "director-sweep-20260613: RR-P0-002 (calibration empirique F46 Recovery Penalty) etait marquee `partial` avec un blocage PDCA-14 (baseline degeneree 3.33%, 29/30 templates inertes). Veri",
+      "notes": "F46 sans validation empirique. PRIORITE ABSOLUE selon briefing. Bloquant Ch.6. PARTIAL: Protocole PROTOCOL_F46_CALIBRATION.md produit (11 sections, grille 5x3, 14400 evals). Execution en attente. || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-P0-002.md. Cout estime: Deja depense (juin 2026, ne pas re-depenser) : 37 440 evals Groq cumules (~18.7 M tokens) sur 3 runs. Re-execution eventuelle (ex. ajout Sep(M) explicite ou 3e modele) : ~14 400 es [GATE HUMAIN: execution non lancee]",
       "blocks": [
         "C4",
         "Ch.6"
@@ -90,10 +90,10 @@
       "type": "experiment",
       "query": "RagSanitizer vs AdvJudge-Zero (G-017) — attaque composee PIDP non testee contre le pipeline defense",
       "priority": "haute",
-      "status": "pending",
+      "status": "protocol_ready",
       "created": "2026-04-04",
       "resolved_by": null,
-      "notes": "Ajouter au benchmark_triple_convergence.py. ASR residuel actuel 73.3%.",
+      "notes": "Ajouter au benchmark_triple_convergence.py. ASR residuel actuel 73.3%. || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-P1-003.md. Cout estime: ~275 Groq calls (5 live conditions x N=50 + 25-run pre-check) at ~3k tokens/call ≈ 0.83M tokens, wall-time 15-25 min sequential (<10 min parallel). Worst-case 3 iterations: ~2.5M t [GATE HUMAIN: execution non lancee] || [exec-sweep-20260710] disp=blocked_env, groq_spent=~0 (5 pre-check calls all rejected 401 before generation; no completion tokens billed). Verdict: N/A — live residual-ASR verdict (H1) not computable without valid Groq key. Deterministic δ³ half (N=50): PIDP corpus-path pass-through 0.80 vs obfuscated-control TPR 0.90, FPR 0.06 — supports H1 mechanism but not the AS Report: research_archive/experiments/EXPERIMENT_REPORT_RR-P1-003_sweepexec.md",
       "blocks": [
         "G-017",
         "Ch.5"
@@ -105,10 +105,10 @@
       "type": "experiment",
       "query": "ASIDE rotation test sur embeddings AEGIS (G-019) — defense non testee contre adversaire adaptatif",
       "priority": "haute",
-      "status": "pending",
+      "status": "protocol_ready",
       "created": "2026-04-04",
       "resolved_by": null,
-      "notes": "Tester si la rotation orthogonale ASIDE resiste aux attaques adaptatives.",
+      "notes": "Tester si la rotation orthogonale ASIDE resiste aux attaques adaptatives. || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-P1-004.md. Cout estime: ~6010 Groq trials (6000 campaign + 10 pre-check), up to ~7200 with iteration 2; ~1.1k tokens/call -> ~6.6M tokens (iter 1); wall-time ~2-4h on llama-3.3-70b subject to Groq rate li [GATE HUMAIN: execution non lancee]",
       "blocks": [
         "G-019",
         "D-015"
@@ -120,10 +120,10 @@
       "type": "experiment",
       "query": "Sep(M) sur donnees MPIB reelles — upgrade de G-009 (benchmark actuel: p=0.41, Cohen's d=0.197)",
       "priority": "haute",
-      "status": "blocked_partial",
+      "status": "blocked",
       "created": "2026-04-04",
       "resolved_by": null,
-      "notes": "Cosine brut INSUFFISANT (resultat experimental), frontiere apprise necessaire.",
+      "notes": "Cosine brut INSUFFISANT (resultat experimental), frontiere apprise necessaire. || [director-sweep-20260613] blocked — voir _staging/director_sweep/RR-P1-005.md. Cout estime: Groq trials: 0. LLM tokens: 0 (separator is deterministic, labels come from MPIB annotations; no generative LLM, no LLM-judge). Compute: ~44k-58k local SentenceTransformer embeddin [GATE HUMAIN: execution non lancee]",
       "blocks": [
         "G-009",
         "C5"
@@ -218,10 +218,10 @@
       "type": "literature_search",
       "query": "Dualite attaque-defense generative — P047 pattern, LLM used both for attack and defense",
       "priority": "moyenne",
-      "status": "pending",
+      "status": "resolved",
       "created": "2026-04-04",
-      "resolved_by": null,
-      "notes": "Decouverte potentielle a valider."
+      "resolved_by": "director-sweep-20260613: Literature search on the generative attack-defense duality (P047 pattern). Confirmed P047 (Chen et al., ACL 2025, arXiv:2411.00459) is the corpus anchor for the",
+      "notes": "Decouverte potentielle a valider. || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-D17.md. Cout estime: N/A (literature search only — 5 WebSearch + 1 dedup script run; no Groq API spend)"
     },
     {
       "id": "RR-D18",
@@ -229,10 +229,10 @@
       "type": "literature_search",
       "query": "Fine-tuning medical AFFAIBLIT alignement — P050 contre-intuitif, chercher replications",
       "priority": "haute",
-      "status": "partial",
+      "status": "resolved",
       "created": "2026-04-04",
       "resolved_by": "P136 (Jahan & Sun 2025, arXiv:2512.09403, black-box benign distillation: 86% unsafe surrogate vs 66% Meditron-7B) integre RUN-009 -- supporte C6/D-018; complement empirique distillation a mener",
-      "notes": "Si confirme: contribution majeure pour C6 (Medical Vulnerability Premium). [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente]",
+      "notes": "Si confirme: contribution majeure pour C6 (Medical Vulnerability Premium). [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente] || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-D18.md. Cout estime: N/A (literature search only — 4 WebSearch + 1 dedup CLI call, no Groq API spend)",
       "blocks": [
         "C6",
         "D-018"
@@ -245,10 +245,10 @@
       "type": "experiment",
       "query": "Transferabilite white-box vers black-box — P049, tester avec nos 34 chaines d'attaque AEGIS",
       "priority": "moyenne",
-      "status": "pending",
+      "status": "protocol_ready",
       "created": "2026-04-04",
       "resolved_by": null,
-      "notes": "Si valide: AEGIS white-box tests predisent le black-box."
+      "notes": "Si valide: AEGIS white-box tests predisent le black-box. || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-D19.md. Cout estime: ~8,200 Groq calls (4,095 trials x ~2 calls); ~10.7M tokens (~8.6M in / 2.1M out); wall-time ~1.5-3h single pass, up to ~9h cumulative across max 3 iterations. Pre-check 15 runs to  [GATE HUMAIN: execution non lancee]"
     },
     {
       "id": "RR-D20",
@@ -256,10 +256,10 @@
       "type": "formalization",
       "query": "Heterogeneite irreductible des metriques — P048 (88 etudes), proposer framework unificateur",
       "priority": "moyenne",
-      "status": "pending",
+      "status": "protocol_ready",
       "created": "2026-04-04",
       "resolved_by": null,
-      "notes": "Contribution methodologique potentielle."
+      "notes": "Contribution methodologique potentielle. || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-D20.md. Cout estime: N/A (formalization; proposed HI computation is documentary extraction of P048 catalogue, 0 Groq calls)"
     },
     {
       "id": "RR-FICHE-001",
@@ -267,10 +267,10 @@
       "type": "literature_search",
       "query": "Multi-Step Boundary Erosion (MSBE) in LLM safety — attention decay across multi-step queries",
       "priority": "haute",
-      "status": "pending",
+      "status": "resolved",
       "created": "2026-04-04",
-      "resolved_by": null,
-      "notes": "Phenomene decouvert dans fiche #22 — absent de la litterature sous ce nom"
+      "resolved_by": "director-sweep-20260613: Ran 4 WebSearch queries + ETAPE 0 dedup on 12 arXiv IDs for MSBE. Corpus already covers MSBE empirically (P097 STAR, P098-P104). Identified 9 NEW candidates tar",
+      "notes": "Phenomene decouvert dans fiche #22 — absent de la litterature sous ce nom || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-FICHE-001.md. Cout estime: N/A (literature search; no Groq trials). ~4 WebSearch + 1 dedup script run."
     },
     {
       "id": "RR-FICHE-002",
@@ -281,7 +281,7 @@
       "status": "protocol_ready",
       "created": "2026-04-04",
       "resolved_by": null,
-      "notes": "Delta ASR 60 pp entre self-query et standard — a valider multi-framework",
+      "notes": "Delta ASR 60 pp entre self-query et standard — a valider multi-framework || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-FICHE-002.md. Cout estime: Per iteration: ~1,110 Groq LLM calls (2/eval x 555 eval), ~1.07M tokens (~0.83M in / ~0.23M out), ~30-55 min wall-time (rate-limit bound, not cost-bound). Max 3 iterations -> upper [GATE HUMAIN: execution non lancee] || [exec-sweep-20260710] disp=blocked_needs_impl, groq_spent=0. Verdict: N/A — campaign not executed (N=0). No ASR/FP/Sep(M) computed. Report: research_archive/experiments/EXPERIMENT_REPORT_RR-FICHE-002_sweepexec.md",
       "pdca15_resolution": "2026-05-16 PDCA-15 : protocole experimental produit (_staging/scientist/PROTOCOL_RR_FICHE_002_SELF_QUERY.md, 11 sections + annexe, ~360 lignes). Compare 3 implementations self-query : LangChain SelfQueryRetriever, LlamaIndex VectorIndexAutoRetriever, AEGIS custom build_self_query_chain. Grille 3x2x2xN=30 = 555 evals. 5 hypotheses H1-H5. Metrique centrale = F73 ASR_deterministic (verdict par comparaison ensembliste du filtre, 3 mecanismes EXPANSION/OMISSION/DOC_LEAK, aucun juge LLM). Defense testee : filter_sanitizer deterministe (whitelist cles + interdiction $ne sur patient_id/access_level). Cible Groq llama-3.3-70b. Reste : implementation adapters (Phase B) + execution apres validation directeur."
     },
     {
@@ -290,10 +290,10 @@
       "type": "experiment",
       "query": "Hybridation template #13 (FDA authority) x #15 (homoglyph) — test cross-injection delta-1 x delta-2",
       "priority": "haute",
-      "status": "pending",
+      "status": "protocol_ready",
       "created": "2026-04-04",
       "resolved_by": null,
-      "notes": "Axe R4 de la fiche #13 — candidat prioritaire moteur genetique"
+      "notes": "Axe R4 de la fiche #13 — candidat prioritaire moteur genetique || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-FICHE-003.md. Cout estime: ~320 Groq trials (1 call/run, judge is local-deterministic) +~30 retry margin; ~240k tokens (~170k in / ~70k out); wall-time ~10-20 min serial (+1-2 min pre-check); USD < 0.30 [tar [GATE HUMAIN: execution non lancee] || [exec-sweep-20260710] disp=blocked_needs_impl, groq_spent=0. Verdict: N/A — blocked before any trial. 0 runs. No ASR/Sep(M) measurable. Report: research_archive/experiments/EXPERIMENT_REPORT_RR-FICHE-003_sweepexec.md"
     },
     {
       "id": "RR-DA-001",
@@ -301,10 +301,10 @@
       "type": "literature_search",
       "query": "Replications de P052 (preuve martingale RLHF alignment) — seul papier Cambridge, besoin de confirmation independante",
       "priority": "haute",
-      "status": "pending",
+      "status": "resolved",
       "created": "2026-04-04",
-      "resolved_by": null,
-      "notes": "P052 Theoreme 10 est la preuve formelle de C1 et C3. Une seule source = risque epistemique. Chercher tout papier citant ou reprenant la decomposition martingale du gradient RLHF.",
+      "resolved_by": "director-sweep-20260613: RR cible P052 (\"Why Is RLHF Alignment Shallow?\", Young, Cambridge, martingale proof). Decouverte cle: P052 a ete fusionne dans P019 (arXiv:2603.04851, dedup 202",
+      "notes": "P052 Theoreme 10 est la preuve formelle de C1 et C3. Une seule source = risque epistemique. Chercher tout papier citant ou reprenant la decomposition martingale du gradient RLHF. || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-DA-001.md. Cout estime: N/A (literature search — 5 WebSearch + 3 dedup CLI calls, 0 Groq tokens)",
       "blocks": [
         "C1",
         "C3",
@@ -334,10 +334,10 @@
       "type": "literature_search",
       "query": "Defenses contre compound PIDP (Prompt Injection + Data Poisoning) — P054 teste 8 LLMs mais n'evalue aucune defense",
       "priority": "haute",
-      "status": "partial",
+      "status": "resolved",
       "created": "2026-04-04",
       "resolved_by": "P139 CorruptRAG (single-doc poisoning, SACMAT 2026) + P138 FlippedRAG (CCS 2025) integres RUN-009; evaluation empirique des defenses composees (GMTP/RagSanitizer) reste a mener",
-      "notes": "P054 ASR 98% sur compound PIDP. Aucune defense testee dans le papier. Gap critique pour D-013 et pour la thematique RAG defense (complement a RR-RUN4-001). [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente] [RUN-012 2026-06-15: complement RAG poisoning -- P157 M3Att (medical multimodal, arXiv:2605.10253) + P164 SilentRetrieval (semantically-preserving, KDD 2026, arXiv:2605.28074). Evaluation empirique des defenses composees reste a mener.]",
+      "notes": "P054 ASR 98% sur compound PIDP. Aucune defense testee dans le papier. Gap critique pour D-013 et pour la thematique RAG defense (complement a RR-RUN4-001). [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente] [RUN-012 2026-06-15: complement RAG poisoning -- P157 M3Att (medical multimodal, arXiv:2605.10253) + P164 SilentRetrieval (semantically-preserving, KDD 2026, arXiv:2605.28074). Evaluation empirique des defenses composees reste a mener.] || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-DA-003.md. Cout estime: N/A (literature_search; no Groq trials). ~4 WebSearch + 2 dedup CLI runs.",
       "blocks": [
         "D-013",
         "Ch.5"
@@ -351,10 +351,10 @@
       "type": "experiment",
       "query": "Experience de calibration empirique F46 Recovery Penalty — Theoremes 19-22 de P052 sans aucune validation experimentale",
       "priority": "critique",
-      "status": "partial",
+      "status": "resolved",
       "created": "2026-04-04",
-      "resolved_by": null,
-      "notes": "F46 est theoriquement derive de P052 (Theoremes 19-22 sur lambda optimal et positions a faible I_t) mais n'a aucune validation empirique. Concevoir experience avec /aegis-prompt-forge FORGE: tester lambda optimal, positions a faible signal informationnel. PARTIAL: Fusionne avec RR-P0-002. Protocole pret.",
+      "resolved_by": "director-sweep-20260613: RR-DA-004 (calibration empirique F46 Recovery Penalty, Th.19-22 de P052/P019) est OBSOLETE en statut `partial`: son jumeau fusionne RR-P0-002 a ete EXECUTE et R",
+      "notes": "F46 est theoriquement derive de P052 (Theoremes 19-22 sur lambda optimal et positions a faible I_t) mais n'a aucune validation empirique. Concevoir experience avec /aegis-prompt-forge FORGE: tester lambda optimal, positions a faible signal informationnel. PARTIAL: Fusionne avec RR-P0-002. Protocole pret. || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-DA-004.md. Cout estime: Aucune re-execution requise (cout marginal 0). Pour rejouer la grille: ~14400 trials Groq, ~14-23M tokens (in+out), ~10h sequentiel / ~2-3h avec 4 workers async. Items optionnels:  [GATE HUMAIN: execution non lancee]",
       "blocks": [
         "C4",
         "Ch.6",
@@ -368,10 +368,10 @@
       "type": "experiment",
       "query": "Tester compound PIDP (P054, ASR 98%) contre RagSanitizer AEGIS — verifier si les 15 detecteurs resistent",
       "priority": "haute",
-      "status": "pending",
+      "status": "partial",
       "created": "2026-04-04",
       "resolved_by": null,
-      "notes": "RagSanitizer a 15 detecteurs couvrant 12 techniques (Hackett et al. 2025). P054 compound = PIDP sequentiel multi-vecteur. Tester via /aegis-prompt-forge FORGE scenario compound sur pipeline medical AEGIS.",
+      "notes": "RagSanitizer a 15 detecteurs couvrant 12 techniques (Hackett et al. 2025). P054 compound = PIDP sequentiel multi-vecteur. Tester via /aegis-prompt-forge FORGE scenario compound sur pipeline medical AEGIS. || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-DA-005.md. Cout estime: Strate A (core): 0 Groq calls, 0 tokens, <5s wall-time. Strate B: ~95 Groq trials (5 pre-check + 90 campaign), ~83k tokens (~26k in / ~57k out) on llama-3.3-70B, ~3-5 min wall-time [GATE HUMAIN: execution non lancee] || [exec-sweep-20260710] disp=partial, groq_spent=0 (5 Strate-B precheck calls all rejected 401 at auth; no tokens billed). Verdict: H0 SUPPORTED / H1 REFUTED (Strate A, deterministic, N=50/cond): RagSanitizer v1 pass_through_rate on PIDP passages = 0.80 (TPR 0.20, Wilson CI [0.11,0.33]) > 0.50; benign FPR = 0.06 driven by the SAME lexical-collision d Report: research_archive/experiments/EXPERIMENT_REPORT_RR-DA-005_sweepexec.md",
       "blocks": [
         "D-013",
         "Ch.5",
@@ -384,10 +384,10 @@
       "type": "experiment",
       "query": "Judge fuzzing sur templates AEGIS — verifier si nos templates de juge LLM sont vulnerables au flip P044 (99.91% zero-shot)",
       "priority": "haute",
-      "status": "pending",
+      "status": "protocol_ready",
       "created": "2026-04-04",
       "resolved_by": null,
-      "notes": "P044 montre que le Logit Gap rend les LLM-as-Judge flippables a 99.91% zero-shot. Si nos templates AEGIS de juge sont vulnerables, toutes nos ASR actuelles sont invalides. Test prioritaire avant toute publication.",
+      "notes": "P044 montre que le Logit Gap rend les LLM-as-Judge flippables a 99.91% zero-shot. Si nos templates AEGIS de juge sont vulnerables, toutes nos ASR actuelles sont invalides. Test prioritaire avant toute publication. || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-DA-006.md. Cout estime: Iter 1: ~5,405 Groq calls (C3 2,700 + C4 2,700 + 5 pre-check), ~3.6M tokens (~2.9M in / 0.65M out), wall-time ~80 min sequential (~30 min if batched x5). DET conditions C0/C1/C2 ar [GATE HUMAIN: execution non lancee] || [exec-sweep-20260710] disp=blocked_env, groq_spent=~6 rejected requests, ~0 tokens (all 401 before generation). Verdict: H1 SUPPORTED: flip_rate(DET)=0 across 3 vectors — C1 robotic 0/75 (Wilson95 [0,0.049]), C2 pharma 0/15 (Wilson95 [0,0.204]). H2 (LLM) N/A — blocked_env. Report: research_archive/experiments/EXPERIMENT_REPORT_RR-DA-006_sweepexec.md",
       "blocks": [
         "metriques",
         "Ch.7",
@@ -467,11 +467,13 @@
       "type": "literature_search",
       "query": "structured JSON extraction prompt leaking code completion bias LLM",
       "priority": "moyenne",
-      "status": "open",
+      "status": "resolved",
       "created": "2026-04-05",
       "conjecture_impact": [
         "C1"
-      ]
+      ],
+      "notes": "[director-sweep-20260613] completed — voir _staging/director_sweep/RR-FA-001.md. Cout estime: N/A (no Groq trials; 5 WebSearch calls + 1 local dedup script run)",
+      "resolved_by": "director-sweep-20260613: Ran 5 WebSearch queries across the 3 facets of the query (structured JSON/injection, prompt leaking, code-completion bias). Produced a 7-candidate shortlist, al"
     },
     {
       "id": "RR-FA-002",
@@ -479,7 +481,7 @@
       "type": "literature_search",
       "query": "compliance paradox guardrails bypass format vs content safety LLM medical",
       "priority": "haute",
-      "status": "partial",
+      "status": "resolved",
       "created": "2026-04-05",
       "conjecture_impact": [
         "C1",
@@ -487,7 +489,7 @@
       ],
       "resolved_by": "P137 CDA/DictAttack (control-plane structured-output bypass, CCS 2026, 94.3-99.5% ASR; 75.8% vs guardrails) integre RUN-009 -- paradoxe de compliance documente; test AEGIS a mener",
       "resolved_date": "2026-05-30",
-      "notes": " [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente]"
+      "notes": " [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente] || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-FA-002.md. Cout estime: N/A (literature search only; no Groq trials). ~5 WebSearch + 1 dedup script run."
     },
     {
       "id": "RR-FA-003",
@@ -507,7 +509,7 @@
       "type": "literature_search",
       "query": "RAG router manipulation routing attack knowledge source selection adversarial",
       "priority": "haute",
-      "status": "partial",
+      "status": "resolved",
       "created": "2026-04-05",
       "conjecture_impact": [
         "C1",
@@ -515,7 +517,7 @@
       ],
       "resolved_by": "P138 FlippedRAG (opinion manipulation black-box RAG, CCS 2025) + P139 CorruptRAG integres RUN-009 -- manipulation retrieval/router RAG documentee",
       "resolved_date": "2026-05-30",
-      "notes": " [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente]"
+      "notes": " [RUN-009 2026-05-30: litterature integree, statut partial -- validation empirique en attente] || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-FA-004.md. Cout estime: N/A (literature search only — 0 Groq trials, ~4 WebSearch + 4 dedup CLI calls)"
     },
     {
       "id": "RR-FA-005",
@@ -523,12 +525,14 @@
       "type": "literature_search",
       "query": "multi-persona jailbreak compositionality adversarial synthesis expert collusion LLM",
       "priority": "haute",
-      "status": "open",
+      "status": "resolved",
       "created": "2026-04-05",
       "conjecture_impact": [
         "C1",
         "C2"
-      ]
+      ],
+      "notes": "[director-sweep-20260613] completed — voir _staging/director_sweep/RR-FA-005.md. Cout estime: N/A (literature search — no Groq trials; 5 WebSearch + 2 dedup CLI calls)",
+      "resolved_by": "director-sweep-20260613: Ran 5 WebSearch queries (arXiv/OpenReview/IEEE, 2024-2026) on multi-persona/compositional/collusion jailbreak. Produced a shortlist of 6 NEW candidates + 2 alre"
     },
     {
       "id": "RR-FA-006",
@@ -549,14 +553,14 @@
       "type": "literature_search",
       "query": "tool-use agent exploitation enumeration execution authorization adversarial LLM",
       "priority": "haute",
-      "status": "partial",
+      "status": "resolved",
       "created": "2026-04-05",
       "conjecture_impact": [
         "C1",
         "C2"
       ],
       "resolved_by": "P168 MalTool (Hu et al. Duke/Berkeley, arXiv:2602.12194) -- attaques par outils malveillants sur agents tool-use, taxonomie CIA, detecteurs existants faibles (0.814)",
-      "notes": "[RUN-012 2026-06-15: exploitation tool-use agents documentee (P168)]",
+      "notes": "[RUN-012 2026-06-15: exploitation tool-use agents documentee (P168)] || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-FA-007.md. Cout estime: N/A (literature_search — no Groq trials; 4 WebSearch + 1 dedup script run)",
       "resolved_date_run012": "2026-06-15"
     },
     {
@@ -565,7 +569,7 @@
       "type": "experiment",
       "query": "Campagne empirique N>=30 sur 7 frameworks δ³ (LMQL, Guardrails AI, LLM Guard, CaMeL, AgentSpec, RAGShield, LlamaFirewall) + AEGIS (8e). 74k trials, 116h. Valider H1 specialisation médicale + H3 composition. Drives Chapitre IV section 6.",
       "priority": "critique",
-      "status": "campaign_bootstrap_complete",
+      "status": "protocol_ready",
       "created": "2026-05-16",
       "linked_gaps": [
         "G-058",
@@ -608,7 +612,8 @@
       "pdca10_resolution": "2026-05-16 PDCA-10 : Sanitized scenario loader wire. backend/red_team/scenarios_metadata.json cree (STUB_SAMPLE 8 scenarios sur 48 cibles : 12 chole/10 nephro/8 prost/7 colect/6 thora/5 cardio). _load_medical_scenarios() lit le metadata (CLAUDE.md compliant — pas de scenarios.py read) + _synthesize_payload() construit payload deterministe par attack_type (DPI/IPI/Tool). Test SC-2 production : 8 frameworks x 8 scenarios x N=1 = 64/64 trials + 64 JSONL + manifest produits. Audit V2 sourcing sur metadata.json : 0/0 NONE = OK. Audit V1 citations : 235 trouvees (215 arXiv + 20 DOI). Audit V5b model versions : 6 references LLaMA-2 dans P125_36_LLMs (normal — panel testing Oct 2024). RESTE : regenerer metadata complet via export_scenarios_metadata.py cote Windows backend.",
       "pdca11_resolution": "2026-05-16 PDCA-11 : Script backend/tools/export_scenarios_metadata.py ecrit (227 lignes, typage strict, docstrings EN, logging). Importe scenarios.get_all_scenarios() programmatiquement (CLAUDE.md compliant : Claude ne lit PAS scenarios.py, le script extrait via API). Exporte UNIQUEMENT metadonnees safe (id, name, clinical_context, expected_impact, mitre_ttps, steps[name/attack_type/objective/chain_id]) — step.message et step.variables JAMAIS exportes. scenarios_metadata.json regenere : 62 scenarios reels (vs 8 STUB_SAMPLE). Verification 0 leak message/variables. _ATTACK_TYPE_PAYLOAD_TEMPLATES etendu (injection/prompt_leak/rule_bypass + DPI/IPI/Tool). SC-2 production 62 scenarios : 8 frameworks x 62 x N=1 = 496 trials + 496 JSONL.",
       "pdca12_resolution": "2026-05-16 PDCA-12 : run_g058_campaign.py (966 lignes > 800 limite programming.md) decompose en package g058/ : __init__(42) manifest(53) registry(54) cli(105) specs(107) genetic(172) loaders(203) subcampaigns(371) + wrapper run_g058_campaign(48). Tous fichiers < 800. BUG CORRIGE : _load_templates() avait ete perdu lors d une reconstruction anterieure (NameError SC1/SC3 production) — restaure dans loaders.py comme load_templates() + build_payload_from_category(). Verif : SC1 production charge 122 templates -> 976 trials, SC2 production 62 scenarios -> 496 trials, 4/4 SC dry-run OK, 13/13 tests adapter. Invocation CLI preservee via wrapper.",
-      "research_director_note_2026-05-20": "2026-05-20 (research-director) : clarification de vocabulaire. Les executions designees \"SC-2 production\" dans pdca10_resolution (64 trials) et pdca11_resolution (496 trials) etaient des dry-runs N=1 du loader de scenarios, executes sans LLM en service — uniquement validation syntaxique du pipeline (chargement metadata, synthese de payload deterministe, ecriture JSONL + manifest). Ce ne sont PAS des resultats de la vraie campagne SC-2 et ne doivent pas etre interpretes comme tels. La vraie campagne SC-2 (N=30 par condition, 62 scenarios, 8 frameworks, modele cible Groq llama-3.3-70b-versatile, soit 30 x 62 x 8 = 14880 trials) reste a lancer. Conformement a la regle anti-cherry-picking du projet (pre-registration OSF avant collecte de donnees), cette campagne ne doit etre lancee qu'APRES soumission OSF de la pre-registration G-058. Le champ status \"campaign_bootstrap_complete\" demeure exact : seul le bootstrap (code, adapters, loader, decomposition en package) est termine."
+      "research_director_note_2026-05-20": "2026-05-20 (research-director) : clarification de vocabulaire. Les executions designees \"SC-2 production\" dans pdca10_resolution (64 trials) et pdca11_resolution (496 trials) etaient des dry-runs N=1 du loader de scenarios, executes sans LLM en service — uniquement validation syntaxique du pipeline (chargement metadata, synthese de payload deterministe, ecriture JSONL + manifest). Ce ne sont PAS des resultats de la vraie campagne SC-2 et ne doivent pas etre interpretes comme tels. La vraie campagne SC-2 (N=30 par condition, 62 scenarios, 8 frameworks, modele cible Groq llama-3.3-70b-versatile, soit 30 x 62 x 8 = 14880 trials) reste a lancer. Conformement a la regle anti-cherry-picking du projet (pre-registration OSF avant collecte de donnees), cette campagne ne doit etre lancee qu'APRES soumission OSF de la pre-registration G-058. Le champ status \"campaign_bootstrap_complete\" demeure exact : seul le bootstrap (code, adapters, loader, decomposition en package) est termine.",
+      "notes": "[director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-G058.md. Cout estime: Variant A (static, code as-is): 0 Groq trials, 0 tokens, ~280s wall-time (extrapolated from mini-report 305 trials/s). Variant B/C (LLM-in-the-loop, recommended, requires not-yet-i [GATE HUMAIN: execution non lancee] || [exec-sweep-20260710] disp=blocked_needs_impl, groq_spent=0. Verdict: INCONCLUSIVE for H0-H3: per-condition var(passed)>0 in 0/1698 conditions -> Sep(M)=0 is a determinism artifact, hypothesis tests not interpretable. Surface map (variant A, N=30): AEGIS/Outlines/LLMGuard ASR=0.000, CaMeL/ Report: research_archive/experiments/EXPERIMENT_REPORT_RR-G058_sweepexec.md"
     },
     {
       "id": "RR-G060",
@@ -616,7 +621,7 @@
       "type": "experiment",
       "query": "Tests cross-linguaux PromptGuard2-86M (meta-llama/Prompt-Guard-86M) sur 99 templates AEGIS x FR/EN/BR x N=30. Mesurer taux detection sur attaques medicales non-anglophones. DeepL + revue native speaker. Bloque G-060 verification.",
       "priority": "haute",
-      "status": "pending",
+      "status": "protocol_ready",
       "created": "2026-05-16",
       "linked_gaps": [
         "G-060"
@@ -627,7 +632,8 @@
       "blocked_by": [
         "traductions DeepL+native speaker (3 langues x 99 = 297 prompts a valider)"
       ],
-      "owner": "experiment-planner"
+      "owner": "experiment-planner",
+      "notes": "[director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-G060.md. Cout estime: Groq trials: 0. Generative LLM tokens: 0 (judge = local DeBERTa, not LLM). PromptGuard2 forward passes: ~770 (83 templates x 3 langs x 3 paraphrases + ~25 pre-check). Inference wal [GATE HUMAIN: execution non lancee] || [exec-sweep-20260710] disp=blocked_needs_impl, groq_spent=0. Verdict: N/A — campaign not executed; detector unobtainable and FR/BR corpus absent, no TPR/Delta_TPR computed Report: research_archive/experiments/EXPERIMENT_REPORT_RR-G060_sweepexec.md"
     },
     {
       "id": "RR-G062",
@@ -635,7 +641,7 @@
       "type": "experiment",
       "query": "Port AdvJudge-Zero (Ren et al. 2025) pour adversarial-test du security_audit_agent AEGIS. Tester token injection / frame manipulation / semantic obfuscation. Verifier si juge AEGIS bypassable comme GPT-4 judge (99% ASR) ou LLaMA-Guard 2 (90% ASR).",
       "priority": "haute",
-      "status": "ready",
+      "status": "protocol_ready",
       "created": "2026-05-16",
       "linked_gaps": [
         "G-062"
@@ -645,7 +651,8 @@
       ],
       "blocked_by": [],
       "owner": "experiment-planner + WHITEHACKER",
-      "pdca2_resolution": "2026-05-16 : AdvJudge-Zero = arXiv:2512.17375, P044 deja indexe [ARTICLE VERIFIE]. CORRECTION : auteurs = Li Tung-Ling, Wu Yuhao, Liu Hongliang (Unit 42 Palo Alto), NON Ren et al. comme indique dans G-062.md. Aucun nouveau P-ID a creer."
+      "pdca2_resolution": "2026-05-16 : AdvJudge-Zero = arXiv:2512.17375, P044 deja indexe [ARTICLE VERIFIE]. CORRECTION : auteurs = Li Tung-Ling, Wu Yuhao, Liu Hongliang (Unit 42 Palo Alto), NON Ren et al. comme indique dans G-062.md. Aucun nouveau P-ID a creer.",
+      "notes": "[director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-G062.md. Cout estime: Phase A (deterministic, C0-C5/C8/C9): 0 Groq trials, 0 tokens, ~2 min CPU. Phase B (LLM J2 C6/C7 + pre-check): ~77 Groq trials, ~77k tokens (~46k in/31k out), ~0.05 USD on llama-3. [GATE HUMAIN: execution non lancee] || [exec-sweep-20260710] disp=blocked_needs_impl, groq_spent=0. Verdict: N/A — campaign not runnable (harness missing) Report: research_archive/experiments/EXPERIMENT_REPORT_RR-G062_sweepexec.md"
     },
     {
       "id": "RR-G007",
@@ -653,7 +660,7 @@
       "type": "experiment",
       "query": "Reproduction P125 (Benjamin et al. 2025 — Systematic Analysis 36 LLMs, ASR baseline 56%). Verifier baseline AEGIS contre 36 LLMs panel. Methodologie logistic regression + random forest.",
       "priority": "haute",
-      "status": "ready_revised",
+      "status": "protocol_ready",
       "created": "2026-05-15",
       "linked_gaps": [
         "G-007"
@@ -664,7 +671,8 @@
       "blocked_by": [],
       "owner": "experiment-planner + SCIENTIST",
       "pdca2_resolution": "2026-05-16 : P125 = arXiv:2410.23308 (Benjamin et al. 14 auteurs Drexel, Submitted 2024-10-28) [ARTICLE VERIFIE]. Budget reproduction estime $300-800 (mix 30% closed / 70% open). Realiste avec budget these. ACTION : query ChromaDB P125 fulltext pour liste exacte 36 LLMs avant lancement.",
-      "pdca3_resolution": "2026-05-16 PDCA-3 : liste 36 LLMs P125 extraite (Appendix A arXiv:2410.23308). PANEL 100% OPEN-WEIGHT (Cloudflare Workers AI Oct 2024). Aucun GPT/Claude/Gemini. Budget API revise : ~$0-50 (vs $300-800 initial). Probleme reel = TEMPS GPU, pas budget. LIMITATION methodologique a noter Ch.IV : range 0.5B-14B, extrapolation 70B non justifiee par donnees paper. Fichier liste : _staging/research-director/P125_36_LLMs_LIST_PDCA3_2026-05-16.md"
+      "pdca3_resolution": "2026-05-16 PDCA-3 : liste 36 LLMs P125 extraite (Appendix A arXiv:2410.23308). PANEL 100% OPEN-WEIGHT (Cloudflare Workers AI Oct 2024). Aucun GPT/Claude/Gemini. Budget API revise : ~$0-50 (vs $300-800 initial). Probleme reel = TEMPS GPU, pas budget. LIMITATION methodologique a noter Ch.IV : range 0.5B-14B, extrapolation 70B non justifiee par donnees paper. Fichier liste : _staging/research-director/P125_36_LLMs_LIST_PDCA3_2026-05-16.md",
+      "notes": "[director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-G007.md. Cout estime: Full design: M=10 x T~40 x N=30 = ~12,000 Groq trials, ~8.4M tokens, ~5h sequential (1-2h parallelized). Economy variant (iteration 1): M=6 x T=20 x N=30 = ~3,600 trials, ~2.5M tok [GATE HUMAIN: execution non lancee]"
     },
     {
       "id": "RR-G006",
@@ -672,7 +680,7 @@
       "type": "experiment",
       "query": "Test 99 templates AEGIS sur benchmark CAPTURE (Kholkar & Ahuja 2025, P124). Verifier disponibilite dataset public. Envisager integration CAPTURE comme 16e detecteur RagSanitizer. Mesurer FP rate (over-defense).",
       "priority": "haute",
-      "status": "blocked_partial",
+      "status": "partial",
       "created": "2026-05-15",
       "linked_gaps": [
         "G-006",
@@ -686,7 +694,8 @@
         "OU fallback HF datasets prompt-injections"
       ],
       "owner": "experiment-planner + MATHEUX + CYBERSEC",
-      "pdca2_resolution": "2026-05-16 : CAPTURE = arXiv:2505.12368 (Kholkar & Ahuja, ACL LLMSec 2025) P124 indexe [ARTICLE VERIFIE]. Dataset NON public sur HF/GitHub a date. Fallback : deepset/prompt-injections, qualifire, xTRam1, rogue-security. Contact auteurs requis (lead time ~2 semaines)."
+      "pdca2_resolution": "2026-05-16 : CAPTURE = arXiv:2505.12368 (Kholkar & Ahuja, ACL LLMSec 2025) P124 indexe [ARTICLE VERIFIE]. Dataset NON public sur HF/GitHub a date. Fallback : deepset/prompt-injections, qualifire, xTRam1, rogue-security. Contact auteurs requis (lead time ~2 semaines).",
+      "notes": "[director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-G006.md. Cout estime: Volet A: 0 Groq trials, 0 Groq tokens (RagSanitizer fully deterministic). ~1200 local embeddings, wall-time ~10-20 min compute + ~2-4h human to build the 300-item medical-benign co [GATE HUMAIN: execution non lancee] || [exec-sweep-20260710] disp=partial, groq_spent=0. Verdict: INCONCLUSIVE on H-A1 strict IC (FPR<10%) at N=64; D-017 over-defense SUPPORTED qualitatively. Global FPR=3.1% (2/64), Wilson95 [0.9%,10.7%]; driver emergency_benign 40% (2/5) via detect_fabricated_authority. Report: research_archive/experiments/EXPERIMENT_REPORT_RR-G006_sweepexec.md"
     },
     {
       "id": "RR-RUN10-001",
@@ -728,10 +737,10 @@
       "type": "experiment",
       "query": "Gap P149 (Pape et al. 2024, arXiv:2409.11026, prompt obfuscation) : tester si remplacer le system prompt texte par un embedding hors-distribution altere l'alignement RLHF (delta-0). Proxy faisable sur Groq a definir (P149 requiert acces embedding, inapplicable API).",
       "priority": "moyenne",
-      "status": "pending",
+      "status": "protocol_ready",
       "created": "2026-06-09",
       "resolved_by": null,
-      "notes": "Limite documentee RUN-010 : soft-prompt P149 requiert acces aux embeddings (Llama 3.1 8B local only). Concevoir un protocole proxy avant tout lancement.",
+      "notes": "Limite documentee RUN-010 : soft-prompt P149 requiert acces aux embeddings (Llama 3.1 8B local only). Concevoir un protocole proxy avant tout lancement. || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-RUN10-003.md. Cout estime: Iteration-1 screening: ~270 Groq trials (5 conditions x 25 prompts x R=2, +20 pre-check) ~= 350k tokens, ~5-10 min wall-time. Full escalation (R=7, N~100/cond): cumulative ~1145 tr [GATE HUMAIN: execution non lancee] || [exec-sweep-20260710] disp=blocked_needs_impl, groq_spent=0. Verdict: N/A — not executed (blocked at pre-check gate) Report: research_archive/experiments/EXPERIMENT_REPORT_RR-RUN10-003_sweepexec.md",
       "linked_p_ids": [
         "P149"
       ],
@@ -748,7 +757,7 @@
       "status": "partial",
       "created": "2026-06-09",
       "resolved_by": "LIBRARIAN maintenance 2026-06-16 (MAINTENANCE_REPORT_2026-06-16.md). MANIFEST count reconciled: header now 166 rows = 166 distinct (was mislabelled '174 rows'); 8 unused IDs documented (P052/P071/P085/P108 merged, P074 stub->P028, P088/P105/P106 numbering gaps). Disk-vs-MANIFEST scan: 0 MANIFEST rows lack a fiche; 4 stub fiches on disk absent from table (P052/P071/P085/P108) = the documented merges (left in place, not deleted); P074 PDF stub likewise. 9 intentionally identifier-less rows re-validated, no change. PARTIAL because P040 identifier still unresolved: WebSearch 2026-06-16 found no verifiable DOI/arXiv for the forthcoming Springer LNCS 16038 chapter (Zahra & Chin) — no identifier fabricated.",
-      "notes": "Suite de la reconciliation RUN-010 (142 rows, 0 desync au 2026-05-31). | 2026-06-16 RESOLVED-PARTIAL: identifier audit + disk reconciliation done; P040 remains residual debt (Springer LNCS not yet indexed). 166 distinct rows, 0 desync beyond the documented merge stubs.",
+      "notes": "Suite de la reconciliation RUN-010 (142 rows, 0 desync au 2026-05-31). | 2026-06-16 RESOLVED-PARTIAL: identifier audit + disk reconciliation done; P040 remains residual debt (Springer LNCS not yet indexed). 166 distinct rows, 0 desync beyond the documented merge stubs. || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-RUN10-004.md. Cout estime: N/A (no Groq trials — static MANIFEST/disk audit + 5 local dedup-tool runs) [GATE HUMAIN: execution non lancee]",
       "blocks": [
         "anti-doublon"
       ],
@@ -781,7 +790,7 @@
       "status": "resolved",
       "created": "2026-06-10",
       "resolved_by": null,
-      "notes": "Suivi de RR-FC-001 (resolved). RR-FC-001 prouve l'efficacite offensive (ASR->0) mais PAS le cout en utilite. Sans ce panel, on ne peut pas affirmer que chain_defenses est deployable sans sur-refus. Methodo : EXPERIMENT_REPORT_F46_ADDENDUM.md section 1. [2026-06-16: multi-turn drift monitor FPR measured on synthetic benign panel N=30 -> blocked FP 6.7% post-fix (was 53.3%); report research_archive/experiments/EXPERIMENT_REPORT_RR-FC-002_benign_FPR.md. Covers the multi-turn monitor; original hyde/xml chain_defenses prefilter FPR still to measure.] [pt2 DONE 2026-06-16: hyde/xml_agent prefilter over-refusal measured on benign clinical panel (N=32 each) -> hyde FPR 59.4% [42.3,74.5], xml_agent 43.8% [28.2,60.7]; clean controls 0% (no hard defect); 100% of blocks on trigger-adjacent benign (gram>800g organ/specimen weights, real FDA dockets FDA-YYYY-X-NNNN, EUA mentions / non-whitelisted clinical XML tags). Reports: research_archive/experiments/EXPERIMENT_REPORT_RR-FC-002_benign_FPR.md (multi-turn monitor) + EXPERIMENT_REPORT_RR-FC-002_hyde_xml_FPR.md (prefilter). Verdict: prefilters effective (adversarial ASR 0, RR-FC-001) but over-strict on real clinical content -> RR-FC-003.]",
+      "notes": "Suivi de RR-FC-001 (resolved). RR-FC-001 prouve l'efficacite offensive (ASR->0) mais PAS le cout en utilite. Sans ce panel, on ne peut pas affirmer que chain_defenses est deployable sans sur-refus. Methodo : EXPERIMENT_REPORT_F46_ADDENDUM.md section 1. [2026-06-16: multi-turn drift monitor FPR measured on synthetic benign panel N=30 -> blocked FP 6.7% post-fix (was 53.3%); report research_archive/experiments/EXPERIMENT_REPORT_RR-FC-002_benign_FPR.md. Covers the multi-turn monitor; original hyde/xml chain_defenses prefilter FPR still to measure.] [pt2 DONE 2026-06-16: hyde/xml_agent prefilter over-refusal measured on benign clinical panel (N=32 each) -> hyde FPR 59.4% [42.3,74.5], xml_agent 43.8% [28.2,60.7]; clean controls 0% (no hard defect); 100% of blocks on trigger-adjacent benign (gram>800g organ/specimen weights, real FDA dockets FDA-YYYY-X-NNNN, EUA mentions / non-whitelisted clinical XML tags). Reports: research_archive/experiments/EXPERIMENT_REPORT_RR-FC-002_benign_FPR.md (multi-turn monitor) + EXPERIMENT_REPORT_RR-FC-002_hyde_xml_FPR.md (prefilter). Verdict: prefilters effective (adversarial ASR 0, RR-FC-001) but over-strict on real clinical content -> RR-FC-003.] || [director-sweep-20260613] protocol_ready — voir _staging/director_sweep/RR-FC-002.md. Cout estime: Condition A (prefilter, deterministic): 0 Groq trials, 0 tokens, <5s wall-time, $0 — executable immediately. Condition B (end-to-end utility, gated): N=30 prompts x 30 runs x 2 cha [GATE HUMAIN: execution non lancee] || [director-sweep-20260613 CORRECTION] statut restaure a 'resolved' (regression sweep annulee): la RR etait deja resolue (hardblock readiness). Le protocole sweep RR-FC-002.md reste un livrable complementaire (FPR over-refusal panel), non un downgrade. || [exec-sweep-20260710] disp=partial, groq_spent=0 completion tokens (Condition A is deterministic/0 Groq; Condition B made only unauthorized GET /models probes that returned 401 — no billable calls). Verdict: Cond A (primary): H0 REFUTED for hyde — prefilter FPR = 1/30 = 3.33% (Wilson 95% [0.59%, 16.67%]); xml_agent FPR = 0/30 (Wilson [0, 11.35%]). Cond B (Groq end-to-end): N/A — blocked_env (invalid Groq key). Report: research_archive/experiments/EXPERIMENT_REPORT_RR-FC-002_sweepexec.md",
       "blocks": [
         "Ch.5"
       ],
@@ -793,10 +802,10 @@
       "type": "literature_search",
       "query": "Lecture fulltext de P153 (Eiras, Know Thy Judge) pour extraire le breakdown per-juge exact du resultat 100% : QUEL(S) juge(s) parmi HarmBench/WildGuard/ShieldGemma/LLaMA Guard 3 atteint 100% FNR, sous QUELLE manipulation (Always Safe / Append Long Benign / Prepend+Append), tailles de sous-echantillons. Actuellement [ABSTRACT SEUL] au-dela de 100% FNR et +0.24 FNR.",
       "priority": "moyenne",
-      "status": "pending",
+      "status": "resolved",
       "created": "2026-06-10",
-      "resolved_by": null,
-      "notes": "PDF deja au corpus : literature_for_rag/P153_Eiras_2025_KnowThyJudge.pdf (11p, 11 chunks ChromaDB). Necessaire pour citer le chiffre per-juge dans Ch.7 sans tag [ABSTRACT SEUL].",
+      "resolved_by": "director-sweep-20260613: Extracted the per-judge breakdown of P153's (Eiras et al., 2025, arXiv:2503.04474) \"100% FNR\" claim from fulltext (pypdf, 11 pages). Result: the 100% (FNR=1.00)",
+      "notes": "PDF deja au corpus : literature_for_rag/P153_Eiras_2025_KnowThyJudge.pdf (11p, 11 chunks ChromaDB). Necessaire pour citer le chiffre per-juge dans Ch.7 sans tag [ABSTRACT SEUL]. || [director-sweep-20260613] completed — voir _staging/director_sweep/RR-P153-001.md. Cout estime: N/A (no Groq/API spend; local pypdf extraction + 1 dedup check, no WebSearch needed since paper already in corpus)",
       "blocks": [
         "Ch.7"
       ]
