@@ -79,6 +79,8 @@ nul
 backend/server_log*.txt
 logs/
 groq__gitignore.txt
+# Smoke/run logs at repo root and anywhere (chains_smoke.log, fc00*_run.log, reforge_*.log, etc.)
+*.log
 
 # Docker override local (config INTERNAL-AI, secret) — NEVER commit
 docker-compose.override.yml
