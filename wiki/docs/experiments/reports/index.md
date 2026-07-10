@@ -5,6 +5,7 @@ Rapports experimentaux generes par les campagnes AEGIS.
 | Rapport | Description |
 |---------|-------------|
 | [aside adaptive protocol](aside_adaptive_protocol.md) | |
+| [CLOSURE RR-FC-004 evidence partial 2026-06-18](CLOSURE_RR-FC-004_evidence_partial_2026-06-18.md) | |
 | [Cross-model validation](EXPERIMENT_REPORT_CROSS_MODEL.md) | |
 | [EXPERIMENT REPORT director cycle 20260615](EXPERIMENT_REPORT_director_cycle_20260615.md) | |
 | [EXPERIMENT REPORT F46](EXPERIMENT_REPORT_F46.md) | |
@@ -36,6 +37,7 @@ Rapports experimentaux generes par les campagnes AEGIS.
 | [THESIS-001 — HyDE/XML Bimodality (N=1200, 40 chains)](EXPERIMENT_REPORT_THESIS_001.md) | |
 | [THESIS-002 — Cross-model 70B (Groq)](EXPERIMENT_REPORT_THESIS_002.md) | |
 | [THESIS-003 — Qwen family-specific](EXPERIMENT_REPORT_THESIS_003.md) | |
+| [OSF PREREGISTRATION RR-RUN12-002](OSF_PREREGISTRATION_RR-RUN12-002.md) | |
 | [PROTOCOL RR-FC-003](PROTOCOL_RR-FC-003.md) | |
 | [PROTOCOL RR-FC-004](PROTOCOL_RR-FC-004.md) | |
 | [PROTOCOL RR-FC-004 v2](PROTOCOL_RR-FC-004_v2.md) | |
