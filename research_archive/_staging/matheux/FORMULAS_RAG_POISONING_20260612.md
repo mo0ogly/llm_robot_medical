@@ -290,15 +290,23 @@ attaquent des points distincts du pipeline par rapport a Sep(M) :
    dans le **retrieval**. Sep(M) ne couvre PAS ce canal : meme un modele a Sep(M) eleve traite le document
    empoisonne comme du *contexte legitime* recupere, pas comme une instruction-donnee a ignorer. Conclusion :
    **Sep(M) seul ne protege pas contre le RAG poisoning** — il faut une metrique de robustesse cote retrieval
-   (ex. « retrieval robustness » : fraction du top-N resistant a l'injection d'un doc adverse). Argument fort
-   pour C5 (propagation via composants externes) : le maillon faible est `D(q,N)`, pas le decodeur.
+   (ex. « retrieval robustness » : fraction du top-N resistant a l'injection d'un doc adverse). C5 reformulée :
+   « injection à seuil minimal sur un composant externe » (CorruptRAG = 1 document statique, PAS de propagation) :
+   le maillon faible est `D(q,N)`, pas le decodeur.
 
 2. **F80 (CDA / control plane)** : Sep(M) est defini sur le **data plane** (entree visible). CDA agit sur le
    **control plane** (masque de logits). La citation « internal safety alignment alone cannot stop it » est
    l'analogue exact de « Sep(M) ne capture pas le control plane » : un modele peut avoir Sep(M)=1 (parfaite
    separation des canaux texte) et rester 100% vulnerable a un masque grammatical qui force le prefixe.
    → **Sep(M) doit etre etendu d'une dimension control-plane** (« decoding-plane separation ») pour etre
-   pertinent contre CDA. Renforce C2 (necessite δ³ / defense architecturale cross-plane).
+   pertinent contre CDA. MOTIVE (cohérent avec) C2 - une seule source P137, aucune campagne AEGIS, donc
+   motivation et non preuve ; C5 reformulée : « injection à seuil minimal sur un composant externe »
+   (CorruptRAG = 1 document statique, PAS de propagation).
+
+> Mise en garde (reviewer aegis-ccg) : tout vecteur DÉFINI hors-portée de Sep(M) « motive plus de couches »
+> par construction ; ne pas présenter ce cadrage comme une preuve. Pour le RAG, l'empoisonnement injecte un
+> FAIT (pas une instruction), donc l'orthogonalité à Sep(M) est vraie par construction — elle appuie « Sep(M)
+> insuffisant/orthogonal », pas spécifiquement C5.
 
 **Synthese** : aucune des 3 formules n'est neutralisee par un Sep(M) eleve. Elles motivent deux extensions
 distinctes de la metrique du lab : (a) robustesse retrieval (poisoning), (b) separation control-plane (CDA).
@@ -317,6 +325,7 @@ Les dettes residuelles sont des **valeurs/protocoles a confirmer**, pas des form
 | D3 | **P138 valeurs Top3v/RASR/BRank/OMSR/ASV** : definitions extraites, valeurs numeriques non reportees ici. Le « ~50% opinion shift » de la fiche n'a PAS ete confirme verbatim — seul le **20% user cognition** est verbatim (Abstract). | Lire P138 Tables 3-4 |
 | D4 | **P138 metrique d'opinion (juge)** : le « opinion score » sous-jacent a OMSR/ASV n'est pas formalise ici (definition du classifieur d'opinion). | Lire P138 Section 4 (detail du scoring d'opinion) |
 | D5 | **CDA — formalisation `Valid(G, ·)`** : P137 decrit le masque en prose + Figure 2 ; la formulation `Valid(G,·)`/`ẑ` ci-dessus est une **mise en equation fidele** de la prose (pas une equation numerotee du papier). Le papier ne donne pas d'equation numerotee pour le masque (seule Eq. (2) softmax l'est). | OK pour usage ; si citation formelle requise, marquer « reformule d'apres P137 Section 2.3 » |
+| D6 | **coherence provenance** : les fiches P137/P138/P139 portent encore « [ARTICLE VERIFIE] - analyse fondee sur l'abstract » alors que MATHEUX a verifie les equations/tables EN TEXTE COMPLET. Provenance a reconcilier (note ajoutee aux 3 fiches le 2026-06-12). | Reconcilier le champ Statut des 3 fiches avec la verification fulltext F75-F80 |
 
 **Tags ASR LLM-JUGE** : F76 (GPT-4o-mini), F80 (gpt-4o), F79 (juge d'opinion) — ASR/metriques manipulables
 (cf. P044, 99% flip rate). Ne jamais porter ces chiffres comme bornes dures.

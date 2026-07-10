@@ -285,8 +285,10 @@ Le refus est rendu **structurellement impossible** : sa probabilite n'est pas "r
 
 ### Rattachement aux conjectures
 
-- **C5 (propagation via composants externes)** : F75/F76/F77-F79 montrent que l'attaque entre par le **retrieval**, un composant externe au modele. Cela **renforce C5** — la vulnerabilite se propage par le maillon `D(q,N)`. Extension de metrique motivee : une **"robustesse retrieval"** (fraction du top-N resistant a l'injection d'un document adverse).
-- **C2 (necessite d'une defense architecturale δ³ cross-plane)** : F80 montre qu'aucune defense data-plane ne stoppe une attaque control-plane. Cela **renforce C2** — il faut une separation **control-plane** ("decoding-plane separation"), une extension de Sep(M) d'une dimension.
+- **C5 (reformulée : injection à seuil minimal sur un composant externe)** : F75/F76/F77-F79 montrent que l'attaque entre par le **retrieval**, un composant externe au modele. Cela **MOTIVE (cohérent avec) C5** — CorruptRAG = 1 document statique injecté au maillon `D(q,N)`, **PAS de propagation/cascade**. Extension de metrique motivee : une **"robustesse retrieval"** (fraction du top-N resistant a l'injection d'un document adverse).
+- **C2 (necessite d'une defense architecturale δ³ cross-plane)** : F80 montre qu'aucune defense data-plane ne stoppe une attaque control-plane. Cela **MOTIVE (cohérent avec) C2** (une seule source P137, aucune campagne AEGIS : motivation, non preuve) — il faut une separation **control-plane** ("decoding-plane separation"), une extension de Sep(M) d'une dimension.
+
+> **Mise en garde (reviewer aegis-ccg)** : tout vecteur défini hors-portée de Sep(M) « motive plus de couches » par construction ; ne pas présenter ce cadrage comme une preuve.
 
 **Synthese MATHEUX** : aucune des trois formules n'est neutralisee par un Sep(M) eleve. Elles motivent **deux extensions distinctes** de la metrique du lab : (a) robustesse retrieval (poisoning), (b) separation control-plane (CDA).
 

@@ -8,7 +8,7 @@
 <div class="stat-grid">
   <div class="stat-card"><span class="stat-value">13</span><span class="stat-label">Agents publies</span></div>
   <div class="stat-card"><span class="stat-value">281</span><span class="stat-label">Fichiers</span></div>
-  <div class="stat-card"><span class="stat-value">54 161</span><span class="stat-label">Lignes</span></div>
+  <div class="stat-card"><span class="stat-value">54 172</span><span class="stat-label">Lignes</span></div>
   <div class="stat-card"><span class="stat-value">9</span><span class="stat-label">Phases pipeline</span></div>
 </div>
 
@@ -30,13 +30,13 @@
 
 - <span class="agent-badge agent-badge--matheux">MATHEUX</span> **Formules mathematiques (extraction & reviews)**
 
-    14 fichiers &middot; 5 449 lignes.
+    14 fichiers &middot; 5 458 lignes.
 
     [:material-arrow-right: Ouvrir](matheux/index.md)
 
 - <span class="agent-badge agent-badge--mathteacher">MATHTEACHER</span> **Cours de mathematiques (8 modules + guide notation + self-assessment)**
 
-    16 fichiers &middot; 7 747 lignes.
+    16 fichiers &middot; 7 749 lignes.
 
     [:material-arrow-right: Ouvrir](mathteacher/index.md)
 
