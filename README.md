@@ -28,6 +28,33 @@ The dashboard puts you in the role of a Chief Surgeon assisted by a Medical AI �
 
 ---
 
+## Red Team Forge & Prompt-Injection Test Campaigns
+
+Saying an LLM is "vulnerable to prompt injection" is not enough to make a decision. AEGIS **forges** attacks, **replays** them in repeated campaigns and **measures** the outcome statistically: from one-off demo to reproducible acceptance testing. The simulated surgical robot is the test bench — an allowed state, an observable violation.
+
+**The Forge — building attacks**
+- **127 attack templates** (`backend/prompts/`), each documented: mechanism, formal framework, matching defense.
+- **40 attack chains** (`backend/agents/attack_chains/`): prompt override, memory and RAG poisoning, multi-step hijack, ghost tool, covert channel, extraction...
+- **Genetic optimizer** (Liu et al., 2023): mutates prompts and keeps the most effective ones, scored by an LLM judge *and* by formal output verification.
+- **Context inference**: attacks adapt to the target's role and rules.
+- **3 agents** (target, defender, attacker) x 3 hardening levels, facing **3 defense layers**: system prompt only → deterministic pre-inference shield → formal output validation.
+- **Cross-model**: same attack on local Ollama and cloud providers.
+
+**Test campaigns — proving it**
+- **Formal campaign** (`run_formal_campaign()`): 30 trials per chain by default, null-payload control for causal attribution, automatic Sep(M) and Wilson confidence intervals.
+- **Delta-0 protocol**: clean baseline measured before any conclusion.
+- **Campaign safeguards** (`backend/campaign_safeguards.py`): max 3 reruns, identical reruns refused, token budget (500k per campaign, 100k per run), target pre-check, result sanity check.
+- **Full audit**, live streaming, CSV/JSON export and post-campaign RETEX.
+
+**Why it matters**
+- Accept or reject an LLM before integration with an attack success rate *and* a confidence interval.
+- Show that a system-prompt rule is an instruction, not a defense — while a deterministic pre-LLM filter can be measured.
+- Compare models and guardrails on the same attack set; every forged attack enriches the catalog, every campaign leaves replayable evidence.
+
+> Isolated research environment only — no production use, no patient data. Results are statistically meaningful only from N >= 30 trials per condition; the system flags it otherwise.
+
+---
+
 ## The 4 Attack Scenarios
 
 | # | Scenario | Technique | MITRE ATT&CK |
@@ -89,7 +116,7 @@ Hidden advanced panel (`Ctrl+Shift+R` or header button). Five integrated panels:
 
 | Panel | Description |
 |-------|-------------|
-| **Prompt Forge** | 98 API-served attack templates with detailed help modals (attack mechanism, formal framework, defense analysis) |
+| **Prompt Forge** | 127 API-served attack templates with detailed help modals (attack mechanism, formal framework, defense analysis) |
 | **System Prompt Lab** | 3 agents (Da Vinci, Aegis, Attacker) x 3 difficulty levels (EASY / NORMAL / HARD) |
 | **Execution Engine** | Single-shot, multi-agent campaign, and Sep(M) formal audit modes |
 | **Formal Metrics Dashboard** | SVC 6D scoring + Sep(M) separation score + Integrity(S) verification |
@@ -323,7 +350,7 @@ docker-compose up --build
 
 ## 🔗 Attack Chain Library
 
-The Adversarial Studio v2.1 includes **40 attack chains**, **48 scenarios**, and **122 attack templates** (106 two-digit + 16 three-digit numbered), ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499; Zverev et al., 2025, ICLR; Reimers & Gurevych, 2019, Sentence-BERT). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic/Groq via `llm_factory`). Each chain has at least one dedicated scenario. Each attack template has a detailed help modal explaining the attack mechanism, formal framework link, and defense analysis.
+The Adversarial Studio v2.1 includes **40 attack chains**, **48 scenarios**, and **127 attack templates** (111 two-digit + 16 three-digit numbered), ported and enhanced from prompt injection research (Liu et al., 2023, arXiv:2306.05499; Zverev et al., 2025, ICLR; Reimers & Gurevych, 2019, Sentence-BERT). All chains are **AI-agnostic** (Ollama/OpenAI/Anthropic/Groq via `llm_factory`). Each chain has at least one dedicated scenario. Each attack template has a detailed help modal explaining the attack mechanism, formal framework link, and defense analysis.
 
 **Protocol P-δ⁰** — The studio implements the δ⁰/δ¹ discrimination protocol: running attacks WITH vs WITHOUT system prompt isolates the RLHF base alignment contribution (δ⁰ = 1 − ASR(∅)) from the instruction layer (δ¹ = ASR(∅) − ASR(S)). Access via Forge AIDE tab → "Test δ⁰" or `POST /api/redteam/delta0-protocol`. Definition 3.3bis (Zverev et al. ICLR 2025 extension).
 

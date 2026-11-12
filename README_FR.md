@@ -28,6 +28,33 @@ Le tableau de bord vous place dans le rôle d'un Chirurgien en Chef assisté par
 
 ---
 
+## Forge Red Team et campagnes de recette d'injection de prompt
+
+Dire qu'un LLM est « vulnérable à l'injection de prompt » ne suffit pas pour décider. AEGIS **forge** des attaques, les **rejoue** en campagnes répétées et **mesure** le résultat statistiquement : de la démonstration ponctuelle à la recette reproductible. Le robot chirurgical simulé est le banc d'essai — un état autorisé, une violation observable.
+
+**La forge — fabriquer l'attaque**
+- **127 templates d'attaque** (`backend/prompts/`), chacun documenté : mécanisme, cadre formel, défense associée.
+- **40 chaînes d'attaque** (`backend/agents/attack_chains/`) : contournement du prompt, empoisonnement mémoire et RAG, détournement multi-étapes, outil fantôme, canal caché, extraction…
+- **Optimiseur génétique** (Liu et al., 2023) : mute les prompts et conserve les plus efficaces, notés par un LLM juge *et* par vérification formelle de la sortie.
+- **Inférence de contexte** : l'attaque s'adapte au rôle et aux règles de la cible.
+- **3 agents** (cible, défense, attaquant) x 3 niveaux de durcissement, face à **3 couches de défense** : prompt système seul → bouclier déterministe avant inférence → validation formelle de la sortie.
+- **Multi-modèle** : même attaque sur Ollama local et fournisseurs cloud.
+
+**Les campagnes de recette — prouver**
+- **Campagne formelle** (`run_formal_campaign()`) : 30 essais par chaîne par défaut, contrôle à charge vide pour l'attribution causale, Sep(M) et intervalles de Wilson calculés automatiquement.
+- **Protocole Delta-0** : ligne de base saine mesurée avant toute conclusion.
+- **Garde-fous de campagne** (`backend/campaign_safeguards.py`) : 3 relances maximum, relance identique refusée, budget de jetons (500k par campagne, 100k par exécution), précontrôle de la cible, contrôle de cohérence des résultats.
+- **Audit complet**, suivi en flux, export CSV/JSON et RETEX en fin de campagne.
+
+**Ce que ça apporte**
+- Recetter un LLM avant intégration avec un taux de succès des attaques *et* un intervalle de confiance.
+- Montrer qu'une consigne de prompt système est une instruction, pas une défense — alors qu'un filtre déterministe avant le LLM se mesure.
+- Comparer modèles et garde-fous sur le même jeu d'attaques ; chaque attaque forgée enrichit le catalogue, chaque campagne laisse une preuve rejouable.
+
+> Environnement de recherche isolé uniquement — aucun usage en production, aucune donnée patient. Les résultats n'ont de valeur statistique qu'à partir de N >= 30 essais par condition ; le système le signale sinon.
+
+---
+
 ## Les 4 Scénarios d'Attaque
 
 | # | Scénario | Technique | MITRE ATT&CK |
@@ -87,7 +114,7 @@ Interface, prompts et documentation intégralement disponibles en **Français**,
 ### 🔴 Adversarial Studio v2.1 — Laboratoire de Recherche Adversariale Formelle
 Panneau avancé caché (`Ctrl+Shift+R` ou bouton dans l'en-tête), repensé en 5 panneaux intégrés :
 
-1. **Prompt Forge** (122 templates API) — Catalogue d'attaques servi par le backend (`/api/redteam/catalog`), avec assistant de forge de payloads et optimiseur génétique (Liu et al., 2023)
+1. **Prompt Forge** (127 templates API) — Catalogue d'attaques servi par le backend (`/api/redteam/catalog`), avec assistant de forge de payloads et optimiseur génétique (Liu et al., 2023)
 2. **System Prompt Lab** (3 agents x 3 niveaux) — Configuration multi-agent avec niveaux de difficulté indépendants (FACILE / NORMAL / DIFFICILE) par agent (Da Vinci, Aegis, Attaquant)
 3. **Moteur d'Exécution** — Trois modes : single-shot, campagne multi-chaînes, et calcul formel Sep(M) (Zverev et al., ICLR 2025). 48 scénarios couvrant les 40 chaînes backend. Kill Chain Stepper en 4 phases (Recon, Injection, Exécution, Audit)
 4. **Tableau de Bord Métriques Formelles** — Scoring SVC 6D + Sep(M) + Integrity(S) :
@@ -274,7 +301,7 @@ docker-compose up --build
 
 ## 🔗 Bibliothèque de Chaînes d'Attaque
 
-L'Adversarial Studio v2.1 inclut **40 chaînes d'attaque**, **48 scénarios** et **122 templates d'attaque** (97 numérotés + 1 Custom placeholder), portés et améliorés depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic/Groq via `llm_factory`). Chaque chaîne a au minimum un scénario dédié. Les 122 templates d'attaque ont chacun une modale d'aide détaillée expliquant le mécanisme, le cadre formel, et l'analyse de défense.
+L'Adversarial Studio v2.1 inclut **40 chaînes d'attaque**, **48 scénarios** et **127 templates d'attaque** (111 numérotés sur deux chiffres + 16 sur trois chiffres), portés et améliorés depuis la recherche sur l'injection de prompt (Liu et al., 2023, arXiv:2306.05499). Toutes les chaînes sont **AI-agnostiques** (Ollama/OpenAI/Anthropic/Groq via `llm_factory`). Chaque chaîne a au minimum un scénario dédié. Les 127 templates d'attaque ont chacun une modale d'aide détaillée expliquant le mécanisme, le cadre formel, et l'analyse de défense.
 
 ### Couverture Taxonomie CrowdStrike
 Couverture complète de la taxonomie CrowdStrike Prompt Injection (2025-11-01) : 95/95 techniques réparties en 4 classes (Overt, Indirect, Social/Cognitif, Évasif).

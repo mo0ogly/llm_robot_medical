@@ -27,6 +27,33 @@ O painel coloca você no papel de Cirurgião-Chefe assistido por uma IA Médica 
 
 ---
 
+## Forja Red Team e campanhas de teste de injeção de prompt
+
+Dizer que um LLM é "vulnerável a injeção de prompt" não basta para decidir. O AEGIS **forja** ataques, os **repete** em campanhas e **mede** o resultado estatisticamente: da demonstração pontual ao teste de aceitação reproduzível. O robô cirúrgico simulado é a bancada de testes — um estado permitido, uma violação observável.
+
+**A forja — construir o ataque**
+- **127 templates de ataque** (`backend/prompts/`), cada um documentado: mecanismo, quadro formal, defesa correspondente.
+- **40 cadeias de ataque** (`backend/agents/attack_chains/`): sobrescrita de prompt, envenenamento de memória e RAG, sequestro em várias etapas, ferramenta fantasma, canal oculto, extração...
+- **Otimizador genético** (Liu et al., 2023): muta os prompts e mantém os mais eficazes, avaliados por um LLM juiz *e* por verificação formal da saída.
+- **Inferência de contexto**: o ataque se adapta ao papel e às regras do alvo.
+- **3 agentes** (alvo, defensor, atacante) x 3 níveis de endurecimento, diante de **3 camadas de defesa**: só prompt de sistema → escudo determinístico antes da inferência → validação formal da saída.
+- **Multimodelo**: mesmo ataque no Ollama local e em provedores na nuvem.
+
+**Campanhas de teste — provar**
+- **Campanha formal** (`run_formal_campaign()`): 30 tentativas por cadeia por padrão, controle com payload vazio para atribuição causal, Sep(M) e intervalos de Wilson calculados automaticamente.
+- **Protocolo Delta-0**: linha de base limpa medida antes de qualquer conclusão.
+- **Salvaguardas de campanha** (`backend/campaign_safeguards.py`): no máximo 3 reexecuções, reexecução idêntica recusada, orçamento de tokens (500k por campanha, 100k por execução), pré-verificação do alvo, verificação de coerência dos resultados.
+- **Auditoria completa**, streaming ao vivo, exportação CSV/JSON e RETEX pós-campanha.
+
+**Por que importa**
+- Aprovar ou recusar um LLM antes da integração com uma taxa de sucesso de ataque *e* um intervalo de confiança.
+- Mostrar que uma regra no prompt de sistema é uma instrução, não uma defesa — enquanto um filtro determinístico antes do LLM pode ser medido.
+- Comparar modelos e guardrails no mesmo conjunto de ataques; cada ataque forjado enriquece o catálogo, cada campanha deixa evidência reproduzível.
+
+> Somente ambiente de pesquisa isolado — sem uso em produção, sem dados de pacientes. Os resultados só têm validade estatística a partir de N >= 30 tentativas por condição; o sistema sinaliza caso contrário.
+
+---
+
 ## Os 4 Cenários de Ataque
 
 | # | Cenário | Técnica | MITRE ATT&CK |
@@ -86,7 +113,7 @@ Interface, prompts e documentação integralmente disponíveis em **Português (
 ### 🔴 Adversarial Studio v2.1 — Laboratório de Pesquisa Adversarial Formal
 Painel avançado oculto (`Ctrl+Shift+R` ou botão no cabeçalho) com **5 painéis integrados**:
 
-1. **Prompt Forge** — 122 templates de ataque servidos via API (`/api/redteam/catalog`), com otimizador genético e busca semântica
+1. **Prompt Forge** — 127 templates de ataque servidos via API (`/api/redteam/catalog`), com otimizador genético e busca semântica
 2. **System Prompt Lab** — Configuração de 3 agentes (Da Vinci, Aegis, Atacante) x 3 níveis de dificuldade (FÁCIL / NORMAL / DIFÍCIL)
 3. **Motor de Execução** — Modos single-shot, multi-turno e campanha formal Sep(M)
 4. **Painel de Métricas Formais** — Scoring SVC 6D + Sep(M) + Integrity(S) com visualização em tempo real
@@ -285,7 +312,7 @@ docker-compose up --build
 
 ### Campanha Formal & Métricas (Adversarial Studio v2.1)
 
-O Adversarial Studio v2.1 inclui **40 cadeias**, **48 cenários** e **122 templates de ataque** (97 numerados + 1 Custom placeholder) com modais de ajuda detalhados.
+O Adversarial Studio v2.1 inclui **40 cadeias**, **48 cenários** e **127 templates de ataque** (111 numerados com dois dígitos + 16 com três dígitos) com modais de ajuda detalhados.
 
 ### Cobertura Taxonomia CrowdStrike
 Cobertura completa da taxonomia CrowdStrike Prompt Injection (2025-11-01): 95/95 técnicas em 4 classes (Overt, Indireto, Social/Cognitivo, Evasivo).
